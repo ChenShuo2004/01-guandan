@@ -1,11 +1,9 @@
-export interface UserProgress {
-  level: number;
-  experience: number;
+import type { UserState } from "./UserState";
+
+export interface UserProgress extends UserState {
   completedLessonIds: string[];
   completedPracticeIds: string[];
   favoriteLessonIds: string[];
   favoritePracticeIds: string[];
-  wrongPracticeIds: string[];
-  streakDays: number;
   lastStudyDate?: string;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
+import { completeDailyTraining as completeDailyTrainingProgress } from "@/features/daily-training";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import {
   defaultProgress,
@@ -64,6 +65,15 @@ export function useProgress() {
               ? current.favoriteLessonIds.filter((id) => id !== lessonId)
               : [...current.favoriteLessonIds, lessonId]
           });
+        });
+      },
+      completeDailyTraining(trainingId?: string) {
+        setProgress((current) => {
+          const normalizedProgress = mergeProgress(current, {});
+          return mergeProgress(
+            completeDailyTrainingProgress(normalizedProgress, trainingId),
+            {}
+          );
         });
       }
     }),
