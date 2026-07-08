@@ -1,0 +1,14 @@
+{
+  "placeholder-when-to-bomb-cover": {
+    "id": "placeholder-when-to-bomb-cover",
+    "type": "placeholder",
+    "alt": "什么时候该炸课程占位图",
+    "aspectRatio": "4:5"
+  },
+  "placeholder-bomb-scene-001": {
+    "id": "placeholder-bomb-scene-001",
+    "type": "placeholder",
+    "alt": "炸弹局面占位图",
+    "aspectRatio": "4:5"
+  }
+}
