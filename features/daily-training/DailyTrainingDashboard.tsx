@@ -3,6 +3,8 @@
 import { CoachBubble } from "@/components/coach/CoachBubble";
 import { ProgressBar } from "@/components/progress/ProgressBar";
 import { Button } from "@/components/ui/Button";
+import { getPracticeById } from "@/content/cases/sample-practice";
+import { getLessonById } from "@/content/lessons/sample-lessons";
 import {
   getDailyTrainingPlan,
   getNextRecommendation,
@@ -26,6 +28,14 @@ export function DailyTrainingDashboard() {
   const trainingPlan = getDailyTrainingPlan(progress);
   const completedCount = trainingPlan.filter((training) => training.status === "completed").length;
   const nextLevelProgress = progress.experience % 100;
+  const hasTodayLesson = Boolean(getLessonById(todayTraining?.lessonId ?? ""));
+  const hasTodayPractice = Boolean(getPracticeById(todayTraining?.practiceId ?? ""));
+  const hasRecommendationLesson = Boolean(
+    recommendation.lessonId ? getLessonById(recommendation.lessonId) : undefined
+  );
+  const hasRecommendationPractice = Boolean(
+    recommendation.practiceId ? getPracticeById(recommendation.practiceId) : undefined
+  );
 
   if (!todayTraining) {
     return (
@@ -72,12 +82,22 @@ export function DailyTrainingDashboard() {
           </p>
 
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <Button href={`/lessons/${todayTraining.lessonId}`}>
-              开始今日训练
-            </Button>
-            <Button href={`/practice/${todayTraining.practiceId}`} variant="secondary">
-              直接做残局
-            </Button>
+            {hasTodayLesson ? (
+              <Button href={`/lessons/${todayTraining.lessonId}`}>
+                开始今日训练
+              </Button>
+            ) : (
+              <Button disabled>课程准备中</Button>
+            )}
+            {hasTodayPractice ? (
+              <Button href={`/practice/${todayTraining.practiceId}`} variant="secondary">
+                直接做残局
+              </Button>
+            ) : (
+              <Button disabled variant="secondary">
+                残局准备中
+              </Button>
+            )}
           </div>
         </section>
 
@@ -112,13 +132,17 @@ export function DailyTrainingDashboard() {
           <p className="mt-2 text-sm leading-6 text-guandan-subtext">
             {recommendation.description}
           </p>
-          {recommendation.lessonId ? (
+          {recommendation.lessonId && hasRecommendationLesson ? (
             <Button className="mt-4 w-full" href={`/lessons/${recommendation.lessonId}`}>
               去学习
             </Button>
-          ) : recommendation.practiceId ? (
+          ) : recommendation.practiceId && hasRecommendationPractice ? (
             <Button className="mt-4 w-full" href={`/practice/${recommendation.practiceId}`}>
               去复盘
+            </Button>
+          ) : recommendation.lessonId || recommendation.practiceId ? (
+            <Button className="mt-4 w-full" disabled variant="secondary">
+              内容准备中
             </Button>
           ) : null}
         </section>
