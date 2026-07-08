@@ -2,69 +2,105 @@
 
 import { CoachBubble } from "@/components/coach/CoachBubble";
 import { ProgressBar } from "@/components/progress/ProgressBar";
+import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { getPracticeById } from "@/content/cases/sample-practice";
 import { getLessonById } from "@/content/lessons/sample-lessons";
 import {
   getDailyTrainingPlan,
-  getNextRecommendation,
   getTodayTraining
 } from "@/features/daily-training";
 import { useProgress } from "@/features/progress/useProgress";
+
+function getLevelTitle(level: number) {
+  if (level >= 30) {
+    return "控牌高手";
+  }
+
+  if (level >= 20) {
+    return "残局熟手";
+  }
+
+  if (level >= 10) {
+    return "配合玩家";
+  }
+
+  if (level >= 5) {
+    return "牌权入门";
+  }
+
+  return "掼蛋成长者";
+}
 
 export function DailyTrainingDashboard() {
   const { progress, isReady } = useProgress();
 
   if (!isReady) {
     return (
-      <section className="rounded-3xl border border-guandan-border bg-guandan-card p-4 text-sm text-guandan-subtext">
+      <Card>
         正在读取今日训练。
-      </section>
+      </Card>
     );
   }
 
   const todayTraining = getTodayTraining(progress);
-  const recommendation = getNextRecommendation(progress);
   const trainingPlan = getDailyTrainingPlan(progress);
   const completedCount = trainingPlan.filter((training) => training.status === "completed").length;
   const nextLevelProgress = progress.experience % 100;
+  const nextLevelTarget = 100;
   const hasTodayLesson = Boolean(getLessonById(todayTraining?.lessonId ?? ""));
-  const hasTodayPractice = Boolean(getPracticeById(todayTraining?.practiceId ?? ""));
-  const hasRecommendationLesson = Boolean(
-    recommendation.lessonId ? getLessonById(recommendation.lessonId) : undefined
-  );
-  const hasRecommendationPractice = Boolean(
-    recommendation.practiceId ? getPracticeById(recommendation.practiceId) : undefined
-  );
+  const todayPractice = getPracticeById(todayTraining?.practiceId ?? "");
+  const hasWrongPractice = progress.wrongPracticeIds.length > 0;
 
   if (!todayTraining) {
     return (
-      <section className="rounded-3xl border border-guandan-border bg-guandan-card p-4">
+      <Card>
         <p className="text-sm font-bold text-guandan-gold">今日训练</p>
         <h2 className="mt-2 text-xl font-black">训练计划还没准备好</h2>
-      </section>
+      </Card>
     );
   }
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.85fr)] lg:items-start lg:gap-6">
-      <div className="space-y-4">
+    <div className="mx-auto max-w-5xl space-y-4">
+      <header className="rounded-arena border border-guandan-border bg-guandan-card/80 p-4 shadow-panel backdrop-blur lg:p-5">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-sm font-bold text-guandan-gold">AI 掼蛋训练 App</p>
+            <h1 className="mt-1 text-2xl font-black leading-8">
+              Lv{progress.level} {getLevelTitle(progress.level)}
+            </h1>
+          </div>
+          <Badge variant={progress.streakDays > 0 ? "reward" : "tech"}>
+            连续 {progress.streakDays} 天
+          </Badge>
+        </div>
+        <div className="mt-4">
+          <ProgressBar
+            label={`${nextLevelProgress} / ${nextLevelTarget} XP`}
+            max={nextLevelTarget}
+            value={nextLevelProgress}
+          />
+        </div>
+      </header>
+
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.85fr)] lg:items-start lg:gap-6">
+        <div className="space-y-4">
         <CoachBubble
           action={todayTraining.isCompletedToday ? "celebrate" : "wave"}
-          caption={recommendation.description}
+          caption={todayTraining.coachTip}
           text={
             todayTraining.isCompletedToday
               ? "很好。今天已经完成。"
-              : `别急。今天只练：${todayTraining.theme}。`
+              : `今天只练一个判断：${todayTraining.theme}。`
           }
         />
 
-        <section className="rounded-3xl border border-guandan-gold bg-guandan-gold/10 p-4 lg:p-6">
+        <Card variant="training">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-bold text-guandan-gold">
-                Day {todayTraining.day} / 7
-              </p>
+              <Badge variant="energy">Day {todayTraining.day} / 7</Badge>
               <h2 className="mt-2 text-2xl font-black leading-8 lg:text-3xl lg:leading-10">
                 {todayTraining.theme}
               </h2>
@@ -77,81 +113,54 @@ export function DailyTrainingDashboard() {
             </span>
           </div>
 
-          <p className="mt-4 text-sm leading-6 text-guandan-subtext">
-            {todayTraining.coachTip}
-          </p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Badge>预计 3 分钟</Badge>
+            <Badge variant={todayTraining.isCompletedToday ? "success" : "tech"}>
+              {todayTraining.isCompletedToday ? "今日已完成" : "待训练"}
+            </Badge>
+          </div>
 
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+          <div className="mt-5">
             {hasTodayLesson ? (
-              <Button href={`/lessons/${todayTraining.lessonId}`}>
+              <Button className="w-full" href={`/lessons/${todayTraining.lessonId}`}>
                 开始今日训练
               </Button>
             ) : (
-              <Button disabled>课程准备中</Button>
-            )}
-            {hasTodayPractice ? (
-              <Button href={`/practice/${todayTraining.practiceId}`} variant="secondary">
-                直接做残局
-              </Button>
-            ) : (
-              <Button disabled variant="secondary">
-                残局准备中
+              <Button className="w-full" disabled>
+                课程准备中
               </Button>
             )}
           </div>
-        </section>
+        </Card>
 
-        <section className="rounded-3xl border border-guandan-border bg-guandan-card p-4 lg:p-6">
+        <Card>
           <div className="flex items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-bold text-guandan-gold">一课一题闭环</p>
-              <h2 className="mt-1 text-lg font-black">学完马上练</h2>
+              <p className="text-sm font-bold text-guandan-blue">第二任务</p>
+              <h2 className="mt-1 text-lg font-black">残局挑战</h2>
             </div>
-            <span className="rounded-full bg-guandan-muted px-3 py-2 text-xs font-bold text-guandan-subtext">
-              {todayTraining.isCompletedToday ? "已完成" : "待完成"}
-            </span>
+            <Badge variant="reward">+{todayPractice?.experience ?? todayTraining.rewardExperience} XP</Badge>
           </div>
-
-          <div className="mt-4 grid gap-3">
-            <div className="rounded-2xl bg-guandan-muted p-3">
-              <p className="text-xs font-bold text-guandan-gold">Lesson</p>
-              <p className="mt-1 text-sm font-bold">{todayTraining.lessonId}</p>
-            </div>
-            <div className="rounded-2xl bg-guandan-muted p-3">
-              <p className="text-xs font-bold text-guandan-gold">Practice</p>
-              <p className="mt-1 text-sm font-bold">{todayTraining.practiceId}</p>
-            </div>
+          <p className="mt-3 text-sm leading-6 text-guandan-subtext">
+            {todayPractice?.situation ?? "学完今日判断后，马上进入一局实战残局。"}
+          </p>
+          <div className="mt-4 rounded-panel border border-guandan-border bg-guandan-muted p-3">
+            <p className="text-sm font-bold text-guandan-text">
+              {todayPractice?.title ?? "今日残局准备中"}
+            </p>
+            <p className="mt-1 text-xs font-semibold text-guandan-mutedText">
+              完成知识判断后自动进入，不需要自己找题。
+            </p>
           </div>
-        </section>
+        </Card>
       </div>
 
       <aside className="space-y-4 lg:sticky lg:top-8">
-        <section className="rounded-3xl border border-guandan-border bg-guandan-card p-4">
-          <p className="text-sm font-bold text-guandan-gold">下一步推荐</p>
-          <h2 className="mt-2 text-lg font-black">{recommendation.title}</h2>
-          <p className="mt-2 text-sm leading-6 text-guandan-subtext">
-            {recommendation.description}
-          </p>
-          {recommendation.lessonId && hasRecommendationLesson ? (
-            <Button className="mt-4 w-full" href={`/lessons/${recommendation.lessonId}`}>
-              去学习
-            </Button>
-          ) : recommendation.practiceId && hasRecommendationPractice ? (
-            <Button className="mt-4 w-full" href={`/practice/${recommendation.practiceId}`}>
-              去复盘
-            </Button>
-          ) : recommendation.lessonId || recommendation.practiceId ? (
-            <Button className="mt-4 w-full" disabled variant="secondary">
-              内容准备中
-            </Button>
-          ) : null}
-        </section>
-
-        <section className="rounded-3xl border border-guandan-border bg-guandan-card p-4">
+        <Card>
           <p className="text-sm font-bold text-guandan-gold">7 天成长</p>
           <h2 className="mt-1 text-2xl font-black">{completedCount}/7</h2>
           <div className="mt-4">
-            <ProgressBar label="训练进度" max={7} value={completedCount} />
+            <ProgressBar label="训练进度" max={7} tone="success" value={completedCount} />
           </div>
           <div className="mt-4 grid gap-2">
             {trainingPlan.map((training) => (
@@ -166,30 +175,38 @@ export function DailyTrainingDashboard() {
               </div>
             ))}
           </div>
-        </section>
+        </Card>
 
-        <section className="rounded-3xl border border-guandan-border bg-guandan-card p-4">
-          <p className="text-sm font-bold text-guandan-gold">我的状态</p>
-          <h2 className="mt-1 text-2xl font-black">Lv{progress.level}</h2>
+        <Card>
+          <p className="text-sm font-bold text-guandan-gold">XP 成长</p>
+          <h2 className="mt-1 text-2xl font-black">{progress.experience} XP</h2>
           <div className="mt-4">
-            <ProgressBar label={`${progress.experience} XP`} max={100} value={nextLevelProgress} />
+            <ProgressBar
+              label={`距离下一级 ${nextLevelTarget - nextLevelProgress} XP`}
+              max={nextLevelTarget}
+              value={nextLevelProgress}
+            />
           </div>
-          <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-            <div className="rounded-2xl bg-guandan-muted p-3">
-              <p className="text-lg font-black">{progress.streakDays}</p>
-              <p className="text-xs text-guandan-subtext">连续</p>
-            </div>
-            <div className="rounded-2xl bg-guandan-muted p-3">
-              <p className="text-lg font-black">{progress.wrongPracticeIds.length}</p>
-              <p className="text-xs text-guandan-subtext">错题</p>
-            </div>
-            <div className="rounded-2xl bg-guandan-muted p-3">
-              <p className="text-lg font-black">{progress.favoriteLessonIds.length}</p>
-              <p className="text-xs text-guandan-subtext">收藏</p>
-            </div>
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Badge variant="tech">课程 {progress.completedLessonIds.length}</Badge>
+            <Badge variant="tech">练习 {progress.completedPracticeIds.length}</Badge>
+            <Badge variant="energy">收藏 {progress.favoriteLessonIds.length}</Badge>
           </div>
-        </section>
+        </Card>
+
+        {hasWrongPractice ? (
+          <Card variant="danger">
+            <p className="text-sm font-bold text-guandan-danger">错题提醒</p>
+            <h2 className="mt-2 text-lg font-black">
+              昨天有 {progress.wrongPracticeIds.length} 道题值得复习
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-guandan-subtext">
+              先完成今日训练，再回来看这类判断。
+            </p>
+          </Card>
+        ) : null}
       </aside>
+      </div>
     </div>
   );
 }
