@@ -1,5 +1,7 @@
 import type { CoachAction } from "@/types/coach";
+import { coachActionAssetId } from "@/content/assets/coach-scenes";
 import { cn } from "@/lib/utils";
+import { CoachSceneImage } from "./CoachSceneImage";
 
 interface CoachAvatarProps {
   action?: CoachAction;
@@ -30,15 +32,18 @@ const actionClasses: Partial<Record<CoachAction, string>> = {
 };
 
 export function CoachAvatar({ action = "idle" }: CoachAvatarProps) {
+  const assetId = coachActionAssetId[action] ?? coachActionAssetId.idle;
+
   return (
     <div
       className={cn(
-        "flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border text-base font-black shadow-panel transition-colors sm:h-16 sm:w-16 sm:text-lg",
+        "flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border text-base font-black shadow-panel transition-colors sm:h-16 sm:w-16 sm:text-lg",
         actionClasses[action] ?? actionClasses.idle
       )}
       aria-label={`AI 教练状态：${action}`}
     >
-      {actionLabel[action]}
+      <CoachSceneImage assetId={assetId} imageClassName="scale-125" sizes="64px" />
+      <span className="sr-only">{actionLabel[action]}</span>
     </div>
   );
 }

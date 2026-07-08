@@ -1,4 +1,67 @@
 {
+  "coach-home-welcome": {
+    "id": "coach-home-welcome",
+    "type": "png",
+    "src": "/assets/coach/coach-home-welcome.png",
+    "alt": "黄色方块 AI 卡牌教练挥手欢迎玩家进入训练空间",
+    "aspectRatio": "1:1"
+  },
+  "coach-endgame-thinking": {
+    "id": "coach-endgame-thinking",
+    "type": "png",
+    "src": "/assets/coach/coach-endgame-thinking.png",
+    "alt": "AI 卡牌教练坐在思考椅上分析残局策略",
+    "aspectRatio": "2:3"
+  },
+  "coach-lesson-pose-sheet": {
+    "id": "coach-lesson-pose-sheet",
+    "type": "png",
+    "src": "/assets/coach/coach-lesson-pose-sheet.png",
+    "alt": "AI 卡牌教练多姿态教学参考图",
+    "aspectRatio": "2:3"
+  },
+  "coach-bubble-hologram": {
+    "id": "coach-bubble-hologram",
+    "type": "png",
+    "src": "/assets/coach/coach-bubble-hologram.png",
+    "alt": "AI 卡牌教练从蓝色全息提示窗口中出现",
+    "aspectRatio": "1:1"
+  },
+  "coach-victory-celebration": {
+    "id": "coach-victory-celebration",
+    "type": "png",
+    "src": "/assets/coach/coach-victory-celebration.png",
+    "alt": "AI 卡牌教练开心挥手庆祝训练完成",
+    "aspectRatio": "2:3"
+  },
+  "coach-master-certification": {
+    "id": "coach-master-certification",
+    "type": "png",
+    "src": "/assets/coach/coach-master-certification.png",
+    "alt": "AI 卡牌教练穿披风拿着金色徽章庆祝大师认证",
+    "aspectRatio": "2:3"
+  },
+  "coach-analysis-mode": {
+    "id": "coach-analysis-mode",
+    "type": "png",
+    "src": "/assets/coach/coach-analysis-mode.png",
+    "alt": "AI 卡牌教练戴着分析眼镜用放大镜观察牌组",
+    "aspectRatio": "2:3"
+  },
+  "coach-error-feedback": {
+    "id": "coach-error-feedback",
+    "type": "png",
+    "src": "/assets/coach/coach-error-feedback.png",
+    "alt": "AI 卡牌教练温和指出错误出牌并给出推荐方案",
+    "aspectRatio": "1:1"
+  },
+  "coach-streak-encouragement": {
+    "id": "coach-streak-encouragement",
+    "type": "png",
+    "src": "/assets/coach/coach-streak-encouragement.png",
+    "alt": "AI 卡牌教练为七天连续训练竖起大拇指",
+    "aspectRatio": "1:1"
+  },
   "placeholder-when-to-bomb-cover": {
     "id": "placeholder-when-to-bomb-cover",
     "type": "placeholder",
