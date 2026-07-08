@@ -17,7 +17,8 @@ const nextCli = path.join(
   "bin",
   "next",
 );
-const nextCacheDir = path.join(projectRoot, ".next");
+const devDistDir = ".next-dev";
+const nextCacheDir = path.join(projectRoot, devDistDir);
 
 let stoppedForPortViolation = false;
 
@@ -78,6 +79,7 @@ const child = spawn(
     env: {
       ...process.env,
       HOSTNAME: FRONTEND_HOST,
+      NEXT_DIST_DIR: devDistDir,
       PORT: String(FRONTEND_PORT),
     },
     stdio: ["inherit", "pipe", "pipe"],
