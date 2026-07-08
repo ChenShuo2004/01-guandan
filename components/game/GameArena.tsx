@@ -8,6 +8,7 @@ import { CoachBubble } from "@/components/game/CoachBubble";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
 import { ScorePanel } from "@/components/game/ScorePanel";
+import { TrainingModePanel } from "@/components/game/TrainingModePanel";
 import { useGameStore } from "@/store/gameStore";
 import type { ArenaPlayer } from "@/types/game";
 
@@ -73,7 +74,7 @@ export function GameArena() {
         transition={{ duration: 0.7, ease: "easeOut" }}
       >
         <ArenaHeader
-          mode={state.gameStatus === "finished" ? "本局完成" : "新手训练场"}
+          mode={state.gameStatus === "finished" ? "本局完成" : "AI 陪练"}
           onRestart={restart}
           roundLabel={winner ? `${winner.role} 率先出完` : `第 ${state.turnNumber} 手 · ${currentPlayer?.role ?? "等待"}`}
         />
@@ -83,13 +84,14 @@ export function GameArena() {
             <GameTable players={arenaPlayers} tableCards={state.lastPlayedCards} />
 
             <div className="training-coach-dock absolute bottom-10 left-1/2 z-30 flex -translate-x-1/2 items-end gap-3">
-              <CoachAvatar mood={state.gameStatus === "finished" ? "teaching" : isUserTurn ? "teaching" : "thinking"} />
-              <CoachBubble message={state.coachMessage} />
+              <CoachAvatar mood={state.coachFeedback.type === "mistake" ? "warning" : isUserTurn ? "teaching" : "thinking"} />
+              <CoachBubble feedback={state.coachFeedback} />
             </div>
           </div>
 
-          <aside className="hidden w-[180px] shrink-0 flex-col gap-4 xl:flex">
+          <aside className="hidden w-[190px] shrink-0 flex-col gap-4 xl:flex">
             <ScorePanel players={state.players} turnNumber={state.turnNumber} />
+            <TrainingModePanel />
             <ActionButtons
               canAct={isUserTurn}
               onPass={pass}
@@ -160,23 +162,13 @@ function ArenaHeader({
       </div>
 
       <nav className="flex items-center gap-2">
-        <button
-          className="rounded-full border border-white/65 bg-white/55 px-4 py-2 text-sm font-bold text-[#17496d] shadow-[0_8px_20px_rgba(76,155,205,0.14)] transition hover:-translate-y-0.5 hover:bg-white/80"
-          type="button"
-        >
+        <button className="rounded-full border border-white/65 bg-white/55 px-4 py-2 text-sm font-bold text-[#17496d] shadow-[0_8px_20px_rgba(76,155,205,0.14)] transition hover:-translate-y-0.5 hover:bg-white/80" type="button">
           规则
         </button>
-        <button
-          className="rounded-full border border-white/65 bg-white/55 px-4 py-2 text-sm font-bold text-[#17496d] shadow-[0_8px_20px_rgba(76,155,205,0.14)] transition hover:-translate-y-0.5 hover:bg-white/80"
-          onClick={onRestart}
-          type="button"
-        >
+        <button className="rounded-full border border-white/65 bg-white/55 px-4 py-2 text-sm font-bold text-[#17496d] shadow-[0_8px_20px_rgba(76,155,205,0.14)] transition hover:-translate-y-0.5 hover:bg-white/80" onClick={onRestart} type="button">
           重开
         </button>
-        <button
-          className="rounded-full border border-white/65 bg-white/55 px-4 py-2 text-sm font-bold text-[#17496d] shadow-[0_8px_20px_rgba(76,155,205,0.14)] transition hover:-translate-y-0.5 hover:bg-white/80"
-          type="button"
-        >
+        <button className="rounded-full border border-white/65 bg-white/55 px-4 py-2 text-sm font-bold text-[#17496d] shadow-[0_8px_20px_rgba(76,155,205,0.14)] transition hover:-translate-y-0.5 hover:bg-white/80" type="button">
           退出
         </button>
       </nav>

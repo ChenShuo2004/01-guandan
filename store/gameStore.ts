@@ -2,7 +2,11 @@
 
 import { useCallback, useMemo, useReducer } from "react";
 import { getAIAction } from "@/lib/ai/AIPlayer";
+import { analyzeCoachTip, analyzeHint } from "@/lib/coach/CoachAnalyzer";
+import type { CoachFeedback } from "@/lib/coach/coachTypes";
+import { detectMistakeAfterUserPlay } from "@/lib/coach/MistakeDetector";
 import type { Card } from "@/lib/guandan/card";
+import { sortCards } from "@/lib/guandan/card";
 import { playCards, passTurn, toggleSelectedCard } from "@/lib/guandan/gameEngine";
 import {
   createInitialGameState,
@@ -10,7 +14,6 @@ import {
   type GameEngineState
 } from "@/lib/guandan/gameState";
 import type { PlayerId } from "@/lib/guandan/player";
-import { analyzeCoachTip } from "@/lib/coach/CoachAnalyzer";
 
 type GameAction =
   | { type: "restart" }
@@ -32,7 +35,9 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
 
     case "play-selected": {
       const result = playCards(state, "player", state.selectedCards);
-      return withCoach(result.state);
+      const nextState = result.state;
+      const mistake = result.ok ? detectMistakeAfterUserPlay(state, nextState) : null;
+      return mistake ? applyCoachFeedback(nextState, mistake) : withCoach(nextState);
     }
 
     case "pass": {
@@ -41,12 +46,15 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
     }
 
     case "tip": {
-      const tip = analyzeCoachTip({ state });
-      return {
-        ...state,
-        coachMessage: tip.message,
-        tipMessage: tip.message
-      };
+      const feedback = analyzeHint(state);
+      return applyCoachFeedback(
+        {
+          ...state,
+          selectedCards: feedback.recommendedCards ? sortCards(feedback.recommendedCards) : state.selectedCards,
+          tipMessage: feedback.message
+        },
+        feedback
+      );
     }
 
     case "ai-action": {
@@ -61,7 +69,7 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
 
       return withCoach({
         ...result.state,
-        coachMessage: aiAction.reason
+        tipMessage: null
       });
     }
 
@@ -71,10 +79,15 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
 }
 
 function withCoach(state: GameEngineState): GameEngineState {
-  const coach = analyzeCoachTip({ state });
+  const feedback = analyzeCoachTip({ state });
+  return applyCoachFeedback(state, feedback);
+}
+
+function applyCoachFeedback(state: GameEngineState, feedback: CoachFeedback): GameEngineState {
   return {
     ...state,
-    coachMessage: state.tipMessage ?? coach.message
+    coachFeedback: feedback,
+    coachMessage: feedback.message
   };
 }
 

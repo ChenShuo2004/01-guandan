@@ -1,3 +1,4 @@
+import type { CoachFeedback } from "@/lib/coach/coachTypes";
 import type { Card } from "@/lib/guandan/card";
 import { createDeck, dealCards, shuffleDeck } from "@/lib/guandan/deck";
 import { initializePlayers, type GuandanPlayer, type PlayerId } from "@/lib/guandan/player";
@@ -25,8 +26,17 @@ export interface GameEngineState {
   turnNumber: number;
   history: GameHistoryEntry[];
   coachMessage: string;
+  coachFeedback: CoachFeedback;
   tipMessage: string | null;
 }
+
+const initialCoachFeedback: CoachFeedback = {
+  type: "tip",
+  level: "low",
+  message: "先看牌型结构",
+  reason: "开局不要只看最大牌，先判断自己适合主攻还是助攻。",
+  suggestion: "优先处理散牌，保留炸弹和关键对子。"
+};
 
 export function createInitialGameState(seed = 20260708): GameEngineState {
   const deck = shuffleDeck(createDeck(), seed);
@@ -44,7 +54,8 @@ export function createInitialGameState(seed = 20260708): GameEngineState {
     passCount: 0,
     turnNumber: 1,
     history: [],
-    coachMessage: "先看牌型结构。第一轮尽量处理散牌，保留炸弹。",
+    coachMessage: initialCoachFeedback.message,
+    coachFeedback: initialCoachFeedback,
     tipMessage: null
   };
 }

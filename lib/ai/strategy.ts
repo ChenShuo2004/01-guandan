@@ -6,7 +6,7 @@ import { detectCardPattern } from "@/lib/guandan/cardRule";
 export type AILevel = "easy" | "normal" | "hard";
 
 export function chooseNormalMove(hand: Card[], lastPlayedCards: Card[]) {
-  const candidates = generateCandidates(hand);
+  const candidates = generateMoveCandidates(hand, lastPlayedCards);
 
   if (lastPlayedCards.length === 0) {
     return chooseLeadMove(candidates);
@@ -17,7 +17,6 @@ export function chooseNormalMove(hand: Card[], lastPlayedCards: Card[]) {
       const pattern = detectCardPattern(cards);
       return pattern.type !== "bomb" && pattern.type !== "fourJokers";
     })
-    .filter((cards) => canBeatLastPlay(cards, lastPlayedCards).canPlay)
     .sort(compareCandidate)[0];
 
   if (nonBombAnswer) return nonBombAnswer;
@@ -26,29 +25,13 @@ export function chooseNormalMove(hand: Card[], lastPlayedCards: Card[]) {
   const handIsShort = hand.length <= 6;
 
   if (lastPattern.type === "bomb" || handIsShort) {
-    return candidates
-      .filter((cards) => canBeatLastPlay(cards, lastPlayedCards).canPlay)
-      .sort(compareCandidate)[0] ?? [];
+    return candidates.sort(compareCandidate)[0] ?? [];
   }
 
   return [];
 }
 
-function chooseLeadMove(candidates: Card[][]) {
-  const preferred = candidates
-    .filter((cards) => {
-      const pattern = detectCardPattern(cards);
-      return pattern.type !== "bomb" && pattern.type !== "fourJokers";
-    })
-    .sort((a, b) => {
-      if (a.length !== b.length) return b.length - a.length;
-      return compareCandidate(a, b);
-    })[0];
-
-  return preferred ?? candidates.sort(compareCandidate)[0] ?? [];
-}
-
-function generateCandidates(hand: Card[]) {
+export function generateMoveCandidates(hand: Card[], lastPlayedCards: Card[] = []) {
   const candidates: Card[][] = [];
   const rankCounts = getRankCounts(hand);
 
@@ -67,7 +50,10 @@ function generateCandidates(hand: Card[]) {
     );
 
     if (pair) {
-      candidates.push([...sortCardsAscending(group).slice(0, 3), ...sortCardsAscending(pair[1]).slice(0, 2)]);
+      candidates.push([
+        ...sortCardsAscending(group).slice(0, 3),
+        ...sortCardsAscending(pair[1]).slice(0, 2)
+      ]);
     }
   }
 
@@ -77,7 +63,24 @@ function generateCandidates(hand: Card[]) {
   const jokers = hand.filter((card) => card.isJoker);
   if (jokers.length === 4) candidates.push(sortCardsAscending(jokers));
 
-  return candidates.filter((cards) => detectCardPattern(cards).valid);
+  return candidates
+    .filter((cards) => detectCardPattern(cards).valid)
+    .filter((cards) => lastPlayedCards.length === 0 || canBeatLastPlay(cards, lastPlayedCards).canPlay)
+    .sort(compareCandidate);
+}
+
+function chooseLeadMove(candidates: Card[][]) {
+  const preferred = candidates
+    .filter((cards) => {
+      const pattern = detectCardPattern(cards);
+      return pattern.type !== "bomb" && pattern.type !== "fourJokers";
+    })
+    .sort((a, b) => {
+      if (a.length !== b.length) return b.length - a.length;
+      return compareCandidate(a, b);
+    })[0];
+
+  return preferred ?? candidates.sort(compareCandidate)[0] ?? [];
 }
 
 function findLowestStraight(rankCounts: Map<CardRank, Card[]>) {
