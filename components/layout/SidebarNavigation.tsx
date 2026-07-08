@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navigationItems } from "./navigation-items";
+import { sidebarNavigationItems } from "./navigation-items";
 import { cn } from "@/lib/utils";
 
 export function SidebarNavigation() {
@@ -11,11 +11,11 @@ export function SidebarNavigation() {
   return (
     <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 border-r border-guandan-border bg-guandan-background/95 px-5 py-6 backdrop-blur lg:block">
       <div>
-        <p className="text-sm font-bold text-guandan-gold">掼蛋 AI 教练</p>
-        <h2 className="mt-2 text-xl font-black leading-7">今天只练一个判断</h2>
+        <p className="text-sm font-bold text-guandan-gold">Ace AI Coach</p>
+        <h2 className="mt-2 text-xl font-black leading-7">AI 掼蛋训练助手</h2>
       </div>
       <nav className="mt-8 grid gap-2">
-        {navigationItems.map((item) => {
+        {sidebarNavigationItems.map((item) => {
           const isActive =
             item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
 

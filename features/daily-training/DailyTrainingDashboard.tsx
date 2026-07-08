@@ -1,211 +1,251 @@
 "use client";
 
-import { CoachBubble } from "@/components/coach/CoachBubble";
-import { ProgressBar } from "@/components/progress/ProgressBar";
-import { Badge } from "@/components/ui/Badge";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { getPracticeById } from "@/content/cases/sample-practice";
-import { getLessonById } from "@/content/lessons/sample-lessons";
-import {
-  getDailyTrainingPlan,
-  getTodayTraining
-} from "@/features/daily-training";
+import { getTodayTraining } from "@/features/daily-training";
 import { useProgress } from "@/features/progress/useProgress";
+import { cn } from "@/lib/utils";
 
-function getLevelTitle(level: number) {
-  if (level >= 30) {
-    return "控牌高手";
-  }
+const INTRO_STORAGE_KEY = "guandan-ace-intro-seen";
 
-  if (level >= 20) {
-    return "残局熟手";
-  }
+function AceAvatar({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn(
+        "relative flex h-20 w-20 shrink-0 items-center justify-center rounded-[1.75rem] border border-guandan-gold/45 bg-guandan-gold/10 shadow-energy",
+        className
+      )}
+      aria-label="Ace AI 教练"
+    >
+      <div className="absolute -right-1 -top-1 h-4 w-4 rounded-full border border-guandan-background bg-guandan-cyan shadow-tech" />
+      <div className="absolute inset-3 rounded-[1.25rem] border border-guandan-blue/30 bg-guandan-background/70" />
+      <span className="relative text-lg font-black text-guandan-gold">Ace</span>
+    </div>
+  );
+}
 
-  if (level >= 10) {
-    return "配合玩家";
-  }
+function SectionLabel({ children }: { children: string }) {
+  return <p className="text-xs font-bold text-guandan-blue">{children}</p>;
+}
 
-  if (level >= 5) {
-    return "牌权入门";
-  }
+function InsightRow({
+  label,
+  value,
+  tone = "default"
+}: {
+  label: string;
+  value: string;
+  tone?: "default" | "good" | "focus";
+}) {
+  return (
+    <div className="rounded-2xl border border-guandan-border bg-guandan-muted/70 p-3">
+      <p
+        className={cn(
+          "text-xs font-bold",
+          tone === "good" && "text-guandan-success",
+          tone === "focus" && "text-guandan-gold",
+          tone === "default" && "text-guandan-subtext"
+        )}
+      >
+        {label}
+      </p>
+      <p className="mt-1 text-sm font-bold leading-6 text-guandan-text">{value}</p>
+    </div>
+  );
+}
 
-  return "掼蛋成长者";
+function IntroScreen({ onStart }: { onStart: () => void }) {
+  return (
+    <div className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-3xl items-center py-4">
+      <section className="relative overflow-hidden rounded-[2rem] border border-guandan-border bg-guandan-card/88 p-5 shadow-panel backdrop-blur lg:p-8">
+        <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-guandan-blue/15 blur-3xl" />
+        <div className="absolute -bottom-28 left-8 h-56 w-56 rounded-full bg-guandan-gold/10 blur-3xl" />
+
+        <div className="relative">
+          <AceAvatar />
+          <p className="mt-5 text-sm font-bold text-guandan-gold">Ace AI 教练</p>
+          <h1 className="mt-2 text-2xl font-black leading-9 text-guandan-text lg:text-4xl lg:leading-[3rem]">
+            很多刚开始学习掼蛋的人，都会卡在“懂规则，但不会实战”。
+          </h1>
+
+          <div className="mt-5 space-y-3 text-sm font-semibold leading-7 text-guandan-subtext lg:text-base lg:leading-8">
+            <p>你可能也会疑惑：为什么别人知道什么时候出牌，我总是打错？</p>
+            <p>明明规则懂了，但是实战还是不会。输了以后，也不知道自己的问题在哪里。</p>
+            <p className="text-guandan-text">
+              其实掼蛋不是只靠运气。通过正确训练，你可以一步一步提升判断能力。
+            </p>
+            <p>
+              我是 Ace，你的 AI 掼蛋教练。我会帮你分析牌局，找到问题，并带你完成每一次训练。
+            </p>
+          </div>
+
+          <Button className="mt-7 w-full sm:w-auto" onClick={onStart}>
+            开始训练
+          </Button>
+        </div>
+      </section>
+    </div>
+  );
+}
+
+function CoachPanel() {
+  return (
+    <Card className="relative overflow-hidden bg-guandan-card/88 lg:min-h-[calc(100vh-7rem)]">
+      <div className="absolute -right-20 top-0 h-48 w-48 rounded-full bg-guandan-blue/10 blur-3xl" />
+      <div className="relative">
+        <div className="flex items-center gap-4">
+          <AceAvatar className="h-16 w-16 rounded-[1.35rem]" />
+          <div>
+            <SectionLabel>AI 教练区域</SectionLabel>
+            <h2 className="mt-1 text-xl font-black">Ace AI 教练</h2>
+          </div>
+        </div>
+
+        <div className="mt-5 rounded-3xl border border-guandan-blue/25 bg-guandan-blue/10 p-4">
+          <p className="text-base font-bold leading-7">
+            你好，今天我们继续提升你的掼蛋判断能力。
+          </p>
+          <p className="mt-2 text-sm font-semibold leading-6 text-guandan-subtext">
+            我会关注你的出牌选择，记录容易出错的判断，并给你下一次训练建议。
+          </p>
+        </div>
+
+        <div className="mt-5 space-y-3">
+          <div className="rounded-2xl border border-guandan-border bg-guandan-muted/70 p-3">
+            <p className="text-xs font-bold text-guandan-mutedText">今日关注</p>
+            <p className="mt-1 text-sm font-bold leading-6">先判断局势，再决定进攻还是防守。</p>
+          </div>
+          <div className="rounded-2xl border border-guandan-border bg-guandan-muted/70 p-3">
+            <p className="text-xs font-bold text-guandan-mutedText">训练方式</p>
+            <p className="mt-1 text-sm font-bold leading-6">学习一个判断，完成一道牌局训练，得到反馈。</p>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function TodayTrainingCard({ trainingHref }: { trainingHref: string }) {
+  return (
+    <Card className="relative overflow-hidden border-guandan-gold/55 bg-guandan-gold/10 shadow-energy">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-guandan-gold to-transparent" />
+      <div className="absolute -right-16 -top-16 h-44 w-44 rounded-full bg-guandan-blue/14 blur-3xl" />
+
+      <div className="relative">
+        <SectionLabel>今日训练</SectionLabel>
+        <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <h2 className="text-3xl font-black leading-10">残局判断</h2>
+            <p className="mt-3 max-w-2xl text-base font-bold leading-7 text-guandan-text">
+              学会判断什么时候进攻，什么时候防守。
+            </p>
+          </div>
+          <div className="rounded-2xl border border-guandan-border bg-guandan-background/50 px-4 py-3">
+            <p className="text-xs font-bold text-guandan-mutedText">预计时间</p>
+            <p className="mt-1 text-lg font-black text-guandan-gold">5 分钟</p>
+          </div>
+        </div>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-3">
+          <InsightRow label="步骤 1" value="看懂当前牌局" />
+          <InsightRow label="步骤 2" value="判断攻守选择" />
+          <InsightRow label="步骤 3" value="获得 Ace 反馈" />
+        </div>
+
+        <Button className="mt-6 w-full sm:w-auto" href={trainingHref}>
+          开始训练
+        </Button>
+      </div>
+    </Card>
+  );
+}
+
+function TrainingRecordCard() {
+  return (
+    <Card>
+      <SectionLabel>训练记录</SectionLabel>
+      <h2 className="mt-2 text-xl font-black">最近训练</h2>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <InsightRow label="完成" value="牌型判断训练" tone="good" />
+        <InsightRow label="发现问题" value="炸弹使用时机需要加强" tone="focus" />
+      </div>
+      <p className="mt-4 text-sm font-semibold leading-6 text-guandan-subtext">
+        Ace 会把每次训练暴露的问题沉淀下来，下一次训练优先帮你补短板。
+      </p>
+    </Card>
+  );
+}
+
+function AbilityCard() {
+  return (
+    <Card>
+      <SectionLabel>能力分析</SectionLabel>
+      <h2 className="mt-2 text-xl font-black">你的判断画像</h2>
+      <div className="mt-4 grid gap-3 sm:grid-cols-2">
+        <InsightRow label="你的优势" value="牌型识别较好" tone="good" />
+        <InsightRow label="需要提升" value="出牌策略" tone="focus" />
+      </div>
+      <p className="mt-4 text-sm font-semibold leading-6 text-guandan-subtext">
+        首页只保留下一步行动和关键反馈，不做功能堆叠。
+      </p>
+    </Card>
+  );
 }
 
 export function DailyTrainingDashboard() {
+  const router = useRouter();
   const { progress, isReady } = useProgress();
+  const [showIntro, setShowIntro] = useState(false);
 
-  if (!isReady) {
-    return (
-      <Card>
-        正在读取今日训练。
-      </Card>
-    );
+  const trainingHref = useMemo(() => {
+    if (!isReady) {
+      return "/practice";
+    }
+
+    const todayTraining = getTodayTraining(progress);
+
+    return todayTraining?.lessonId ? `/lessons/${todayTraining.lessonId}` : "/practice";
+  }, [isReady, progress]);
+
+  useEffect(() => {
+    setShowIntro(window.localStorage.getItem(INTRO_STORAGE_KEY) !== "true");
+  }, []);
+
+  function startTraining() {
+    window.localStorage.setItem(INTRO_STORAGE_KEY, "true");
+    setShowIntro(false);
+    router.push(trainingHref);
   }
 
-  const todayTraining = getTodayTraining(progress);
-  const trainingPlan = getDailyTrainingPlan(progress);
-  const completedCount = trainingPlan.filter((training) => training.status === "completed").length;
-  const nextLevelProgress = progress.experience % 100;
-  const nextLevelTarget = 100;
-  const hasTodayLesson = Boolean(getLessonById(todayTraining?.lessonId ?? ""));
-  const todayPractice = getPracticeById(todayTraining?.practiceId ?? "");
-  const hasWrongPractice = progress.wrongPracticeIds.length > 0;
-
-  if (!todayTraining) {
-    return (
-      <Card>
-        <p className="text-sm font-bold text-guandan-gold">今日训练</p>
-        <h2 className="mt-2 text-xl font-black">训练计划还没准备好</h2>
-      </Card>
-    );
+  if (showIntro) {
+    return <IntroScreen onStart={startTraining} />;
   }
 
   return (
-    <div className="mx-auto max-w-5xl space-y-4">
-      <header className="rounded-arena border border-guandan-border bg-guandan-card/80 p-4 shadow-panel backdrop-blur lg:p-5">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-sm font-bold text-guandan-gold">AI 掼蛋训练 App</p>
-            <h1 className="mt-1 text-2xl font-black leading-8">
-              Lv{progress.level} {getLevelTitle(progress.level)}
+    <div className="mx-auto max-w-6xl space-y-4">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-6">
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <p className="text-sm font-bold text-guandan-gold">AI 掼蛋训练助手</p>
+            <h1 className="text-2xl font-black leading-9 lg:text-3xl lg:leading-10">
+              今天只练一个判断，把输牌原因变成下一步训练。
             </h1>
           </div>
-          <Badge variant={progress.streakDays > 0 ? "reward" : "tech"}>
-            连续 {progress.streakDays} 天
-          </Badge>
+
+          <div className="lg:hidden">
+            <CoachPanel />
+          </div>
+
+          <TodayTrainingCard trainingHref={trainingHref} />
+          <TrainingRecordCard />
+          <AbilityCard />
         </div>
-        <div className="mt-4">
-          <ProgressBar
-            label={`${nextLevelProgress} / ${nextLevelTarget} XP`}
-            max={nextLevelTarget}
-            value={nextLevelProgress}
-          />
-        </div>
-      </header>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(320px,0.85fr)] lg:items-start lg:gap-6">
-        <div className="space-y-4">
-        <CoachBubble
-          action={todayTraining.isCompletedToday ? "celebrate" : "wave"}
-          caption={todayTraining.coachTip}
-          text={
-            todayTraining.isCompletedToday
-              ? "很好。今天已经完成。"
-              : `今天只练一个判断：${todayTraining.theme}。`
-          }
-        />
-
-        <Card variant="training">
-          <div className="flex items-start justify-between gap-3">
-            <div>
-              <Badge variant="energy">Day {todayTraining.day} / 7</Badge>
-              <h2 className="mt-2 text-2xl font-black leading-8 lg:text-3xl lg:leading-10">
-                {todayTraining.theme}
-              </h2>
-              <p className="mt-2 text-base font-bold leading-7 text-guandan-text">
-                {todayTraining.title}
-              </p>
-            </div>
-            <span className="shrink-0 rounded-full bg-guandan-background/60 px-3 py-2 text-xs font-bold text-guandan-gold">
-              +{todayTraining.rewardExperience} XP
-            </span>
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Badge>预计 3 分钟</Badge>
-            <Badge variant={todayTraining.isCompletedToday ? "success" : "tech"}>
-              {todayTraining.isCompletedToday ? "今日已完成" : "待训练"}
-            </Badge>
-          </div>
-
-          <div className="mt-5">
-            {hasTodayLesson ? (
-              <Button className="w-full" href={`/lessons/${todayTraining.lessonId}`}>
-                开始今日训练
-              </Button>
-            ) : (
-              <Button className="w-full" disabled>
-                课程准备中
-              </Button>
-            )}
-          </div>
-        </Card>
-
-        <Card>
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <p className="text-sm font-bold text-guandan-blue">第二任务</p>
-              <h2 className="mt-1 text-lg font-black">残局挑战</h2>
-            </div>
-            <Badge variant="reward">+{todayPractice?.experience ?? todayTraining.rewardExperience} XP</Badge>
-          </div>
-          <p className="mt-3 text-sm leading-6 text-guandan-subtext">
-            {todayPractice?.situation ?? "学完今日判断后，马上进入一局实战残局。"}
-          </p>
-          <div className="mt-4 rounded-panel border border-guandan-border bg-guandan-muted p-3">
-            <p className="text-sm font-bold text-guandan-text">
-              {todayPractice?.title ?? "今日残局准备中"}
-            </p>
-            <p className="mt-1 text-xs font-semibold text-guandan-mutedText">
-              完成知识判断后自动进入，不需要自己找题。
-            </p>
-          </div>
-        </Card>
-      </div>
-
-      <aside className="space-y-4 lg:sticky lg:top-8">
-        <Card>
-          <p className="text-sm font-bold text-guandan-gold">7 天成长</p>
-          <h2 className="mt-1 text-2xl font-black">{completedCount}/7</h2>
-          <div className="mt-4">
-            <ProgressBar label="训练进度" max={7} tone="success" value={completedCount} />
-          </div>
-          <div className="mt-4 grid gap-2">
-            {trainingPlan.map((training) => (
-              <div
-                className="flex items-center justify-between rounded-2xl bg-guandan-muted px-3 py-2 text-sm"
-                key={training.id}
-              >
-                <span className={training.isToday ? "font-bold text-guandan-gold" : "font-bold"}>
-                  Day {training.day}
-                </span>
-                <span className="text-guandan-subtext">{training.theme}</span>
-              </div>
-            ))}
-          </div>
-        </Card>
-
-        <Card>
-          <p className="text-sm font-bold text-guandan-gold">XP 成长</p>
-          <h2 className="mt-1 text-2xl font-black">{progress.experience} XP</h2>
-          <div className="mt-4">
-            <ProgressBar
-              label={`距离下一级 ${nextLevelTarget - nextLevelProgress} XP`}
-              max={nextLevelTarget}
-              value={nextLevelProgress}
-            />
-          </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Badge variant="tech">课程 {progress.completedLessonIds.length}</Badge>
-            <Badge variant="tech">练习 {progress.completedPracticeIds.length}</Badge>
-            <Badge variant="energy">收藏 {progress.favoriteLessonIds.length}</Badge>
-          </div>
-        </Card>
-
-        {hasWrongPractice ? (
-          <Card variant="danger">
-            <p className="text-sm font-bold text-guandan-danger">错题提醒</p>
-            <h2 className="mt-2 text-lg font-black">
-              昨天有 {progress.wrongPracticeIds.length} 道题值得复习
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-guandan-subtext">
-              先完成今日训练，再回来看这类判断。
-            </p>
-          </Card>
-        ) : null}
-      </aside>
+        <aside className="hidden lg:sticky lg:top-8 lg:block">
+          <CoachPanel />
+        </aside>
       </div>
     </div>
   );

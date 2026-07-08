@@ -2,15 +2,15 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "掼蛋 AI 教练",
-  description: "移动端优先的掼蛋训练 Demo"
+  title: "Ace AI 掼蛋训练",
+  description: "由 AI 教练引导的掼蛋学习和训练助手"
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#10131A"
+  themeColor: "#0B1020"
 };
 
 export default function RootLayout({

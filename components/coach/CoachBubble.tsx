@@ -35,7 +35,7 @@ export function CoachBubble({
   text,
   action = "idle",
   caption,
-  label = "AI 教练"
+  label = "Ace AI 教练"
 }: CoachBubbleProps) {
   return (
     <div

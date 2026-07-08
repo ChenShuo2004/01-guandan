@@ -6,15 +6,15 @@ interface CoachAvatarProps {
 }
 
 const actionLabel: Record<CoachAction, string> = {
-  idle: "AI",
+  idle: "Ace",
   wave: "Hi",
-  thinking: "思",
+  thinking: "想",
   point: "讲",
-  warning: "停",
-  happy: "稳",
+  warning: "看",
+  happy: "好",
   correct: "准",
-  wrong: "慢",
-  celebrate: "胜"
+  wrong: "改",
+  celebrate: "稳"
 };
 
 const actionClasses: Partial<Record<CoachAction, string>> = {
