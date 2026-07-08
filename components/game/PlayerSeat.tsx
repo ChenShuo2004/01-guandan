@@ -29,7 +29,7 @@ export function PlayerSeat({ player }: PlayerSeatProps) {
   const isBottom = player.position === "bottom";
 
   return (
-    <div className={cn("absolute z-40", positionClass[player.position])}>
+    <div className={cn("pointer-events-none absolute z-40", positionClass[player.position])}>
       <motion.div
         animate={{ opacity: 1, y: 0 }}
         className={cn("flex items-center gap-3", isBottom || player.position === "top" ? "flex-col" : "flex-row")}
