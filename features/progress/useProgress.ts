@@ -19,51 +19,62 @@ export function useProgress() {
     progressStorageKey,
     defaultProgress
   );
+  const normalizedProgress = mergeProgress(progress, {});
 
   const actions = useMemo(
     () => ({
       completeLesson(lessonId: string, experience: number) {
         setProgress((current) => {
-          const alreadyCompleted = current.completedLessonIds.includes(lessonId);
+          const currentProgress = mergeProgress(current, {});
+          const alreadyCompleted = currentProgress.completedLessonIds.includes(lessonId);
           const nextExperience = alreadyCompleted
-            ? current.experience
-            : current.experience + experience;
+            ? currentProgress.experience
+            : currentProgress.experience + experience;
 
-          return mergeProgress(current, {
+          return mergeProgress(currentProgress, {
             experience: nextExperience,
             level: Math.max(1, Math.floor(nextExperience / 100) + 1),
-            completedLessonIds: unique([...current.completedLessonIds, lessonId]),
-            streakDays: Math.max(1, current.streakDays),
+            completedLessonIds: unique([
+              ...currentProgress.completedLessonIds,
+              lessonId
+            ]),
+            streakDays: Math.max(1, currentProgress.streakDays),
             lastStudyDate: new Date().toISOString()
           });
         });
       },
       completePractice(practiceId: string, experience: number, isCorrect: boolean) {
         setProgress((current) => {
-          const alreadyCompleted = current.completedPracticeIds.includes(practiceId);
+          const currentProgress = mergeProgress(current, {});
+          const alreadyCompleted =
+            currentProgress.completedPracticeIds.includes(practiceId);
           const nextExperience = alreadyCompleted
-            ? current.experience
-            : current.experience + experience;
+            ? currentProgress.experience
+            : currentProgress.experience + experience;
 
-          return mergeProgress(current, {
+          return mergeProgress(currentProgress, {
             experience: nextExperience,
             level: Math.max(1, Math.floor(nextExperience / 100) + 1),
-            completedPracticeIds: unique([...current.completedPracticeIds, practiceId]),
+            completedPracticeIds: unique([
+              ...currentProgress.completedPracticeIds,
+              practiceId
+            ]),
             wrongPracticeIds: isCorrect
-              ? current.wrongPracticeIds.filter((id) => id !== practiceId)
-              : unique([...current.wrongPracticeIds, practiceId]),
-            streakDays: Math.max(1, current.streakDays),
+              ? currentProgress.wrongPracticeIds.filter((id) => id !== practiceId)
+              : unique([...currentProgress.wrongPracticeIds, practiceId]),
+            streakDays: Math.max(1, currentProgress.streakDays),
             lastStudyDate: new Date().toISOString()
           });
         });
       },
       toggleFavoriteLesson(lessonId: string) {
         setProgress((current) => {
-          const exists = current.favoriteLessonIds.includes(lessonId);
-          return mergeProgress(current, {
+          const currentProgress = mergeProgress(current, {});
+          const exists = currentProgress.favoriteLessonIds.includes(lessonId);
+          return mergeProgress(currentProgress, {
             favoriteLessonIds: exists
-              ? current.favoriteLessonIds.filter((id) => id !== lessonId)
-              : [...current.favoriteLessonIds, lessonId]
+              ? currentProgress.favoriteLessonIds.filter((id) => id !== lessonId)
+              : [...currentProgress.favoriteLessonIds, lessonId]
           });
         });
       },
@@ -80,5 +91,5 @@ export function useProgress() {
     [setProgress]
   );
 
-  return { progress, isReady, ...actions };
+  return { progress: normalizedProgress, isReady, ...actions };
 }

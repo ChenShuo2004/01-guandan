@@ -12,17 +12,23 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
       if (storedValue) {
         setValue(JSON.parse(storedValue) as T);
       }
+    } catch {
+      setValue(initialValue);
     } finally {
       setIsReady(true);
     }
-  }, [key]);
+  }, [initialValue, key]);
 
   useEffect(() => {
     if (!isReady) {
       return;
     }
 
-    window.localStorage.setItem(key, JSON.stringify(value));
+    try {
+      window.localStorage.setItem(key, JSON.stringify(value));
+    } catch {
+      // Keep the app usable when browser storage is unavailable.
+    }
   }, [isReady, key, value]);
 
   return [value, setValue, isReady] as const;
