@@ -15,7 +15,8 @@ const statusLabel = {
   ready: "准备中",
   thinking: "思考中",
   waiting: "等待",
-  active: "本轮可出牌"
+  active: "本轮可出牌",
+  passed: "已不要"
 };
 
 interface PlayerSeatProps {

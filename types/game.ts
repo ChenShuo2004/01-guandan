@@ -1,8 +1,8 @@
-import type { PokerCardData } from "@/types/poker";
+import type { PlayerSeat } from "@/lib/guandan/player";
 
-export type SeatPosition = "top" | "left" | "right" | "bottom";
+export type SeatPosition = PlayerSeat;
 
-export type PlayerStatus = "ready" | "thinking" | "waiting" | "active";
+export type PlayerStatus = "ready" | "thinking" | "waiting" | "active" | "passed";
 
 export interface ArenaPlayer {
   id: string;
@@ -18,13 +18,4 @@ export interface ArenaPlayer {
 export interface CoachState {
   mood: "idle" | "thinking" | "teaching" | "warning";
   message: string;
-}
-
-export interface GameArenaState {
-  mode: string;
-  roundLabel: string;
-  players: ArenaPlayer[];
-  handCards: PokerCardData[];
-  tableCards: PokerCardData[];
-  coach: CoachState;
 }

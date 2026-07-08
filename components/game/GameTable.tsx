@@ -3,12 +3,12 @@
 import { motion } from "framer-motion";
 import { PlayedCards } from "@/components/game/PlayedCards";
 import { PlayerSeat } from "@/components/game/PlayerSeat";
+import type { Card } from "@/lib/guandan/card";
 import type { ArenaPlayer } from "@/types/game";
-import type { PokerCardData } from "@/types/poker";
 
 interface GameTableProps {
   players: ArenaPlayer[];
-  tableCards: PokerCardData[];
+  tableCards: Card[];
 }
 
 export function GameTable({ players, tableCards }: GameTableProps) {

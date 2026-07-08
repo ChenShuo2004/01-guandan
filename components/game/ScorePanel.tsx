@@ -1,8 +1,17 @@
 "use client";
 
 import { motion } from "framer-motion";
+import type { GuandanPlayer } from "@/lib/guandan/player";
 
-export function ScorePanel() {
+interface ScorePanelProps {
+  players: GuandanPlayer[];
+  turnNumber: number;
+}
+
+export function ScorePanel({ players, turnNumber }: ScorePanelProps) {
+  const player = players.find((item) => item.id === "player");
+  const enemy = players.find((item) => item.id === "enemyAI1");
+
   return (
     <motion.div
       animate={{ opacity: 1, x: 0 }}
@@ -10,22 +19,22 @@ export function ScorePanel() {
       initial={{ opacity: 0, x: 18 }}
       transition={{ duration: 0.45, delay: 0.25 }}
     >
-      <p className="mb-3 text-sm font-black text-[#12395a]">本局战绩</p>
+      <p className="mb-3 text-sm font-black text-[#12395a]">本局状态</p>
       <div className="grid grid-cols-3 gap-2 text-center text-xs font-bold text-[#47799b]">
         <span>玩家</span>
-        <span>得分</span>
-        <span>总计</span>
+        <span>剩余</span>
+        <span>轮次</span>
       </div>
       <div className="mt-3 space-y-2 text-sm font-black text-[#17496d]">
         <div className="grid grid-cols-3 gap-2 rounded-2xl bg-white/55 px-2 py-2 text-center">
           <span>我方</span>
-          <span>--</span>
-          <span>2000</span>
+          <span>{player?.hand.length ?? 0}</span>
+          <span>{turnNumber}</span>
         </div>
         <div className="grid grid-cols-3 gap-2 rounded-2xl bg-white/35 px-2 py-2 text-center">
           <span>对方</span>
-          <span>--</span>
-          <span>2150</span>
+          <span>{enemy?.hand.length ?? 0}</span>
+          <span>{turnNumber}</span>
         </div>
       </div>
     </motion.div>

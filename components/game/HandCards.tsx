@@ -1,14 +1,22 @@
 "use client";
 
 import { motion } from "framer-motion";
+import type { Card } from "@/lib/guandan/card";
 import { PlayingCard } from "@/components/game/PlayingCard";
-import type { PokerCardData } from "@/types/poker";
 
 interface HandCardsProps {
-  cards: PokerCardData[];
+  cards: Card[];
+  selectedCardIds: string[];
+  disabled?: boolean;
+  onSelectCard: (card: Card) => void;
 }
 
-export function HandCards({ cards }: HandCardsProps) {
+export function HandCards({
+  cards,
+  selectedCardIds,
+  disabled = false,
+  onSelectCard
+}: HandCardsProps) {
   return (
     <motion.div
       animate={{ opacity: 1, y: 0 }}
@@ -25,7 +33,12 @@ export function HandCards({ cards }: HandCardsProps) {
             key={card.id}
             transition={{ duration: 0.35, delay: 0.02 * index }}
           >
-            <PlayingCard card={card} />
+            <PlayingCard
+              card={card}
+              disabled={disabled}
+              onClick={onSelectCard}
+              selected={selectedCardIds.includes(card.id)}
+            />
           </motion.div>
         ))}
       </div>

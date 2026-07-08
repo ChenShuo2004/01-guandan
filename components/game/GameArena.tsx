@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { ActionButtons } from "@/components/game/ActionButtons";
 import { CoachAvatar } from "@/components/game/CoachAvatar";
@@ -7,11 +8,59 @@ import { CoachBubble } from "@/components/game/CoachBubble";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
 import { ScorePanel } from "@/components/game/ScorePanel";
-import { phaseOneArenaState } from "@/store/gameStore";
+import { useGameStore } from "@/store/gameStore";
+import type { ArenaPlayer } from "@/types/game";
 
 export function GameArena() {
-  const state = phaseOneArenaState;
-  const user = state.players.find((player) => player.isUser);
+  const {
+    state,
+    currentPlayer,
+    userPlayer,
+    selectedCardIds,
+    isUserTurn,
+    selectCard,
+    playSelectedCards,
+    pass,
+    requestTip,
+    runAIAction,
+    restart
+  } = useGameStore();
+
+  useEffect(() => {
+    if (state.gameStatus !== "playing" || currentPlayer?.kind !== "ai") return;
+
+    const timer = window.setTimeout(() => {
+      runAIAction();
+    }, 900);
+
+    return () => window.clearTimeout(timer);
+  }, [currentPlayer?.id, currentPlayer?.kind, runAIAction, state.gameStatus, state.turnNumber]);
+
+  const arenaPlayers = useMemo(
+    () =>
+      state.players.map<ArenaPlayer>((player) => ({
+        id: player.id,
+        name: player.name,
+        role: player.role,
+        position: player.seat,
+        cardCount: player.hand.length,
+        score: player.score,
+        isUser: player.id === "player",
+        status:
+          state.gameStatus === "finished"
+            ? "waiting"
+            : currentPlayer?.id === player.id
+              ? player.kind === "ai"
+                ? "thinking"
+                : "active"
+              : player.passed
+                ? "passed"
+                : "waiting"
+      })),
+    [currentPlayer?.id, state.gameStatus, state.players]
+  );
+
+  const winner = state.winner ? state.players.find((player) => player.id === state.winner) : null;
 
   return (
     <main className="training-arena relative min-h-screen overflow-hidden bg-[#eaf8ff] text-slate-900">
@@ -23,45 +72,75 @@ export function GameArena() {
         initial={{ opacity: 0, y: 18 }}
         transition={{ duration: 0.7, ease: "easeOut" }}
       >
-        <ArenaHeader mode={state.mode} roundLabel={state.roundLabel} />
+        <ArenaHeader
+          mode={state.gameStatus === "finished" ? "本局完成" : "新手训练场"}
+          onRestart={restart}
+          roundLabel={winner ? `${winner.role} 率先出完` : `第 ${state.turnNumber} 手 · ${currentPlayer?.role ?? "等待"}`}
+        />
 
         <div className="relative flex flex-1 items-center gap-4 pb-[150px] pt-3 lg:pb-[168px]">
           <div className="training-arena-stage relative min-h-[590px] flex-1 lg:min-h-[680px]">
-            <GameTable players={state.players} tableCards={state.tableCards} />
+            <GameTable players={arenaPlayers} tableCards={state.lastPlayedCards} />
 
             <div className="training-coach-dock absolute bottom-10 left-1/2 z-30 flex -translate-x-1/2 items-end gap-3">
-              <CoachAvatar mood={state.coach.mood} />
-              <CoachBubble message={state.coach.message} />
+              <CoachAvatar mood={state.gameStatus === "finished" ? "teaching" : isUserTurn ? "teaching" : "thinking"} />
+              <CoachBubble message={state.coachMessage} />
             </div>
           </div>
 
           <aside className="hidden w-[180px] shrink-0 flex-col gap-4 xl:flex">
-            <ScorePanel />
-            <ActionButtons />
+            <ScorePanel players={state.players} turnNumber={state.turnNumber} />
+            <ActionButtons
+              canAct={isUserTurn}
+              onPass={pass}
+              onPlay={playSelectedCards}
+              onTip={requestTip}
+              selectedCount={state.selectedCards.length}
+            />
           </aside>
         </div>
 
         <section className="training-hand-dock absolute inset-x-4 bottom-4 z-40 mx-auto max-w-[1050px] lg:bottom-5">
           <div className="mb-3 flex items-center justify-center gap-3 text-sm font-bold text-[#0f4774]">
             <span className="rounded-full bg-white/75 px-4 py-2 shadow-[0_10px_30px_rgba(30,125,190,0.16)] backdrop-blur">
-              {user?.name ?? "我"} · 剩余 {user?.cardCount ?? state.handCards.length} 张
+              {userPlayer?.name ?? "我"} · 剩余 {userPlayer?.hand.length ?? 0} 张
             </span>
             <span className="hidden rounded-full border border-[#85d8ff]/70 bg-white/55 px-4 py-2 backdrop-blur sm:inline-flex">
-              AI Coach 已就位
+              {isUserTurn ? "轮到你出牌" : `等待 ${currentPlayer?.role ?? "AI"}`}
             </span>
           </div>
-          <HandCards cards={state.handCards} />
+          <HandCards
+            cards={userPlayer?.hand ?? []}
+            disabled={!isUserTurn}
+            onSelectCard={selectCard}
+            selectedCardIds={selectedCardIds}
+          />
         </section>
 
         <div className="training-action-dock absolute bottom-5 right-4 z-50 flex w-[152px] flex-col gap-3 xl:hidden">
-          <ActionButtons compact />
+          <ActionButtons
+            canAct={isUserTurn}
+            compact
+            onPass={pass}
+            onPlay={playSelectedCards}
+            onTip={requestTip}
+            selectedCount={state.selectedCards.length}
+          />
         </div>
       </motion.section>
     </main>
   );
 }
 
-function ArenaHeader({ mode, roundLabel }: { mode: string; roundLabel: string }) {
+function ArenaHeader({
+  mode,
+  onRestart,
+  roundLabel
+}: {
+  mode: string;
+  onRestart: () => void;
+  roundLabel: string;
+}) {
   return (
     <header className="training-arena-header relative z-20 flex items-center justify-between gap-3 rounded-[28px] border border-white/55 bg-white/45 px-4 py-3 shadow-[0_14px_40px_rgba(51,156,220,0.18)] backdrop-blur-xl">
       <div className="flex items-center gap-3">
@@ -81,15 +160,25 @@ function ArenaHeader({ mode, roundLabel }: { mode: string; roundLabel: string })
       </div>
 
       <nav className="flex items-center gap-2">
-        {["规则", "设置", "退出"].map((item) => (
-          <button
-            className="rounded-full border border-white/65 bg-white/55 px-4 py-2 text-sm font-bold text-[#17496d] shadow-[0_8px_20px_rgba(76,155,205,0.14)] transition hover:-translate-y-0.5 hover:bg-white/80"
-            key={item}
-            type="button"
-          >
-            {item}
-          </button>
-        ))}
+        <button
+          className="rounded-full border border-white/65 bg-white/55 px-4 py-2 text-sm font-bold text-[#17496d] shadow-[0_8px_20px_rgba(76,155,205,0.14)] transition hover:-translate-y-0.5 hover:bg-white/80"
+          type="button"
+        >
+          规则
+        </button>
+        <button
+          className="rounded-full border border-white/65 bg-white/55 px-4 py-2 text-sm font-bold text-[#17496d] shadow-[0_8px_20px_rgba(76,155,205,0.14)] transition hover:-translate-y-0.5 hover:bg-white/80"
+          onClick={onRestart}
+          type="button"
+        >
+          重开
+        </button>
+        <button
+          className="rounded-full border border-white/65 bg-white/55 px-4 py-2 text-sm font-bold text-[#17496d] shadow-[0_8px_20px_rgba(76,155,205,0.14)] transition hover:-translate-y-0.5 hover:bg-white/80"
+          type="button"
+        >
+          退出
+        </button>
       </nav>
     </header>
   );
