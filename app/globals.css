@@ -46,3 +46,53 @@ select {
   font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
   line-height: 1;
 }
+
+@media (orientation: landscape) and (max-height: 520px) {
+  .training-arena {
+    min-height: 100dvh;
+  }
+
+  .training-arena-shell {
+    height: 100dvh;
+    min-height: 0;
+    padding: 0.5rem 1rem;
+  }
+
+  .training-arena-header {
+    border-radius: 1.25rem;
+    padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+  }
+
+  .training-arena-header nav button {
+    padding: 0.45rem 0.9rem;
+  }
+
+  .training-arena-stage {
+    min-height: calc(100vh - 5.25rem) !important;
+  }
+
+  .training-hand-dock {
+    bottom: 0.25rem;
+    transform: scale(0.72);
+    transform-origin: bottom center;
+  }
+
+  .training-coach-dock {
+    bottom: 7.7rem;
+    left: 25%;
+    transform: translateX(-50%) scale(0.58);
+    transform-origin: bottom center;
+  }
+
+  .training-coach-dock > :last-child {
+    display: none;
+  }
+
+  .training-action-dock {
+    bottom: 0.35rem;
+    right: 0.75rem;
+    transform: scale(0.72);
+    transform-origin: bottom right;
+  }
+}
