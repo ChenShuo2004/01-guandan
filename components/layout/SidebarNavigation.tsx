@@ -5,12 +5,16 @@ import { usePathname } from "next/navigation";
 import { navigationItems } from "./navigation-items";
 import { cn } from "@/lib/utils";
 
-export function BottomNavigation() {
+export function SidebarNavigation() {
   const pathname = usePathname();
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-20 mx-auto border-t border-guandan-border bg-guandan-background/95 px-3 py-2 backdrop-blur lg:hidden">
-      <div className="grid grid-cols-5 gap-1">
+    <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 border-r border-guandan-border bg-guandan-background/95 px-5 py-6 backdrop-blur lg:block">
+      <div>
+        <p className="text-sm font-bold text-guandan-gold">掼蛋 AI 教练</p>
+        <h2 className="mt-2 text-xl font-black leading-7">今天只练一个判断</h2>
+      </div>
+      <nav className="mt-8 grid gap-2">
         {navigationItems.map((item) => {
           const isActive =
             item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -18,7 +22,7 @@ export function BottomNavigation() {
           return (
             <Link
               className={cn(
-                "rounded-2xl px-2 py-2 text-center text-xs font-bold text-guandan-subtext transition",
+                "rounded-2xl px-4 py-3 text-sm font-bold text-guandan-subtext transition hover:bg-guandan-muted hover:text-guandan-text",
                 isActive && "bg-guandan-muted text-guandan-gold"
               )}
               href={item.href}
@@ -28,7 +32,7 @@ export function BottomNavigation() {
             </Link>
           );
         })}
-      </div>
-    </nav>
+      </nav>
+    </aside>
   );
 }

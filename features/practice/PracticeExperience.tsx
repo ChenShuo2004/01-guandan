@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { CoachBubble } from "@/components/coach/CoachBubble";
 import { PokerHand } from "@/components/cards/PokerHand";
+import { PokerTable } from "@/components/practice/PokerTable";
 import { Button } from "@/components/ui/Button";
 import { useProgress } from "@/features/progress/useProgress";
 import type { PracticeCase } from "@/types/practice";
@@ -29,106 +30,92 @@ export function PracticeExperience({ practiceCase }: PracticeExperienceProps) {
     }
 
     setSelectedOptionId(optionId);
-    completePractice(practiceCase.id, practiceCase.experience, optionId === practiceCase.correctOptionId);
+    completePractice(
+      practiceCase.id,
+      practiceCase.experience,
+      optionId === practiceCase.correctOptionId
+    );
   }
 
   return (
-    <div className="space-y-4">
-      <section className="rounded-3xl border border-guandan-border bg-guandan-card p-4">
-        <p className="text-sm font-bold text-guandan-gold">当前局面</p>
-        <h2 className="mt-2 text-xl font-black leading-8">{practiceCase.title}</h2>
-        <p className="mt-2 text-sm leading-6 text-guandan-subtext">
-          {practiceCase.situation}
-        </p>
-      </section>
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(320px,0.85fr)] lg:items-start lg:gap-6">
+      <div className="space-y-4">
+        <section className="rounded-3xl border border-guandan-border bg-guandan-card p-4 lg:p-6">
+          <p className="text-sm font-bold text-guandan-gold">当前局面</p>
+          <h2 className="mt-2 text-xl font-black leading-8 lg:text-2xl">
+            {practiceCase.title}
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-guandan-subtext lg:text-base lg:leading-7">
+            {practiceCase.situation}
+          </p>
+        </section>
 
-      <section className="rounded-3xl border border-guandan-border bg-guandan-card p-4">
-        <div className="grid grid-cols-3 gap-2 text-center text-xs font-bold text-guandan-subtext">
-          <div />
-          <div className="rounded-2xl bg-guandan-muted p-3">
-            {practiceCase.players[0].name}
-            <br />剩 {practiceCase.players[0].remainingCards}
+        <PokerTable practiceCase={practiceCase} />
+      </div>
+
+      <aside className="space-y-4 lg:sticky lg:top-8">
+        <section className="rounded-3xl border border-guandan-border bg-guandan-card p-4">
+          <p className="text-sm font-bold text-guandan-gold">你会怎么出？</p>
+          <div className="mt-3 grid gap-2">
+            {practiceCase.options.map((option) => {
+              const selected = selectedOptionId === option.id;
+              const correct = option.id === practiceCase.correctOptionId;
+
+              return (
+                <button
+                  className={[
+                    "rounded-2xl border p-3 text-left text-sm font-bold transition",
+                    selected && correct
+                      ? "border-guandan-success bg-guandan-success/10 text-guandan-success"
+                      : "",
+                    selected && !correct
+                      ? "border-guandan-danger bg-guandan-danger/10 text-guandan-danger"
+                      : "",
+                    !selected
+                      ? "border-guandan-border bg-guandan-muted text-guandan-text"
+                      : ""
+                  ].join(" ")}
+                  disabled={isAnswered}
+                  key={option.id}
+                  onClick={() => chooseOption(option.id)}
+                  type="button"
+                >
+                  {option.label}. {option.text}
+                </button>
+              );
+            })}
           </div>
-          <div />
-          <div className="rounded-2xl bg-guandan-muted p-3">
-            {practiceCase.players[3].name}
-            <br />剩 {practiceCase.players[3].remainingCards}
-          </div>
-          <div className="flex items-center justify-center rounded-2xl border border-dashed border-guandan-border p-3 text-guandan-gold">
-            牌桌
-          </div>
-          <div className="rounded-2xl bg-guandan-muted p-3">
-            {practiceCase.players[1].name}
-            <br />剩 {practiceCase.players[1].remainingCards}
-          </div>
-        </div>
-        <p className="mt-4 text-sm font-bold text-guandan-gold">我的手牌</p>
-        <div className="mt-3">
-          <PokerHand cards={practiceCase.myHand} />
-        </div>
-      </section>
+        </section>
 
-      <section className="rounded-3xl border border-guandan-border bg-guandan-card p-4">
-        <p className="text-sm font-bold text-guandan-gold">你会怎么出？</p>
-        <div className="mt-3 grid gap-2">
-          {practiceCase.options.map((option) => {
-            const selected = selectedOptionId === option.id;
-            const correct = option.id === practiceCase.correctOptionId;
+        {isAnswered ? (
+          <>
+            <CoachBubble
+              action={feedback.action}
+              caption={feedback.reasons.join(" ")}
+              text={`${feedback.summary}${feedback.recommendation}`}
+            />
 
-            return (
-              <button
-                className={[
-                  "rounded-2xl border p-3 text-left text-sm font-bold transition",
-                  selected && correct
-                    ? "border-guandan-success bg-guandan-success/10 text-guandan-success"
-                    : "",
-                  selected && !correct
-                    ? "border-guandan-danger bg-guandan-danger/10 text-guandan-danger"
-                    : "",
-                  !selected
-                    ? "border-guandan-border bg-guandan-muted text-guandan-text"
-                    : ""
-                ].join(" ")}
-                disabled={isAnswered}
-                key={option.id}
-                onClick={() => chooseOption(option.id)}
-                type="button"
-              >
-                {option.label}. {option.text}
-              </button>
-            );
-          })}
-        </div>
-      </section>
+            <section className="rounded-3xl border border-guandan-border bg-guandan-card p-4">
+              <p className="text-sm font-bold text-guandan-gold">正确复盘</p>
+              <div className="mt-3 space-y-4">
+                {practiceCase.replaySteps.map((step) => (
+                  <div key={step.id}>
+                    <p className="mb-2 text-sm font-bold">{step.title}</p>
+                    <PokerHand cards={step.cards} compact />
+                    <p className="mt-2 text-sm leading-6 text-guandan-subtext">
+                      {step.coachText}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
 
-      {isAnswered ? (
-        <>
-          <CoachBubble
-            action={feedback.action}
-            caption={feedback.reasons.join(" ")}
-            text={`${feedback.summary}${feedback.recommendation}`}
-          />
-
-          <section className="rounded-3xl border border-guandan-border bg-guandan-card p-4">
-            <p className="text-sm font-bold text-guandan-gold">正确复盘</p>
-            <div className="mt-3 space-y-4">
-              {practiceCase.replaySteps.map((step) => (
-                <div key={step.id}>
-                  <p className="mb-2 text-sm font-bold">{step.title}</p>
-                  <PokerHand cards={step.cards} compact />
-                  <p className="mt-2 text-sm leading-6 text-guandan-subtext">
-                    {step.coachText}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <Button className="w-full" onClick={() => router.push("/complete")}>
-            完成今天训练
-          </Button>
-        </>
-      ) : null}
+            <Button className="w-full" onClick={() => router.push("/complete")}>
+              完成今天训练
+            </Button>
+          </>
+        ) : null}
+      </aside>
     </div>
   );
 }
