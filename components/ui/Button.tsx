@@ -12,11 +12,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    "bg-guandan-gold text-guandan-background shadow-energy hover:bg-guandan-reward",
+    "bg-[#0058be] text-white shadow-[0_12px_26px_rgba(0,88,190,0.24)] hover:bg-[#2170e4]",
   secondary:
-    "border border-guandan-blue/40 bg-guandan-blue/10 text-guandan-text shadow-tech hover:border-guandan-blue/70",
+    "border border-[#adc6ff] bg-[#e7eeff] text-[#0058be] hover:border-[#64a8fe]",
   ghost:
-    "border border-transparent bg-transparent text-guandan-subtext hover:bg-guandan-muted hover:text-guandan-text",
+    "border border-transparent bg-transparent text-[#424754] hover:bg-[#e7eeff] hover:text-[#0058be]",
   danger:
     "border border-guandan-danger/45 bg-guandan-danger/10 text-guandan-danger hover:bg-guandan-danger/20",
   success:

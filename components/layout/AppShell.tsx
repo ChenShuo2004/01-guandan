@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { ShinyText } from "@/components/ui/ShinyText";
+import Image from "next/image";
 import { BottomNavigation } from "./BottomNavigation";
 import { ResponsiveContainer } from "./ResponsiveContainer";
 import { SidebarNavigation } from "./SidebarNavigation";
@@ -18,31 +18,46 @@ export function AppShell({
   variant = "default"
 }: AppShellProps) {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-guandan-background text-guandan-text">
+    <div className="min-h-screen overflow-x-hidden bg-[#f9f9ff] text-[#111c2d]">
       <SidebarNavigation />
-      <main className="min-h-screen pb-28 pt-5 lg:pl-64 lg:pb-10 lg:pt-8">
+      <main className="min-h-screen pb-28 lg:pl-64 lg:pb-10">
+        <header className="sticky top-0 z-10 hidden h-16 items-center justify-between border-b border-[#e7eeff] bg-[#f9f9ff]/92 px-6 backdrop-blur lg:flex">
+          <h1 className="text-lg font-black text-[#0058be]">
+            {title ?? "掼蛋 AI 学院"}
+          </h1>
+          <div className="flex items-center gap-4">
+            <div className="flex h-9 w-64 items-center gap-2 rounded-xl bg-[#e7eeff] px-4 text-sm font-semibold text-[#424754]">
+              <span className="material-symbols-outlined text-[21px]">search</span>
+              <span>搜索打法策略...</span>
+            </div>
+            <span className="material-symbols-outlined text-[24px] text-[#263143]">notifications</span>
+            <span className="material-symbols-outlined text-[24px] text-[#263143]">settings</span>
+            <div className="h-9 w-9 overflow-hidden rounded-full border-2 border-[#adc6ff] bg-[#d4e3ff]">
+              <Image
+                alt="用户头像"
+                className="h-full w-full object-cover"
+                height={36}
+                src="/assets/coach/coach-master-certification.png"
+                width={36}
+              />
+            </div>
+          </div>
+        </header>
+        <div className="px-0 py-5 lg:py-7">
         <ResponsiveContainer variant={variant}>
-          {title ? (
-            <header className="mb-5 lg:mb-8">
-              <p className="text-sm font-semibold text-guandan-gold">Ace AI Coach</p>
-              <h1 className="mt-1 text-2xl font-bold leading-8 lg:text-4xl lg:leading-[3rem]">
-                <ShinyText
-                  color="#F8FAFC"
-                  delay={0.8}
-                  shineColor="#F6C65B"
-                  speed={2.8}
-                  text={title}
-                />
-              </h1>
+          {title || subtitle ? (
+            <div className="mb-5 lg:hidden">
+              {title ? <h1 className="text-2xl font-black leading-8">{title}</h1> : null}
               {subtitle ? (
-                <p className="mt-2 max-w-2xl text-sm leading-6 text-guandan-subtext lg:text-base lg:leading-7">
+                <p className="mt-2 text-sm font-semibold leading-6 text-[#424754]">
                   {subtitle}
                 </p>
               ) : null}
-            </header>
+            </div>
           ) : null}
           {children}
         </ResponsiveContainer>
+        </div>
       </main>
       <BottomNavigation />
     </div>
