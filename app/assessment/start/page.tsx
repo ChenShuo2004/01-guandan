@@ -1,9 +1,9 @@
 import { AppShell } from "@/components/layout/AppShell";
 import { AssessmentStart } from "@/features/assessment/AssessmentStart";
 
-export default function CoachPage() {
+export default function AssessmentStartPage() {
   return (
-    <AppShell title="能力测评" subtitle="Ace 会先测评，再生成训练路线。" variant="wide">
+    <AppShell title="能力测评" subtitle="先判断，再训练。" variant="wide">
       <AssessmentStart />
     </AppShell>
   );
