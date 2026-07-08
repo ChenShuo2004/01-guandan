@@ -84,6 +84,7 @@ export interface LearningPathNode {
   description: string;
   completionRule: string;
   linkedResourceId: string;
+  visualAssetId?: string;
   status: LearningPathNodeStatus;
 }
 

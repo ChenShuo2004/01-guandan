@@ -1,6 +1,6 @@
 "use client";
 
-import { CardSelector } from "@/components/cards/CardSelector";
+import { CardHand } from "@/components/game/CardHand";
 import type { Card } from "@/lib/guandan/card";
 
 interface HandCardsProps {
@@ -38,7 +38,7 @@ export function HandCards({
     });
 
   return (
-    <CardSelector
+    <CardHand
       cards={cards}
       disabled={disabled}
       invalidCardIds={invalidCardIds}

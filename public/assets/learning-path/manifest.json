@@ -1,0 +1,27 @@
+{
+  "course-beginner-basics": {
+    "src": "/assets/learning-path/course-beginner-basics.png",
+    "alt": "AI 教练指导玩家认识掼蛋基础规则的未来训练空间插图",
+    "aspectRatio": "16:9"
+  },
+  "course-card-patterns": {
+    "src": "/assets/learning-path/course-card-patterns.png",
+    "alt": "AI 分析炸弹顺子对子等牌型的科技 HUD 插图",
+    "aspectRatio": "16:9"
+  },
+  "course-ai-sparring": {
+    "src": "/assets/learning-path/course-ai-sparring.png",
+    "alt": "玩家和 AI 教练在虚拟牌桌进行实战训练的插图",
+    "aspectRatio": "16:9"
+  },
+  "course-endgame-analysis": {
+    "src": "/assets/learning-path/course-endgame-analysis.png",
+    "alt": "AI 放大残局牌局并分析最佳路线的插图",
+    "aspectRatio": "16:9"
+  },
+  "course-advanced-strategy": {
+    "src": "/assets/learning-path/course-advanced-strategy.png",
+    "alt": "冠军训练室中 AI 教练指导高手成长的高级策略插图",
+    "aspectRatio": "16:9"
+  }
+}

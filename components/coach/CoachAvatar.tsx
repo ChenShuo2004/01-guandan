@@ -5,6 +5,10 @@ import { CoachSceneImage } from "./CoachSceneImage";
 
 interface CoachAvatarProps {
   action?: CoachAction;
+  assetId?: string;
+  className?: string;
+  imageClassName?: string;
+  size?: "sm" | "md" | "lg" | "arena";
 }
 
 const actionLabel: Record<CoachAction, string> = {
@@ -31,18 +35,37 @@ const actionClasses: Partial<Record<CoachAction, string>> = {
   celebrate: "border-guandan-reward/60 bg-guandan-reward/10 text-guandan-reward"
 };
 
-export function CoachAvatar({ action = "idle" }: CoachAvatarProps) {
-  const assetId = coachActionAssetId[action] ?? coachActionAssetId.idle;
+const sizeClasses: Record<NonNullable<CoachAvatarProps["size"]>, string> = {
+  sm: "h-14 w-14 text-base",
+  md: "h-16 w-16 text-lg",
+  lg: "h-24 w-24 text-xl",
+  arena: "h-28 w-28 text-xl sm:h-32 sm:w-32"
+};
+
+export function CoachAvatar({
+  action = "idle",
+  assetId,
+  className,
+  imageClassName,
+  size = "md"
+}: CoachAvatarProps) {
+  const resolvedAssetId = assetId ?? coachActionAssetId[action] ?? coachActionAssetId.idle;
 
   return (
     <div
       className={cn(
-        "flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border text-base font-black shadow-panel transition-colors sm:h-16 sm:w-16 sm:text-lg",
-        actionClasses[action] ?? actionClasses.idle
+        "flex shrink-0 items-center justify-center overflow-hidden rounded-2xl border font-black shadow-panel transition-colors",
+        sizeClasses[size],
+        actionClasses[action] ?? actionClasses.idle,
+        className
       )}
       aria-label={`AI 教练状态：${action}`}
     >
-      <CoachSceneImage assetId={assetId} imageClassName="scale-125" sizes="64px" />
+      <CoachSceneImage
+        assetId={resolvedAssetId}
+        imageClassName={cn("object-contain", imageClassName)}
+        sizes={size === "arena" ? "128px" : "64px"}
+      />
       <span className="sr-only">{actionLabel[action]}</span>
     </div>
   );

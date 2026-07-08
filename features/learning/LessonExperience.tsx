@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { AssetImage } from "@/components/assets/AssetImage";
 import { CoachBubble } from "@/components/coach/CoachBubble";
 import { PokerHand } from "@/components/cards/PokerHand";
 import { Button } from "@/components/ui/Button";
@@ -51,11 +52,11 @@ export function LessonExperience({ lesson }: LessonExperienceProps) {
                 className="rounded-3xl border border-guandan-border bg-guandan-card p-4 lg:p-6"
                 key={index}
               >
-                <div className="flex h-52 items-center justify-center rounded-2xl border border-dashed border-guandan-border bg-guandan-muted text-center text-sm font-bold text-guandan-subtext lg:h-72">
-                  占位图
-                  <br />
-                  {step.assetId}
-                </div>
+                <AssetImage
+                  assetId={step.assetId}
+                  className="aspect-video"
+                  sizes="(min-width: 1024px) 720px, 100vw"
+                />
                 <p className="mt-3 text-sm font-semibold text-guandan-subtext">
                   {step.caption}
                 </p>

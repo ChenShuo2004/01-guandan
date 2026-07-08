@@ -276,6 +276,7 @@ function buildLearningPath(report: GrowthReport): LearningPath {
       description: "用一分钟记住今天最关键的出牌原则。",
       completionRule: "读完口诀并进入练习",
       linkedResourceId: "when-to-bomb",
+      visualAssetId: "course-beginner-basics",
       status: "available"
     },
     {
@@ -286,6 +287,7 @@ function buildLearningPath(report: GrowthReport): LearningPath {
       description: "先用选择题验证你是否真的看懂局面。",
       completionRule: "答对或完成复盘",
       linkedResourceId: "practice-when-to-bomb-001",
+      visualAssetId: "course-card-patterns",
       status: "locked"
     },
     {
@@ -296,6 +298,7 @@ function buildLearningPath(report: GrowthReport): LearningPath {
       description: "进入真实牌桌，用选牌、出牌和提示完成一次训练。",
       completionRule: "完成一次训练局",
       linkedResourceId: "practice-when-to-bomb-001",
+      visualAssetId: "course-ai-sparring",
       status: "locked"
     },
     {
@@ -306,6 +309,7 @@ function buildLearningPath(report: GrowthReport): LearningPath {
       description: "训练后再测一次，确认不是只记住答案。",
       completionRule: "复测趋势提升 5 分以上",
       linkedResourceId: report.sessionId,
+      visualAssetId: "course-endgame-analysis",
       status: "locked"
     }
   ];

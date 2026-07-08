@@ -1,4 +1,5 @@
 import type { Lesson } from "@/types/lesson";
+import { AssetImage } from "@/components/assets/AssetImage";
 import { Button } from "@/components/ui/Button";
 
 interface LessonCardProps {
@@ -8,10 +9,11 @@ interface LessonCardProps {
 export function LessonCard({ lesson }: LessonCardProps) {
   return (
     <article className="rounded-3xl border border-guandan-border bg-guandan-card p-4 shadow-soft">
-      <div className="mb-4 flex h-40 items-center justify-center rounded-2xl border border-dashed border-guandan-border bg-guandan-muted text-center text-sm font-bold text-guandan-subtext">
-        占位图<br />
-        {lesson.coverAssetId}
-      </div>
+      <AssetImage
+        assetId={lesson.coverAssetId}
+        className="mb-4 aspect-video"
+        sizes="(min-width: 1024px) 360px, 100vw"
+      />
       <div className="flex flex-wrap gap-2">
         {lesson.tags.map((tag) => (
           <span

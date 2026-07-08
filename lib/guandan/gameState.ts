@@ -1,9 +1,11 @@
 import type { CoachFeedback } from "@/lib/coach/coachTypes";
+import { sortCardsForHand } from "@/lib/cards/cardSort";
 import type { Card } from "@/lib/guandan/card";
 import { createDeck, dealCards, shuffleDeck } from "@/lib/guandan/deck";
 import { initializePlayers, type GuandanPlayer, type PlayerId } from "@/lib/guandan/player";
 
 export type GameStatus = "playing" | "finished";
+export type TrainingPhase = "idle" | "playing" | "analysis" | "completed";
 
 export interface GameHistoryEntry {
   turn: number;
@@ -22,6 +24,7 @@ export interface GameEngineState {
   selectedCards: Card[];
   invalidCardIds: string[];
   invalidPulseKey: number;
+  trainingPhase: TrainingPhase;
   gameStatus: GameStatus;
   winner: PlayerId | null;
   passCount: number;
@@ -43,7 +46,10 @@ const initialCoachFeedback: CoachFeedback = {
 export function createInitialGameState(seed = 20260708): GameEngineState {
   const deck = shuffleDeck(createDeck(), seed);
   const hands = dealCards(deck, 4);
-  const players = initializePlayers(hands);
+  const players = initializePlayers(hands).map((player) => ({
+    ...player,
+    hand: sortCardsForHand(player.hand)
+  }));
 
   return {
     players,
@@ -53,6 +59,7 @@ export function createInitialGameState(seed = 20260708): GameEngineState {
     selectedCards: [],
     invalidCardIds: [],
     invalidPulseKey: 0,
+    trainingPhase: "idle",
     gameStatus: "playing",
     winner: null,
     passCount: 0,

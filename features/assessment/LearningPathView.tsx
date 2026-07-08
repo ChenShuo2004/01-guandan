@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { AssetImage } from "@/components/assets/AssetImage";
 import { Button } from "@/components/ui/Button";
 import { abilityLabels } from "@/content/assessment/cases";
 import { useAssessmentStore } from "@/features/assessment/useAssessmentStore";
@@ -44,14 +45,22 @@ export function LearningPathView() {
 
   return (
     <div className="space-y-5">
-      <section className="rounded-[28px] border border-[#d8e3fb] bg-white p-6 shadow-[0_20px_60px_rgba(0,88,190,0.06)]">
-        <p className="text-sm font-black text-[#0058be]">Learning Path</p>
-        <h1 className="mt-3 text-3xl font-black leading-10 text-[#12395a]">
-          {path.title}
-        </h1>
-        <p className="mt-3 text-sm font-semibold leading-7 text-[#52657a]">
-          主线能力：{abilityLabels[path.primaryDimension]}。先完成可用节点，再进入训练牌桌。
-        </p>
+      <section className="grid gap-5 rounded-[28px] border border-[#d8e3fb] bg-white p-5 shadow-[0_20px_60px_rgba(0,88,190,0.06)] lg:grid-cols-[minmax(0,1fr)_360px] lg:items-center">
+        <div>
+          <p className="text-sm font-black text-[#0058be]">Learning Path</p>
+          <h1 className="mt-3 text-3xl font-black leading-10 text-[#12395a]">
+            {path.title}
+          </h1>
+          <p className="mt-3 text-sm font-semibold leading-7 text-[#52657a]">
+            主线能力：{abilityLabels[path.primaryDimension]}。先完成可用节点，再进入训练牌桌。
+          </p>
+        </div>
+        <AssetImage
+          assetId="course-advanced-strategy"
+          className="aspect-video"
+          priority
+          sizes="(min-width: 1024px) 360px, 100vw"
+        />
       </section>
 
       <section className="grid gap-3">
@@ -65,7 +74,13 @@ export function LearningPathView() {
             ].join(" ")}
             key={node.id}
           >
-            <div className="flex items-start gap-4">
+            <div className="grid gap-4 md:grid-cols-[180px_minmax(0,1fr)] md:items-start">
+              <AssetImage
+                assetId={node.visualAssetId ?? visualAssetForNode(node)}
+                className="aspect-video"
+                sizes="(min-width: 768px) 180px, 100vw"
+              />
+              <div className="flex items-start gap-4">
               <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-[#e7eeff] text-sm font-black text-[#0058be]">
                 {index + 1}
               </div>
@@ -83,6 +98,7 @@ export function LearningPathView() {
                   完成标准：{node.completionRule}
                 </p>
               </div>
+              </div>
             </div>
             <Button
               className="mt-4 w-full"
@@ -97,6 +113,13 @@ export function LearningPathView() {
       </section>
     </div>
   );
+}
+
+function visualAssetForNode(node: LearningPathNode) {
+  if (node.type === "case_drill") return "course-ai-sparring";
+  if (node.type === "retest" || node.type === "review") return "course-endgame-analysis";
+  if (node.type === "mini_quiz") return "course-card-patterns";
+  return "course-beginner-basics";
 }
 
 function PathEmpty({ href, text }: { href?: string; text: string }) {

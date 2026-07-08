@@ -7,7 +7,7 @@ export const whenToBombLesson: Lesson = {
   category: "bomb",
   level: "beginner",
   pathId: "bomb-basics",
-  coverAssetId: "placeholder-when-to-bomb-cover",
+  coverAssetId: "course-beginner-basics",
   slogan: "炸弹不是用来爽的，而是用来改变局势。",
   duration: 60,
   experience: 20,
@@ -21,7 +21,7 @@ export const whenToBombLesson: Lesson = {
     },
     {
       type: "image",
-      assetId: "placeholder-bomb-scene-001",
+      assetId: "course-card-patterns",
       caption: "先判断现在是谁掌握牌权。"
     },
     {

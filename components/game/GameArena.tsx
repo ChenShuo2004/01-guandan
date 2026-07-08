@@ -1,41 +1,50 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { ActionButtons } from "@/components/game/ActionButtons";
+import { CardSortButton } from "@/components/game/CardSort";
 import { CoachAvatar } from "@/components/game/CoachAvatar";
 import { CoachBubble } from "@/components/game/CoachBubble";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
 import { ScorePanel } from "@/components/game/ScorePanel";
 import { useGameStore } from "@/store/gameStore";
+import type { TrainingPhase } from "@/lib/guandan/gameState";
 import type { ArenaPlayer } from "@/types/game";
 
 export function GameArena() {
+  const router = useRouter();
+  const [showGoal, setShowGoal] = useState(false);
   const {
     state,
     currentPlayer,
     userPlayer,
     selectedCardIds,
     isUserTurn,
+    startTraining,
+    continueTraining,
     selectCard,
     setSelectedCards,
+    sortHand,
     playSelectedCards,
     pass,
     requestTip,
+    showSolution,
     runAIAction,
     restart
   } = useGameStore();
 
   useEffect(() => {
-    if (state.gameStatus !== "playing" || currentPlayer?.kind !== "ai") return;
+    if (state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.kind !== "ai") return;
 
     const timer = window.setTimeout(() => {
       runAIAction();
     }, 1100);
 
     return () => window.clearTimeout(timer);
-  }, [currentPlayer?.id, currentPlayer?.kind, runAIAction, state.gameStatus, state.turnNumber]);
+  }, [currentPlayer?.id, currentPlayer?.kind, runAIAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
 
   const arenaPlayers = useMemo(
     () =>
@@ -61,8 +70,10 @@ export function GameArena() {
     [currentPlayer?.id, state.gameStatus, state.players]
   );
 
+  const phase = state.trainingPhase;
   const winner = state.winner ? state.players.find((player) => player.id === state.winner) : null;
   const roundLabel = winner ? `${winner.role} 率先出完` : `第 ${state.turnNumber} 手 · ${currentPlayer?.role ?? "等待"}`;
+  const goLobby = () => router.push("/");
 
   return (
     <main className="training-arena relative min-h-screen overflow-hidden bg-[#eaf8ff] text-[#12395a]">
@@ -74,13 +85,27 @@ export function GameArena() {
         initial={{ opacity: 0, y: 16 }}
         transition={{ duration: 0.55, ease: "easeOut" }}
       >
-        <ArenaHeader onRestart={restart} roundLabel={roundLabel} />
+        <ArenaHeader
+          onBackToLobby={goLobby}
+          onRestart={restart}
+          onShowGoal={() => setShowGoal((current) => !current)}
+          phase={phase}
+          roundLabel={roundLabel}
+        />
 
         <div className="relative flex flex-1 gap-4 pb-[154px] pt-3 lg:pb-[166px]">
-          <ArenaChat />
-
           <section className="training-arena-stage relative min-h-[610px] flex-1 lg:min-h-[710px]">
             <GameTable players={arenaPlayers} tableCards={state.lastPlayedCards} />
+
+            <AnimatePresence>
+              {phase === "idle" || showGoal ? (
+                <TrainingGoalPanel
+                  onClose={phase === "idle" ? undefined : () => setShowGoal(false)}
+                  onStart={startTraining}
+                  phase={phase}
+                />
+              ) : null}
+            </AnimatePresence>
 
             <div className="absolute bottom-[16%] left-1/2 z-40 flex -translate-x-1/2 items-end gap-3">
               <CoachAvatar mood={state.coachFeedback.type === "mistake" ? "warning" : isUserTurn ? "teaching" : "thinking"} />
@@ -92,9 +117,16 @@ export function GameArena() {
             <ScorePanel players={state.players} turnNumber={state.turnNumber} />
             <ActionButtons
               canAct={isUserTurn}
+              onBackToLobby={goLobby}
+              onContinue={continueTraining}
               onPass={pass}
               onPlay={playSelectedCards}
+              onRestart={restart}
+              onShowSolution={showSolution}
+              onSortHand={sortHand}
+              onStart={startTraining}
               onTip={requestTip}
+              phase={phase}
               selectedCount={state.selectedCards.length}
             />
           </aside>
@@ -106,8 +138,17 @@ export function GameArena() {
               我 · 剩余 {userPlayer?.hand.length ?? 0} 张
             </span>
             <span className="hidden rounded-full border border-[#8ddcff]/80 bg-white/55 px-4 py-2 shadow-inner backdrop-blur sm:inline-flex">
-              {isUserTurn ? "本轮可出牌" : `等待 ${currentPlayer?.role ?? "AI"}`}
+              {phase === "idle"
+                ? "先开始训练"
+                : phase === "analysis"
+                  ? "查看分析后继续"
+                  : isUserTurn
+                    ? "本轮可出牌"
+                    : `等待 ${currentPlayer?.role ?? "AI"}`}
             </span>
+            {phase === "playing" ? (
+              <CardSortButton disabled={!isUserTurn || !userPlayer?.hand.length} onClick={sortHand} />
+            ) : null}
           </div>
           <HandCards
             cards={userPlayer?.hand ?? []}
@@ -128,28 +169,49 @@ export function GameArena() {
                 onClick={playSelectedCards}
                 type="button"
               >
-                出牌 {selectedCardIds.length}
+                提交出牌 {selectedCardIds.length}
               </motion.button>
             ) : null}
           </AnimatePresence>
         </section>
 
-        <div className="training-action-dock fixed bottom-4 right-3 z-[60] flex w-[150px] flex-col gap-3 xl:hidden">
-          <ActionButtons
-            canAct={isUserTurn}
-            compact
-            onPass={pass}
-            onPlay={playSelectedCards}
-            onTip={requestTip}
-            selectedCount={state.selectedCards.length}
-          />
-        </div>
+        {phase !== "idle" ? (
+          <div className="training-action-dock fixed bottom-4 right-3 z-[60] flex w-[150px] flex-col gap-3 xl:hidden">
+            <ActionButtons
+              canAct={isUserTurn}
+              compact
+              onBackToLobby={goLobby}
+              onContinue={continueTraining}
+              onPass={pass}
+              onPlay={playSelectedCards}
+              onRestart={restart}
+              onShowSolution={showSolution}
+              onSortHand={sortHand}
+              onStart={startTraining}
+              onTip={requestTip}
+              phase={phase}
+              selectedCount={state.selectedCards.length}
+            />
+          </div>
+        ) : null}
       </motion.section>
     </main>
   );
 }
 
-function ArenaHeader({ onRestart, roundLabel }: { onRestart: () => void; roundLabel: string }) {
+function ArenaHeader({
+  onBackToLobby,
+  onRestart,
+  onShowGoal,
+  phase,
+  roundLabel
+}: {
+  onBackToLobby: () => void;
+  onRestart: () => void;
+  onShowGoal: () => void;
+  phase: TrainingPhase;
+  roundLabel: string;
+}) {
   return (
     <header className="relative z-30 flex items-center justify-between gap-3 rounded-[30px] border border-white/65 bg-white/48 px-4 py-3 shadow-[0_18px_45px_rgba(48,150,220,0.16)] backdrop-blur-xl">
       <div className="flex items-center gap-3">
@@ -163,24 +225,32 @@ function ArenaHeader({ onRestart, roundLabel }: { onRestart: () => void; roundLa
       </div>
 
       <div className="hidden items-center gap-2 rounded-full border border-white/70 bg-white/48 px-5 py-2 text-sm font-black text-[#225b81] shadow-inner md:flex">
-        <span>新手练习房</span>
+        <span>{phaseLabel[phase]}</span>
         <span className="h-1.5 w-1.5 rounded-full bg-[#4bb8ff]" />
         <span>{roundLabel}</span>
       </div>
 
       <nav className="flex items-center gap-2">
-        <HeaderButton label="规则" />
-        <HeaderButton label="设置" onClick={onRestart} />
+        <HeaderButton label="训练目标" onClick={onShowGoal} />
+        <HeaderButton label="重新训练" onClick={onRestart} />
         <button
           className="rounded-full bg-[#0f64ff] px-5 py-2.5 text-sm font-black text-white shadow-[0_12px_28px_rgba(15,100,255,0.28)] transition hover:-translate-y-0.5"
+          onClick={onBackToLobby}
           type="button"
         >
-          退出房间
+          返回大厅
         </button>
       </nav>
     </header>
   );
 }
+
+const phaseLabel: Record<TrainingPhase, string> = {
+  idle: "准备开始",
+  playing: "训练中",
+  analysis: "AI 分析",
+  completed: "训练完成"
+};
 
 function HeaderButton({ label, onClick }: { label: string; onClick?: () => void }) {
   return (
@@ -194,26 +264,63 @@ function HeaderButton({ label, onClick }: { label: string; onClick?: () => void 
   );
 }
 
-function ArenaChat() {
+function TrainingGoalPanel({
+  onClose,
+  onStart,
+  phase
+}: {
+  onClose?: () => void;
+  onStart: () => void;
+  phase: TrainingPhase;
+}) {
   return (
-    <aside className="absolute bottom-40 left-4 z-50 hidden w-[250px] rounded-[22px] border border-white/55 bg-[#2f78b8]/58 p-4 text-white shadow-[0_18px_45px_rgba(35,107,174,0.2)] backdrop-blur-xl 2xl:block">
-      <div className="mb-3 flex items-center justify-between">
-        <p className="text-sm font-black">聊天</p>
-        <span className="text-white/55">×</span>
+    <motion.div
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      className="fixed left-1/2 top-[12%] z-[90] w-[min(92vw,520px)] -translate-x-1/2 rounded-[28px] border border-white/70 bg-[#12395a]/88 p-6 text-white shadow-[0_24px_70px_rgba(6,31,48,0.35)] backdrop-blur-xl"
+      exit={{ opacity: 0, y: 12, scale: 0.98 }}
+      initial={{ opacity: 0, y: 18, scale: 0.98 }}
+      transition={{ duration: 0.22, ease: "easeOut" }}
+    >
+      <p className="text-xs font-black uppercase tracking-[0.12em] text-[#ffd84d]">Daily Training</p>
+      <h2 className="mt-2 text-2xl font-black">今日目标：完成一次真实牌权判断</h2>
+      <p className="mt-3 text-sm font-bold leading-6 text-white/82">
+        先看当前牌局，再选择出牌、不出或查看提示。提交后进入 AI 分析，确认这手选择是否影响后续牌型。
+      </p>
+      <div className="mt-5 grid gap-3 text-sm font-bold text-white/86 sm:grid-cols-3">
+        <Step index="1" text="选择操作" />
+        <Step index="2" text="提交判断" />
+        <Step index="3" text="查看分析" />
       </div>
-      <div className="space-y-2 text-xs font-bold leading-5 text-white/88">
-        <p>上家：好牌！</p>
-        <p>你：稳住，我们能赢！</p>
-        <p>下家：加油加油！</p>
-        <p>对家：🙂</p>
+      <div className="mt-6 flex gap-3">
+        {phase === "idle" ? (
+          <button
+            className="h-12 flex-1 rounded-2xl bg-[#ffd84d] px-5 text-sm font-black text-[#684900] shadow-[0_0_22px_rgba(255,216,77,0.35)]"
+            onClick={onStart}
+            type="button"
+          >
+            开始训练
+          </button>
+        ) : null}
+        {onClose ? (
+          <button
+            className="h-12 flex-1 rounded-2xl border border-white/55 bg-white/12 px-5 text-sm font-black text-white"
+            onClick={onClose}
+            type="button"
+          >
+            回到牌桌
+          </button>
+        ) : null}
       </div>
-      <div className="mt-4 flex gap-2">
-        <div className="flex-1 rounded-xl bg-white/16 px-3 py-2 text-xs text-white/75">输入消息...</div>
-        <button className="rounded-xl bg-[#4bb8ff] px-3 text-xs font-black text-white" type="button">
-          发
-        </button>
-      </div>
-    </aside>
+    </motion.div>
+  );
+}
+
+function Step({ index, text }: { index: string; text: string }) {
+  return (
+    <div className="rounded-2xl border border-white/16 bg-white/10 px-3 py-3">
+      <span className="text-[#ffd84d]">{index}</span>
+      <p className="mt-1">{text}</p>
+    </div>
   );
 }
 

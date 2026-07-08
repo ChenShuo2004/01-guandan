@@ -62,6 +62,41 @@
     "alt": "AI 卡牌教练为七天连续训练竖起大拇指",
     "aspectRatio": "1:1"
   },
+  "course-beginner-basics": {
+    "id": "course-beginner-basics",
+    "type": "png",
+    "src": "/assets/learning-path/course-beginner-basics.png",
+    "alt": "AI 教练指导玩家认识掼蛋基础规则的未来训练空间插图",
+    "aspectRatio": "16:9"
+  },
+  "course-card-patterns": {
+    "id": "course-card-patterns",
+    "type": "png",
+    "src": "/assets/learning-path/course-card-patterns.png",
+    "alt": "AI 分析炸弹顺子对子等牌型的科技 HUD 插图",
+    "aspectRatio": "16:9"
+  },
+  "course-ai-sparring": {
+    "id": "course-ai-sparring",
+    "type": "png",
+    "src": "/assets/learning-path/course-ai-sparring.png",
+    "alt": "玩家和 AI 教练在虚拟牌桌进行实战训练的插图",
+    "aspectRatio": "16:9"
+  },
+  "course-endgame-analysis": {
+    "id": "course-endgame-analysis",
+    "type": "png",
+    "src": "/assets/learning-path/course-endgame-analysis.png",
+    "alt": "AI 放大残局牌局并分析最佳路线的插图",
+    "aspectRatio": "16:9"
+  },
+  "course-advanced-strategy": {
+    "id": "course-advanced-strategy",
+    "type": "png",
+    "src": "/assets/learning-path/course-advanced-strategy.png",
+    "alt": "冠军训练室中 AI 教练指导高手成长的高级策略插图",
+    "aspectRatio": "16:9"
+  },
   "placeholder-when-to-bomb-cover": {
     "id": "placeholder-when-to-bomb-cover",
     "type": "placeholder",
