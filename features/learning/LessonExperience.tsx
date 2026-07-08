@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { CoachBubble } from "@/components/coach/CoachBubble";
 import { PokerHand } from "@/components/cards/PokerHand";
 import { Button } from "@/components/ui/Button";
+import { getPracticeIdForLesson } from "@/features/daily-training";
 import { useProgress } from "@/features/progress/useProgress";
 import type { Lesson } from "@/types/lesson";
 
@@ -19,7 +20,9 @@ export function LessonExperience({ lesson }: LessonExperienceProps) {
 
   function finishLesson() {
     completeLesson(lesson.id, lesson.experience);
-    router.push("/practice");
+
+    const practiceId = getPracticeIdForLesson(lesson.id, progress);
+    router.push(practiceId ? `/practice/${practiceId}` : "/practice");
   }
 
   return (

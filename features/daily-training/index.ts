@@ -2,5 +2,9 @@ export {
   completeDailyTraining,
   getDailyTrainingPlan,
   getNextRecommendation,
-  getTodayTraining
+  getNextTrainingAfter,
+  getPracticeIdForLesson,
+  getTodayTraining,
+  getTrainingById,
+  getTrainingByLessonId
 } from "./daily-training";

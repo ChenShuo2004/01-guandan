@@ -113,3 +113,7 @@ export const whenToBombPractice: PracticeCase = {
 };
 
 export const samplePracticeCases = [whenToBombPractice];
+
+export function getPracticeById(practiceId: string) {
+  return samplePracticeCases.find((practiceCase) => practiceCase.id === practiceId);
+}

@@ -53,6 +53,38 @@ function getFirstIncompleteTraining(progress: UserProgress) {
   );
 }
 
+export function getTrainingById(trainingId?: string) {
+  if (!trainingId) {
+    return undefined;
+  }
+
+  return sevenDayTrainingPlan.find((training) => training.id === trainingId);
+}
+
+export function getTrainingByLessonId(lessonId: string) {
+  return sevenDayTrainingPlan.find((training) => training.lessonId === lessonId);
+}
+
+export function getPracticeIdForLesson(lessonId: string, progress: UserProgress) {
+  const todayTraining = getTodayTraining(progress);
+
+  if (todayTraining?.lessonId === lessonId) {
+    return todayTraining.practiceId;
+  }
+
+  return getTrainingByLessonId(lessonId)?.practiceId;
+}
+
+export function getNextTrainingAfter(trainingId?: string) {
+  const training = getTrainingById(trainingId);
+
+  if (!training) {
+    return sevenDayTrainingPlan[0];
+  }
+
+  return sevenDayTrainingPlan.find((item) => item.day === training.day + 1);
+}
+
 function resolveTodayTraining(progress: UserProgress, date = new Date()) {
   const todayKey = toDateKey(date);
 

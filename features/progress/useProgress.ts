@@ -79,16 +79,20 @@ export function useProgress() {
         });
       },
       completeDailyTraining(trainingId?: string) {
-        setProgress((current) => {
-          const normalizedProgress = mergeProgress(current, {});
-          return mergeProgress(
-            completeDailyTrainingProgress(normalizedProgress, trainingId),
-            {}
-          );
-        });
+        const normalizedProgress = mergeProgress(progress, {});
+        const nextProgress = mergeProgress(
+          completeDailyTrainingProgress(normalizedProgress, trainingId),
+          {}
+        );
+
+        setProgress(nextProgress);
+
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem(progressStorageKey, JSON.stringify(nextProgress));
+        }
       }
     }),
-    [setProgress]
+    [progress, setProgress]
   );
 
   return { progress: normalizedProgress, isReady, ...actions };

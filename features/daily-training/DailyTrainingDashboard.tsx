@@ -75,7 +75,7 @@ export function DailyTrainingDashboard() {
             <Button href={`/lessons/${todayTraining.lessonId}`}>
               开始今日训练
             </Button>
-            <Button href="/practice" variant="secondary">
+            <Button href={`/practice/${todayTraining.practiceId}`} variant="secondary">
               直接做残局
             </Button>
           </div>
@@ -117,7 +117,7 @@ export function DailyTrainingDashboard() {
               去学习
             </Button>
           ) : recommendation.practiceId ? (
-            <Button className="mt-4 w-full" href="/practice">
+            <Button className="mt-4 w-full" href={`/practice/${recommendation.practiceId}`}>
               去复盘
             </Button>
           ) : null}
