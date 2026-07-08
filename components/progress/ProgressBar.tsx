@@ -1,10 +1,20 @@
+import { cn } from "@/lib/utils";
+
 interface ProgressBarProps {
   value: number;
   max: number;
   label?: string;
+  tone?: "energy" | "success" | "tech" | "danger";
 }
 
-export function ProgressBar({ value, max, label }: ProgressBarProps) {
+const toneClasses = {
+  energy: "bg-guandan-gold",
+  success: "bg-guandan-success",
+  tech: "bg-guandan-blue",
+  danger: "bg-guandan-danger"
+};
+
+export function ProgressBar({ value, max, label, tone = "energy" }: ProgressBarProps) {
   const percent = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0;
 
   return (
@@ -13,9 +23,9 @@ export function ProgressBar({ value, max, label }: ProgressBarProps) {
         <span>{label ?? "进度"}</span>
         <span>{percent}%</span>
       </div>
-      <div className="h-3 overflow-hidden rounded-full bg-guandan-muted">
+      <div className="h-2.5 overflow-hidden rounded-full border border-guandan-border bg-guandan-muted">
         <div
-          className="h-full rounded-full bg-guandan-gold transition-all"
+          className={cn("h-full rounded-full transition-all duration-500", toneClasses[tone])}
           style={{ width: `${percent}%` }}
         />
       </div>

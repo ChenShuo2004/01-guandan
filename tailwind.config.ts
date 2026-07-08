@@ -10,19 +10,35 @@ const config: Config = {
     extend: {
       colors: {
         guandan: {
-          background: "#10131A",
-          card: "#181C25",
-          muted: "#202634",
+          background: "#0B1020",
+          arena: "#101827",
+          card: "#151D2E",
+          elevated: "#1B2538",
+          muted: "#202B40",
           gold: "#F6C65B",
-          success: "#55D68A",
+          goldDeep: "#C9972E",
+          blue: "#4DA3FF",
+          cyan: "#54D7FF",
+          pokerRed: "#F05252",
+          success: "#45D483",
           danger: "#FF6B6B",
+          reward: "#FFD36A",
           text: "#F8FAFC",
-          subtext: "#A7B0C0",
-          border: "#2A3140"
+          subtext: "#A8B3C7",
+          mutedText: "#6F7B91",
+          border: "#2A3448",
+          activeBorder: "#F6C65B"
         }
       },
       boxShadow: {
-        soft: "0 18px 48px rgba(0, 0, 0, 0.24)"
+        soft: "0 18px 48px rgba(0, 0, 0, 0.24)",
+        panel: "0 18px 48px rgba(0, 0, 0, 0.22)",
+        energy: "0 0 0 1px rgba(246, 198, 91, 0.34), 0 22px 60px rgba(246, 198, 91, 0.12)",
+        tech: "0 0 0 1px rgba(77, 163, 255, 0.28), 0 18px 48px rgba(77, 163, 255, 0.08)"
+      },
+      borderRadius: {
+        panel: "1.25rem",
+        arena: "1.5rem"
       }
     }
   },
