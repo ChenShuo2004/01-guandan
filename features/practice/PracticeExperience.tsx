@@ -15,7 +15,7 @@ interface PracticeExperienceProps {
 
 export function PracticeExperience({ practiceCase }: PracticeExperienceProps) {
   const router = useRouter();
-  const { completePractice } = useProgress();
+  const { completeDailyTraining, completePractice } = useProgress();
   const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
 
   const isAnswered = selectedOptionId !== null;
@@ -35,6 +35,11 @@ export function PracticeExperience({ practiceCase }: PracticeExperienceProps) {
       practiceCase.experience,
       optionId === practiceCase.correctOptionId
     );
+  }
+
+  function finishTodayTraining() {
+    completeDailyTraining();
+    router.push("/complete");
   }
 
   return (
@@ -110,7 +115,7 @@ export function PracticeExperience({ practiceCase }: PracticeExperienceProps) {
               </div>
             </section>
 
-            <Button className="w-full" onClick={() => router.push("/complete")}>
+            <Button className="w-full" onClick={finishTodayTraining}>
               完成今天训练
             </Button>
           </>

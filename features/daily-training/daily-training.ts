@@ -12,7 +12,11 @@ function unique(values: string[]) {
 }
 
 function toDateKey(date: Date) {
-  return date.toISOString().slice(0, 10);
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, "0");
+  const day = `${date.getDate()}`.padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
 function previousDateKey(date: Date) {
@@ -49,8 +53,14 @@ function getFirstIncompleteTraining(progress: UserProgress) {
   );
 }
 
-function resolveTodayTraining(progress: UserProgress) {
-  if (progress.todayTrainingId) {
+function resolveTodayTraining(progress: UserProgress, date = new Date()) {
+  const todayKey = toDateKey(date);
+
+  if (
+    progress.todayTrainingId &&
+    progress.isTodayCompleted &&
+    progress.todayCompletedDate === todayKey
+  ) {
     return (
       sevenDayTrainingPlan.find((training) => training.id === progress.todayTrainingId) ??
       getFirstIncompleteTraining(progress)
@@ -64,7 +74,7 @@ export function getDailyTrainingPlan(
   progress: UserProgress,
   date = new Date()
 ): DailyTraining[] {
-  const todayTraining = resolveTodayTraining(progress);
+  const todayTraining = resolveTodayTraining(progress, date);
   const todayKey = toDateKey(date);
 
   return sevenDayTrainingPlan.map((training) => ({
