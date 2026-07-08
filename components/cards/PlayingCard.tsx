@@ -1,0 +1,97 @@
+"use client";
+
+import { motion } from "framer-motion";
+import Image from "next/image";
+import type { PointerEvent } from "react";
+import { getCardLabel } from "@/lib/guandan/card";
+import type { Card } from "@/lib/guandan/card";
+import { getCardVisualStatus, getPlayingCardAsset } from "@/lib/cards/cardAssets";
+import { cn } from "@/lib/utils";
+
+interface PlayingCardProps {
+  card: Card;
+  compact?: boolean;
+  selected?: boolean;
+  invalid?: boolean;
+  invalidPulseKey?: number;
+  disabled?: boolean;
+  onClick?: (card: Card) => void;
+  onPointerDownCard?: (card: Card, event: PointerEvent<HTMLButtonElement>) => void;
+  onPointerEnterCard?: (card: Card, event: PointerEvent<HTMLButtonElement>) => void;
+}
+
+const pokeTransition = {
+  duration: 0.18,
+  ease: "easeOut"
+} as const;
+
+export function PlayingCard({
+  card,
+  compact = false,
+  selected = false,
+  invalid = false,
+  invalidPulseKey = 0,
+  disabled = false,
+  onClick,
+  onPointerDownCard,
+  onPointerEnterCard
+}: PlayingCardProps) {
+  const status = getCardVisualStatus({ disabled, invalid, selected });
+  const label = getCardLabel(card);
+  const assetPath = getPlayingCardAsset(card);
+  const selectedTransform = { y: -20, scale: 1.08 };
+  const normalTransform = { y: 0, scale: 1 };
+
+  return (
+    <motion.button
+      animate={
+        invalid
+          ? {
+              ...selectedTransform,
+              x: [0, -6, 6, -4, 4, 0]
+            }
+          : selected
+            ? selectedTransform
+            : normalTransform
+      }
+      aria-label={label}
+      className={cn(
+        "relative shrink-0 touch-manipulation select-none rounded-[14px] border bg-white p-0 outline-none transition-colors",
+        compact ? "h-[90px] w-[64px]" : "h-[122px] w-[86px]",
+        disabled ? "cursor-default opacity-80" : "cursor-pointer",
+        status === "normal" && "border-white/90 shadow-[0_8px_16px_rgba(6,20,34,0.16)]",
+        status === "selected" &&
+          "border-[#ffd700] shadow-[0_0_0_2px_rgba(255,215,0,0.86),0_0_20px_rgba(255,215,0,0.80),0_22px_36px_rgba(6,20,34,0.34)]",
+        status === "invalid" &&
+          "border-[#ff5c6a] shadow-[0_0_0_2px_rgba(255,92,106,0.72),0_0_18px_rgba(255,92,106,0.64),0_22px_36px_rgba(6,20,34,0.34)]"
+      )}
+      data-card-id={card.id}
+      data-card-status={status}
+      disabled={disabled}
+      key={`${card.id}-${invalid ? invalidPulseKey : "stable"}`}
+      onClick={() => onClick?.(card)}
+      onPointerDown={(event) => onPointerDownCard?.(card, event)}
+      onPointerEnter={(event) => onPointerEnterCard?.(card, event)}
+      transition={invalid ? { duration: 0.24, ease: "easeOut" } : pokeTransition}
+      type="button"
+      whileHover={disabled ? undefined : selected ? selectedTransform : { y: -8, scale: 1.03 }}
+    >
+      <Image
+        alt=""
+        className="rounded-[13px] object-cover"
+        draggable={false}
+        fill
+        sizes={compact ? "64px" : "86px"}
+        src={assetPath}
+      />
+      <span
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-[-3px] rounded-[17px] opacity-0 transition-opacity duration-150",
+          selected && "opacity-100",
+          invalid ? "bg-[radial-gradient(circle_at_50%_105%,rgba(255,92,106,0.42),transparent_58%)]" : "bg-[radial-gradient(circle_at_50%_105%,rgba(255,215,0,0.46),transparent_58%)]"
+        )}
+      />
+    </motion.button>
+  );
+}

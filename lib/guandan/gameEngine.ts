@@ -20,6 +20,7 @@ export function toggleSelectedCard(state: GameEngineState, card: Card): GameEngi
     selectedCards: isSelected
       ? state.selectedCards.filter((selected) => selected.id !== card.id)
       : sortCards([...state.selectedCards, card]),
+    invalidCardIds: [],
     tipMessage: null
   };
 }
@@ -28,6 +29,7 @@ export function clearSelection(state: GameEngineState): GameEngineState {
   return {
     ...state,
     selectedCards: [],
+    invalidCardIds: [],
     tipMessage: null
   };
 }
@@ -80,6 +82,7 @@ export function playCards(state: GameEngineState, playerId: PlayerId, cards: Car
     lastPlayedCards: sortCards(cards),
     lastPlayerId: playerId,
     selectedCards: [],
+    invalidCardIds: [],
     gameStatus: winner ? "finished" : "playing",
     winner,
     passCount: 0,
@@ -145,6 +148,7 @@ export function passTurn(state: GameEngineState, playerId: PlayerId): PlayCardsR
     lastPlayedCards: trickResets ? [] : state.lastPlayedCards,
     lastPlayerId: trickResets ? null : state.lastPlayerId,
     selectedCards: [],
+    invalidCardIds: [],
     passCount: trickResets ? 0 : passCount,
     turnNumber: state.turnNumber + 1,
     history: [

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ActionButtons } from "@/components/game/ActionButtons";
 import { CoachAvatar } from "@/components/game/CoachAvatar";
 import { CoachBubble } from "@/components/game/CoachBubble";
@@ -19,6 +19,7 @@ export function GameArena() {
     selectedCardIds,
     isUserTurn,
     selectCard,
+    setSelectedCards,
     playSelectedCards,
     pass,
     requestTip,
@@ -111,9 +112,26 @@ export function GameArena() {
           <HandCards
             cards={userPlayer?.hand ?? []}
             disabled={!isUserTurn}
+            invalidCardIds={state.invalidCardIds}
+            invalidPulseKey={state.invalidPulseKey}
+            onSelectionChange={setSelectedCards}
             onSelectCard={selectCard}
             selectedCardIds={selectedCardIds}
           />
+          <AnimatePresence>
+            {isUserTurn && selectedCardIds.length > 0 ? (
+              <motion.button
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                className="absolute bottom-[calc(100%+10px)] left-1/2 z-[70] flex h-14 min-w-[154px] -translate-x-1/2 items-center justify-center rounded-full border border-[#ffe891]/90 bg-[#ffd84d] px-6 py-3 text-base font-black text-[#684900] shadow-[0_0_24px_rgba(255,216,77,0.58),0_18px_38px_rgba(0,0,0,0.28)] transition active:scale-[0.98]"
+                exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                initial={{ opacity: 0, y: 10, scale: 0.96 }}
+                onClick={playSelectedCards}
+                type="button"
+              >
+                出牌 {selectedCardIds.length}
+              </motion.button>
+            ) : null}
+          </AnimatePresence>
         </section>
 
         <div className="training-action-dock fixed bottom-4 right-3 z-[60] flex w-[150px] flex-col gap-3 xl:hidden">

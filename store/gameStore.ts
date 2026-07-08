@@ -18,6 +18,7 @@ import type { PlayerId } from "@/lib/guandan/player";
 type GameAction =
   | { type: "restart" }
   | { type: "toggle-card"; card: Card }
+  | { type: "set-selection"; cards: Card[] }
   | { type: "play-selected" }
   | { type: "pass" }
   | { type: "tip" }
@@ -33,9 +34,37 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
       return withCoach(toggleSelectedCard(state, action.card));
     }
 
+    case "set-selection": {
+      if (state.gameStatus !== "playing" || getCurrentPlayer(state)?.id !== "player") return state;
+      return withCoach({
+        ...state,
+        selectedCards: sortCards(action.cards),
+        invalidCardIds: [],
+        tipMessage: null
+      });
+    }
+
     case "play-selected": {
       const result = playCards(state, "player", state.selectedCards);
       const nextState = result.state;
+      if (!result.ok) {
+        return applyCoachFeedback(
+          {
+            ...nextState,
+            selectedCards: state.selectedCards,
+            invalidCardIds: state.selectedCards.map((card) => card.id),
+            invalidPulseKey: state.invalidPulseKey + 1
+          },
+          {
+            type: "mistake",
+            level: "high",
+            message: result.message || "这不是合法牌型",
+            reason: "当前选择不能作为本轮出牌。",
+            suggestion: "重新检查张数、牌型是否连续，或者改用同牌型压过上家。"
+          }
+        );
+      }
+
       const mistake = result.ok ? detectMistakeAfterUserPlay(state, nextState) : null;
       return mistake ? applyCoachFeedback(nextState, mistake) : withCoach(nextState);
     }
@@ -51,6 +80,7 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
         {
           ...state,
           selectedCards: feedback.recommendedCards ? sortCards(feedback.recommendedCards) : state.selectedCards,
+          invalidCardIds: [],
           tipMessage: feedback.message
         },
         feedback
@@ -69,6 +99,7 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
 
       return withCoach({
         ...result.state,
+        invalidCardIds: [],
         tipMessage: null
       });
     }
@@ -105,6 +136,10 @@ export function useGameStore() {
     dispatch({ type: "toggle-card", card });
   }, []);
 
+  const setSelectedCards = useCallback((cards: Card[]) => {
+    dispatch({ type: "set-selection", cards });
+  }, []);
+
   const playSelectedCards = useCallback(() => {
     dispatch({ type: "play-selected" });
   }, []);
@@ -132,6 +167,7 @@ export function useGameStore() {
     selectedCardIds,
     isUserTurn,
     selectCard,
+    setSelectedCards,
     playSelectedCards,
     pass,
     requestTip,

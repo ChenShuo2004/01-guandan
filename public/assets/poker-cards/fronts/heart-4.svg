@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="180" height="252" viewBox="0 0 180 252" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="5" y="5" width="170" height="242" rx="18" fill="url(#paper)" stroke="#f7f2e6" stroke-width="10"/>
+  <rect x="10" y="10" width="160" height="232" rx="14" stroke="#f05252" stroke-opacity="0.18" stroke-width="2"/>
+  <path d="M24 132C44 94 70 78 90 42C110 78 136 94 156 132C166 152 155 177 130 177C115 177 101 168 96 155V197H84V155C79 168 65 177 50 177C25 177 14 152 24 132Z" fill="#d94141" fill-opacity="0.96"/>
+  <path d="M90 66C103 89 126 105 142 132C150 146 143 162 127 162C111 162 98 150 96 134C92 156 75 169 56 165C42 162 36 147 43 133C58 105 78 89 90 66Z" fill="#f05252" fill-opacity="0.24"/>
+  <text x="21" y="42" fill="#d94141" font-family="Georgia, serif" font-size="32" font-weight="800">4</text>
+  <text x="23" y="68" fill="#d94141" font-family="Georgia, serif" font-size="28" font-weight="800">♥</text>
+  <text x="159" y="210" fill="#d94141" font-family="Georgia, serif" font-size="32" font-weight="800" text-anchor="middle" transform="rotate(180 159 210)">4</text>
+  <text x="157" y="184" fill="#d94141" font-family="Georgia, serif" font-size="28" font-weight="800" text-anchor="middle" transform="rotate(180 157 184)">♥</text>
+  <defs>
+    <linearGradient id="paper" x1="22" y1="14" x2="158" y2="238" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fffdfa"/>
+      <stop offset="0.52" stop-color="#f5f1ea"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+  </defs>
+</svg>

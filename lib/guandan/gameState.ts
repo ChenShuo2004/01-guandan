@@ -20,6 +20,8 @@ export interface GameEngineState {
   lastPlayedCards: Card[];
   lastPlayerId: PlayerId | null;
   selectedCards: Card[];
+  invalidCardIds: string[];
+  invalidPulseKey: number;
   gameStatus: GameStatus;
   winner: PlayerId | null;
   passCount: number;
@@ -49,6 +51,8 @@ export function createInitialGameState(seed = 20260708): GameEngineState {
     lastPlayedCards: [],
     lastPlayerId: null,
     selectedCards: [],
+    invalidCardIds: [],
+    invalidPulseKey: 0,
     gameStatus: "playing",
     winner: null,
     passCount: 0,
