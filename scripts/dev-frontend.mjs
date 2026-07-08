@@ -17,6 +17,7 @@ const nextCli = path.join(
   "bin",
   "next",
 );
+const nextCacheDir = path.join(projectRoot, ".next");
 
 let stoppedForPortViolation = false;
 
@@ -55,6 +56,11 @@ function stop(child, message) {
 if (!fs.existsSync(nextCli)) {
   console.error("Next.js binary was not found. Run npm install or pnpm install first.");
   process.exit(1);
+}
+
+if (fs.existsSync(nextCacheDir)) {
+  fs.rmSync(nextCacheDir, { force: true, recursive: true });
+  console.log("Cleared stale .next cache before starting dev server.");
 }
 
 try {
