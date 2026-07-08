@@ -18,8 +18,8 @@ export function recommendDecision({ playerHand, state }: DecisionInput): CoachFe
     return {
       type: "tip",
       level: "low",
-      message: "这手可以先不要",
-      reason: "当前没有低成本的牌能压过上一手。",
+      message: "这手可以先不出",
+      reason: "当前没有低成本牌型能压过上一手。",
       suggestion: "保留大牌和炸弹，等重新获得牌权。",
       recommendedCards: []
     };

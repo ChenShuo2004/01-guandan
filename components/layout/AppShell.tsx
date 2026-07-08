@@ -27,11 +27,10 @@ export function AppShell({
           </h1>
           <div className="flex items-center gap-4">
             <div className="flex h-9 w-64 items-center gap-2 rounded-xl bg-[#e7eeff] px-4 text-sm font-semibold text-[#424754]">
-              <span className="material-symbols-outlined text-[21px]">search</span>
               <span>搜索打法策略...</span>
             </div>
-            <span className="material-symbols-outlined text-[24px] text-[#263143]">notifications</span>
-            <span className="material-symbols-outlined text-[24px] text-[#263143]">settings</span>
+            <span className="text-[20px] text-[#263143]">●</span>
+            <span className="text-[20px] text-[#263143]">⚙</span>
             <div className="h-9 w-9 overflow-hidden rounded-full border-2 border-[#adc6ff] bg-[#d4e3ff]">
               <Image
                 alt="用户头像"
@@ -44,19 +43,19 @@ export function AppShell({
           </div>
         </header>
         <div className="px-0 py-5 lg:py-7">
-        <ResponsiveContainer variant={variant}>
-          {title || subtitle ? (
-            <div className="mb-5 lg:hidden">
-              {title ? <h1 className="text-2xl font-black leading-8">{title}</h1> : null}
-              {subtitle ? (
-                <p className="mt-2 text-sm font-semibold leading-6 text-[#424754]">
-                  {subtitle}
-                </p>
-              ) : null}
-            </div>
-          ) : null}
-          {children}
-        </ResponsiveContainer>
+          <ResponsiveContainer variant={variant}>
+            {title || subtitle ? (
+              <div className="mb-5 lg:hidden">
+                {title ? <h1 className="text-2xl font-black leading-8">{title}</h1> : null}
+                {subtitle ? (
+                  <p className="mt-2 text-sm font-semibold leading-6 text-[#424754]">
+                    {subtitle}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
+            {children}
+          </ResponsiveContainer>
         </div>
       </main>
       <BottomNavigation />

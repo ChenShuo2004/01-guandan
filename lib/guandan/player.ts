@@ -31,7 +31,7 @@ const PLAYER_ORDER: Array<Omit<GuandanPlayer, "hand" | "passed">> = [
   {
     id: "enemyAI1",
     name: "North AI",
-    role: "下家对手",
+    role: "下家",
     team: "red",
     kind: "ai",
     seat: "right",
@@ -40,7 +40,7 @@ const PLAYER_ORDER: Array<Omit<GuandanPlayer, "hand" | "passed">> = [
   {
     id: "partnerAI",
     name: "Ace AI",
-    role: "对家队友",
+    role: "对家",
     team: "blue",
     kind: "ai",
     seat: "top",
@@ -48,8 +48,8 @@ const PLAYER_ORDER: Array<Omit<GuandanPlayer, "hand" | "passed">> = [
   },
   {
     id: "enemyAI2",
-    name: "Blue Coach",
-    role: "上家对手",
+    name: "Blue AI",
+    role: "上家",
     team: "red",
     kind: "ai",
     seat: "left",

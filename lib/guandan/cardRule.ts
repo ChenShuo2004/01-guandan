@@ -58,7 +58,7 @@ export function detectCardPattern(cards: Card[]): CardPattern {
     return valid("straight", highestRank, sortedCards);
   }
 
-  return invalid(cards, "Phase 2 暂不支持这个牌型");
+  return invalid(cards, "当前阶段暂不支持这个牌型");
 }
 
 function isFourJokers(cards: Card[]) {

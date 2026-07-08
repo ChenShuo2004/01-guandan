@@ -1,5 +1,5 @@
-import { TrainingArena } from "@/features/training/TrainingArena";
+import { GameArena } from "@/components/game/GameArena";
 
 export default function TrainingPage() {
-  return <TrainingArena />;
+  return <GameArena />;
 }

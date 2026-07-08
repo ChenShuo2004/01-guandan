@@ -17,8 +17,6 @@ const nextCli = path.join(
   "bin",
   "next",
 );
-const devDistDir = ".next-dev";
-const nextCacheDir = path.join(projectRoot, devDistDir);
 
 let stoppedForPortViolation = false;
 
@@ -59,11 +57,6 @@ if (!fs.existsSync(nextCli)) {
   process.exit(1);
 }
 
-if (fs.existsSync(nextCacheDir)) {
-  fs.rmSync(nextCacheDir, { force: true, recursive: true });
-  console.log("Cleared stale .next cache before starting dev server.");
-}
-
 try {
   await assertPortAvailable(FRONTEND_HOST, FRONTEND_PORT);
 } catch (error) {
@@ -79,7 +72,6 @@ const child = spawn(
     env: {
       ...process.env,
       HOSTNAME: FRONTEND_HOST,
-      NEXT_DIST_DIR: devDistDir,
       PORT: String(FRONTEND_PORT),
     },
     stdio: ["inherit", "pipe", "pipe"],

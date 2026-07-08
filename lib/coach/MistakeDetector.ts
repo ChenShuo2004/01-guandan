@@ -42,7 +42,7 @@ function detectEarlyBomb(state: GameEngineState, entry: GameHistoryEntry): Coach
       type: "mistake",
       level: "medium",
       message: "炸弹使用偏早",
-      reason: "炸弹不仅是压制牌，也是残局控制牌。现在对手手牌还多，收益不够集中。",
+      reason: "炸弹不仅用于压制，也是残局控制牌。现在对手手牌还多，收益不够集中。",
       suggestion: "保留炸弹，等关键牌权或收尾阶段再用。"
     };
   }

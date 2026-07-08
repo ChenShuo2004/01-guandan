@@ -131,9 +131,10 @@ export function passTurn(state: GameEngineState, playerId: PlayerId): PlayCardsR
 
   const passCount = state.passCount + 1;
   const trickResets = passCount >= state.players.length - 1;
-  const nextTurn = trickResets && state.lastPlayerId
-    ? state.players.findIndex((player) => player.id === state.lastPlayerId)
-    : getNextActiveTurn(state);
+  const nextTurn =
+    trickResets && state.lastPlayerId
+      ? state.players.findIndex((player) => player.id === state.lastPlayerId)
+      : getNextActiveTurn(state);
 
   const nextState: GameEngineState = {
     ...state,
@@ -154,7 +155,7 @@ export function passTurn(state: GameEngineState, playerId: PlayerId): PlayCardsR
         playerName: currentPlayer.name,
         action: "pass",
         cards: [],
-        result: trickResets ? "重新获得牌权" : "不要"
+        result: trickResets ? "重新获得牌权" : "不出"
       }
     ],
     coachMessage: trickResets ? "一圈不出，牌权回到上一位出牌者。" : `${currentPlayer.role} 选择不出。`,

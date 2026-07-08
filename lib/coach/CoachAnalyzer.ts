@@ -26,8 +26,8 @@ export function analyzeCoachTip({ state }: CoachAnalyzerInput): CoachFeedback {
     return {
       type: "tip",
       level: "low",
-      message: `${currentPlayer?.role ?? "AI"} 思考中`,
-      reason: "观察它是否主动出炸弹或保留牌权。",
+      message: `${currentPlayer?.role ?? "AI"} 正在思考`,
+      reason: "观察它是否主动出炸弹、拆顺子，还是选择保留牌权资源。",
       suggestion: "记住它跳过了哪些牌型，后面可以反推手牌结构。"
     };
   }
@@ -36,9 +36,9 @@ export function analyzeCoachTip({ state }: CoachAnalyzerInput): CoachFeedback {
     return {
       type: "tip",
       level: "low",
-      message: `当前选择是 ${formatPattern(selectedPattern.type)}`,
-      reason: "先确认它是否能压过上一手，再看是否破坏自己的牌型。",
-      suggestion: "如果会拆掉炸弹、顺子或对子，先考虑更小成本的打法。"
+      message: `当前选择是${formatPattern(selectedPattern.type)}`,
+      reason: "先确认它能否压过上一手，再看是否会破坏自己的牌型结构。",
+      suggestion: "如果会拆掉炸弹、顺子或对子，先考虑更低成本的打法。"
     };
   }
 
