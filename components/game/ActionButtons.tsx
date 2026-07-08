@@ -57,12 +57,19 @@ export function ActionButtons({
 
       {phase === "playing" ? (
         <div className="flex flex-col gap-3">
+          <ActionButton className="bg-[#0f74ef] text-white" disabled={!canAct} label="不出" onClick={onPass} />
+          <ActionButton className="relative bg-[#ffd84d] text-[#6a4b00]" disabled={!canAct} label="提示" onClick={onTip}>
+            <span className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full bg-[#ff335a] text-[10px] text-white">
+              2
+            </span>
+          </ActionButton>
           {!compact || selectedCount === 0 ? (
-            <ActionButton className="bg-[#16c9bd] text-white" disabled={!canAct || selectedCount === 0} label={selectedCount > 0 ? `提交出牌 ${selectedCount}` : "提交出牌"} onClick={onPlay} />
+            <ActionButton className="bg-[#16c9bd] text-white" disabled={!canAct || selectedCount === 0} label={selectedCount > 0 ? `出牌 ${selectedCount}` : "出牌"} onClick={onPlay} />
           ) : null}
-          <ActionButton className="relative bg-[#ffd84d] text-[#6a4b00]" disabled={!canAct} label="查看提示" onClick={onTip} />
-          <ActionButton className="bg-[#0f74ef] text-white" disabled={!canAct} label="选择不出" onClick={onPass} />
-          <ActionButton className="border border-white/65 bg-white/55 text-[#17496d]" disabled={!canAct} label="整理手牌" onClick={onSortHand} />
+          <div className="grid grid-cols-2 gap-3 pt-4">
+            <MiniAction label="理牌" onClick={onSortHand} />
+            <MiniAction label="上一步" />
+          </div>
         </div>
       ) : null}
 
@@ -121,7 +128,7 @@ function ActionButton({
   return (
     <button
       className={cn(
-        "relative min-h-12 rounded-2xl px-4 py-3 text-base font-black shadow-[0_12px_24px_rgba(28,109,172,0.22)] transition hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0",
+        "relative min-h-14 rounded-2xl px-4 py-3 text-[20px] font-black shadow-[0_12px_24px_rgba(28,109,172,0.22)] transition hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0",
         className
       )}
       disabled={disabled}
@@ -129,6 +136,18 @@ function ActionButton({
       type="button"
     >
       {children}
+      {label}
+    </button>
+  );
+}
+
+function MiniAction({ label, onClick }: { label: string; onClick?: () => void }) {
+  return (
+    <button
+      className="min-h-16 rounded-2xl bg-[#2f78b8]/62 px-3 py-2 text-base font-black text-white shadow-[0_10px_22px_rgba(28,109,172,0.18)] transition hover:-translate-y-0.5 active:scale-[0.98]"
+      onClick={onClick}
+      type="button"
+    >
       {label}
     </button>
   );

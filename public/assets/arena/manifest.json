@@ -1,0 +1,22 @@
+{
+  "arena-sky-training": {
+    "src": "/assets/arena/sky-training-arena.png",
+    "alt": "云端幻想掼蛋训练场背景",
+    "aspectRatio": "16:9"
+  },
+  "arena-opponent-top": {
+    "src": "/assets/arena/opponent-top-master.png",
+    "alt": "对家掼蛋高手头像",
+    "aspectRatio": "1:1"
+  },
+  "arena-opponent-left": {
+    "src": "/assets/arena/opponent-left-master.png",
+    "alt": "上家掼蛋高手头像",
+    "aspectRatio": "1:1"
+  },
+  "arena-opponent-right": {
+    "src": "/assets/arena/opponent-right-master.png",
+    "alt": "下家掼蛋高手头像",
+    "aspectRatio": "1:1"
+  }
+}

@@ -97,6 +97,34 @@
     "alt": "冠军训练室中 AI 教练指导高手成长的高级策略插图",
     "aspectRatio": "16:9"
   },
+  "arena-sky-training": {
+    "id": "arena-sky-training",
+    "type": "png",
+    "src": "/assets/arena/sky-training-arena.png",
+    "alt": "云端幻想掼蛋训练场背景",
+    "aspectRatio": "16:9"
+  },
+  "arena-opponent-top": {
+    "id": "arena-opponent-top",
+    "type": "png",
+    "src": "/assets/arena/opponent-top-master.png",
+    "alt": "对家掼蛋高手头像",
+    "aspectRatio": "1:1"
+  },
+  "arena-opponent-left": {
+    "id": "arena-opponent-left",
+    "type": "png",
+    "src": "/assets/arena/opponent-left-master.png",
+    "alt": "上家掼蛋高手头像",
+    "aspectRatio": "1:1"
+  },
+  "arena-opponent-right": {
+    "id": "arena-opponent-right",
+    "type": "png",
+    "src": "/assets/arena/opponent-right-master.png",
+    "alt": "下家掼蛋高手头像",
+    "aspectRatio": "1:1"
+  },
   "placeholder-when-to-bomb-cover": {
     "id": "placeholder-when-to-bomb-cover",
     "type": "placeholder",

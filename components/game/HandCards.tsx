@@ -8,7 +8,9 @@ interface HandCardsProps {
   selectedCardIds: string[];
   invalidCardIds?: string[];
   invalidPulseKey?: number;
+  compact?: boolean;
   disabled?: boolean;
+  variant?: "default" | "arena";
   onSelectCard: (card: Card) => void;
   onSelectionChange?: (cards: Card[]) => void;
   groupSelection?: boolean;
@@ -20,9 +22,11 @@ export function HandCards({
   selectedCardIds,
   invalidCardIds = [],
   invalidPulseKey = 0,
+  compact = false,
   disabled = false,
   onSelectCard,
-  onSelectionChange
+  onSelectionChange,
+  variant = "default"
 }: HandCardsProps) {
   const updateSelection =
     onSelectionChange ??
@@ -40,11 +44,13 @@ export function HandCards({
   return (
     <CardHand
       cards={cards}
+      compact={compact}
       disabled={disabled}
       invalidCardIds={invalidCardIds}
       invalidPulseKey={invalidPulseKey}
       onSelectionChange={updateSelection}
       selectedCardIds={selectedCardIds}
+      variant={variant}
     />
   );
 }

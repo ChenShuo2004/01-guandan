@@ -1,14 +1,15 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { ArenaPlayer } from "@/types/game";
 
 const positionClass = {
-  top: "left-1/2 top-[2%] -translate-x-1/2",
-  left: "left-[3%] top-[45%] -translate-y-1/2",
-  right: "right-[3%] top-[45%] -translate-y-1/2",
-  bottom: "left-1/2 bottom-[2%] -translate-x-1/2"
+  top: "left-1/2 top-[5%] -translate-x-1/2",
+  left: "left-[3.5%] top-[45%] -translate-y-1/2",
+  right: "right-[3.5%] top-[45%] -translate-y-1/2",
+  bottom: "left-1/2 bottom-[6%] -translate-x-1/2"
 };
 
 const statusLabel = {
@@ -52,10 +53,8 @@ export function PlayerSeat({ player }: PlayerSeatProps) {
                 : undefined
             }
             className={cn(
-              "relative flex h-[86px] w-[86px] items-center justify-center overflow-hidden rounded-[18px] border border-white/75 shadow-[0_16px_34px_rgba(36,125,185,0.24)] backdrop-blur-md",
-              player.isUser
-                ? "bg-gradient-to-br from-[#ffd84d] via-[#ffe680] to-[#4bb8ff]"
-                : "bg-gradient-to-br from-[#e8f7ff] via-[#8ddcff] to-[#235d94]"
+              "relative flex h-[96px] w-[96px] items-center justify-center overflow-hidden rounded-[18px] border border-white/75 shadow-[0_16px_34px_rgba(36,125,185,0.24)] backdrop-blur-md",
+              player.isUser ? "bg-white/52" : "bg-[#a4e8ff]/36"
             )}
             transition={{ duration: 1.8, repeat: Infinity }}
           >
@@ -71,7 +70,7 @@ export function PlayerSeat({ player }: PlayerSeatProps) {
             {player.score.toLocaleString("zh-CN")}
           </div>
 
-          <div className="absolute -right-9 top-4 rounded-2xl bg-[#3f8cc4]/82 px-3 py-2 text-center text-white shadow-[0_10px_24px_rgba(43,127,191,0.20)]">
+          <div className="absolute -right-11 top-4 rounded-2xl bg-[#3f8cc4]/82 px-3 py-2 text-center text-white shadow-[0_10px_24px_rgba(43,127,191,0.20)]">
             <p className="text-xs font-black">剩余</p>
             <p className="text-2xl font-black leading-none">{player.cardCount}</p>
             <p className="text-xs font-bold">张</p>
@@ -88,26 +87,22 @@ export function PlayerSeat({ player }: PlayerSeatProps) {
 }
 
 function AvatarFace({ player }: { player: ArenaPlayer }) {
-  if (player.isUser) {
-    return (
-      <div className="relative h-full w-full">
-        <div className="absolute inset-x-5 top-5 h-8 rounded-full bg-white/75" />
-        <div className="absolute left-6 top-8 h-3 w-3 rounded-full bg-[#17496d]" />
-        <div className="absolute right-6 top-8 h-3 w-3 rounded-full bg-[#17496d]" />
-        <div className="absolute bottom-5 left-1/2 h-2 w-8 -translate-x-1/2 rounded-full bg-white" />
-      </div>
-    );
-  }
-
   return (
-    <div className="relative h-full w-full">
-      <div className="absolute inset-x-4 top-3 h-8 rounded-t-full bg-[#183955]" />
-      <div className="absolute inset-x-5 bottom-3 top-8 rounded-[18px] bg-[#f1c18b]" />
-      <div className="absolute left-7 top-10 h-2.5 w-2.5 rounded-full bg-[#132a3e]" />
-      <div className="absolute right-7 top-10 h-2.5 w-2.5 rounded-full bg-[#132a3e]" />
-      <div className="absolute bottom-6 left-1/2 h-1.5 w-7 -translate-x-1/2 rounded-full bg-[#7c2e2e]" />
-    </div>
+    <Image
+      alt={`${player.role}头像`}
+      className="object-cover"
+      fill
+      sizes="96px"
+      src={avatarSrc(player)}
+    />
   );
+}
+
+function avatarSrc(player: ArenaPlayer) {
+  if (player.isUser) return "/assets/coach/coach-bubble-hologram.png";
+  if (player.position === "left") return "/assets/arena/opponent-left-master.png";
+  if (player.position === "right") return "/assets/arena/opponent-right-master.png";
+  return "/assets/arena/opponent-top-master.png";
 }
 
 function CardBackFan() {

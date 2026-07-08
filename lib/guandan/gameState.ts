@@ -59,7 +59,7 @@ export function createInitialGameState(seed = 20260708): GameEngineState {
     selectedCards: [],
     invalidCardIds: [],
     invalidPulseKey: 0,
-    trainingPhase: "idle",
+    trainingPhase: "playing",
     gameStatus: "playing",
     winner: null,
     passCount: 0,

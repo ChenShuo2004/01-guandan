@@ -15,6 +15,7 @@ interface CardHandProps {
   disabled?: boolean;
   compact?: boolean;
   onSelectionChange: (cards: Card[]) => void;
+  variant?: "default" | "arena";
 }
 
 export function CardHand({
@@ -24,7 +25,8 @@ export function CardHand({
   invalidPulseKey = 0,
   disabled = false,
   compact = false,
-  onSelectionChange
+  onSelectionChange,
+  variant = "default"
 }: CardHandProps) {
   const groups = useMemo(() => groupCardsForHand(cards), [cards]);
   const selectedSet = useMemo(() => new Set(selectedCardIds), [selectedCardIds]);
@@ -91,7 +93,10 @@ export function CardHand({
   return (
     <div
       className={cn(
-        "relative overflow-hidden rounded-[26px] border border-white/20 bg-[#061a24]/78 px-3 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:px-4",
+        "relative overflow-hidden backdrop-blur-xl",
+        variant === "arena"
+          ? "rounded-[22px] border border-white/55 bg-[#d8f1ff]/58 px-3 py-3 shadow-[0_18px_42px_rgba(35,112,178,0.20)]"
+          : "rounded-[26px] border border-white/20 bg-[#061a24]/78 px-3 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-4",
         disabled && "opacity-75"
       )}
       data-selected-count={selectedCardIds.length}
@@ -103,7 +108,12 @@ export function CardHand({
         />
       ) : null}
 
-      <div className="relative flex min-w-0 items-end justify-center gap-3 overflow-x-auto px-2 pb-4 pt-6 sm:gap-4">
+      <div
+        className={cn(
+          "relative flex min-w-0 items-end justify-center overflow-x-auto px-2",
+          variant === "arena" ? "gap-1 pb-4 pt-2" : "gap-3 pb-4 pt-6 sm:gap-4"
+        )}
+      >
         {groups.map((group) => (
           <CardGroup
             compact={compact}
