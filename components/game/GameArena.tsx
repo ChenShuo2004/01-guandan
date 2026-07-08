@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { ActionButtons } from "@/components/game/ActionButtons";
-import { CardSortButton } from "@/components/game/CardSort";
 import { CoachAvatar } from "@/components/game/CoachAvatar";
 import { CoachBubble } from "@/components/game/CoachBubble";
 import { GameTable } from "@/components/game/GameTable";
@@ -146,9 +145,6 @@ export function GameArena() {
                     ? "本轮可出牌"
                     : `等待 ${currentPlayer?.role ?? "AI"}`}
             </span>
-            {phase === "playing" ? (
-              <CardSortButton disabled={!isUserTurn || !userPlayer?.hand.length} onClick={sortHand} />
-            ) : null}
           </div>
           <HandCards
             cards={userPlayer?.hand ?? []}

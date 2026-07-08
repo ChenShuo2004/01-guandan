@@ -57,7 +57,9 @@ export function ActionButtons({
 
       {phase === "playing" ? (
         <div className="flex flex-col gap-3">
-          <ActionButton className="bg-[#16c9bd] text-white" disabled={!canAct || selectedCount === 0} label={selectedCount > 0 ? `提交出牌 ${selectedCount}` : "提交出牌"} onClick={onPlay} />
+          {!compact || selectedCount === 0 ? (
+            <ActionButton className="bg-[#16c9bd] text-white" disabled={!canAct || selectedCount === 0} label={selectedCount > 0 ? `提交出牌 ${selectedCount}` : "提交出牌"} onClick={onPlay} />
+          ) : null}
           <ActionButton className="relative bg-[#ffd84d] text-[#6a4b00]" disabled={!canAct} label="查看提示" onClick={onTip} />
           <ActionButton className="bg-[#0f74ef] text-white" disabled={!canAct} label="选择不出" onClick={onPass} />
           <ActionButton className="border border-white/65 bg-white/55 text-[#17496d]" disabled={!canAct} label="整理手牌" onClick={onSortHand} />
