@@ -3,7 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node scripts/dev-frontend.mjs",
+    "dev:frontend": "node scripts/dev-frontend.mjs",
+    "dev:backend": "node backend/server.mjs",
     "build": "next build",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit"
