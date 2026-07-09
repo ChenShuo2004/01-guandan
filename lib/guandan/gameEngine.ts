@@ -2,7 +2,11 @@ import type { Card } from "@/lib/guandan/card";
 import { sortCards } from "@/lib/guandan/card";
 import { canBeatLastPlay } from "@/lib/guandan/cardCompare";
 import { detectCardPattern } from "@/lib/guandan/cardRule";
-import type { GameEngineState } from "@/lib/guandan/gameState";
+import {
+  decrementCardRemainingCount,
+  updatePlayerActionState,
+  type GameEngineState
+} from "@/lib/guandan/gameState";
 import type { PlayerId } from "@/lib/guandan/player";
 import { getNextActiveTurn } from "@/lib/guandan/turnManager";
 
@@ -120,6 +124,13 @@ export function playCards(state: GameEngineState, playerId: PlayerId, cards: Car
       label: `${currentPlayer.role} 出牌`,
       remainingSeconds: null
     },
+    playerActionState: updatePlayerActionState(state.playerActionState, {
+      playerId,
+      status: "playing",
+      label: `${currentPlayer.role} 出牌`,
+      remainingSeconds: null
+    }),
+    cardRemainingCount: decrementCardRemainingCount(state.cardRemainingCount, cards),
     animationState: {
       cardMoving: true,
       cardShowing: true,
@@ -211,6 +222,12 @@ export function passTurn(state: GameEngineState, playerId: PlayerId): PlayCardsR
       label: trickResets ? `${currentPlayer.role} 不出，本轮结束` : `${currentPlayer.role} 不出`,
       remainingSeconds: null
     },
+    playerActionState: updatePlayerActionState(state.playerActionState, {
+      playerId,
+      status: "playing",
+      label: trickResets ? `${currentPlayer.role} 不出，本轮结束` : `${currentPlayer.role} 不出`,
+      remainingSeconds: null
+    }),
     animationState: {
       cardMoving: false,
       cardShowing: true,

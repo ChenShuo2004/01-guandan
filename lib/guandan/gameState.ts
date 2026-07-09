@@ -1,6 +1,6 @@
 import type { CoachFeedback } from "@/lib/coach/coachTypes";
 import { sortCardsForHand } from "@/lib/cards/cardSort";
-import type { Card } from "@/lib/guandan/card";
+import { getCardLabel, type Card } from "@/lib/guandan/card";
 import { createDeck, dealCards, shuffleDeck } from "@/lib/guandan/deck";
 import { initializePlayers, type GuandanPlayer, type PlayerId } from "@/lib/guandan/player";
 import type { PlayerSeat } from "@/lib/guandan/player";
@@ -15,6 +15,9 @@ export interface TurnActionState {
   label: string;
   remainingSeconds: number | null;
 }
+
+export type CardRemainingCount = Record<string, number>;
+export type PlayerActionStateMap = Partial<Record<PlayerId, TurnActionState>>;
 
 export interface PlayerRoundAction {
   turn: number;
@@ -61,6 +64,9 @@ export interface GameEngineState {
   roundComplete: boolean;
   roundClearKey: number;
   turnAction: TurnActionState;
+  playerActionState: PlayerActionStateMap;
+  cardCounterVisible: boolean;
+  cardRemainingCount: CardRemainingCount;
   animationState: CardAnimationState;
   coachMessage: string;
   coachFeedback: CoachFeedback;
@@ -82,6 +88,12 @@ export function createInitialGameState(seed = 20260708): GameEngineState {
     ...player,
     hand: sortCardsForHand(player.hand)
   }));
+  const initialTurnAction: TurnActionState = {
+    playerId: players[0]?.id ?? null,
+    status: "waiting",
+    label: "等待你出牌",
+    remainingSeconds: 15
+  };
 
   return {
     players,
@@ -100,12 +112,10 @@ export function createInitialGameState(seed = 20260708): GameEngineState {
     currentRoundActions: {},
     roundComplete: false,
     roundClearKey: 0,
-    turnAction: {
-      playerId: players[0]?.id ?? null,
-      status: "waiting",
-      label: "等待你出牌",
-      remainingSeconds: 15
-    },
+    turnAction: initialTurnAction,
+    playerActionState: createInitialPlayerActionState(players, initialTurnAction),
+    cardCounterVisible: false,
+    cardRemainingCount: createInitialCardRemainingCount(),
     animationState: {
       cardMoving: false,
       cardShowing: false,
@@ -123,4 +133,53 @@ export function getCurrentPlayer(state: GameEngineState) {
 
 export function getPlayer(state: GameEngineState, playerId: PlayerId) {
   return state.players.find((player) => player.id === playerId);
+}
+
+export function createInitialCardRemainingCount(): CardRemainingCount {
+  return createDeck().reduce<CardRemainingCount>((counts, card) => {
+    const label = getCardLabel(card);
+    counts[label] = (counts[label] ?? 0) + 1;
+    return counts;
+  }, {});
+}
+
+export function decrementCardRemainingCount(
+  current: CardRemainingCount,
+  cards: Card[]
+): CardRemainingCount {
+  return cards.reduce<CardRemainingCount>(
+    (counts, card) => {
+      const label = getCardLabel(card);
+      counts[label] = Math.max(0, (counts[label] ?? 0) - 1);
+      return counts;
+    },
+    { ...current }
+  );
+}
+
+export function createInitialPlayerActionState(
+  players: GuandanPlayer[],
+  turnAction: TurnActionState
+): PlayerActionStateMap {
+  return players.reduce<PlayerActionStateMap>((actions, player) => {
+    actions[player.id] = {
+      playerId: player.id,
+      status: player.id === turnAction.playerId ? turnAction.status : "waiting",
+      label: player.id === turnAction.playerId ? turnAction.label : "等待行动",
+      remainingSeconds: player.id === turnAction.playerId ? turnAction.remainingSeconds : null
+    };
+    return actions;
+  }, {});
+}
+
+export function updatePlayerActionState(
+  current: PlayerActionStateMap,
+  turnAction: TurnActionState
+): PlayerActionStateMap {
+  if (!turnAction.playerId) return current;
+
+  return {
+    ...current,
+    [turnAction.playerId]: turnAction
+  };
 }

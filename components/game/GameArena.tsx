@@ -4,7 +4,8 @@ import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { ActionButtons } from "@/components/game/ActionButtons";
+import { ActionToolbar } from "@/components/game/ActionToolbar";
+import { buildCounterHint, CardCounter } from "@/components/game/CardCounter";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
 import { useGameStore } from "@/store/gameStore";
@@ -95,6 +96,7 @@ export function GameArena() {
     playSelectedCards,
     pass,
     requestTip,
+    toggleCardCounter,
     showSolution,
     setTurnAction,
     clearRoundActions,
@@ -107,6 +109,10 @@ export function GameArena() {
     [activeLevel]
   );
   const effectiveCardScale = compactLayout ? 0.38 : settings.cardScale;
+  const cardCounterHint = useMemo(
+    () => buildCounterHint(state.cardRemainingCount),
+    [state.cardRemainingCount]
+  );
 
   const completeAIAction = useCallback(() => {
     if (aiTimerRef.current) {
@@ -243,29 +249,45 @@ export function GameArena() {
 
   const arenaPlayers = useMemo(
     () =>
-      state.players.map<ArenaPlayer>((player) => ({
-        id: player.id,
-        name: player.name,
-        role: roleLabel(player.seat),
-        position: player.seat,
-        cardCount: player.hand.length,
-        score: player.score,
-        isUser: player.id === "player",
-        status:
-          state.gameStatus === "finished"
-            ? "waiting"
-            : state.turnAction.playerId === player.id && state.turnAction.status === "thinking"
-              ? "thinking"
-              : currentPlayer?.id === player.id
-              ? player.kind === "ai"
+      state.players.map<ArenaPlayer>((player) => {
+        const actionState = state.playerActionState[player.id];
+
+        return {
+          id: player.id,
+          name: player.name,
+          role: roleLabel(player.seat),
+          position: player.seat,
+          cardCount: player.hand.length,
+          score: player.score,
+          isUser: player.id === "player",
+          status:
+            state.gameStatus === "finished"
+              ? "waiting"
+              : actionState?.status === "thinking"
                 ? "thinking"
-                : "active"
-              : player.passed
-                ? "passed"
-                : "waiting",
-        countdown: state.turnAction.playerId === player.id ? state.turnAction.remainingSeconds : null
-      })),
-    [currentPlayer?.id, state.gameStatus, state.players, state.turnAction.playerId, state.turnAction.remainingSeconds, state.turnAction.status]
+                : currentPlayer?.id === player.id
+                  ? player.kind === "ai"
+                    ? "thinking"
+                    : "active"
+                  : player.passed
+                    ? "passed"
+                    : "waiting",
+          countdown:
+            actionState?.playerId === player.id
+              ? actionState.remainingSeconds
+              : state.turnAction.playerId === player.id
+                ? state.turnAction.remainingSeconds
+                : null
+        };
+      }),
+    [
+      currentPlayer?.id,
+      state.gameStatus,
+      state.playerActionState,
+      state.players,
+      state.turnAction.playerId,
+      state.turnAction.remainingSeconds
+    ]
   );
 
   const phase = state.trainingPhase;
@@ -311,6 +333,18 @@ export function GameArena() {
     setFeedbackSaved(true);
   }
 
+  const coachTeachingText = state.cardCounterVisible
+    ? `${formatCoachTeaching(
+        state.coachFeedback.message,
+        state.coachFeedback.reason,
+        state.coachFeedback.suggestion
+      )}\n记牌提示：${cardCounterHint}`
+    : formatCoachTeaching(
+        state.coachFeedback.message,
+        state.coachFeedback.reason,
+        state.coachFeedback.suggestion
+      );
+
   return (
     <main className="training-arena relative h-[100dvh] min-h-[390px] overflow-hidden bg-[#72caff] text-[#12395a]">
       <ArenaBackground />
@@ -331,6 +365,8 @@ export function GameArena() {
           roundActions={state.currentRoundActions}
           turnAction={state.turnAction}
         />
+
+        <CardCounter counts={state.cardRemainingCount} visible={state.cardCounterVisible} />
 
         {settings.aiTips ? (
           <motion.section
@@ -355,7 +391,7 @@ export function GameArena() {
             <div className="min-w-0">
               <p className="text-lg font-black text-[#12395a] max-lg:text-base">Ace Coach 建议</p>
               <p className="mt-2 whitespace-pre-wrap text-base font-bold leading-7 text-[#244d68] max-lg:mt-1 max-lg:text-sm max-lg:leading-5">
-                {formatCoachTeaching(state.coachFeedback.message, state.coachFeedback.reason, state.coachFeedback.suggestion)}
+                {coachTeachingText}
               </p>
             </div>
           </motion.section>
@@ -369,12 +405,25 @@ export function GameArena() {
           <AnalysisPanel reason={state.coachFeedback.reason} status={roundStatus} />
         </div>
 
-        <section className="training-hand-dock absolute bottom-3 left-3 right-[158px] z-[60] min-w-0 lg:left-[220px] lg:right-[240px] 2xl:left-[300px] 2xl:right-[300px]">
-          <ReferenceActionBar
+        <section className="training-hand-dock absolute bottom-3 left-3 right-3 z-[60] min-w-0 lg:left-[220px] lg:right-[220px] 2xl:left-[300px] 2xl:right-[300px]">
+          <ActionToolbar
             canAct={isUserTurn}
+            cardCounterVisible={state.cardCounterVisible}
+            isAIThinking={currentPlayer?.kind === "ai" && state.trainingPhase === "playing"}
+            onBackToLobby={goLobby}
+            onContinue={continueTraining}
+            onPass={pass}
             onPlay={playSelectedCards}
+            onRestart={restart}
+            onShowSolution={showSolution}
+            onSortHand={sortHand}
+            onStart={continueTraining}
             onTip={requestTip}
-            selectedCount={selectedCardIds.length}
+            onToggleCardCounter={toggleCardCounter}
+            onUndo={clearSelectedCards}
+            onSkipAIWait={skipAIWait}
+            phase={phase}
+            selectedCount={state.selectedCards.length}
           />
           <HandCards
             cards={userPlayer?.hand ?? []}
@@ -388,32 +437,6 @@ export function GameArena() {
             variant="arena"
           />
         </section>
-
-        <aside className="absolute bottom-3 right-3 z-[60] w-[142px] lg:right-7 lg:w-[188px]">
-          <div className="mb-2 rounded-[24px] border border-white/42 bg-[#6db8e8]/36 px-3 py-2 text-sm font-black text-[#143d5d] shadow-[0_18px_45px_rgba(38,126,190,0.18)] backdrop-blur-xl lg:mb-3 lg:px-4 lg:py-3 lg:text-base">
-            <span className="mr-2 inline-block h-3 w-3 rounded-full bg-[#1ee271]" />
-            本轮可出牌
-          </div>
-          <ActionButtons
-            canAct={isUserTurn}
-            compact
-            isAIThinking={currentPlayer?.kind === "ai" && state.trainingPhase === "playing"}
-            onBackToLobby={goLobby}
-            onContinue={continueTraining}
-            onPass={pass}
-            onPlay={playSelectedCards}
-            onRestart={restart}
-            secondaryOnly
-            onShowSolution={showSolution}
-            onSortHand={sortHand}
-            onStart={continueTraining}
-            onTip={requestTip}
-            onUndo={clearSelectedCards}
-            onSkipAIWait={skipAIWait}
-            phase={phase}
-            selectedCount={state.selectedCards.length}
-          />
-        </aside>
       </section>
 
       <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "coach"} title="AI Coach">
@@ -635,42 +658,6 @@ function AnalysisPanel({ reason, status }: { reason: string; status: string }) {
       <p className="text-[20px] font-black">{status}</p>
       <p className="mt-1 line-clamp-2 text-sm font-bold text-white/86">{reason}</p>
     </section>
-  );
-}
-
-function ReferenceActionBar({
-  canAct,
-  onPlay,
-  onTip,
-  selectedCount
-}: {
-  canAct: boolean;
-  onPlay: () => void;
-  onTip: () => void;
-  selectedCount: number;
-}) {
-  return (
-    <div className="mb-2 flex items-center justify-center gap-5 max-lg:mb-1 max-lg:gap-3">
-      <button
-        className="h-12 min-w-[128px] rounded-full border border-white/65 bg-[linear-gradient(180deg,#62c6ff,#1f78f2)] px-8 text-lg font-black text-white shadow-[0_12px_28px_rgba(31,120,242,0.28)] transition hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 max-lg:h-10 max-lg:min-w-[96px] max-lg:px-5 max-lg:text-base"
-        disabled={!canAct}
-        onClick={onTip}
-        type="button"
-      >
-        提示
-      </button>
-      <span className="grid h-11 w-11 place-items-center rounded-full border-[3px] border-[#ffdd73] bg-white text-lg font-black text-[#d33131] shadow-[0_8px_18px_rgba(132,66,20,0.18)] max-lg:h-9 max-lg:w-9 max-lg:text-base">
-        16
-      </span>
-      <button
-        className="h-12 min-w-[128px] rounded-full border border-white/65 bg-[linear-gradient(180deg,#ffd764,#ff9d20)] px-8 text-lg font-black text-white shadow-[0_12px_28px_rgba(255,157,32,0.30)] transition hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 max-lg:h-10 max-lg:min-w-[96px] max-lg:px-5 max-lg:text-base"
-        disabled={!canAct || selectedCount === 0}
-        onClick={onPlay}
-        type="button"
-      >
-        出牌
-      </button>
-    </div>
   );
 }
 

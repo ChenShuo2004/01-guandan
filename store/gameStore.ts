@@ -12,6 +12,7 @@ import { clearSelection, playCards, passTurn, toggleSelectedCard } from "@/lib/g
 import {
   createInitialGameState,
   getCurrentPlayer,
+  updatePlayerActionState,
   type GameEngineState,
   type TrainingPhase,
   type TurnActionState
@@ -29,6 +30,7 @@ type GameAction =
   | { type: "play-selected" }
   | { type: "pass" }
   | { type: "tip" }
+  | { type: "toggle-card-counter" }
   | { type: "show-solution" }
   | { type: "set-turn-action"; turnAction: TurnActionState }
   | { type: "clear-round-actions" }
@@ -39,7 +41,14 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
     case "restart":
       return createInitialGameState(Date.now());
 
-    case "start-training":
+    case "start-training": {
+      const turnAction: TurnActionState = {
+        playerId: getCurrentPlayer(state)?.id ?? null,
+        status: "waiting",
+        label: "训练开始，等待你出牌",
+        remainingSeconds: 15
+      };
+
       return applyCoachFeedback(
         {
           ...state,
@@ -47,12 +56,8 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
           invalidCardIds: [],
           tipMessage: null,
           roundComplete: false,
-          turnAction: {
-            playerId: getCurrentPlayer(state)?.id ?? null,
-            status: "waiting",
-            label: "训练开始，等待你出牌",
-            remainingSeconds: 15
-          }
+          turnAction,
+          playerActionState: updatePlayerActionState(state.playerActionState, turnAction)
         },
         {
           type: "tip",
@@ -62,20 +67,25 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
           suggestion: "先选一组低成本牌型，再提交出牌；不确定时点“查看提示”。"
         }
       );
+    }
 
-    case "continue-training":
+    case "continue-training": {
+      const currentPlayer = getCurrentPlayer(state);
+      const turnAction: TurnActionState = {
+        playerId: currentPlayer?.id ?? null,
+        status: state.gameStatus === "finished" ? "finished" : "waiting",
+        label: state.gameStatus === "finished" ? "训练完成" : `${currentPlayer?.role ?? "玩家"} 准备行动`,
+        remainingSeconds: currentPlayer?.id === "player" ? 15 : null
+      };
+
       return applyCoachFeedback(
         {
           ...state,
           trainingPhase: state.gameStatus === "finished" ? "completed" : "playing",
           invalidCardIds: [],
           tipMessage: null,
-          turnAction: {
-            playerId: getCurrentPlayer(state)?.id ?? null,
-            status: state.gameStatus === "finished" ? "finished" : "waiting",
-            label: state.gameStatus === "finished" ? "训练完成" : `${getCurrentPlayer(state)?.role ?? "玩家"} 准备行动`,
-            remainingSeconds: getCurrentPlayer(state)?.id === "player" ? 15 : null
-          }
+          turnAction,
+          playerActionState: updatePlayerActionState(state.playerActionState, turnAction)
         },
         state.gameStatus === "finished"
           ? {
@@ -93,6 +103,7 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
               suggestion: "如果轮到 AI，先观察它的出牌；轮到你时再决定是否压过。"
             }
       );
+    }
 
     case "toggle-card": {
       if (state.trainingPhase !== "playing" || state.gameStatus !== "playing" || getCurrentPlayer(state)?.id !== "player") return state;
@@ -220,6 +231,12 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
       );
     }
 
+    case "toggle-card-counter":
+      return {
+        ...state,
+        cardCounterVisible: !state.cardCounterVisible
+      };
+
     case "show-solution": {
       if (state.trainingPhase !== "analysis") return state;
       const feedback = analyzeHint(state);
@@ -240,7 +257,8 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
     case "set-turn-action":
       return {
         ...state,
-        turnAction: action.turnAction
+        turnAction: action.turnAction,
+        playerActionState: updatePlayerActionState(state.playerActionState, action.turnAction)
       };
 
     case "clear-round-actions":
@@ -265,17 +283,20 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
           ? playCards(state, currentPlayer.id, aiAction.cards)
           : passTurn(state, currentPlayer.id);
 
+      const turnAction: TurnActionState = {
+        playerId: currentPlayer.id,
+        status: "analyzing",
+        label: aiAction.action === "play" ? `${currentPlayer.role} 已出牌，等待分析` : `${currentPlayer.role} 选择不出`,
+        remainingSeconds: null
+      };
+
       return withCoach({
         ...result.state,
         trainingPhase: result.state.gameStatus === "finished" ? "completed" : "playing",
         invalidCardIds: [],
         tipMessage: null,
-        turnAction: {
-          playerId: currentPlayer.id,
-          status: "analyzing",
-          label: aiAction.action === "play" ? `${currentPlayer.role} 已出牌，等待分析` : `${currentPlayer.role} 选择不出`,
-          remainingSeconds: null
-        },
+        turnAction,
+        playerActionState: updatePlayerActionState(result.state.playerActionState, turnAction),
         animationState: {
           cardMoving: false,
           cardShowing: true,
@@ -352,6 +373,10 @@ export function useGameStore() {
     dispatch({ type: "show-solution" });
   }, []);
 
+  const toggleCardCounter = useCallback(() => {
+    dispatch({ type: "toggle-card-counter" });
+  }, []);
+
   const setTurnAction = useCallback((turnAction: TurnActionState) => {
     dispatch({ type: "set-turn-action", turnAction });
   }, []);
@@ -383,6 +408,7 @@ export function useGameStore() {
     playSelectedCards,
     pass,
     requestTip,
+    toggleCardCounter,
     showSolution,
     setTurnAction,
     clearRoundActions,
