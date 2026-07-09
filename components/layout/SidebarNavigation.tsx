@@ -17,7 +17,10 @@ export function SidebarNavigation() {
       <nav className="mt-10 grid gap-2">
         {sidebarNavigationItems.map((item) => {
           const isActive =
-            item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            item.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(item.href) ||
+                (item.href === "/learning-path" && pathname.startsWith("/lessons"));
 
           return (
             <Link
@@ -37,7 +40,7 @@ export function SidebarNavigation() {
       <div className="absolute bottom-6 left-4 right-4">
         <Link
           className="flex h-12 items-center justify-center rounded-xl bg-[#0058be] text-sm font-black text-white shadow-[0_12px_26px_rgba(0,88,190,0.24)]"
-          href="/practice"
+          href="/training"
         >
           开始训练
         </Link>

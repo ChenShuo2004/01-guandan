@@ -2,7 +2,8 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import type { MutableRefObject } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import type { GuandanCourse, GuandanQuestion } from "@/lib/guandan/catalog";
 
@@ -21,8 +22,30 @@ interface GuandanCourseDetailProps {
   questions: GuandanQuestion[];
 }
 
+const pageVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      duration: 0.35,
+      ease: "easeOut",
+      staggerChildren: 0.12
+    }
+  }
+};
+
+const blockVariants = {
+  hidden: { opacity: 0, y: 18 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.48, ease: "easeOut" }
+  }
+};
+
 export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailProps) {
   const primaryQuestion = questions[0];
+  const questionRef = useRef<HTMLElement | null>(null);
   const [selectedCard, setSelectedCard] = useState<FocusCard | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
   const [questionState, setQuestionState] = useState<QuestionState>("idle");
@@ -43,27 +66,40 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
   }
 
   return (
-    <div className="relative">
-      <section className="grid gap-6 xl:grid-cols-[minmax(0,65fr)_minmax(340px,35fr)]">
+    <motion.div
+      animate="show"
+      className="relative"
+      initial="hidden"
+      variants={pageVariants}
+    >
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,70fr)_minmax(340px,30fr)]">
         <main className="min-w-0">
-          <section className="relative overflow-hidden rounded-[32px] border border-white/30 bg-[linear-gradient(145deg,rgba(96,73,110,0.50)_0%,rgba(113,196,255,0.28)_100%)] p-5 shadow-2xl backdrop-blur-xl md:p-8">
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(255,255,255,0.20),transparent_34%),radial-gradient(circle_at_18%_86%,rgba(100,168,254,0.22),transparent_38%)]" />
-            <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:radial-gradient(circle,white_1px,transparent_1px)] [background-size:40px_40px]" />
+          <motion.section
+            className="relative overflow-hidden rounded-[32px] border border-white/45 bg-[linear-gradient(145deg,rgba(38,49,67,0.92)_0%,rgba(0,88,190,0.78)_46%,rgba(113,196,255,0.48)_100%)] p-5 shadow-[0_30px_80px_rgba(0,88,190,0.20)] backdrop-blur-xl md:p-8"
+            variants={blockVariants}
+          >
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_16%,rgba(255,255,255,0.28),transparent_32%),radial-gradient(circle_at_18%_88%,rgba(173,198,255,0.25),transparent_36%)]" />
+            <div className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:radial-gradient(circle,white_1px,transparent_1px)] [background-size:38px_38px]" />
 
-            <div className="relative z-10 rounded-2xl border border-white/10 bg-white/8 p-4 backdrop-blur-md">
-              <div className="flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <span className="material-symbols-outlined text-[#adc6ff]">lightbulb</span>
-                  <span className="text-sm font-bold leading-6 text-white/90">
-                    今日重点：不要急着出牌，先判断牌权、角色和对手变化
+            <motion.div
+              className="relative z-10 rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-md"
+              variants={blockVariants}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-start gap-3">
+                  <span className="material-symbols-outlined mt-0.5 text-[#adc6ff]">
+                    lightbulb
                   </span>
+                  <p className="text-sm font-bold leading-6 text-white/92">
+                    今日重点：不要急着出牌，先判断牌权、角色和对手变化。
+                  </p>
                 </div>
                 <span className="material-symbols-outlined text-sm text-white/45">close</span>
               </div>
-            </div>
+            </motion.div>
 
             <section className="relative z-10 mt-8 flex items-start justify-between gap-6">
-              <button
+              <motion.button
                 className="space-y-4 text-left"
                 onClick={() =>
                   setSelectedCard({
@@ -75,30 +111,36 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
                   })
                 }
                 type="button"
+                variants={blockVariants}
               >
-                <span className="inline-flex rounded-full bg-[#0058be]/24 px-4 py-2 text-xs font-black tracking-wider text-[#adc6ff] backdrop-blur-sm">
+                <span className="inline-flex rounded-full bg-white/14 px-4 py-2 text-xs font-black tracking-[0.14em] text-[#d8e2ff] backdrop-blur-sm">
                   核心知识卡
                 </span>
-                <h1 className="text-[40px] font-black leading-tight text-white drop-shadow-md">
+                <h1 className="max-w-2xl text-[34px] font-black leading-tight text-white drop-shadow-md md:text-[42px]">
                   {course.title}
                 </h1>
-                <p className="max-w-2xl text-lg font-bold leading-8 text-white/72">
+                <p className="max-w-2xl text-lg font-bold leading-8 text-white/74">
                   {course.description}
                 </p>
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
                 aria-label="打开 AI 教练讲解"
+                animate={{ y: [0, -8, 0] }}
                 className="relative hidden shrink-0 md:block"
                 onClick={() => setCoachOpen(true)}
+                transition={{ duration: 4.2, ease: "easeInOut", repeat: Infinity }}
                 type="button"
+                variants={blockVariants}
               >
-                <span className="absolute -inset-4 rounded-full bg-[#0058be]/30 blur-xl" />
-                <span className="relative block h-28 w-28 overflow-hidden rounded-2xl border-2 border-white/20 shadow-2xl">
+                <span className="absolute -inset-5 rounded-full bg-[#64a8fe]/40 blur-2xl" />
+                <span className="absolute -inset-1 rounded-[28px] border border-white/20" />
+                <span className="relative block h-28 w-28 overflow-hidden rounded-2xl border-2 border-white/25 bg-white/12 shadow-2xl">
                   <Image
                     alt="AI Coach Ace"
                     className="object-cover"
                     fill
+                    priority
                     sizes="112px"
                     src="/assets/coach/coach-analysis-mode.png"
                   />
@@ -106,11 +148,11 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
                 <span className="absolute -bottom-2 -right-3 rounded-lg bg-white px-3 py-1 text-[10px] font-black text-[#0058be] shadow-lg">
                   ACE COACH
                 </span>
-              </button>
+              </motion.button>
             </section>
 
-            <button
-              className="relative z-10 mt-8 w-full overflow-hidden rounded-2xl border border-white/20 bg-white/62 p-7 text-center shadow-[0_4px_24px_rgba(0,0,0,0.05)] backdrop-blur-sm"
+            <motion.button
+              className="relative z-10 mt-8 w-full overflow-hidden rounded-2xl border border-white/28 bg-white/72 p-7 text-center shadow-[0_18px_50px_rgba(0,0,0,0.08)] backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:bg-white/82 hover:shadow-[0_24px_60px_rgba(0,88,190,0.16)]"
               onClick={() =>
                 setSelectedCard({
                   title: slogan,
@@ -121,20 +163,24 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
                 })
               }
               type="button"
+              variants={blockVariants}
             >
               <div className="absolute right-4 top-3 flex items-center gap-1 text-[#424754]/45">
                 <span className="text-[10px] font-black">口诀卡</span>
                 <span className="material-symbols-outlined text-sm">zoom_in</span>
               </div>
-              <p className="px-3 text-[28px] font-black leading-relaxed text-[#0058be] drop-shadow-sm">
+              <p className="px-2 text-[26px] font-black leading-relaxed text-[#0058be] drop-shadow-sm md:px-5 md:text-[30px]">
                 “{slogan}”
               </p>
               <p className="mt-4 text-xs font-bold text-[#424754]/60">
                 {course.sourceChapter} · PDF 页码 {course.sourcePages.join("、")}
               </p>
-            </button>
+            </motion.button>
 
-            <section className="relative z-10 mt-8 grid gap-6 md:grid-cols-2">
+            <motion.section
+              className="relative z-10 mt-8 grid gap-6 md:grid-cols-2"
+              variants={blockVariants}
+            >
               <ComparisonCard
                 body={course.wrongPlay}
                 image={sourceImage}
@@ -149,11 +195,13 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
                 onOpen={setSelectedCard}
                 tone="green"
               />
-            </section>
-          </section>
+            </motion.section>
+          </motion.section>
+
+          <LearningLoop />
         </main>
 
-        <aside className="min-w-0 space-y-6 xl:sticky xl:top-8 xl:self-start">
+        <aside className="min-w-0 space-y-6 xl:sticky xl:top-20 xl:self-start">
           {primaryQuestion ? (
             <TrainingQuestionCard
               isCorrect={isCorrect}
@@ -162,6 +210,7 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
               onSubmit={submitAnswer}
               onViewReview={() => setQuestionState("review")}
               question={primaryQuestion}
+              questionRef={questionRef}
               questionState={questionState}
               selectedAnswer={selectedAnswer}
               title={course.title}
@@ -178,7 +227,33 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
 
       {coachOpen ? <CoachPanel course={course} onClose={() => setCoachOpen(false)} /> : null}
       {selectedCard ? <FocusModal card={selectedCard} onClose={() => setSelectedCard(null)} /> : null}
-    </div>
+    </motion.div>
+  );
+}
+
+function LearningLoop() {
+  const steps = ["知识理解", "口诀记忆", "案例分析", "训练题", "AI反馈"];
+
+  return (
+    <motion.section
+      className="mt-6 rounded-[28px] border border-[#d8e3fb] bg-white/74 p-5 shadow-[0_12px_40px_rgba(0,88,190,0.07)] backdrop-blur-xl"
+      variants={blockVariants}
+    >
+      <div className="flex flex-wrap items-center gap-3">
+        {steps.map((step, index) => (
+          <div className="flex items-center gap-3" key={step}>
+            <span className="rounded-xl border border-[#adc6ff]/70 bg-[#f0f7ff] px-3 py-2 text-xs font-black text-[#0058be]">
+              {step}
+            </span>
+            {index < steps.length - 1 ? (
+              <span className="material-symbols-outlined text-base text-[#adc6ff]">
+                arrow_forward
+              </span>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    </motion.section>
   );
 }
 
@@ -200,10 +275,10 @@ function ComparisonCard({
   return (
     <button
       className={[
-        "group flex min-h-[300px] flex-col gap-4 rounded-2xl border p-5 text-left backdrop-blur-sm transition duration-300 hover:-translate-y-2",
+        "group flex min-h-[250px] flex-col gap-4 rounded-2xl border p-5 text-left backdrop-blur-sm transition duration-300 hover:-translate-y-2",
         isError
-          ? "border-[#ef4444]/25 bg-[#ef4444]/5 shadow-[0_0_20px_rgba(239,68,68,0.10)]"
-          : "border-[#3b82f6]/25 bg-[#3b82f6]/5 shadow-[0_0_20px_rgba(59,130,246,0.10)]"
+          ? "border-[#ef4444]/30 bg-[#fff5f5]/82 shadow-[0_0_20px_rgba(239,68,68,0.12)] hover:shadow-[0_18px_42px_rgba(239,68,68,0.16)]"
+          : "border-[#3b82f6]/30 bg-[#f0f7ff]/86 shadow-[0_0_20px_rgba(59,130,246,0.12)] hover:shadow-[0_18px_42px_rgba(59,130,246,0.16)]"
       ].join(" ")}
       onClick={() =>
         onOpen({
@@ -218,14 +293,20 @@ function ComparisonCard({
       }
       type="button"
     >
-      <div className="relative flex h-40 items-center justify-center overflow-hidden rounded-xl bg-black/10">
+      <div className="relative flex h-32 items-center justify-center overflow-hidden rounded-xl bg-white/44">
+        <span
+          className={[
+            "absolute h-24 w-24 rounded-full blur-2xl",
+            isError ? "bg-[#ef4444]/18" : "bg-[#3b82f6]/18"
+          ].join(" ")}
+        />
         <div
           className={[
-            "relative h-28 w-20 overflow-hidden rounded-lg border shadow-2xl",
+            "relative h-24 w-16 overflow-hidden rounded-lg border shadow-2xl",
             isError ? "-rotate-12 border-[#ba1a1a]/30" : "rotate-6 border-[#0058be]/30"
           ].join(" ")}
         >
-          <Image alt={label} className="object-cover" fill sizes="80px" src={image} />
+          <Image alt={label} className="object-cover" fill sizes="64px" src={image} />
         </div>
       </div>
       <div>
@@ -253,6 +334,7 @@ function TrainingQuestionCard({
   onSubmit,
   onViewReview,
   question,
+  questionRef,
   questionState,
   selectedAnswer,
   title
@@ -263,34 +345,39 @@ function TrainingQuestionCard({
   onSubmit: () => void;
   onViewReview: () => void;
   question: GuandanQuestion;
+  questionRef: MutableRefObject<HTMLElement | null>;
   questionState: QuestionState;
   selectedAnswer: string | null;
   title: string;
 }) {
   return (
-    <section className="flex min-h-[640px] flex-col gap-6 rounded-[32px] border border-[#d8e3fb] bg-white/82 p-6 shadow-lg backdrop-blur-xl">
+    <motion.section
+      className="scroll-mt-24 rounded-[28px] border border-[#d8e3fb] bg-white/84 p-5 shadow-[0_18px_56px_rgba(0,88,190,0.10)] backdrop-blur-xl"
+      ref={questionRef}
+      variants={blockVariants}
+    >
       <div className="flex items-center justify-between border-b border-[#d8e3fb]/70 pb-4">
         <div className="flex items-center gap-3">
           <span className="material-symbols-outlined text-[#0058be]">quiz</span>
           <h2 className="text-xl font-black text-[#111c2d]">训练题</h2>
         </div>
-        <span className="rounded-full bg-[#e7eeff] px-4 py-1 text-xs font-bold text-[#424754]">
-          {questionState === "idle" ? "第一阶段" : questionState === "answered" ? "第二阶段" : "第三阶段"}
+        <span className="rounded-xl bg-[#e7eeff] px-3 py-1 text-xs font-bold text-[#424754]">
+          {questionState === "idle" ? "判断" : questionState === "answered" ? "反馈" : "复盘"}
         </span>
       </div>
 
-      <div className="space-y-4">
-        <p className="text-lg font-black leading-8 text-[#111c2d]">
+      <div className="mt-5 space-y-4">
+        <p className="text-base font-black leading-7 text-[#111c2d]">
           学习《{title}》后，遇到同类牌局应该先看什么？
         </p>
         <p className="text-sm font-semibold leading-6 text-[#727785]">{question.question}</p>
-        <div className="space-y-4 pt-2">
+        <div className="space-y-3 pt-1">
           {question.options.map((option, index) => {
             const selected = selectedAnswer === option;
             return (
               <button
                 className={[
-                  "flex w-full items-start gap-4 rounded-xl border p-4 text-left transition active:scale-[0.98]",
+                  "flex w-full items-start gap-3 rounded-xl border p-3 text-left transition active:scale-[0.98]",
                   selected
                     ? "border-[#0058be] bg-[#0058be]/10"
                     : "border-[#c2c6d6] hover:border-[#0058be] hover:bg-[#0058be]/5",
@@ -303,7 +390,7 @@ function TrainingQuestionCard({
               >
                 <span
                   className={[
-                    "mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 text-xs font-black",
+                    "mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 text-xs font-black",
                     selected
                       ? "border-[#0058be] bg-[#0058be] text-white"
                       : "border-[#c2c6d6] text-[#424754]"
@@ -313,7 +400,7 @@ function TrainingQuestionCard({
                 </span>
                 <span
                   className={[
-                    "text-sm font-semibold leading-7",
+                    "text-sm font-semibold leading-6",
                     selected ? "text-[#0058be]" : "text-[#424754]"
                   ].join(" ")}
                 >
@@ -329,17 +416,24 @@ function TrainingQuestionCard({
         <motion.div
           animate={{ opacity: 1, y: 0, scale: 1 }}
           className={[
-            "rounded-2xl border p-4",
+            "mt-4 rounded-2xl border p-4",
             isCorrect ? "border-[#45D483] bg-[#45D483]/10" : "border-[#ba1a1a] bg-[#ffdad6]/55"
           ].join(" ")}
           initial={{ opacity: 0, y: 8, scale: 0.98 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <p className={["text-lg font-black", isCorrect ? "text-[#17814d]" : "text-[#93000a]"].join(" ")}>
+          <p
+            className={[
+              "text-lg font-black",
+              isCorrect ? "text-[#17814d]" : "text-[#93000a]"
+            ].join(" ")}
+          >
             {isCorrect ? "回答正确" : "回答错误"}
           </p>
           <p className="mt-2 text-sm font-semibold leading-6 text-[#424754]">
-            {isCorrect ? "判断方向正确，继续看完整解析。" : question.wrongReasons[0] ?? "这个选择没有抓住牌权和角色判断。"}
+            {isCorrect
+              ? "判断方向正确，继续看完整解析。"
+              : question.wrongReasons[0] ?? "这个选择没有抓住牌权和角色判断。"}
           </p>
         </motion.div>
       ) : null}
@@ -347,26 +441,30 @@ function TrainingQuestionCard({
       {questionState === "review" ? (
         <motion.div
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          className="rounded-2xl border border-[#adc6ff] bg-[#e7eeff] p-4"
+          className="mt-4 rounded-2xl border border-[#adc6ff] bg-[#e7eeff] p-4"
           initial={{ opacity: 0, y: 8, scale: 0.98 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
           <p className="text-xs font-black text-[#0058be]">标准答案</p>
-          <p className="mt-2 text-base font-black leading-7 text-[#111c2d]">{question.answer}</p>
-          <p className="mt-3 text-sm font-semibold leading-7 text-[#424754]">{question.analysis}</p>
+          <p className="mt-2 text-base font-black leading-7 text-[#111c2d]">
+            {question.answer}
+          </p>
+          <p className="mt-3 text-sm font-semibold leading-7 text-[#424754]">
+            {question.analysis}
+          </p>
         </motion.div>
       ) : null}
 
-      <div className="mt-auto space-y-4">
+      <div className="mt-5 space-y-3">
         <Button
-          className="h-20 w-full rounded-2xl text-xl shadow-lg shadow-[#0058be]/20"
+          className="h-14 w-full rounded-xl text-base shadow-lg shadow-[#0058be]/20"
           disabled={!selectedAnswer || questionState !== "idle"}
           onClick={onSubmit}
         >
-          确认提交
+          提交判断
         </Button>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
-          <Button disabled={!selectedAnswer} onClick={onViewReview} variant="secondary">
+          <Button disabled={questionState === "idle"} onClick={onViewReview} variant="secondary">
             查看解析
           </Button>
           {questionState !== "idle" ? (
@@ -376,7 +474,7 @@ function TrainingQuestionCard({
           ) : null}
         </div>
       </div>
-    </section>
+    </motion.section>
   );
 }
 
@@ -399,10 +497,11 @@ function CoachFeedback({
         : "这题暴露了判断顺序问题，先回到角色和牌权。";
 
   return (
-    <button
-      className="flex w-full items-center gap-5 rounded-[28px] border border-[#0058be]/20 bg-[#0058be]/10 p-5 text-left backdrop-blur-md"
+    <motion.button
+      className="flex w-full items-center gap-5 rounded-[28px] border border-[#0058be]/20 bg-[#0058be]/10 p-5 text-left backdrop-blur-md transition hover:-translate-y-1 hover:bg-[#0058be]/15"
       onClick={onOpen}
       type="button"
+      variants={blockVariants}
     >
       <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[#0058be] text-white shadow-inner">
         <span className="material-symbols-outlined">psychology</span>
@@ -416,7 +515,7 @@ function CoachFeedback({
           </span>
         ) : null}
       </span>
-    </button>
+    </motion.button>
   );
 }
 
@@ -445,11 +544,11 @@ function FocusModal({ card, onClose }: { card: FocusCard; onClose: () => void })
         transition={{ duration: 0.3, ease: "easeOut" }}
       >
         <div className="flex items-start justify-between gap-4">
-          <span className="rounded-full bg-[#e7eeff] px-3 py-1.5 text-sm font-black text-[#0058be]">
+          <span className="rounded-xl bg-[#e7eeff] px-3 py-1.5 text-sm font-black text-[#0058be]">
             {card.eyebrow}
           </span>
           <button
-            className="rounded-full border border-[#d8e3fb] px-3 py-1 text-sm font-black text-[#52657a]"
+            className="rounded-xl border border-[#d8e3fb] px-3 py-1 text-sm font-black text-[#52657a]"
             onClick={onClose}
             type="button"
           >
@@ -473,11 +572,11 @@ function CoachPanel({ course, onClose }: { course: GuandanCourse; onClose: () =>
     <div className="fixed bottom-24 right-5 z-40 w-[min(360px,calc(100vw-40px))] rounded-[28px] border border-[#adc6ff] bg-white p-5 shadow-[0_24px_70px_rgba(0,88,190,0.18)]">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-black text-[#0058be]">AI 讲解</p>
+          <p className="text-sm font-black text-[#0058be]">Ace Coach</p>
           <h2 className="mt-2 text-xl font-black text-[#12395a]">{course.title}</h2>
         </div>
         <button
-          className="rounded-full border border-[#d8e3fb] px-3 py-1 text-xs font-black text-[#52657a]"
+          className="rounded-xl border border-[#d8e3fb] px-3 py-1 text-xs font-black text-[#52657a]"
           onClick={onClose}
           type="button"
         >

@@ -21,16 +21,34 @@ export function AppShell({
     <div className="min-h-screen overflow-x-hidden bg-[#f9f9ff] text-[#111c2d]">
       <SidebarNavigation />
       <main className="min-h-screen pb-28 lg:pl-64 lg:pb-10">
-        <header className="sticky top-0 z-10 hidden h-16 items-center justify-between border-b border-[#e7eeff] bg-[#f9f9ff]/92 px-6 backdrop-blur lg:flex">
-          <h1 className="text-lg font-black text-[#0058be]">
-            {title ?? "掼蛋 AI 学院"}
-          </h1>
+        <header className="sticky top-0 z-10 hidden h-16 items-center justify-between border-b border-[#e7eeff] bg-white/92 px-6 backdrop-blur lg:flex">
+          <div className="flex items-center gap-3">
+            <span className="material-symbols-outlined text-[22px] text-[#0058be]">
+              auto_awesome
+            </span>
+            <h1 className="text-lg font-black text-[#0058be]">Guandan AI Academy</h1>
+          </div>
           <div className="flex items-center gap-4">
-            <div className="flex h-9 w-64 items-center gap-2 rounded-xl bg-[#e7eeff] px-4 text-sm font-semibold text-[#424754]">
-              <span>搜索打法策略...</span>
+            <div className="flex h-9 w-72 items-center gap-2 rounded-xl border border-[#d8e3fb] bg-[#f9f9ff] px-4 text-sm font-semibold text-[#424754]">
+              <span className="material-symbols-outlined text-[18px] text-[#727785]">
+                search
+              </span>
+              <span>搜索课程或技巧</span>
             </div>
-            <span className="text-[20px] text-[#263143]">●</span>
-            <span className="text-[20px] text-[#263143]">⚙</span>
+            <button
+              aria-label="通知"
+              className="grid h-9 w-9 place-items-center rounded-xl text-[#424754] transition hover:bg-[#e7eeff] hover:text-[#0058be]"
+              type="button"
+            >
+              <span className="material-symbols-outlined text-[20px]">notifications</span>
+            </button>
+            <button
+              aria-label="设置"
+              className="grid h-9 w-9 place-items-center rounded-xl text-[#424754] transition hover:bg-[#e7eeff] hover:text-[#0058be]"
+              type="button"
+            >
+              <span className="material-symbols-outlined text-[20px]">settings</span>
+            </button>
             <div className="h-9 w-9 overflow-hidden rounded-full border-2 border-[#adc6ff] bg-[#d4e3ff]">
               <Image
                 alt="用户头像"
