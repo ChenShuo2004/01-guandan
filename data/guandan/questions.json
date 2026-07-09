@@ -1,0 +1,1580 @@
+[
+  {
+    "id": "S01",
+    "assessment": "simple",
+    "type": "判断",
+    "difficulty": "初级",
+    "question": "一盘胜负主要由头游决定。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "对",
+    "analysis": "若答错，先回看胜负规则。",
+    "wrongReasons": [
+      "若答错，先回看胜负规则。"
+    ],
+    "aiCoachComment": "先不看答案对错，先看你的判断依据是不是来自牌权、角色和剩余手数。",
+    "image": "/assets/guandan/basic/b02-p010.webp",
+    "relatedCourse": "B02"
+  },
+  {
+    "id": "S02",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "初级",
+    "question": "普通牌型能否跨牌型比较大小？",
+    "options": [
+      "不能，只有炸弹可跨型",
+      "可以",
+      "只有单张可以",
+      "只看点数"
+    ],
+    "answer": "不能，只有炸弹可跨型",
+    "analysis": "说明牌型底层规则需要补强。",
+    "wrongReasons": [
+      "说明牌型底层规则需要补强。"
+    ],
+    "aiCoachComment": "先不看答案对错，先看你的判断依据是不是来自牌权、角色和剩余手数。",
+    "image": "/assets/guandan/basic/b02-p010.webp",
+    "relatedCourse": "B02"
+  },
+  {
+    "id": "S03",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "初级",
+    "question": "下列哪项不属于头游主要方式？",
+    "options": [
+      "记牌胜",
+      "炸弹胜",
+      "闯关胜",
+      "听牌胜"
+    ],
+    "answer": "记牌胜",
+    "analysis": "记牌是手段，不是头游结果。",
+    "wrongReasons": [
+      "记牌是手段，不是头游结果。"
+    ],
+    "aiCoachComment": "先不看答案对错，先看你的判断依据是不是来自牌权、角色和剩余手数。",
+    "image": "/assets/guandan/basic/b03-p011.webp",
+    "relatedCourse": "B03"
+  },
+  {
+    "id": "S04",
+    "assessment": "simple",
+    "type": "填空",
+    "difficulty": "初级",
+    "question": "同牌型中最大的牌称为____。",
+    "options": [
+      "登基牌",
+      "头游牌",
+      "主攻牌",
+      "还贡牌"
+    ],
+    "answer": "登基牌",
+    "analysis": "若不会，补 B04。",
+    "wrongReasons": [
+      "若不会，补 B04。"
+    ],
+    "aiCoachComment": "先不看答案对错，先看你的判断依据是不是来自牌权、角色和剩余手数。",
+    "image": "/assets/guandan/basic/b04-p012.webp",
+    "relatedCourse": "B04"
+  },
+  {
+    "id": "S05",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "初级",
+    "question": "起手12点以上强牌更适合什么策略？",
+    "options": [
+      "主攻争头游",
+      "全程助攻",
+      "只留牌防守",
+      "先拆大牌"
+    ],
+    "answer": "主攻争头游",
+    "analysis": "先补牌力分层，再学角色分工。",
+    "wrongReasons": [
+      "先补牌力分层，再学角色分工。"
+    ],
+    "aiCoachComment": "先不看答案对错，先看你的判断依据是不是来自牌权、角色和剩余手数。",
+    "image": "/assets/guandan/basic/b05-p015.webp",
+    "relatedCourse": "B05"
+  },
+  {
+    "id": "S06",
+    "assessment": "simple",
+    "type": "判断",
+    "difficulty": "初级",
+    "question": "大炸在所有阶段都一定比小炸更值钱。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "炸弹的价值取决于是否扭转牌路。",
+    "wrongReasons": [
+      "炸弹的价值取决于是否扭转牌路。"
+    ],
+    "aiCoachComment": "先不看答案对错，先看你的判断依据是不是来自牌权、角色和剩余手数。",
+    "image": "/assets/guandan/basic/b06-p018.webp",
+    "relatedCourse": "B06"
+  },
+  {
+    "id": "S07",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "初级",
+    "question": "主攻最重要的职责不包括哪项？",
+    "options": [
+      "送对家",
+      "争头游",
+      "处理弱路",
+      "控制节奏"
+    ],
+    "answer": "送对家",
+    "analysis": "说明主攻/助攻边界不清。",
+    "wrongReasons": [
+      "说明主攻/助攻边界不清。"
+    ],
+    "aiCoachComment": "先不看答案对错，先看你的判断依据是不是来自牌权、角色和剩余手数。",
+    "image": "/assets/guandan/basic/b10-p026.webp",
+    "relatedCourse": "B10"
+  },
+  {
+    "id": "S08",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "助攻起手在情况不明时优先打什么？",
+    "options": [
+      "对子",
+      "小单张",
+      "最大单张",
+      "炸弹"
+    ],
+    "answer": "对子",
+    "analysis": "补 J13，先学侦察和示弱。",
+    "wrongReasons": [
+      "补 J13，先学侦察和示弱。"
+    ],
+    "aiCoachComment": "先不看答案对错，先看你的判断依据是不是来自牌权、角色和剩余手数。",
+    "image": "/assets/guandan/advanced/j13-p068.webp",
+    "relatedCourse": "J13"
+  },
+  {
+    "id": "S09",
+    "assessment": "simple",
+    "type": "判断",
+    "difficulty": "中级",
+    "question": "助攻初期一般主张优先炸下家。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "初期先看对家牌路，不盲目破坏顺牌空间。",
+    "wrongReasons": [
+      "初期先看对家牌路，不盲目破坏顺牌空间。"
+    ],
+    "aiCoachComment": "先不看答案对错，先看你的判断依据是不是来自牌权、角色和剩余手数。",
+    "image": "/assets/guandan/advanced/j13-p071.webp",
+    "relatedCourse": "J13"
+  },
+  {
+    "id": "S10",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "记牌入门最核心的第一层是什么？",
+    "options": [
+      "先记4张王，再记主牌/A",
+      "先记全部小牌",
+      "只记炸弹",
+      "只记自己出过的牌"
+    ],
+    "answer": "先记4张王，再记主牌/A",
+    "analysis": "记牌要分层，不要一步到位。",
+    "wrongReasons": [
+      "记牌要分层，不要一步到位。"
+    ],
+    "aiCoachComment": "先不看答案对错，先看你的判断依据是不是来自牌权、角色和剩余手数。",
+    "image": "/assets/guandan/basic/b12-p085.webp",
+    "relatedCourse": "B12"
+  },
+  {
+    "id": "S11",
+    "assessment": "simple",
+    "type": "残局模拟",
+    "difficulty": "中级",
+    "question": "单张尾牌局中应先出大还是先出小？",
+    "options": [
+      "视是否要卡下家，通常先出略大留最小作尾",
+      "永远先出最小",
+      "永远先出最大",
+      "直接过牌"
+    ],
+    "answer": "视是否要卡下家，通常先出略大留最小作尾",
+    "analysis": "只会机械出小，说明未理解尾牌张力。",
+    "wrongReasons": [
+      "只会机械出小，说明未理解尾牌张力。"
+    ],
+    "aiCoachComment": "先不看答案对错，先看你的判断依据是不是来自牌权、角色和剩余手数。",
+    "image": "/assets/guandan/advanced/j03-p035.webp",
+    "relatedCourse": "J03"
+  },
+  {
+    "id": "S12",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "敌方余7张时，防守方更安全的思路是什么？",
+    "options": [
+      "优先出组牌，忌出小单/对子",
+      "先送小单",
+      "先送小对",
+      "只看最大牌"
+    ],
+    "answer": "优先出组牌，忌出小单/对子",
+    "analysis": "若误答，补 C06。",
+    "wrongReasons": [
+      "若误答，补 C06。"
+    ],
+    "aiCoachComment": "先不看答案对错，先看你的判断依据是不是来自牌权、角色和剩余手数。",
+    "image": "/assets/guandan/endgame/c06-p135.webp",
+    "relatedCourse": "C06"
+  },
+  {
+    "id": "A01",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "初级",
+    "question": "一人拿到头游，全队升级。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "对",
+    "analysis": "这题考的是「规则」，推荐回看 B02《胜负规则与牌型比较》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/basic/b02-p010.webp",
+    "relatedCourse": "B02"
+  },
+  {
+    "id": "A02",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "初级",
+    "question": "炸弹主要改变了什么？",
+    "options": [
+      "牌路与主动权",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "牌路与主动权",
+    "analysis": "这题考的是「炸弹」，推荐回看 B06《炸弹的真实作用》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/basic/b06-p018.webp",
+    "relatedCourse": "B06"
+  },
+  {
+    "id": "A03",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "初级",
+    "question": "听牌胜更依赖什么？",
+    "options": [
+      "队友送牌/配合",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "队友送牌/配合",
+    "analysis": "这题考的是「头游方式」，推荐回看 B03《头游的四种方式》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/basic/b03-p011.webp",
+    "relatedCourse": "B03"
+  },
+  {
+    "id": "A04",
+    "assessment": "full",
+    "type": "填空",
+    "difficulty": "初级",
+    "question": "顺子中的登基顺子是____。",
+    "options": [
+      "10JQKA",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "10JQKA",
+    "analysis": "这题考的是「登基牌」，推荐回看 B04《闯关与登基牌》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/basic/b04-p012.webp",
+    "relatedCourse": "B04"
+  },
+  {
+    "id": "A05",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "哪种更适合强牌首攻？",
+    "options": [
+      "先处理弱单张",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先处理弱单张",
+    "analysis": "这题考的是「主攻先手」，推荐回看 J01《主攻先手与处理弱路》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j01-p032.webp",
+    "relatedCourse": "J01"
+  },
+  {
+    "id": "A06",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "中级",
+    "question": "两个小单张可以长期留到残局再处理。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「弱路处理」，推荐回看 J01《主攻先手与处理弱路》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j01-p032.webp",
+    "relatedCourse": "J01"
+  },
+  {
+    "id": "A07",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "尾牌原理最核心的目标是什么？",
+    "options": [
+      "减少下家顺走关键小牌",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "减少下家顺走关键小牌",
+    "analysis": "这题考的是「尾牌」，推荐回看 J02《尾牌原理》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j02-p033.webp",
+    "relatedCourse": "J02"
+  },
+  {
+    "id": "A08",
+    "assessment": "full",
+    "type": "残局模拟",
+    "difficulty": "中级",
+    "question": "你有3和6两张小单，先出哪张？",
+    "options": [
+      "通常先出6，留3作尾",
+      "只看自己能否一手走完",
+      "过牌等下轮",
+      "先拆最大牌压住"
+    ],
+    "answer": "通常先出6，留3作尾",
+    "analysis": "这题考的是「尾牌」，推荐回看 J03《尾牌原理在残局中的应用》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j03-p035.webp",
+    "relatedCourse": "J03"
+  },
+  {
+    "id": "A09",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "中级",
+    "question": "初期任何时候都不打上家。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「不打上家」，推荐回看 J04《初期顺牌与不打上家》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j04-p038.webp",
+    "relatedCourse": "J04"
+  },
+  {
+    "id": "A10",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "遇到敌方炸弹时最经济的压法是什么？",
+    "options": [
+      "打炸弹，尽量同层压制",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "打炸弹，尽量同层压制",
+    "analysis": "这题考的是「炸什么牌」，推荐回看 J05《出炸之炸什么》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j05-p039.webp",
+    "relatedCourse": "J05"
+  },
+  {
+    "id": "A11",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "出炸通常优先打谁？",
+    "options": [
+      "上家优先",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "上家优先",
+    "analysis": "这题考的是「炸谁」，推荐回看 J06《出炸之炸谁与何时炸》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j06-p041.webp",
+    "relatedCourse": "J06"
+  },
+  {
+    "id": "A12",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "中级",
+    "question": "炸下家后立刻放小单通常是好选择。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「炸谁」，推荐回看 J06《出炸之炸谁与何时炸》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j06-p041.webp",
+    "relatedCourse": "J06"
+  },
+  {
+    "id": "A13",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "小炸多但质量不足时应怎样用？",
+    "options": [
+      "及时用，别拖死",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "及时用，别拖死",
+    "analysis": "这题考的是「出炸时机」，推荐回看 J06《出炸之炸谁与何时炸》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j06-p042.webp",
+    "relatedCourse": "J06"
+  },
+  {
+    "id": "A14",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "同时有2222和33333，通常先用哪个？",
+    "options": [
+      "33333先用",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "33333先用",
+    "analysis": "这题考的是「用哪个炸」，推荐回看 J07《出炸之用哪个炸》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j07-p044.webp",
+    "relatedCourse": "J07"
+  },
+  {
+    "id": "A15",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "哪种理牌更有利于减少手数？",
+    "options": [
+      "选择可回收、可连续出的分组",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "选择可回收、可连续出的分组",
+    "analysis": "这题考的是「优化手数」，推荐回看 J08《优化手数》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j08-p046.webp",
+    "relatedCourse": "J08"
+  },
+  {
+    "id": "A16",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "高级",
+    "question": "拆炸只会削弱牌力，几乎不值得。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「拆炸」，推荐回看 J09《拆炸技巧》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j09-p048.webp",
+    "relatedCourse": "J09"
+  },
+  {
+    "id": "A17",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "主攻形成冲刺前，炸弹应如何保留？",
+    "options": [
+      "至少保留关键控制炸",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "至少保留关键控制炸",
+    "analysis": "这题考的是「保留实力」，推荐回看 J10《保留实力与无奈等待》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j10-p050.webp",
+    "relatedCourse": "J10"
+  },
+  {
+    "id": "A18",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "残局一般为什么“逢炸为先”？",
+    "options": [
+      "抢主动权和压缩敌方选择",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "抢主动权和压缩敌方选择",
+    "analysis": "这题考的是「残局先炸」，推荐回看 J11《残局逢炸为先与骗炸》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j11-p052.webp",
+    "relatedCourse": "J11"
+  },
+  {
+    "id": "A19",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "高级",
+    "question": "骗炸的目标只是骗掉对方一炸。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「骗炸」，推荐回看 J11《残局逢炸为先与骗炸》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j11-p053.webp",
+    "relatedCourse": "J11"
+  },
+  {
+    "id": "A20",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "留风更关注什么？",
+    "options": [
+      "升级幅度与尾牌质量",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "升级幅度与尾牌质量",
+    "analysis": "这题考的是「留风」，推荐回看 J12《留风技巧》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j12-p055.webp",
+    "relatedCourse": "J12"
+  },
+  {
+    "id": "A21",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "情况不明时助攻为什么对子先行？",
+    "options": [
+      "侦察、控制、示弱",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "侦察、控制、示弱",
+    "analysis": "这题考的是「助攻起手」，推荐回看 J13《助攻起手与防守》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j13-p068.webp",
+    "relatedCourse": "J13"
+  },
+  {
+    "id": "A22",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "中级",
+    "question": "对家先发3+2，你通常应该积极接手。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「慎接对家」，推荐回看 J13《助攻起手与防守》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j13-p069.webp",
+    "relatedCourse": "J13"
+  },
+  {
+    "id": "A23",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "卡下家防单张时首用什么区间？",
+    "options": [
+      "Q优先，J/K次之，最小10",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "Q优先，J/K次之，最小10",
+    "analysis": "这题考的是「严防单张」，推荐回看 J13《助攻起手与防守》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j13-p071.webp",
+    "relatedCourse": "J13"
+  },
+  {
+    "id": "A24",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "高级",
+    "question": "助攻初期一般不炸下家，是因为下家不危险。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「初期不炸下家」，推荐回看 J13《助攻起手与防守》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j13-p072.webp",
+    "relatedCourse": "J13"
+  },
+  {
+    "id": "A25",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "精准送牌的第一原则是什么？",
+    "options": [
+      "顺对家意愿优先",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "顺对家意愿优先",
+    "analysis": "这题考的是「送对家」，推荐回看 J14《助攻送牌与转主攻》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j14-p074.webp",
+    "relatedCourse": "J14"
+  },
+  {
+    "id": "A26",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "猜不准对家牌路时最后一招是什么？",
+    "options": [
+      "出下家弱路/不吃路",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "出下家弱路/不吃路",
+    "analysis": "这题考的是「送牌」，推荐回看 J14《助攻送牌与转主攻》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j14-p075.webp",
+    "relatedCourse": "J14"
+  },
+  {
+    "id": "A27",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "高级",
+    "question": "送听必须一条路走到底，不能转主攻。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「送听与转主攻」，推荐回看 J14《助攻送牌与转主攻》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j14-p077.webp",
+    "relatedCourse": "J14"
+  },
+  {
+    "id": "A28",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "助攻转主攻的时机大约在什么时候？",
+    "options": [
+      "局面推进到约2/3，且原主攻失势",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "局面推进到约2/3，且原主攻失势",
+    "analysis": "这题考的是「转主攻」，推荐回看 J14《助攻送牌与转主攻》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/advanced/j14-p081.webp",
+    "relatedCourse": "J14"
+  },
+  {
+    "id": "A29",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "逢人配在主攻中通常更优先做什么？",
+    "options": [
+      "常优先补缺/降手数，再权衡成炸",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "常优先补缺/降手数，再权衡成炸",
+    "analysis": "这题考的是「逢人配」，推荐回看 G01《逢人配进阶》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g01-p095.webp",
+    "relatedCourse": "G01"
+  },
+  {
+    "id": "A30",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "高级",
+    "question": "残局里有炸的一方天然更容易护走赘牌。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "对",
+    "analysis": "这题考的是「护牌」，推荐回看 G02《炸弹的护牌作用》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g02-p096.webp",
+    "relatedCourse": "G02"
+  },
+  {
+    "id": "A31",
+    "assessment": "full",
+    "type": "残局模拟",
+    "difficulty": "高级",
+    "question": "桥牌的目标更接近哪一种？",
+    "options": [
+      "为自己回收或为队友送桥",
+      "只看自己能否一手走完",
+      "过牌等下轮",
+      "先拆最大牌压住"
+    ],
+    "answer": "为自己回收或为队友送桥",
+    "analysis": "这题考的是「桥牌」，推荐回看 G04《桥牌的运用》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g04-p102.webp",
+    "relatedCourse": "G04"
+  },
+  {
+    "id": "A32",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "多手3+2时，一个合理策略是什么？",
+    "options": [
+      "小3+2试探，大3+2回收",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "小3+2试探，大3+2回收",
+    "analysis": "这题考的是「组牌出尽」，推荐回看 G05《组牌要出尽》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g05-p104.webp",
+    "relatedCourse": "G05"
+  },
+  {
+    "id": "A33",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "王多时，如果你想诱炸，先出哪张更常见？",
+    "options": [
+      "往往先用较小控制王打出信息",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "往往先用较小控制王打出信息",
+    "analysis": "这题考的是「王多战法」，推荐回看 G06《王多战法》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g06-p106.webp",
+    "relatedCourse": "G06"
+  },
+  {
+    "id": "A34",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "高级",
+    "question": "无王就一定是弱牌。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「无王战法」，推荐回看 G07《无王战法与少输当赢》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g07-p108.webp",
+    "relatedCourse": "G07"
+  },
+  {
+    "id": "A35",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "“少输当赢”最适合哪种局面？",
+    "options": [
+      "明知难挡头游，先争更小损失",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "明知难挡头游，先争更小损失",
+    "analysis": "这题考的是「少输当赢」，推荐回看 G07《无王战法与少输当赢》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g07-p109.webp",
+    "relatedCourse": "G07"
+  },
+  {
+    "id": "A36",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "高级",
+    "question": "放一家打一家等于无脑放对手头游。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「放一家打一家」，推荐回看 G08《放一家打一家》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g08-p110.webp",
+    "relatedCourse": "G08"
+  },
+  {
+    "id": "A37",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "“谁打谁收”的核心目的是什么？",
+    "options": [
+      "减少手数并拿回发牌权",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "减少手数并拿回发牌权",
+    "analysis": "这题考的是「谁打谁收」，推荐回看 G09《谁打谁收与意图阻断》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g09-p112.webp",
+    "relatedCourse": "G09"
+  },
+  {
+    "id": "A38",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "阻断敌方回收意图时，通常优先怎么做？",
+    "options": [
+      "先大后小，尽量封顶；必要时直接开炸",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先大后小，尽量封顶；必要时直接开炸",
+    "analysis": "这题考的是「意图阻断」，推荐回看 G09《谁打谁收与意图阻断》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g09-p114.webp",
+    "relatedCourse": "G09"
+  },
+  {
+    "id": "A39",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "单张卡位最本质的目标是什么？",
+    "options": [
+      "防下家顺走并保留变化",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "防下家顺走并保留变化",
+    "analysis": "这题考的是「单张卡位」，推荐回看 G10《单张卡位与牌路多样性》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g10-p116.webp",
+    "relatedCourse": "G10"
+  },
+  {
+    "id": "A40",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "高级",
+    "question": "牌路越单一越容易让自己顺牌。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「多样性与灵活性」，推荐回看 G10《单张卡位与牌路多样性》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g10-p123.webp",
+    "relatedCourse": "G10"
+  },
+  {
+    "id": "A41",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "收紧信息时，哪类牌更适合明牌先出？",
+    "options": [
+      "已经暴露的信息牌",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "已经暴露的信息牌",
+    "analysis": "这题考的是「信息收放」，推荐回看 G11《信息收放与心理节奏》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g11-p128.webp",
+    "relatedCourse": "G11"
+  },
+  {
+    "id": "A42",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "中级",
+    "question": "输牌后立刻责怪队友有利于提升胜率。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「心态训练」，推荐回看 G11《信息收放与心理节奏》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g11-p137.webp",
+    "relatedCourse": "G11"
+  },
+  {
+    "id": "A43",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "风格偏控制型时更怕什么？",
+    "options": [
+      "被伴攻消耗或被迫拆资源",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "被伴攻消耗或被迫拆资源",
+    "analysis": "这题考的是「风格分析」，推荐回看 G12《风格分析、座位与观察》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g12-p140.webp",
+    "relatedCourse": "G12"
+  },
+  {
+    "id": "A44",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "中级",
+    "question": "座位选择与上下家关系无关。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「座位选择」，推荐回看 G12《风格分析、座位与观察》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g12-p142.webp",
+    "relatedCourse": "G12"
+  },
+  {
+    "id": "A45",
+    "assessment": "full",
+    "type": "判断",
+    "difficulty": "中级",
+    "question": "迷惑对手可以靠明显表情或提前暗号。",
+    "options": [
+      "对",
+      "错"
+    ],
+    "answer": "错",
+    "analysis": "这题考的是「礼仪」，推荐回看 G13《迷惑、礼仪与行业视野》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g13-p145.webp",
+    "relatedCourse": "G13"
+  },
+  {
+    "id": "A46",
+    "assessment": "full",
+    "type": "残局模拟",
+    "difficulty": "高级",
+    "question": "敌方余5-6张时，防守优先关注什么？",
+    "options": [
+      "典型危险组合与听牌威胁",
+      "只看自己能否一手走完",
+      "过牌等下轮",
+      "先拆最大牌压住"
+    ],
+    "answer": "典型危险组合与听牌威胁",
+    "analysis": "这题考的是「余5/6残局」，推荐回看 C05《余五至余六张残局》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/endgame/c05-p132.webp",
+    "relatedCourse": "C05"
+  },
+  {
+    "id": "A47",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "敌方余7-8张时，防守方更应避免什么？",
+    "options": [
+      "小单、对子、三不带过早送出",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "小单、对子、三不带过早送出",
+    "analysis": "这题考的是「余7/8残局」，推荐回看 C06《余七至余八张残局》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/endgame/c06-p135.webp",
+    "relatedCourse": "C06"
+  },
+  {
+    "id": "A48",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "敌方余9-10张时，什么结构更危险？",
+    "options": [
+      "3+2或顺子型组合",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "3+2或顺子型组合",
+    "analysis": "这题考的是「余9/10残局」，推荐回看 C07《余九至余十张残局》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/endgame/c07-p136.webp",
+    "relatedCourse": "C07"
+  },
+  {
+    "id": "A49",
+    "assessment": "full",
+    "type": "残局模拟",
+    "difficulty": "高级",
+    "question": "炸弹护牌案例中，是否该立刻净关？",
+    "options": [
+      "视是否先消灭敌方火力",
+      "只看自己能否一手走完",
+      "过牌等下轮",
+      "先拆最大牌压住"
+    ],
+    "answer": "视是否先消灭敌方火力",
+    "analysis": "这题考的是「护牌」，推荐回看 C03《炸弹护牌残局》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/endgame/c03-p096.webp",
+    "relatedCourse": "C03"
+  },
+  {
+    "id": "A50",
+    "assessment": "full",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "原书最后讨论AI与平台，放进系统里最适合转成什么？",
+    "options": [
+      "产品视野课/用户教育内容，而非基础课",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "产品视野课/用户教育内容，而非基础课",
+    "analysis": "这题考的是「行业视野」，推荐回看 G13《迷惑、礼仪与行业视野》对应 PDF 页。",
+    "wrongReasons": [
+      "只看牌面大小，没有看当前角色和牌权。",
+      "把一次能压住当成全局最优解。"
+    ],
+    "aiCoachComment": "你的选择要回到一个问题：这手牌打完后，谁更舒服？",
+    "image": "/assets/guandan/expert/g13-p160.webp",
+    "relatedCourse": "G13"
+  },
+  {
+    "id": "D-B01",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "初级",
+    "question": "学完《为什么要学掼蛋》后，遇到同类牌局应先看什么？",
+    "options": [
+      "先判断「起源」，再结合角色和牌权选择下一手。",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先判断「起源」，再结合角色和牌权选择下一手。",
+    "analysis": "这题用于确认《为什么要学掼蛋》的核心判断是否已经建立。",
+    "wrongReasons": [
+      "把掼蛋理解成单人比大小",
+      "没有把 PDF 中的概念转成可执行判断。"
+    ],
+    "aiCoachComment": "先找出这手牌的主要矛盾，再选择出牌。不要只凭牌面大小做决策。",
+    "image": "/assets/guandan/basic/b01-p009.webp",
+    "relatedCourse": "B01"
+  },
+  {
+    "id": "D-B07",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "学完《配炸入门》后，遇到同类牌局应先看什么？",
+    "options": [
+      "先判断「配炸」，再结合角色和牌权选择下一手。",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先判断「配炸」，再结合角色和牌权选择下一手。",
+    "analysis": "这题用于确认《配炸入门》的核心判断是否已经建立。",
+    "wrongReasons": [
+      "为了成炸牺牲整体牌路",
+      "没有把 PDF 中的概念转成可执行判断。"
+    ],
+    "aiCoachComment": "先找出这手牌的主要矛盾，再选择出牌。不要只凭牌面大小做决策。",
+    "image": "/assets/guandan/basic/b07-p020.webp",
+    "relatedCourse": "B07"
+  },
+  {
+    "id": "D-B08",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "学完《七种牌路的属性》后，遇到同类牌局应先看什么？",
+    "options": [
+      "先判断「单张」，再结合角色和牌权选择下一手。",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先判断「单张」，再结合角色和牌权选择下一手。",
+    "analysis": "这题用于确认《七种牌路的属性》的核心判断是否已经建立。",
+    "wrongReasons": [
+      "只看牌型大小，不看速度和灵活性",
+      "没有把 PDF 中的概念转成可执行判断。"
+    ],
+    "aiCoachComment": "先找出这手牌的主要矛盾，再选择出牌。不要只凭牌面大小做决策。",
+    "image": "/assets/guandan/basic/b08-p022.webp",
+    "relatedCourse": "B08"
+  },
+  {
+    "id": "D-B09",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "学完《七种牌路的实战特点》后，遇到同类牌局应先看什么？",
+    "options": [
+      "先判断「牌路特点」，再结合角色和牌权选择下一手。",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先判断「牌路特点」，再结合角色和牌权选择下一手。",
+    "analysis": "这题用于确认《七种牌路的实战特点》的核心判断是否已经建立。",
+    "wrongReasons": [
+      "不区分先出牌路和后发牌路",
+      "没有把 PDF 中的概念转成可执行判断。"
+    ],
+    "aiCoachComment": "先找出这手牌的主要矛盾，再选择出牌。不要只凭牌面大小做决策。",
+    "image": "/assets/guandan/basic/b09-p024.webp",
+    "relatedCourse": "B09"
+  },
+  {
+    "id": "D-B11",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "中级",
+    "question": "学完《进贡与还贡基础》后，遇到同类牌局应先看什么？",
+    "options": [
+      "先判断「进贡」，再结合角色和牌权选择下一手。",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先判断「进贡」，再结合角色和牌权选择下一手。",
+    "analysis": "这题用于确认《进贡与还贡基础》的核心判断是否已经建立。",
+    "wrongReasons": [
+      "还贡只看单张大小，不看是否送炸",
+      "没有把 PDF 中的概念转成可执行判断。"
+    ],
+    "aiCoachComment": "先找出这手牌的主要矛盾，再选择出牌。不要只凭牌面大小做决策。",
+    "image": "/assets/guandan/basic/b11-p082.webp",
+    "relatedCourse": "B11"
+  },
+  {
+    "id": "D-G03",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "学完《炸弹的阻挡作用》后，遇到同类牌局应先看什么？",
+    "options": [
+      "先判断「阻挡」，再结合角色和牌权选择下一手。",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先判断「阻挡」，再结合角色和牌权选择下一手。",
+    "analysis": "这题用于确认《炸弹的阻挡作用》的核心判断是否已经建立。",
+    "wrongReasons": [
+      "劣势局直接放弃节奏",
+      "没有把 PDF 中的概念转成可执行判断。"
+    ],
+    "aiCoachComment": "先找出这手牌的主要矛盾，再选择出牌。不要只凭牌面大小做决策。",
+    "image": "/assets/guandan/expert/g03-p100.webp",
+    "relatedCourse": "G03"
+  },
+  {
+    "id": "D-C01",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "学完《单张尾牌残局》后，遇到同类牌局应先看什么？",
+    "options": [
+      "先判断「尾牌」，再结合角色和牌权选择下一手。",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先判断「尾牌」，再结合角色和牌权选择下一手。",
+    "analysis": "这题用于确认《单张尾牌残局》的核心判断是否已经建立。",
+    "wrongReasons": [
+      "不评估下家顺走区间",
+      "没有把 PDF 中的概念转成可执行判断。"
+    ],
+    "aiCoachComment": "先找出这手牌的主要矛盾，再选择出牌。不要只凭牌面大小做决策。",
+    "image": "/assets/guandan/endgame/c01-p035.webp",
+    "relatedCourse": "C01"
+  },
+  {
+    "id": "D-C02",
+    "assessment": "simple",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "学完《对子与三带二尾牌残局》后，遇到同类牌局应先看什么？",
+    "options": [
+      "先判断「对子尾牌」，再结合角色和牌权选择下一手。",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先判断「对子尾牌」，再结合角色和牌权选择下一手。",
+    "analysis": "这题用于确认《对子与三带二尾牌残局》的核心判断是否已经建立。",
+    "wrongReasons": [
+      "拆成散牌后失去收尾能力",
+      "没有把 PDF 中的概念转成可执行判断。"
+    ],
+    "aiCoachComment": "先找出这手牌的主要矛盾，再选择出牌。不要只凭牌面大小做决策。",
+    "image": "/assets/guandan/endgame/c02-p036.webp",
+    "relatedCourse": "C02"
+  },
+  {
+    "id": "D-C04",
+    "assessment": "course-drill",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "学完《炸弹阻挡残局》后，遇到同类牌局应先看什么？",
+    "options": [
+      "先判断「阻挡」，再结合角色和牌权选择下一手。",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先判断「阻挡」，再结合角色和牌权选择下一手。",
+    "analysis": "这题用于确认《炸弹阻挡残局》的核心判断是否已经建立。",
+    "wrongReasons": [
+      "劣势局不敢用炸弹换节奏",
+      "没有把 PDF 中的概念转成可执行判断。"
+    ],
+    "aiCoachComment": "先找出这手牌的主要矛盾，再选择出牌。不要只凭牌面大小做决策。",
+    "image": "/assets/guandan/endgame/c04-p100.webp",
+    "relatedCourse": "C04"
+  },
+  {
+    "id": "D-C08",
+    "assessment": "course-drill",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "学完《主攻残局冲刺》后，遇到同类牌局应先看什么？",
+    "options": [
+      "先判断「主攻冲刺」，再结合角色和牌权选择下一手。",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先判断「主攻冲刺」，再结合角色和牌权选择下一手。",
+    "analysis": "这题用于确认《主攻残局冲刺》的核心判断是否已经建立。",
+    "wrongReasons": [
+      "主攻只顾冲，不看留风和控制",
+      "没有把 PDF 中的概念转成可执行判断。"
+    ],
+    "aiCoachComment": "先找出这手牌的主要矛盾，再选择出牌。不要只凭牌面大小做决策。",
+    "image": "/assets/guandan/endgame/c08-p032.webp",
+    "relatedCourse": "C08"
+  },
+  {
+    "id": "D-C09",
+    "assessment": "course-drill",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "学完《助攻残局送桥与送听》后，遇到同类牌局应先看什么？",
+    "options": [
+      "先判断「助攻」，再结合角色和牌权选择下一手。",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先判断「助攻」，再结合角色和牌权选择下一手。",
+    "analysis": "这题用于确认《助攻残局送桥与送听》的核心判断是否已经建立。",
+    "wrongReasons": [
+      "不看对家意愿，盲目送牌",
+      "没有把 PDF 中的概念转成可执行判断。"
+    ],
+    "aiCoachComment": "先找出这手牌的主要矛盾，再选择出牌。不要只凭牌面大小做决策。",
+    "image": "/assets/guandan/endgame/c09-p068.webp",
+    "relatedCourse": "C09"
+  },
+  {
+    "id": "D-C10",
+    "assessment": "course-drill",
+    "type": "选择",
+    "difficulty": "高级",
+    "question": "学完《综合实战复盘关》后，遇到同类牌局应先看什么？",
+    "options": [
+      "先判断「复盘」，再结合角色和牌权选择下一手。",
+      "只看牌面大小",
+      "优先保留所有大牌",
+      "随机出牌试探"
+    ],
+    "answer": "先判断「复盘」，再结合角色和牌权选择下一手。",
+    "analysis": "这题用于确认《综合实战复盘关》的核心判断是否已经建立。",
+    "wrongReasons": [
+      "复盘只找一步错，不找错误链",
+      "没有把 PDF 中的概念转成可执行判断。"
+    ],
+    "aiCoachComment": "先找出这手牌的主要矛盾，再选择出牌。不要只凭牌面大小做决策。",
+    "image": "/assets/guandan/endgame/c10-p035.webp",
+    "relatedCourse": "C10"
+  }
+]

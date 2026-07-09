@@ -1,0 +1,506 @@
+[
+  {
+    "id": "b01-source-image",
+    "source": "pdf",
+    "page": 9,
+    "topic": "起源",
+    "path": "/assets/guandan/basic/b01-p009.webp",
+    "courseId": "B01"
+  },
+  {
+    "id": "b02-source-image",
+    "source": "pdf",
+    "page": 10,
+    "topic": "头游",
+    "path": "/assets/guandan/basic/b02-p010.webp",
+    "courseId": "B02"
+  },
+  {
+    "id": "b03-source-image",
+    "source": "pdf",
+    "page": 11,
+    "topic": "炸弹胜",
+    "path": "/assets/guandan/basic/b03-p011.webp",
+    "courseId": "B03"
+  },
+  {
+    "id": "b04-source-image",
+    "source": "pdf",
+    "page": 12,
+    "topic": "闯关",
+    "path": "/assets/guandan/basic/b04-p012.webp",
+    "courseId": "B04"
+  },
+  {
+    "id": "b05-source-image",
+    "source": "pdf",
+    "page": 15,
+    "topic": "牌力",
+    "path": "/assets/guandan/basic/b05-p015.webp",
+    "courseId": "B05"
+  },
+  {
+    "id": "b06-source-image",
+    "source": "pdf",
+    "page": 18,
+    "topic": "炸弹",
+    "path": "/assets/guandan/basic/b06-p018.webp",
+    "courseId": "B06"
+  },
+  {
+    "id": "b07-source-image",
+    "source": "pdf",
+    "page": 20,
+    "topic": "配炸",
+    "path": "/assets/guandan/basic/b07-p020.webp",
+    "courseId": "B07"
+  },
+  {
+    "id": "b08-source-image",
+    "source": "pdf",
+    "page": 22,
+    "topic": "单张",
+    "path": "/assets/guandan/basic/b08-p022.webp",
+    "courseId": "B08"
+  },
+  {
+    "id": "b09-source-image",
+    "source": "pdf",
+    "page": 24,
+    "topic": "牌路特点",
+    "path": "/assets/guandan/basic/b09-p024.webp",
+    "courseId": "B09"
+  },
+  {
+    "id": "b10-source-image",
+    "source": "pdf",
+    "page": 26,
+    "topic": "主攻",
+    "path": "/assets/guandan/basic/b10-p026.webp",
+    "courseId": "B10"
+  },
+  {
+    "id": "b11-source-image",
+    "source": "pdf",
+    "page": 82,
+    "topic": "进贡",
+    "path": "/assets/guandan/basic/b11-p082.webp",
+    "courseId": "B11"
+  },
+  {
+    "id": "b12-source-image",
+    "source": "pdf",
+    "page": 85,
+    "topic": "记王",
+    "path": "/assets/guandan/basic/b12-p085.webp",
+    "courseId": "B12"
+  },
+  {
+    "id": "j01-source-image",
+    "source": "pdf",
+    "page": 32,
+    "topic": "先手",
+    "path": "/assets/guandan/advanced/j01-p032.webp",
+    "courseId": "J01"
+  },
+  {
+    "id": "j02-source-image",
+    "source": "pdf",
+    "page": 33,
+    "topic": "尾牌",
+    "path": "/assets/guandan/advanced/j02-p033.webp",
+    "courseId": "J02"
+  },
+  {
+    "id": "j03-source-image",
+    "source": "pdf",
+    "page": 35,
+    "topic": "单张尾牌",
+    "path": "/assets/guandan/advanced/j03-p035.webp",
+    "courseId": "J03"
+  },
+  {
+    "id": "j04-source-image",
+    "source": "pdf",
+    "page": 38,
+    "topic": "顺牌",
+    "path": "/assets/guandan/advanced/j04-p038.webp",
+    "courseId": "J04"
+  },
+  {
+    "id": "j05-source-image",
+    "source": "pdf",
+    "page": 39,
+    "topic": "出炸",
+    "path": "/assets/guandan/advanced/j05-p039.webp",
+    "courseId": "J05"
+  },
+  {
+    "id": "j06-source-image",
+    "source": "pdf",
+    "page": 41,
+    "topic": "炸谁",
+    "path": "/assets/guandan/advanced/j06-p041.webp",
+    "courseId": "J06"
+  },
+  {
+    "id": "j07-source-image",
+    "source": "pdf",
+    "page": 44,
+    "topic": "炸弹大小",
+    "path": "/assets/guandan/advanced/j07-p044.webp",
+    "courseId": "J07"
+  },
+  {
+    "id": "j08-source-image",
+    "source": "pdf",
+    "page": 46,
+    "topic": "手数",
+    "path": "/assets/guandan/advanced/j08-p046.webp",
+    "courseId": "J08"
+  },
+  {
+    "id": "j09-source-image",
+    "source": "pdf",
+    "page": 48,
+    "topic": "拆炸",
+    "path": "/assets/guandan/advanced/j09-p048.webp",
+    "courseId": "J09"
+  },
+  {
+    "id": "j10-source-image",
+    "source": "pdf",
+    "page": 50,
+    "topic": "保留实力",
+    "path": "/assets/guandan/advanced/j10-p050.webp",
+    "courseId": "J10"
+  },
+  {
+    "id": "j11-source-image",
+    "source": "pdf",
+    "page": 52,
+    "topic": "逢炸为先",
+    "path": "/assets/guandan/advanced/j11-p052.webp",
+    "courseId": "J11"
+  },
+  {
+    "id": "j12-source-image",
+    "source": "pdf",
+    "page": 55,
+    "topic": "留风",
+    "path": "/assets/guandan/advanced/j12-p055.webp",
+    "courseId": "J12"
+  },
+  {
+    "id": "j13-source-image",
+    "source": "pdf",
+    "page": 68,
+    "topic": "对子先行",
+    "path": "/assets/guandan/advanced/j13-p068.webp",
+    "courseId": "J13"
+  },
+  {
+    "id": "j14-source-image",
+    "source": "pdf",
+    "page": 74,
+    "topic": "送桥",
+    "path": "/assets/guandan/advanced/j14-p074.webp",
+    "courseId": "J14"
+  },
+  {
+    "id": "g01-source-image",
+    "source": "pdf",
+    "page": 95,
+    "topic": "逢人配",
+    "path": "/assets/guandan/expert/g01-p095.webp",
+    "courseId": "G01"
+  },
+  {
+    "id": "g02-source-image",
+    "source": "pdf",
+    "page": 96,
+    "topic": "护牌",
+    "path": "/assets/guandan/expert/g02-p096.webp",
+    "courseId": "G02"
+  },
+  {
+    "id": "g03-source-image",
+    "source": "pdf",
+    "page": 100,
+    "topic": "阻挡",
+    "path": "/assets/guandan/expert/g03-p100.webp",
+    "courseId": "G03"
+  },
+  {
+    "id": "g04-source-image",
+    "source": "pdf",
+    "page": 102,
+    "topic": "桥牌",
+    "path": "/assets/guandan/expert/g04-p102.webp",
+    "courseId": "G04"
+  },
+  {
+    "id": "g05-source-image",
+    "source": "pdf",
+    "page": 104,
+    "topic": "组牌",
+    "path": "/assets/guandan/expert/g05-p104.webp",
+    "courseId": "G05"
+  },
+  {
+    "id": "g06-source-image",
+    "source": "pdf",
+    "page": 106,
+    "topic": "王多",
+    "path": "/assets/guandan/expert/g06-p106.webp",
+    "courseId": "G06"
+  },
+  {
+    "id": "g07-source-image",
+    "source": "pdf",
+    "page": 108,
+    "topic": "无王",
+    "path": "/assets/guandan/expert/g07-p108.webp",
+    "courseId": "G07"
+  },
+  {
+    "id": "g08-source-image",
+    "source": "pdf",
+    "page": 110,
+    "topic": "战略止损",
+    "path": "/assets/guandan/expert/g08-p110.webp",
+    "courseId": "G08"
+  },
+  {
+    "id": "g09-source-image",
+    "source": "pdf",
+    "page": 112,
+    "topic": "回收",
+    "path": "/assets/guandan/expert/g09-p112.webp",
+    "courseId": "G09"
+  },
+  {
+    "id": "g10-source-image",
+    "source": "pdf",
+    "page": 116,
+    "topic": "卡位",
+    "path": "/assets/guandan/expert/g10-p116.webp",
+    "courseId": "G10"
+  },
+  {
+    "id": "g11-source-image",
+    "source": "pdf",
+    "page": 128,
+    "topic": "信息收放",
+    "path": "/assets/guandan/expert/g11-p128.webp",
+    "courseId": "G11"
+  },
+  {
+    "id": "g12-source-image",
+    "source": "pdf",
+    "page": 140,
+    "topic": "风格",
+    "path": "/assets/guandan/expert/g12-p140.webp",
+    "courseId": "G12"
+  },
+  {
+    "id": "g13-source-image",
+    "source": "pdf",
+    "page": 145,
+    "topic": "迷惑",
+    "path": "/assets/guandan/expert/g13-p145.webp",
+    "courseId": "G13"
+  },
+  {
+    "id": "c01-source-image",
+    "source": "pdf",
+    "page": 35,
+    "topic": "尾牌",
+    "path": "/assets/guandan/endgame/c01-p035.webp",
+    "courseId": "C01"
+  },
+  {
+    "id": "c02-source-image",
+    "source": "pdf",
+    "page": 36,
+    "topic": "对子尾牌",
+    "path": "/assets/guandan/endgame/c02-p036.webp",
+    "courseId": "C02"
+  },
+  {
+    "id": "c03-source-image",
+    "source": "pdf",
+    "page": 96,
+    "topic": "炸弹",
+    "path": "/assets/guandan/endgame/c03-p096.webp",
+    "courseId": "C03"
+  },
+  {
+    "id": "c04-source-image",
+    "source": "pdf",
+    "page": 100,
+    "topic": "阻挡",
+    "path": "/assets/guandan/endgame/c04-p100.webp",
+    "courseId": "C04"
+  },
+  {
+    "id": "c05-source-image",
+    "source": "pdf",
+    "page": 132,
+    "topic": "余5",
+    "path": "/assets/guandan/endgame/c05-p132.webp",
+    "courseId": "C05"
+  },
+  {
+    "id": "c06-source-image",
+    "source": "pdf",
+    "page": 135,
+    "topic": "余7",
+    "path": "/assets/guandan/endgame/c06-p135.webp",
+    "courseId": "C06"
+  },
+  {
+    "id": "c07-source-image",
+    "source": "pdf",
+    "page": 136,
+    "topic": "余9",
+    "path": "/assets/guandan/endgame/c07-p136.webp",
+    "courseId": "C07"
+  },
+  {
+    "id": "c08-source-image",
+    "source": "pdf",
+    "page": 32,
+    "topic": "主攻冲刺",
+    "path": "/assets/guandan/endgame/c08-p032.webp",
+    "courseId": "C08"
+  },
+  {
+    "id": "c09-source-image",
+    "source": "pdf",
+    "page": 68,
+    "topic": "助攻",
+    "path": "/assets/guandan/endgame/c09-p068.webp",
+    "courseId": "C09"
+  },
+  {
+    "id": "c10-source-image",
+    "source": "pdf",
+    "page": 35,
+    "topic": "复盘",
+    "path": "/assets/guandan/endgame/c10-p035.webp",
+    "courseId": "C10"
+  },
+  {
+    "id": "j13-question-p071",
+    "source": "pdf",
+    "page": 71,
+    "topic": "初期不炸下家",
+    "path": "/assets/guandan/advanced/j13-p071.webp",
+    "courseId": "J13"
+  },
+  {
+    "id": "j06-question-p042",
+    "source": "pdf",
+    "page": 42,
+    "topic": "出炸时机",
+    "path": "/assets/guandan/advanced/j06-p042.webp",
+    "courseId": "J06"
+  },
+  {
+    "id": "j11-question-p053",
+    "source": "pdf",
+    "page": 53,
+    "topic": "骗炸",
+    "path": "/assets/guandan/advanced/j11-p053.webp",
+    "courseId": "J11"
+  },
+  {
+    "id": "j13-question-p069",
+    "source": "pdf",
+    "page": 69,
+    "topic": "慎接对家",
+    "path": "/assets/guandan/advanced/j13-p069.webp",
+    "courseId": "J13"
+  },
+  {
+    "id": "j13-question-p072",
+    "source": "pdf",
+    "page": 72,
+    "topic": "初期不炸下家",
+    "path": "/assets/guandan/advanced/j13-p072.webp",
+    "courseId": "J13"
+  },
+  {
+    "id": "j14-question-p075",
+    "source": "pdf",
+    "page": 75,
+    "topic": "送牌",
+    "path": "/assets/guandan/advanced/j14-p075.webp",
+    "courseId": "J14"
+  },
+  {
+    "id": "j14-question-p077",
+    "source": "pdf",
+    "page": 77,
+    "topic": "送听与转主攻",
+    "path": "/assets/guandan/advanced/j14-p077.webp",
+    "courseId": "J14"
+  },
+  {
+    "id": "j14-question-p081",
+    "source": "pdf",
+    "page": 81,
+    "topic": "转主攻",
+    "path": "/assets/guandan/advanced/j14-p081.webp",
+    "courseId": "J14"
+  },
+  {
+    "id": "g07-question-p109",
+    "source": "pdf",
+    "page": 109,
+    "topic": "少输当赢",
+    "path": "/assets/guandan/expert/g07-p109.webp",
+    "courseId": "G07"
+  },
+  {
+    "id": "g09-question-p114",
+    "source": "pdf",
+    "page": 114,
+    "topic": "意图阻断",
+    "path": "/assets/guandan/expert/g09-p114.webp",
+    "courseId": "G09"
+  },
+  {
+    "id": "g10-question-p123",
+    "source": "pdf",
+    "page": 123,
+    "topic": "多样性与灵活性",
+    "path": "/assets/guandan/expert/g10-p123.webp",
+    "courseId": "G10"
+  },
+  {
+    "id": "g11-question-p137",
+    "source": "pdf",
+    "page": 137,
+    "topic": "心态训练",
+    "path": "/assets/guandan/expert/g11-p137.webp",
+    "courseId": "G11"
+  },
+  {
+    "id": "g12-question-p142",
+    "source": "pdf",
+    "page": 142,
+    "topic": "座位选择",
+    "path": "/assets/guandan/expert/g12-p142.webp",
+    "courseId": "G12"
+  },
+  {
+    "id": "g13-question-p160",
+    "source": "pdf",
+    "page": 160,
+    "topic": "行业视野",
+    "path": "/assets/guandan/expert/g13-p160.webp",
+    "courseId": "G13"
+  }
+]

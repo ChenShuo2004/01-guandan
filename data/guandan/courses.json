@@ -1,0 +1,1678 @@
+[
+  {
+    "id": "B01",
+    "title": "为什么要学掼蛋",
+    "category": "基础入门",
+    "difficulty": "初级",
+    "description": "这节课先把「起源」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第1篇",
+    "sourcePages": [
+      9
+    ],
+    "knowledgePoints": [
+      "起源",
+      "团队配合",
+      "学习价值"
+    ],
+    "exampleImages": [
+      "/assets/guandan/basic/b01-p009.webp"
+    ],
+    "mistakes": [
+      "把掼蛋理解成单人比大小"
+    ],
+    "exerciseIds": [
+      "D-B01"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《为什么要学掼蛋》和 PDF 来源页 9，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别把掼蛋理解成单人比大小，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "把掼蛋理解成单人比大小",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "B02",
+    "title": "胜负规则与牌型比较",
+    "category": "基础入门",
+    "difficulty": "初级",
+    "description": "这节课先把「头游」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第2篇",
+    "sourcePages": [
+      10
+    ],
+    "knowledgePoints": [
+      "头游",
+      "升级",
+      "同型比较",
+      "炸弹例外"
+    ],
+    "exampleImages": [
+      "/assets/guandan/basic/b02-p010.webp"
+    ],
+    "mistakes": [
+      "认为任何普通牌型都可以跨型比大小"
+    ],
+    "exerciseIds": [
+      "S01",
+      "S02",
+      "A01"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《胜负规则与牌型比较》和 PDF 来源页 10，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别认为任何普通牌型都可以跨型比大小，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "认为任何普通牌型都可以跨型比大小",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "B03",
+    "title": "头游的四种方式",
+    "category": "基础入门",
+    "difficulty": "初级",
+    "description": "这节课先把「炸弹胜」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第3篇",
+    "sourcePages": [
+      11
+    ],
+    "knowledgePoints": [
+      "炸弹胜",
+      "闯关胜",
+      "听牌胜",
+      "偷袭胜"
+    ],
+    "exampleImages": [
+      "/assets/guandan/basic/b03-p011.webp"
+    ],
+    "mistakes": [
+      "把记牌误当成头游方式"
+    ],
+    "exerciseIds": [
+      "S03",
+      "A03"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《头游的四种方式》和 PDF 来源页 11，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别把记牌误当成头游方式，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "把记牌误当成头游方式",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "B04",
+    "title": "闯关与登基牌",
+    "category": "基础入门",
+    "difficulty": "中级",
+    "description": "这节课先把「闯关」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第4-5篇",
+    "sourcePages": [
+      12,
+      13,
+      14
+    ],
+    "knowledgePoints": [
+      "闯关",
+      "净关",
+      "登基牌",
+      "回手"
+    ],
+    "exampleImages": [
+      "/assets/guandan/basic/b04-p012.webp"
+    ],
+    "mistakes": [
+      "只记得牌面大，不看同型最大牌"
+    ],
+    "exerciseIds": [
+      "S04",
+      "A04"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《闯关与登基牌》和 PDF 来源页 12-14，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别只记得牌面大，不看同型最大牌，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "只记得牌面大，不看同型最大牌",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "B05",
+    "title": "牌力衡量",
+    "category": "基础入门",
+    "difficulty": "中级",
+    "description": "这节课先把「牌力」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第6篇",
+    "sourcePages": [
+      15,
+      16,
+      17
+    ],
+    "knowledgePoints": [
+      "牌力",
+      "强牌",
+      "中牌",
+      "弱牌",
+      "计点"
+    ],
+    "exampleImages": [
+      "/assets/guandan/basic/b05-p015.webp"
+    ],
+    "mistakes": [
+      "只凭感觉说牌好，没有可执行判断"
+    ],
+    "exerciseIds": [
+      "S05"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《牌力衡量》和 PDF 来源页 15-17，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别只凭感觉说牌好，没有可执行判断，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "只凭感觉说牌好，没有可执行判断",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "B06",
+    "title": "炸弹的真实作用",
+    "category": "基础入门",
+    "difficulty": "中级",
+    "description": "这节课先把「炸弹」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第7篇",
+    "sourcePages": [
+      18,
+      19
+    ],
+    "knowledgePoints": [
+      "炸弹",
+      "牌路扭转",
+      "阻挡",
+      "护牌"
+    ],
+    "exampleImages": [
+      "/assets/guandan/basic/b06-p018.webp"
+    ],
+    "mistakes": [
+      "看到炸弹就想立刻打掉"
+    ],
+    "exerciseIds": [
+      "S06",
+      "A02"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《炸弹的真实作用》和 PDF 来源页 18-19，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别看到炸弹就想立刻打掉，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "看到炸弹就想立刻打掉",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "B07",
+    "title": "配炸入门",
+    "category": "基础入门",
+    "difficulty": "中级",
+    "description": "这节课先把「配炸」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第8篇",
+    "sourcePages": [
+      20,
+      21
+    ],
+    "knowledgePoints": [
+      "配炸",
+      "数量",
+      "质量",
+      "逢人配"
+    ],
+    "exampleImages": [
+      "/assets/guandan/basic/b07-p020.webp"
+    ],
+    "mistakes": [
+      "为了成炸牺牲整体牌路"
+    ],
+    "exerciseIds": [
+      "D-B07"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《配炸入门》和 PDF 来源页 20-21，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别为了成炸牺牲整体牌路，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "为了成炸牺牲整体牌路",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "B08",
+    "title": "七种牌路的属性",
+    "category": "基础入门",
+    "difficulty": "中级",
+    "description": "这节课先把「单张」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第9篇",
+    "sourcePages": [
+      22,
+      23
+    ],
+    "knowledgePoints": [
+      "单张",
+      "对子",
+      "三同牌",
+      "3+2",
+      "顺子",
+      "木板",
+      "钢板"
+    ],
+    "exampleImages": [
+      "/assets/guandan/basic/b08-p022.webp"
+    ],
+    "mistakes": [
+      "只看牌型大小，不看速度和灵活性"
+    ],
+    "exerciseIds": [
+      "D-B08"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《七种牌路的属性》和 PDF 来源页 22-23，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别只看牌型大小，不看速度和灵活性，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "只看牌型大小，不看速度和灵活性",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "B09",
+    "title": "七种牌路的实战特点",
+    "category": "基础入门",
+    "difficulty": "中级",
+    "description": "这节课先把「牌路特点」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第10篇",
+    "sourcePages": [
+      24,
+      25
+    ],
+    "knowledgePoints": [
+      "牌路特点",
+      "控制",
+      "灵活性"
+    ],
+    "exampleImages": [
+      "/assets/guandan/basic/b09-p024.webp"
+    ],
+    "mistakes": [
+      "不区分先出牌路和后发牌路"
+    ],
+    "exerciseIds": [
+      "D-B09"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《七种牌路的实战特点》和 PDF 来源页 24-25，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别不区分先出牌路和后发牌路，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "不区分先出牌路和后发牌路",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "B10",
+    "title": "主攻与助攻分工",
+    "category": "基础入门",
+    "difficulty": "中级",
+    "description": "这节课先把「主攻」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第11篇",
+    "sourcePages": [
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "knowledgePoints": [
+      "主攻",
+      "助攻",
+      "职责",
+      "角色转换"
+    ],
+    "exampleImages": [
+      "/assets/guandan/basic/b10-p026.webp"
+    ],
+    "mistakes": [
+      "弱牌也强行主攻"
+    ],
+    "exerciseIds": [
+      "S07"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《主攻与助攻分工》和 PDF 来源页 26-31，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别弱牌也强行主攻，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "弱牌也强行主攻",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "B11",
+    "title": "进贡与还贡基础",
+    "category": "基础入门",
+    "difficulty": "中级",
+    "description": "这节课先把「进贡」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第34-35篇",
+    "sourcePages": [
+      82,
+      83,
+      84
+    ],
+    "knowledgePoints": [
+      "进贡",
+      "还贡",
+      "防成炸"
+    ],
+    "exampleImages": [
+      "/assets/guandan/basic/b11-p082.webp"
+    ],
+    "mistakes": [
+      "还贡只看单张大小，不看是否送炸"
+    ],
+    "exerciseIds": [
+      "D-B11"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《进贡与还贡基础》和 PDF 来源页 82-84，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别还贡只看单张大小，不看是否送炸，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "还贡只看单张大小，不看是否送炸",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "B12",
+    "title": "记牌入门",
+    "category": "基础入门",
+    "difficulty": "高级",
+    "description": "这节课先把「记王」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第36-39篇",
+    "sourcePages": [
+      85,
+      86,
+      87,
+      88,
+      89,
+      90
+    ],
+    "knowledgePoints": [
+      "记王",
+      "记主牌",
+      "记A",
+      "记炸弹",
+      "牌路推断"
+    ],
+    "exampleImages": [
+      "/assets/guandan/basic/b12-p085.webp"
+    ],
+    "mistakes": [
+      "一上来就想记全部牌"
+    ],
+    "exerciseIds": [
+      "S10"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《记牌入门》和 PDF 来源页 85-90，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别一上来就想记全部牌，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "一上来就想记全部牌",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J01",
+    "title": "主攻先手与处理弱路",
+    "category": "进阶技巧",
+    "difficulty": "中级",
+    "description": "这节课先把「先手」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第12篇",
+    "sourcePages": [
+      32
+    ],
+    "knowledgePoints": [
+      "先手",
+      "弱路",
+      "单张",
+      "后发制人"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j01-p032.webp"
+    ],
+    "mistakes": [
+      "把小单张长期留到残局"
+    ],
+    "exerciseIds": [
+      "A05",
+      "A06"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《主攻先手与处理弱路》和 PDF 来源页 32，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别把小单张长期留到残局，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "把小单张长期留到残局",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J02",
+    "title": "尾牌原理",
+    "category": "进阶技巧",
+    "difficulty": "中级",
+    "description": "这节课先把「尾牌」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第13篇",
+    "sourcePages": [
+      33,
+      34
+    ],
+    "knowledgePoints": [
+      "尾牌",
+      "张力",
+      "卡位"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j02-p033.webp"
+    ],
+    "mistakes": [
+      "留最大牌作尾，忽略下家顺走"
+    ],
+    "exerciseIds": [
+      "A07"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《尾牌原理》和 PDF 来源页 33-34，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别留最大牌作尾，忽略下家顺走，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "留最大牌作尾，忽略下家顺走",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J03",
+    "title": "尾牌原理在残局中的应用",
+    "category": "进阶技巧",
+    "difficulty": "高级",
+    "description": "这节课先把「单张尾牌」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第14篇",
+    "sourcePages": [
+      35,
+      36,
+      37
+    ],
+    "knowledgePoints": [
+      "单张尾牌",
+      "对子尾牌",
+      "3+2尾牌"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j03-p035.webp"
+    ],
+    "mistakes": [
+      "只看能否走完，不看谁会顺走"
+    ],
+    "exerciseIds": [
+      "S11",
+      "A08"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《尾牌原理在残局中的应用》和 PDF 来源页 35-37，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别只看能否走完，不看谁会顺走，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "只看能否走完，不看谁会顺走",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J04",
+    "title": "初期顺牌与不打上家",
+    "category": "进阶技巧",
+    "difficulty": "中级",
+    "description": "这节课先把「顺牌」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第15篇",
+    "sourcePages": [
+      38
+    ],
+    "knowledgePoints": [
+      "顺牌",
+      "上家",
+      "信息暴露"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j04-p038.webp"
+    ],
+    "mistakes": [
+      "把“初期不打上家”理解成绝对禁令"
+    ],
+    "exerciseIds": [
+      "A09"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《初期顺牌与不打上家》和 PDF 来源页 38，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别把“初期不打上家”理解成绝对禁令，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "把“初期不打上家”理解成绝对禁令",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J05",
+    "title": "出炸之炸什么",
+    "category": "进阶技巧",
+    "difficulty": "中级",
+    "description": "这节课先把「出炸」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第16篇",
+    "sourcePages": [
+      39,
+      40
+    ],
+    "knowledgePoints": [
+      "出炸",
+      "超打",
+      "经济性"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j05-p039.webp"
+    ],
+    "mistakes": [
+      "用过大炸弹去压小层级炸弹"
+    ],
+    "exerciseIds": [
+      "A10"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《出炸之炸什么》和 PDF 来源页 39-40，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别用过大炸弹去压小层级炸弹，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "用过大炸弹去压小层级炸弹",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J06",
+    "title": "出炸之炸谁与何时炸",
+    "category": "进阶技巧",
+    "difficulty": "高级",
+    "description": "这节课先把「炸谁」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第17-18篇",
+    "sourcePages": [
+      41,
+      42,
+      43
+    ],
+    "knowledgePoints": [
+      "炸谁",
+      "时机",
+      "小炸",
+      "大炸"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j06-p041.webp"
+    ],
+    "mistakes": [
+      "炸下家后立刻放小单"
+    ],
+    "exerciseIds": [
+      "A11",
+      "A12",
+      "A13"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《出炸之炸谁与何时炸》和 PDF 来源页 41-43，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别炸下家后立刻放小单，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "炸下家后立刻放小单",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J07",
+    "title": "出炸之用哪个炸",
+    "category": "进阶技巧",
+    "difficulty": "高级",
+    "description": "这节课先把「炸弹大小」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第19篇",
+    "sourcePages": [
+      44,
+      45
+    ],
+    "knowledgePoints": [
+      "炸弹大小",
+      "诱炸",
+      "灵活性"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j07-p044.webp"
+    ],
+    "mistakes": [
+      "先用最灵活的炸，把自己打死"
+    ],
+    "exerciseIds": [
+      "A14"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《出炸之用哪个炸》和 PDF 来源页 44-45，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别先用最灵活的炸，把自己打死，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "先用最灵活的炸，把自己打死",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J08",
+    "title": "优化手数",
+    "category": "进阶技巧",
+    "difficulty": "中级",
+    "description": "这节课先把「手数」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第20篇",
+    "sourcePages": [
+      46,
+      47
+    ],
+    "knowledgePoints": [
+      "手数",
+      "组牌",
+      "回收",
+      "接手张"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j08-p046.webp"
+    ],
+    "mistakes": [
+      "只看单手大小，不看总手数"
+    ],
+    "exerciseIds": [
+      "A15"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《优化手数》和 PDF 来源页 46-47，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别只看单手大小，不看总手数，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "只看单手大小，不看总手数",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J09",
+    "title": "拆炸技巧",
+    "category": "进阶技巧",
+    "difficulty": "高级",
+    "description": "这节课先把「拆炸」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第21篇",
+    "sourcePages": [
+      48,
+      49
+    ],
+    "knowledgePoints": [
+      "拆炸",
+      "减手数",
+      "增登基"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j09-p048.webp"
+    ],
+    "mistakes": [
+      "认为拆炸永远不值得"
+    ],
+    "exerciseIds": [
+      "A16"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《拆炸技巧》和 PDF 来源页 48-49，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别认为拆炸永远不值得，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "认为拆炸永远不值得",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J10",
+    "title": "保留实力与无奈等待",
+    "category": "进阶技巧",
+    "difficulty": "高级",
+    "description": "这节课先把「保留实力」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第22篇",
+    "sourcePages": [
+      50,
+      51
+    ],
+    "knowledgePoints": [
+      "保留实力",
+      "等待",
+      "控制"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j10-p050.webp"
+    ],
+    "mistakes": [
+      "形成冲刺前把控制牌全交掉"
+    ],
+    "exerciseIds": [
+      "A17"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《保留实力与无奈等待》和 PDF 来源页 50-51，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别形成冲刺前把控制牌全交掉，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "形成冲刺前把控制牌全交掉",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J11",
+    "title": "残局逢炸为先与骗炸",
+    "category": "进阶技巧",
+    "difficulty": "高级",
+    "description": "这节课先把「逢炸为先」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第23-24篇",
+    "sourcePages": [
+      52,
+      53,
+      54
+    ],
+    "knowledgePoints": [
+      "逢炸为先",
+      "骗炸",
+      "残血局"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j11-p052.webp"
+    ],
+    "mistakes": [
+      "把骗炸理解成单纯骗掉一炸"
+    ],
+    "exerciseIds": [
+      "A18",
+      "A19"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《残局逢炸为先与骗炸》和 PDF 来源页 52-54，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别把骗炸理解成单纯骗掉一炸，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "把骗炸理解成单纯骗掉一炸",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J12",
+    "title": "留风技巧",
+    "category": "进阶技巧",
+    "difficulty": "中级",
+    "description": "这节课先把「留风」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第25篇",
+    "sourcePages": [
+      55,
+      56
+    ],
+    "knowledgePoints": [
+      "留风",
+      "头游",
+      "升级"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j12-p055.webp"
+    ],
+    "mistakes": [
+      "只看能否头游，不看升级收益"
+    ],
+    "exerciseIds": [
+      "A20"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《留风技巧》和 PDF 来源页 55-56，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别只看能否头游，不看升级收益，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "只看能否头游，不看升级收益",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J13",
+    "title": "助攻起手与防守",
+    "category": "进阶技巧",
+    "difficulty": "高级",
+    "description": "这节课先把「对子先行」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第26-29篇",
+    "sourcePages": [
+      68,
+      69,
+      70,
+      71,
+      72,
+      73
+    ],
+    "knowledgePoints": [
+      "对子先行",
+      "单张防守",
+      "侦察",
+      "初期不炸下家"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j13-p068.webp"
+    ],
+    "mistakes": [
+      "情况不明时盲目强攻"
+    ],
+    "exerciseIds": [
+      "S08",
+      "S09",
+      "A21",
+      "A22",
+      "A23",
+      "A24"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《助攻起手与防守》和 PDF 来源页 68-73，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别情况不明时盲目强攻，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "情况不明时盲目强攻",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "J14",
+    "title": "助攻送牌与转主攻",
+    "category": "进阶技巧",
+    "difficulty": "高级",
+    "description": "这节课先把「送桥」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第30-33篇",
+    "sourcePages": [
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81
+    ],
+    "knowledgePoints": [
+      "送桥",
+      "送听",
+      "角色转换"
+    ],
+    "exampleImages": [
+      "/assets/guandan/advanced/j14-p074.webp"
+    ],
+    "mistakes": [
+      "送牌只送自己顺手的牌"
+    ],
+    "exerciseIds": [
+      "A25",
+      "A26",
+      "A27",
+      "A28"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《助攻送牌与转主攻》和 PDF 来源页 74-81，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别送牌只送自己顺手的牌，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "送牌只送自己顺手的牌",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "G01",
+    "title": "逢人配进阶",
+    "category": "高手体系",
+    "difficulty": "高级",
+    "description": "这节课先把「逢人配」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第40篇",
+    "sourcePages": [
+      95
+    ],
+    "knowledgePoints": [
+      "逢人配",
+      "补缺",
+      "灵活性"
+    ],
+    "exampleImages": [
+      "/assets/guandan/expert/g01-p095.webp"
+    ],
+    "mistakes": [
+      "逢人配只为成炸，不看手数"
+    ],
+    "exerciseIds": [
+      "A29"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《逢人配进阶》和 PDF 来源页 95，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别逢人配只为成炸，不看手数，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "逢人配只为成炸，不看手数",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "G02",
+    "title": "炸弹的护牌作用",
+    "category": "高手体系",
+    "difficulty": "高级",
+    "description": "这节课先把「护牌」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第41篇",
+    "sourcePages": [
+      96,
+      97,
+      98,
+      99
+    ],
+    "knowledgePoints": [
+      "护牌",
+      "残局",
+      "炸弹优势"
+    ],
+    "exampleImages": [
+      "/assets/guandan/expert/g02-p096.webp"
+    ],
+    "mistakes": [
+      "残局里只追求立刻净关"
+    ],
+    "exerciseIds": [
+      "A30"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《炸弹的护牌作用》和 PDF 来源页 96-99，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别残局里只追求立刻净关，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "残局里只追求立刻净关",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "G03",
+    "title": "炸弹的阻挡作用",
+    "category": "高手体系",
+    "difficulty": "高级",
+    "description": "这节课先把「阻挡」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第42篇",
+    "sourcePages": [
+      100,
+      101
+    ],
+    "knowledgePoints": [
+      "阻挡",
+      "止损",
+      "力挽狂澜"
+    ],
+    "exampleImages": [
+      "/assets/guandan/expert/g03-p100.webp"
+    ],
+    "mistakes": [
+      "劣势局直接放弃节奏"
+    ],
+    "exerciseIds": [
+      "D-G03"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《炸弹的阻挡作用》和 PDF 来源页 100-101，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别劣势局直接放弃节奏，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "劣势局直接放弃节奏",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "G04",
+    "title": "桥牌的运用",
+    "category": "高手体系",
+    "difficulty": "高级",
+    "description": "这节课先把「桥牌」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第43篇",
+    "sourcePages": [
+      102,
+      103
+    ],
+    "knowledgePoints": [
+      "桥牌",
+      "送桥",
+      "接应"
+    ],
+    "exampleImages": [
+      "/assets/guandan/expert/g04-p102.webp"
+    ],
+    "mistakes": [
+      "把桥牌当成随便接一手"
+    ],
+    "exerciseIds": [
+      "A31"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《桥牌的运用》和 PDF 来源页 102-103，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别把桥牌当成随便接一手，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "把桥牌当成随便接一手",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "G05",
+    "title": "组牌要出尽",
+    "category": "高手体系",
+    "difficulty": "高级",
+    "description": "这节课先把「组牌」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第44篇",
+    "sourcePages": [
+      104,
+      105
+    ],
+    "knowledgePoints": [
+      "组牌",
+      "出尽",
+      "节奏"
+    ],
+    "exampleImages": [
+      "/assets/guandan/expert/g05-p104.webp"
+    ],
+    "mistakes": [
+      "为了保留大牌而拖死组牌"
+    ],
+    "exerciseIds": [
+      "A32"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《组牌要出尽》和 PDF 来源页 104-105，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别为了保留大牌而拖死组牌，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "为了保留大牌而拖死组牌",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "G06",
+    "title": "王多战法",
+    "category": "高手体系",
+    "difficulty": "高级",
+    "description": "这节课先把「王多」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第45篇",
+    "sourcePages": [
+      106,
+      107
+    ],
+    "knowledgePoints": [
+      "王多",
+      "单路控制",
+      "诱炸"
+    ],
+    "exampleImages": [
+      "/assets/guandan/expert/g06-p106.webp"
+    ],
+    "mistakes": [
+      "王多时只想压死对手"
+    ],
+    "exerciseIds": [
+      "A33"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《王多战法》和 PDF 来源页 106-107，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别王多时只想压死对手，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "王多时只想压死对手",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "G07",
+    "title": "无王战法与少输当赢",
+    "category": "高手体系",
+    "difficulty": "高级",
+    "description": "这节课先把「无王」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第46篇",
+    "sourcePages": [
+      108,
+      109
+    ],
+    "knowledgePoints": [
+      "无王",
+      "止损",
+      "少输当赢"
+    ],
+    "exampleImages": [
+      "/assets/guandan/expert/g07-p108.webp"
+    ],
+    "mistakes": [
+      "认为无王就一定是弱牌"
+    ],
+    "exerciseIds": [
+      "A34",
+      "A35"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《无王战法与少输当赢》和 PDF 来源页 108-109，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别认为无王就一定是弱牌，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "认为无王就一定是弱牌",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "G08",
+    "title": "放一家打一家",
+    "category": "高手体系",
+    "difficulty": "高级",
+    "description": "这节课先把「战略止损」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第47篇",
+    "sourcePages": [
+      110,
+      111
+    ],
+    "knowledgePoints": [
+      "战略止损",
+      "放一家",
+      "打一家"
+    ],
+    "exampleImages": [
+      "/assets/guandan/expert/g08-p110.webp"
+    ],
+    "mistakes": [
+      "把战略取舍理解成无脑放牌"
+    ],
+    "exerciseIds": [
+      "A36"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《放一家打一家》和 PDF 来源页 110-111，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别把战略取舍理解成无脑放牌，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "把战略取舍理解成无脑放牌",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "G09",
+    "title": "谁打谁收与意图阻断",
+    "category": "高手体系",
+    "difficulty": "高级",
+    "description": "这节课先把「回收」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第48-49篇",
+    "sourcePages": [
+      112,
+      113,
+      114,
+      115
+    ],
+    "knowledgePoints": [
+      "回收",
+      "阻断",
+      "封顶"
+    ],
+    "exampleImages": [
+      "/assets/guandan/expert/g09-p112.webp"
+    ],
+    "mistakes": [
+      "被动跟牌，不读对方回收意图"
+    ],
+    "exerciseIds": [
+      "A37",
+      "A38"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《谁打谁收与意图阻断》和 PDF 来源页 112-115，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别被动跟牌，不读对方回收意图，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "被动跟牌，不读对方回收意图",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "G10",
+    "title": "单张卡位与牌路多样性",
+    "category": "高手体系",
+    "difficulty": "高级",
+    "description": "这节课先把「卡位」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第50-53篇",
+    "sourcePages": [
+      116,
+      120,
+      123,
+      127
+    ],
+    "knowledgePoints": [
+      "卡位",
+      "多样性",
+      "灵活性"
+    ],
+    "exampleImages": [
+      "/assets/guandan/expert/g10-p116.webp"
+    ],
+    "mistakes": [
+      "为了一手压住而耗尽变化"
+    ],
+    "exerciseIds": [
+      "A39",
+      "A40"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《单张卡位与牌路多样性》和 PDF 来源页 116-127，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别为了一手压住而耗尽变化，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "为了一手压住而耗尽变化",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "G11",
+    "title": "信息收放与心理节奏",
+    "category": "高手体系",
+    "difficulty": "高级",
+    "description": "这节课先把「信息收放」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第54、58-60篇",
+    "sourcePages": [
+      128,
+      129,
+      137,
+      138,
+      139
+    ],
+    "knowledgePoints": [
+      "信息收放",
+      "心态",
+      "节奏"
+    ],
+    "exampleImages": [
+      "/assets/guandan/expert/g11-p128.webp"
+    ],
+    "mistakes": [
+      "输牌后立刻责怪队友"
+    ],
+    "exerciseIds": [
+      "A41",
+      "A42"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《信息收放与心理节奏》和 PDF 来源页 128-139，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别输牌后立刻责怪队友，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "输牌后立刻责怪队友",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "G12",
+    "title": "风格分析、座位与观察",
+    "category": "高手体系",
+    "difficulty": "中级",
+    "description": "这节课先把「风格」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第61-64篇",
+    "sourcePages": [
+      140,
+      141,
+      142,
+      143,
+      144
+    ],
+    "knowledgePoints": [
+      "风格",
+      "控制型",
+      "冲锋型",
+      "座位",
+      "观察"
+    ],
+    "exampleImages": [
+      "/assets/guandan/expert/g12-p140.webp"
+    ],
+    "mistakes": [
+      "只看牌，不看人和位置"
+    ],
+    "exerciseIds": [
+      "A43",
+      "A44"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《风格分析、座位与观察》和 PDF 来源页 140-144，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别只看牌，不看人和位置，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "只看牌，不看人和位置",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "G13",
+    "title": "迷惑、礼仪与行业视野",
+    "category": "高手体系",
+    "difficulty": "中级",
+    "description": "这节课先把「迷惑」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第65-71篇",
+    "sourcePages": [
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162
+    ],
+    "knowledgePoints": [
+      "迷惑",
+      "礼仪",
+      "报牌",
+      "AI",
+      "平台"
+    ],
+    "exampleImages": [
+      "/assets/guandan/expert/g13-p145.webp"
+    ],
+    "mistakes": [
+      "用明显表情或暗号做迷惑"
+    ],
+    "exerciseIds": [
+      "A45",
+      "A50"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《迷惑、礼仪与行业视野》和 PDF 来源页 145-162，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别用明显表情或暗号做迷惑，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "用明显表情或暗号做迷惑",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "C01",
+    "title": "单张尾牌残局",
+    "category": "残局训练",
+    "difficulty": "高级",
+    "description": "这节课先把「尾牌」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第14篇",
+    "sourcePages": [
+      35
+    ],
+    "knowledgePoints": [
+      "尾牌",
+      "单张",
+      "卡下家"
+    ],
+    "exampleImages": [
+      "/assets/guandan/endgame/c01-p035.webp"
+    ],
+    "mistakes": [
+      "不评估下家顺走区间"
+    ],
+    "exerciseIds": [
+      "D-C01"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《单张尾牌残局》和 PDF 来源页 35，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别不评估下家顺走区间，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "不评估下家顺走区间",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "C02",
+    "title": "对子与三带二尾牌残局",
+    "category": "残局训练",
+    "difficulty": "高级",
+    "description": "这节课先把「对子尾牌」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第14篇",
+    "sourcePages": [
+      36,
+      37
+    ],
+    "knowledgePoints": [
+      "对子尾牌",
+      "3+2",
+      "残局"
+    ],
+    "exampleImages": [
+      "/assets/guandan/endgame/c02-p036.webp"
+    ],
+    "mistakes": [
+      "拆成散牌后失去收尾能力"
+    ],
+    "exerciseIds": [
+      "D-C02"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《对子与三带二尾牌残局》和 PDF 来源页 36-37，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别拆成散牌后失去收尾能力，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "拆成散牌后失去收尾能力",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "C03",
+    "title": "炸弹护牌残局",
+    "category": "残局训练",
+    "difficulty": "高级",
+    "description": "这节课先把「炸弹」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第41篇",
+    "sourcePages": [
+      96,
+      97,
+      98,
+      99
+    ],
+    "knowledgePoints": [
+      "炸弹",
+      "护牌",
+      "残局"
+    ],
+    "exampleImages": [
+      "/assets/guandan/endgame/c03-p096.webp"
+    ],
+    "mistakes": [
+      "只看净关，不看护牌收益"
+    ],
+    "exerciseIds": [
+      "A49"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《炸弹护牌残局》和 PDF 来源页 96-99，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别只看净关，不看护牌收益，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "只看净关，不看护牌收益",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "C04",
+    "title": "炸弹阻挡残局",
+    "category": "残局训练",
+    "difficulty": "高级",
+    "description": "这节课先把「阻挡」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第42篇",
+    "sourcePages": [
+      100,
+      101
+    ],
+    "knowledgePoints": [
+      "阻挡",
+      "止损",
+      "反扑"
+    ],
+    "exampleImages": [
+      "/assets/guandan/endgame/c04-p100.webp"
+    ],
+    "mistakes": [
+      "劣势局不敢用炸弹换节奏"
+    ],
+    "exerciseIds": [
+      "D-C04"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《炸弹阻挡残局》和 PDF 来源页 100-101，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别劣势局不敢用炸弹换节奏，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "劣势局不敢用炸弹换节奏",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "C05",
+    "title": "余五至余六张残局",
+    "category": "残局训练",
+    "difficulty": "高级",
+    "description": "这节课先把「余5」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第55篇",
+    "sourcePages": [
+      132
+    ],
+    "knowledgePoints": [
+      "余5",
+      "余6",
+      "听牌",
+      "防守"
+    ],
+    "exampleImages": [
+      "/assets/guandan/endgame/c05-p132.webp"
+    ],
+    "mistakes": [
+      "只看大牌，不看剩余手数"
+    ],
+    "exerciseIds": [
+      "A46"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《余五至余六张残局》和 PDF 来源页 132，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别只看大牌，不看剩余手数，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "只看大牌，不看剩余手数",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "C06",
+    "title": "余七至余八张残局",
+    "category": "残局训练",
+    "difficulty": "高级",
+    "description": "这节课先把「余7」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第56篇",
+    "sourcePages": [
+      135
+    ],
+    "knowledgePoints": [
+      "余7",
+      "余8",
+      "危险牌型"
+    ],
+    "exampleImages": [
+      "/assets/guandan/endgame/c06-p135.webp"
+    ],
+    "mistakes": [
+      "过早送小单或对子"
+    ],
+    "exerciseIds": [
+      "S12",
+      "A47"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《余七至余八张残局》和 PDF 来源页 135，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别过早送小单或对子，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "过早送小单或对子",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "C07",
+    "title": "余九至余十张残局",
+    "category": "残局训练",
+    "difficulty": "高级",
+    "description": "这节课先把「余9」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第57篇",
+    "sourcePages": [
+      136
+    ],
+    "knowledgePoints": [
+      "余9",
+      "余10",
+      "3+2",
+      "顺子"
+    ],
+    "exampleImages": [
+      "/assets/guandan/endgame/c07-p136.webp"
+    ],
+    "mistakes": [
+      "忽略3+2或顺子型组合"
+    ],
+    "exerciseIds": [
+      "A48"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《余九至余十张残局》和 PDF 来源页 136，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别忽略3+2或顺子型组合，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "忽略3+2或顺子型组合",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "C08",
+    "title": "主攻残局冲刺",
+    "category": "残局训练",
+    "difficulty": "高级",
+    "description": "这节课先把「主攻冲刺」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第12-25篇",
+    "sourcePages": [
+      32,
+      33,
+      34,
+      39,
+      40,
+      41,
+      50,
+      51,
+      55
+    ],
+    "knowledgePoints": [
+      "主攻冲刺",
+      "手数",
+      "留风"
+    ],
+    "exampleImages": [
+      "/assets/guandan/endgame/c08-p032.webp"
+    ],
+    "mistakes": [
+      "主攻只顾冲，不看留风和控制"
+    ],
+    "exerciseIds": [
+      "D-C08"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《主攻残局冲刺》和 PDF 来源页 32-55，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别主攻只顾冲，不看留风和控制，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "主攻只顾冲，不看留风和控制",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "C09",
+    "title": "助攻残局送桥与送听",
+    "category": "残局训练",
+    "difficulty": "高级",
+    "description": "这节课先把「助攻」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "第26-33篇",
+    "sourcePages": [
+      68,
+      71,
+      74,
+      77,
+      81
+    ],
+    "knowledgePoints": [
+      "助攻",
+      "送桥",
+      "送听"
+    ],
+    "exampleImages": [
+      "/assets/guandan/endgame/c09-p068.webp"
+    ],
+    "mistakes": [
+      "不看对家意愿，盲目送牌"
+    ],
+    "exerciseIds": [
+      "D-C09"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《助攻残局送桥与送听》和 PDF 来源页 68-81，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别不看对家意愿，盲目送牌，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "不看对家意愿，盲目送牌",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  },
+  {
+    "id": "C10",
+    "title": "综合实战复盘关",
+    "category": "残局训练",
+    "difficulty": "高级",
+    "description": "这节课先把「复盘」变成可判断、可练习的牌局能力。",
+    "sourceChapter": "全书图例",
+    "sourcePages": [
+      35,
+      41,
+      68,
+      95,
+      132,
+      135,
+      136
+    ],
+    "knowledgePoints": [
+      "复盘",
+      "路径推荐",
+      "错因分析"
+    ],
+    "exampleImages": [
+      "/assets/guandan/endgame/c10-p035.webp"
+    ],
+    "mistakes": [
+      "复盘只找一步错，不找错误链"
+    ],
+    "exerciseIds": [
+      "D-C10"
+    ],
+    "aiCoachPrompt": "你是 AI 掼蛋教练。请基于《综合实战复盘关》和 PDF 来源页 35-136，用短句讲清核心判断、错误打法和正确打法。",
+    "slogan": "口诀：别复盘只找一步错，不找错误链，先看角色、牌权和剩余手数。",
+    "coreExplanation": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。",
+    "wrongPlay": "复盘只找一步错，不找错误链",
+    "correctPlay": "先回到 PDF 牌例，判断当前身份、牌权和出牌后谁更舒服。",
+    "aiReview": "你的选择不只看对错，要复盘判断依据是否来自牌权、角色和牌路变化。"
+  }
+]
