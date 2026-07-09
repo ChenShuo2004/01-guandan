@@ -3,15 +3,17 @@
 import { motion } from "framer-motion";
 import { PlayedCards } from "@/components/game/PlayedCards";
 import { PlayerSeat } from "@/components/game/PlayerSeat";
-import type { Card } from "@/lib/guandan/card";
+import type { PlayerRoundAction, TurnActionState } from "@/lib/guandan/gameState";
+import type { PlayerId } from "@/lib/guandan/player";
 import type { ArenaPlayer } from "@/types/game";
 
 interface GameTableProps {
   players: ArenaPlayer[];
-  tableCards: Card[];
+  roundActions: Partial<Record<PlayerId, PlayerRoundAction>>;
+  turnAction: TurnActionState;
 }
 
-export function GameTable({ players, tableCards }: GameTableProps) {
+export function GameTable({ players, roundActions, turnAction }: GameTableProps) {
   return (
     <div className="absolute inset-0">
       <motion.div
@@ -24,21 +26,81 @@ export function GameTable({ players, tableCards }: GameTableProps) {
         <div className="relative h-full rounded-[50%] border border-white/76 bg-[radial-gradient(circle_at_50%_35%,rgba(235,250,255,0.82),rgba(75,184,255,0.46)_38%,rgba(59,168,235,0.62)_100%)] shadow-[inset_0_0_95px_rgba(255,255,255,0.45),inset_0_-38px_70px_rgba(33,112,184,0.18),0_0_56px_rgba(75,184,255,0.48)]">
           <div className="absolute inset-[8%] rounded-[50%] border border-white/30" />
           <div className="absolute inset-[15%] rounded-[50%] border border-dashed border-white/30" />
-          <div className="absolute left-1/2 top-[31%] -translate-x-1/2 text-center text-white/68 drop-shadow">
-            <p className="text-sm font-black">底分 100</p>
-            <p className="mt-1 text-2xl font-black">100</p>
-          </div>
+          <TurnStatusLabel turnAction={turnAction} />
           <div className="absolute inset-0 rounded-[50%] bg-[linear-gradient(105deg,transparent_0%,rgba(255,255,255,0.22)_46%,transparent_54%)] opacity-70" />
         </div>
       </motion.div>
 
-      <div className="absolute left-1/2 top-[49%] z-30 -translate-x-1/2 -translate-y-1/2">
-        <PlayedCards cards={tableCards} />
-      </div>
+      <RoundActionZone action={roundActions.enemyAI2} className="left-[24%] top-[42%]" />
+      <RoundActionZone action={roundActions.partnerAI} className="left-1/2 top-[24%] -translate-x-1/2" />
+      <RoundActionZone action={roundActions.enemyAI1} className="right-[21%] top-[42%]" />
+      <RoundActionZone action={roundActions.player} className="left-1/2 bottom-[24%] -translate-x-1/2" />
 
       {players.map((player) => (
         <PlayerSeat key={player.id} player={player} />
       ))}
     </div>
   );
+}
+
+function TurnStatusLabel({ turnAction }: { turnAction: TurnActionState }) {
+  return (
+    <div className="absolute left-1/2 top-[30%] z-20 -translate-x-1/2 rounded-full border border-white/70 bg-white/80 px-5 py-2 text-center text-[#12395a] shadow-[0_12px_28px_rgba(43,127,191,0.16)] backdrop-blur">
+      <p className="text-xs font-black uppercase tracking-[0.12em] text-[#34749c]">当前行动</p>
+      <p className="text-base font-black">{turnAction.label}</p>
+      {typeof turnAction.remainingSeconds === "number" ? (
+        <p className="text-sm font-black text-[#d27b00]">{turnAction.remainingSeconds} 秒</p>
+      ) : null}
+    </div>
+  );
+}
+
+function RoundActionZone({
+  action,
+  className
+}: {
+  action?: PlayerRoundAction;
+  className: string;
+}) {
+  if (!action) return null;
+
+  return (
+    <motion.div
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      className={`absolute z-[35] ${className}`}
+      exit={{ opacity: 0, y: 8, scale: 0.96 }}
+      initial={{ opacity: 0, y: 16, scale: 0.96 }}
+      transition={{ duration: 0.85, ease: "easeOut" }}
+    >
+      <div className="min-w-[150px] rounded-2xl border border-white/70 bg-white/86 px-3 py-2 text-[#12395a] shadow-[0_18px_42px_rgba(35,112,178,0.20)] backdrop-blur">
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <span className="text-sm font-black">【{action.role}】</span>
+          <span className="rounded-full bg-[#dff4ff] px-2 py-0.5 text-xs font-black text-[#0f64a0]">
+            {action.action === "pass" ? "不出" : patternLabel(action.result)}
+          </span>
+        </div>
+        {action.action === "pass" ? (
+          <div className="grid h-12 place-items-center rounded-xl border border-[#b8dcf0] bg-[#eef9ff] text-base font-black text-[#557b93]">
+            Pass
+          </div>
+        ) : (
+          <PlayedCards cards={action.cards} compact />
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+function patternLabel(type: string) {
+  const labels: Record<string, string> = {
+    single: "单牌",
+    pair: "对子",
+    triple: "三张",
+    tripleWithPair: "三带二",
+    straight: "顺子",
+    bomb: "炸弹",
+    fourJokers: "四王炸"
+  };
+
+  return labels[type] ?? type;
 }

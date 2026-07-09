@@ -13,6 +13,7 @@ export interface ArenaPlayer {
   status: PlayerStatus;
   score: number;
   isUser?: boolean;
+  countdown?: number | null;
 }
 
 export interface CoachState {

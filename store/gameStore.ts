@@ -13,7 +13,8 @@ import {
   createInitialGameState,
   getCurrentPlayer,
   type GameEngineState,
-  type TrainingPhase
+  type TrainingPhase,
+  type TurnActionState
 } from "@/lib/guandan/gameState";
 import type { PlayerId } from "@/lib/guandan/player";
 
@@ -29,6 +30,8 @@ type GameAction =
   | { type: "pass" }
   | { type: "tip" }
   | { type: "show-solution" }
+  | { type: "set-turn-action"; turnAction: TurnActionState }
+  | { type: "clear-round-actions" }
   | { type: "ai-action" };
 
 function gameReducer(state: GameEngineState, action: GameAction): GameEngineState {
@@ -42,7 +45,14 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
           ...state,
           trainingPhase: "playing",
           invalidCardIds: [],
-          tipMessage: null
+          tipMessage: null,
+          roundComplete: false,
+          turnAction: {
+            playerId: getCurrentPlayer(state)?.id ?? null,
+            status: "waiting",
+            label: "训练开始，等待你出牌",
+            remainingSeconds: 15
+          }
         },
         {
           type: "tip",
@@ -59,7 +69,13 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
           ...state,
           trainingPhase: state.gameStatus === "finished" ? "completed" : "playing",
           invalidCardIds: [],
-          tipMessage: null
+          tipMessage: null,
+          turnAction: {
+            playerId: getCurrentPlayer(state)?.id ?? null,
+            status: state.gameStatus === "finished" ? "finished" : "waiting",
+            label: state.gameStatus === "finished" ? "训练完成" : `${getCurrentPlayer(state)?.role ?? "玩家"} 准备行动`,
+            remainingSeconds: getCurrentPlayer(state)?.id === "player" ? 15 : null
+          }
         },
         state.gameStatus === "finished"
           ? {
@@ -221,6 +237,24 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
       );
     }
 
+    case "set-turn-action":
+      return {
+        ...state,
+        turnAction: action.turnAction
+      };
+
+    case "clear-round-actions":
+      return {
+        ...state,
+        currentRoundActions: {},
+        roundComplete: false,
+        animationState: {
+          cardMoving: false,
+          cardShowing: false,
+          coachExplaining: true
+        }
+      };
+
     case "ai-action": {
       const currentPlayer = getCurrentPlayer(state);
       if (!currentPlayer || currentPlayer.kind !== "ai" || state.trainingPhase !== "playing" || state.gameStatus !== "playing") return state;
@@ -235,7 +269,18 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
         ...result.state,
         trainingPhase: result.state.gameStatus === "finished" ? "completed" : "playing",
         invalidCardIds: [],
-        tipMessage: null
+        tipMessage: null,
+        turnAction: {
+          playerId: currentPlayer.id,
+          status: "analyzing",
+          label: aiAction.action === "play" ? `${currentPlayer.role} 已出牌，等待分析` : `${currentPlayer.role} 选择不出`,
+          remainingSeconds: null
+        },
+        animationState: {
+          cardMoving: false,
+          cardShowing: true,
+          coachExplaining: true
+        }
       });
     }
 
@@ -307,6 +352,14 @@ export function useGameStore() {
     dispatch({ type: "show-solution" });
   }, []);
 
+  const setTurnAction = useCallback((turnAction: TurnActionState) => {
+    dispatch({ type: "set-turn-action", turnAction });
+  }, []);
+
+  const clearRoundActions = useCallback(() => {
+    dispatch({ type: "clear-round-actions" });
+  }, []);
+
   const runAIAction = useCallback(() => {
     dispatch({ type: "ai-action" });
   }, []);
@@ -331,6 +384,8 @@ export function useGameStore() {
     pass,
     requestTip,
     showSolution,
+    setTurnAction,
+    clearRoundActions,
     runAIAction,
     restart
   };

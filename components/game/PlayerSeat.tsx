@@ -65,16 +65,22 @@ export function PlayerSeat({ player }: PlayerSeatProps) {
             <p className="text-sm font-black leading-tight">{player.role}</p>
           </div>
 
-          <div className="mt-1 flex items-center gap-1.5 rounded-full bg-[#2c6fa8]/82 px-3 py-1 text-xs font-black text-white shadow-[0_8px_18px_rgba(37,113,174,0.24)]">
-            <span className="grid h-4 w-4 place-items-center rounded-full bg-[#ffd84d] text-[10px] text-[#8a5b00]">¢</span>
-            {player.score.toLocaleString("zh-CN")}
-          </div>
-
           <div className="absolute -right-11 top-4 rounded-2xl bg-[#3f8cc4]/82 px-3 py-2 text-center text-white shadow-[0_10px_24px_rgba(43,127,191,0.20)]">
             <p className="text-xs font-black">剩余</p>
             <p className="text-2xl font-black leading-none">{player.cardCount}</p>
             <p className="text-xs font-bold">张</p>
           </div>
+
+          {typeof player.countdown === "number" ? (
+            <div
+              className={cn(
+                "absolute -left-6 -top-4 grid h-12 w-12 place-items-center rounded-full border-[3px] bg-white text-base font-black shadow-[0_10px_24px_rgba(43,127,191,0.20)]",
+                player.countdown <= 3 ? "border-[#ff4d5d] text-[#d42d3e]" : "border-[#ffd84d] text-[#8a5b00]"
+              )}
+            >
+              {player.countdown}
+            </div>
+          ) : null}
 
           <div className="mt-2 flex items-center gap-2 rounded-full border border-white/65 bg-white/58 px-3 py-1 text-xs font-black text-[#145077] backdrop-blur">
             <span className={cn("h-2 w-2 rounded-full", isActive ? "bg-[#21d071]" : "bg-[#8ddcff]")} />

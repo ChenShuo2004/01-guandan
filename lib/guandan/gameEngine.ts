@@ -75,6 +75,17 @@ export function playCards(state: GameEngineState, playerId: PlayerId, cards: Car
   const updatedPlayer = nextPlayers.find((player) => player.id === playerId);
   const winner = updatedPlayer && updatedPlayer.hand.length === 0 ? playerId : null;
   const pattern = detectCardPattern(cards);
+  const roundAction = {
+    turn: state.turnNumber,
+    playerId,
+    playerName: currentPlayer.name,
+    role: currentPlayer.role,
+    seat: currentPlayer.seat,
+    action: "play" as const,
+    cards: sortCards(cards),
+    result: pattern.type,
+    reason: compare.reason
+  };
   const nextState: GameEngineState = {
     ...state,
     players: nextPlayers,
@@ -87,17 +98,33 @@ export function playCards(state: GameEngineState, playerId: PlayerId, cards: Car
     winner,
     passCount: 0,
     turnNumber: state.turnNumber + 1,
+    currentRoundActions: {
+      ...state.currentRoundActions,
+      [playerId]: roundAction
+    },
+    roundComplete: false,
     history: [
       ...state.history,
       {
-        turn: state.turnNumber,
-        playerId,
-        playerName: currentPlayer.name,
-        action: "play",
-        cards: sortCards(cards),
-        result: pattern.type
+        turn: roundAction.turn,
+        playerId: roundAction.playerId,
+        playerName: roundAction.playerName,
+        action: roundAction.action,
+        cards: roundAction.cards,
+        result: roundAction.result
       }
     ],
+    turnAction: {
+      playerId,
+      status: "playing",
+      label: `${currentPlayer.role} 出牌`,
+      remainingSeconds: null
+    },
+    animationState: {
+      cardMoving: true,
+      cardShowing: true,
+      coachExplaining: true
+    },
     coachMessage: `${currentPlayer.role} 出了 ${pattern.type}。${compare.reason}`,
     tipMessage: null
   };
@@ -151,6 +178,22 @@ export function passTurn(state: GameEngineState, playerId: PlayerId): PlayCardsR
     invalidCardIds: [],
     passCount: trickResets ? 0 : passCount,
     turnNumber: state.turnNumber + 1,
+    currentRoundActions: {
+      ...state.currentRoundActions,
+      [playerId]: {
+        turn: state.turnNumber,
+        playerId,
+        playerName: currentPlayer.name,
+        role: currentPlayer.role,
+        seat: currentPlayer.seat,
+        action: "pass",
+        cards: [],
+        result: trickResets ? "重新获得牌权" : "不出",
+        reason: trickResets ? "一圈不出，上一位出牌者重新获得牌权。" : "当前牌权不值得争夺。"
+      }
+    },
+    roundComplete: trickResets,
+    roundClearKey: trickResets ? state.roundClearKey + 1 : state.roundClearKey,
     history: [
       ...state.history,
       {
@@ -162,6 +205,17 @@ export function passTurn(state: GameEngineState, playerId: PlayerId): PlayCardsR
         result: trickResets ? "重新获得牌权" : "不出"
       }
     ],
+    turnAction: {
+      playerId,
+      status: "playing",
+      label: trickResets ? `${currentPlayer.role} 不出，本轮结束` : `${currentPlayer.role} 不出`,
+      remainingSeconds: null
+    },
+    animationState: {
+      cardMoving: false,
+      cardShowing: true,
+      coachExplaining: true
+    },
     coachMessage: trickResets ? "一圈不出，牌权回到上一位出牌者。" : `${currentPlayer.role} 选择不出。`,
     tipMessage: null
   };

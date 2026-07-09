@@ -7,9 +7,10 @@ import type { Card } from "@/lib/guandan/card";
 
 interface PlayedCardsProps {
   cards: Card[];
+  compact?: boolean;
 }
 
-export function PlayedCards({ cards }: PlayedCardsProps) {
+export function PlayedCards({ cards, compact = false }: PlayedCardsProps) {
   const pattern = cards.length > 0 ? detectCardPattern(cards) : null;
 
   return (
@@ -26,9 +27,9 @@ export function PlayedCards({ cards }: PlayedCardsProps) {
             animate={{ opacity: 1, y: 0, scale: 1, rotate: index % 2 === 0 ? -1 : 1 }}
             initial={{ opacity: 0, y: 42, scale: 0.92 }}
             key={card.id}
-            transition={{ duration: 0.22, ease: "easeOut" }}
-          >
-            <PlayingCard card={card} disabled />
+          transition={{ duration: 0.95, ease: "easeOut" }}
+        >
+          <PlayingCard card={card} compact={compact} disabled />
           </motion.div>
         ))}
 

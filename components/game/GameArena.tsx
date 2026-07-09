@@ -1,11 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { ActionButtons } from "@/components/game/ActionButtons";
-import { CoachBubble } from "@/components/game/CoachBubble";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
 import { useGameStore } from "@/store/gameStore";
@@ -14,11 +13,13 @@ import type { TrainingPhase } from "@/lib/guandan/gameState";
 import type { ArenaPlayer } from "@/types/game";
 
 type TrainingLevel = "beginner" | "intermediate" | "advanced";
+type TrainingSpeed = "slow" | "standard" | "fast" | "skip";
 
 interface ArenaSettings {
   sound: boolean;
   animations: boolean;
   aiTips: boolean;
+  aiSpeed: TrainingSpeed;
   cardScale: number;
 }
 
@@ -56,7 +57,15 @@ const defaultSettings: ArenaSettings = {
   sound: true,
   animations: true,
   aiTips: true,
+  aiSpeed: "standard",
   cardScale: 0.62
+};
+
+const aiSpeedSeconds: Record<TrainingSpeed, number> = {
+  slow: 5,
+  standard: 3,
+  fast: 1,
+  skip: 0
 };
 
 export function GameArena() {
@@ -67,6 +76,11 @@ export function GameArena() {
   const [feedbackText, setFeedbackText] = useState("");
   const [feedbackSaved, setFeedbackSaved] = useState(false);
   const [compactLayout, setCompactLayout] = useState(false);
+  const [, setAiCountdown] = useState<number | null>(null);
+  const aiActionKeyRef = useRef<string | null>(null);
+  const aiTimerRef = useRef<number | null>(null);
+  const userActionKeyRef = useRef<string | null>(null);
+  const userTimerRef = useRef<number | null>(null);
   const {
     state,
     currentPlayer,
@@ -82,6 +96,8 @@ export function GameArena() {
     pass,
     requestTip,
     showSolution,
+    setTurnAction,
+    clearRoundActions,
     runAIAction,
     restart
   } = useGameStore();
@@ -92,15 +108,110 @@ export function GameArena() {
   );
   const effectiveCardScale = compactLayout ? 0.38 : settings.cardScale;
 
+  const completeAIAction = useCallback(() => {
+    if (aiTimerRef.current) {
+      window.clearInterval(aiTimerRef.current);
+      aiTimerRef.current = null;
+    }
+
+    setAiCountdown(null);
+    runAIAction();
+  }, [runAIAction]);
+
   useEffect(() => {
     if (state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.kind !== "ai") return;
 
-    const timer = window.setTimeout(() => {
-      runAIAction();
-    }, 900);
+    const actionKey = `${state.turnNumber}-${currentPlayer.id}-${settings.aiSpeed}`;
+    if (aiActionKeyRef.current === actionKey) return;
 
+    aiActionKeyRef.current = actionKey;
+    const seconds = aiSpeedSeconds[settings.aiSpeed];
+
+    setTurnAction({
+      playerId: currentPlayer.id,
+      status: "thinking",
+      label: `AI ${currentPlayer.role} 思考中`,
+      remainingSeconds: seconds
+    });
+
+    if (seconds === 0) {
+      window.setTimeout(completeAIAction, 350);
+      return;
+    }
+
+    setAiCountdown(seconds);
+    let remaining = seconds;
+    aiTimerRef.current = window.setInterval(() => {
+      remaining -= 1;
+      setAiCountdown(remaining);
+      setTurnAction({
+        playerId: currentPlayer.id,
+        status: remaining > 0 ? "thinking" : "playing",
+        label: remaining > 0 ? `AI ${currentPlayer.role} 思考中` : `${currentPlayer.role} 准备出牌`,
+        remainingSeconds: Math.max(remaining, 0)
+      });
+
+      if (remaining <= 0) {
+        completeAIAction();
+      }
+    }, 1000);
+
+    return () => {
+      if (aiTimerRef.current) {
+        window.clearInterval(aiTimerRef.current);
+        aiTimerRef.current = null;
+      }
+    };
+  }, [completeAIAction, currentPlayer?.id, currentPlayer?.kind, currentPlayer?.role, setTurnAction, settings.aiSpeed, state.gameStatus, state.trainingPhase, state.turnNumber]);
+
+  useEffect(() => {
+    if (state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.id !== "player") return;
+
+    const actionKey = `${state.turnNumber}-player`;
+    if (userActionKeyRef.current === actionKey) return;
+
+    userActionKeyRef.current = actionKey;
+    let remaining = 15;
+
+    setTurnAction({
+      playerId: "player",
+      status: "waiting",
+      label: "轮到你出牌",
+      remainingSeconds: remaining
+    });
+
+    userTimerRef.current = window.setInterval(() => {
+      remaining -= 1;
+      setTurnAction({
+        playerId: "player",
+        status: remaining > 0 ? "waiting" : "analyzing",
+        label: remaining > 0 ? "轮到你出牌" : "时间到，Ace Coach 给出提示",
+        remainingSeconds: Math.max(remaining, 0)
+      });
+
+      if (remaining <= 0) {
+        if (userTimerRef.current) {
+          window.clearInterval(userTimerRef.current);
+          userTimerRef.current = null;
+        }
+        requestTip();
+      }
+    }, 1000);
+
+    return () => {
+      if (userTimerRef.current) {
+        window.clearInterval(userTimerRef.current);
+        userTimerRef.current = null;
+      }
+    };
+  }, [currentPlayer?.id, requestTip, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
+
+  useEffect(() => {
+    if (!state.roundComplete) return;
+
+    const timer = window.setTimeout(clearRoundActions, 1200);
     return () => window.clearTimeout(timer);
-  }, [currentPlayer?.id, currentPlayer?.kind, runAIAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
+  }, [clearRoundActions, state.roundClearKey, state.roundComplete]);
 
   useEffect(() => {
     function syncLayout() {
@@ -111,6 +222,24 @@ export function GameArena() {
     window.addEventListener("resize", syncLayout);
     return () => window.removeEventListener("resize", syncLayout);
   }, []);
+
+  useEffect(() => {
+    const raw = window.localStorage.getItem("guandan-training-arena-settings");
+    if (!raw) return;
+
+    try {
+      setSettings({
+        ...defaultSettings,
+        ...(JSON.parse(raw) as Partial<ArenaSettings>)
+      });
+    } catch {
+      setSettings(defaultSettings);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.localStorage.setItem("guandan-training-arena-settings", JSON.stringify(settings));
+  }, [settings]);
 
   const arenaPlayers = useMemo(
     () =>
@@ -125,19 +254,21 @@ export function GameArena() {
         status:
           state.gameStatus === "finished"
             ? "waiting"
-            : currentPlayer?.id === player.id
+            : state.turnAction.playerId === player.id && state.turnAction.status === "thinking"
+              ? "thinking"
+              : currentPlayer?.id === player.id
               ? player.kind === "ai"
                 ? "thinking"
                 : "active"
               : player.passed
                 ? "passed"
-                : "waiting"
+                : "waiting",
+        countdown: state.turnAction.playerId === player.id ? state.turnAction.remainingSeconds : null
       })),
-    [currentPlayer?.id, state.gameStatus, state.players]
+    [currentPlayer?.id, state.gameStatus, state.players, state.turnAction.playerId, state.turnAction.remainingSeconds, state.turnAction.status]
   );
 
   const phase = state.trainingPhase;
-  const tableCards = state.lastPlayedCards;
   const roundStatus =
     phase === "analysis"
       ? "AI 正在分析这手牌..."
@@ -157,6 +288,11 @@ export function GameArena() {
       ...current,
       ...nextSettings
     }));
+  }
+
+  function skipAIWait() {
+    if (currentPlayer?.kind !== "ai" || state.trainingPhase !== "playing") return;
+    completeAIAction();
   }
 
   function saveFeedback() {
@@ -190,20 +326,22 @@ export function GameArena() {
       />
 
       <section className="relative z-10 mx-auto h-full w-full max-w-[1680px] px-4 pb-3 pt-[84px] lg:px-5">
-        <GameTable players={arenaPlayers} tableCards={tableCards} />
+        <GameTable
+          players={arenaPlayers}
+          roundActions={state.currentRoundActions}
+          turnAction={state.turnAction}
+        />
 
         {settings.aiTips ? (
-          <motion.button
+          <motion.section
             animate={
               settings.animations
                 ? { opacity: 1, y: [0, -4, 0] }
                 : { opacity: 1, y: 0 }
             }
-            className="absolute left-1/2 top-[92px] z-[62] flex w-[min(500px,42vw)] -translate-x-1/2 items-center gap-3 rounded-[22px] border border-white/65 bg-white/58 px-4 py-3 text-left shadow-[0_20px_48px_rgba(42,132,196,0.20)] backdrop-blur-xl max-lg:top-[90px] max-lg:w-[300px] max-lg:py-2"
+            className="absolute left-1/2 top-[92px] z-[62] flex max-h-[184px] w-[min(560px,44vw)] -translate-x-1/2 items-start gap-4 overflow-y-auto rounded-2xl bg-white px-5 py-4 text-left shadow-[0_22px_54px_rgba(42,132,196,0.24)] max-lg:top-[90px] max-lg:max-h-[120px] max-lg:w-[320px] max-lg:gap-3 max-lg:px-4 max-lg:py-3"
             initial={{ opacity: 0, y: -14 }}
-            onClick={() => setActivePanel("coach")}
             transition={settings.animations ? { duration: 3.2, repeat: Infinity, ease: "easeInOut" } : undefined}
-            type="button"
           >
             <span className="relative block h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-white/70 bg-white/62 shadow-[0_10px_24px_rgba(45,125,188,0.18)] max-lg:h-10 max-lg:w-10">
               <Image
@@ -215,10 +353,12 @@ export function GameArena() {
               />
             </span>
             <div className="min-w-0">
-              <p className="text-xs font-black uppercase tracking-[0.12em] text-[#0f64a0]">Ace Coach</p>
-              <p className="mt-1 truncate text-base font-black text-[#12395a] max-lg:text-sm">「{state.coachFeedback.suggestion}」</p>
+              <p className="text-lg font-black text-[#12395a] max-lg:text-base">Ace Coach 建议</p>
+              <p className="mt-2 whitespace-pre-wrap text-base font-bold leading-7 text-[#244d68] max-lg:mt-1 max-lg:text-sm max-lg:leading-5">
+                {formatCoachTeaching(state.coachFeedback.message, state.coachFeedback.reason, state.coachFeedback.suggestion)}
+              </p>
             </div>
-          </motion.button>
+          </motion.section>
         ) : null}
 
         <div className="absolute right-7 top-[86px] z-50 hidden w-[238px] xl:block">
@@ -257,6 +397,7 @@ export function GameArena() {
           <ActionButtons
             canAct={isUserTurn}
             compact
+            isAIThinking={currentPlayer?.kind === "ai" && state.trainingPhase === "playing"}
             onBackToLobby={goLobby}
             onContinue={continueTraining}
             onPass={pass}
@@ -268,6 +409,7 @@ export function GameArena() {
             onStart={continueTraining}
             onTip={requestTip}
             onUndo={clearSelectedCards}
+            onSkipAIWait={skipAIWait}
             phase={phase}
             selectedCount={state.selectedCards.length}
           />
@@ -275,11 +417,15 @@ export function GameArena() {
       </section>
 
       <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "coach"} title="AI Coach">
-        <CoachBubble feedback={state.coachFeedback} />
+        <CoachTeachingContent
+          message={state.coachFeedback.message}
+          reason={state.coachFeedback.reason}
+          suggestion={state.coachFeedback.suggestion}
+        />
       </ArenaModal>
 
       <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "rules"} title="训练规则">
-        <div className="space-y-4 text-sm font-bold leading-6 text-[#24557a]">
+        <div className="space-y-4 text-base font-bold leading-7 text-[#24557a]">
           <RuleBlock title="掼蛋基础规则" items={["四人两两组队，目标是尽快出完手牌。", "轮到你时必须出同牌型且更大的牌，炸弹可压普通牌型。", "一圈都不出时，牌权回到上一位出牌者。"]} />
           <RuleBlock title="牌型说明" items={["单牌、对子、三张、三带二、顺子是基础牌型。", "四张及以上同点数为炸弹，四王炸最大。", "顺子不包含 2 和大小王。"]} />
           <RuleBlock title="训练规则" items={["选择等级后会生成一局训练牌局。", "先操作，再看 Ace Coach 的分析和推荐思路。", "每轮完成 学习 → 判断 → 反馈 → 成长。"]} />
@@ -291,8 +437,9 @@ export function GameArena() {
           <SettingToggle checked={settings.sound} label="音效" onChange={(sound) => updateSettings({ sound })} />
           <SettingToggle checked={settings.animations} label="动画" onChange={(animations) => updateSettings({ animations })} />
           <SettingToggle checked={settings.aiTips} label="AI 提示" onChange={(aiTips) => updateSettings({ aiTips })} />
-          <label className="block rounded-2xl bg-white/48 p-4 font-black">
-            <span className="flex items-center justify-between text-sm">
+          <SpeedSelector speed={settings.aiSpeed} onChange={(aiSpeed) => updateSettings({ aiSpeed })} />
+          <label className="block rounded-2xl bg-[#f3f9ff] p-5 font-black">
+            <span className="flex items-center justify-between text-lg">
               牌面大小
               <span>{Math.round(settings.cardScale * 100)}%</span>
             </span>
@@ -312,7 +459,7 @@ export function GameArena() {
       <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "feedback"} title="反馈">
         <div className="space-y-4 text-[#12395a]">
           <textarea
-            className="min-h-[150px] w-full resize-none rounded-2xl border border-white/62 bg-white/70 p-4 text-sm font-bold outline-none placeholder:text-[#6d91aa]"
+            className="min-h-[180px] w-full resize-none rounded-2xl border border-[#cbe7f8] bg-[#f8fcff] p-5 text-base font-bold leading-7 outline-none placeholder:text-[#6d91aa]"
             onChange={(event) => {
               setFeedbackSaved(false);
               setFeedbackText(event.target.value);
@@ -321,7 +468,7 @@ export function GameArena() {
             value={feedbackText}
           />
           <button
-            className="h-12 w-full rounded-2xl bg-[#0f64ff] text-base font-black text-white shadow-[0_14px_30px_rgba(15,100,255,0.28)] disabled:cursor-not-allowed disabled:opacity-45"
+            className="h-14 w-full rounded-2xl bg-[#0f64ff] text-lg font-black text-white shadow-[0_14px_30px_rgba(15,100,255,0.28)] disabled:cursor-not-allowed disabled:opacity-45"
             disabled={!feedbackText.trim()}
             onClick={saveFeedback}
             type="button"
@@ -465,8 +612,8 @@ function PerformancePanel({
       </div>
       <div className="mt-3 grid grid-cols-3 border-b border-[#8ecded]/60 pb-2 text-center text-sm font-bold text-[#346d92]">
         <span>玩家</span>
-        <span>得分</span>
-        <span>总计</span>
+        <span>本轮</span>
+        <span>表现</span>
       </div>
       <div className="grid grid-cols-3 py-2 text-center text-sm font-black text-[#0f64a0]">
         <span>我方</span>
@@ -542,11 +689,11 @@ function ArenaModal({
 
   return (
     <div className="fixed inset-0 z-[120] grid place-items-center bg-[#08233d]/34 p-5 backdrop-blur-sm">
-      <section className="w-[min(560px,92vw)] rounded-[26px] border border-white/65 bg-[#eaf8ff]/88 p-5 shadow-[0_24px_70px_rgba(8,35,61,0.28)] backdrop-blur-xl">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-xl font-black text-[#12395a]">{title}</h2>
+      <section className="max-h-[86vh] w-[min(640px,92vw)] overflow-y-auto rounded-2xl bg-white p-6 shadow-[0_24px_70px_rgba(8,35,61,0.30)]">
+        <div className="mb-5 flex items-center justify-between">
+          <h2 className="text-2xl font-black text-[#12395a]">{title}</h2>
           <button
-            className="grid h-10 w-10 place-items-center rounded-full bg-white/62 text-lg font-black text-[#12395a]"
+            className="grid h-11 w-11 place-items-center rounded-full bg-[#eaf5ff] text-xl font-black text-[#12395a]"
             onClick={onClose}
             type="button"
           >
@@ -561,9 +708,9 @@ function ArenaModal({
 
 function RuleBlock({ items, title }: { items: string[]; title: string }) {
   return (
-    <section className="rounded-2xl bg-white/48 p-4">
-      <h3 className="font-black text-[#12395a]">{title}</h3>
-      <ul className="mt-2 space-y-1">
+    <section className="rounded-2xl bg-[#f3f9ff] p-5">
+      <h3 className="text-lg font-black text-[#12395a]">{title}</h3>
+      <ul className="mt-3 space-y-2 text-base leading-7">
         {items.map((item) => (
           <li key={item}>• {item}</li>
         ))}
@@ -582,7 +729,7 @@ function SettingToggle({
   onChange: (checked: boolean) => void;
 }) {
   return (
-    <label className="flex items-center justify-between rounded-2xl bg-white/48 p-4 text-sm font-black">
+    <label className="flex items-center justify-between rounded-2xl bg-[#f3f9ff] p-5 text-lg font-black">
       {label}
       <button
         aria-pressed={checked}
@@ -602,6 +749,74 @@ function SettingToggle({
       </button>
     </label>
   );
+}
+
+function SpeedSelector({
+  onChange,
+  speed
+}: {
+  onChange: (speed: TrainingSpeed) => void;
+  speed: TrainingSpeed;
+}) {
+  const options: Array<{ id: TrainingSpeed; label: string; note: string }> = [
+    { id: "slow", label: "慢速", note: "5 秒" },
+    { id: "standard", label: "标准", note: "3 秒" },
+    { id: "fast", label: "快速", note: "1 秒" },
+    { id: "skip", label: "跳过", note: "立即" }
+  ];
+
+  return (
+    <section className="rounded-2xl bg-[#f3f9ff] p-5">
+      <p className="text-lg font-black text-[#12395a]">AI 行动速度</p>
+      <div className="mt-4 grid grid-cols-4 gap-3">
+        {options.map((option) => (
+          <button
+            className={cn(
+              "rounded-2xl px-3 py-3 text-center font-black transition",
+              speed === option.id ? "bg-[#0f64ff] text-white shadow-[0_10px_24px_rgba(15,100,255,0.22)]" : "bg-white text-[#24557a]"
+            )}
+            key={option.id}
+            onClick={() => onChange(option.id)}
+            type="button"
+          >
+            <span className="block text-base">{option.label}</span>
+            <span className="mt-1 block text-sm opacity-75">{option.note}</span>
+          </button>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function CoachTeachingContent({
+  message,
+  reason,
+  suggestion
+}: {
+  message: string;
+  reason: string;
+  suggestion: string;
+}) {
+  return (
+    <article className="space-y-5 text-[#12395a]">
+      <section className="rounded-2xl bg-[#f3f9ff] p-5">
+        <h3 className="text-xl font-black">Ace Coach 建议</h3>
+        <p className="mt-3 whitespace-pre-wrap text-lg font-bold leading-8">{message}</p>
+      </section>
+      <section className="rounded-2xl bg-white p-5 ring-1 ring-[#d8ecf8]">
+        <h4 className="text-lg font-black">原因</h4>
+        <p className="mt-2 whitespace-pre-wrap text-base font-bold leading-7 text-[#345f78]">{reason}</p>
+      </section>
+      <section className="rounded-2xl bg-[#fff8df] p-5">
+        <h4 className="text-lg font-black text-[#8a6500]">下一步</h4>
+        <p className="mt-2 whitespace-pre-wrap text-base font-bold leading-7 text-[#6d5300]">{suggestion}</p>
+      </section>
+    </article>
+  );
+}
+
+function formatCoachTeaching(message: string, reason: string, suggestion: string) {
+  return `${message}\n原因：${reason}\n建议：${suggestion}`;
 }
 
 function roleLabel(position: string) {

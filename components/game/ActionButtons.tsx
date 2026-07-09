@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 interface ActionButtonsProps {
   compact?: boolean;
   canAct?: boolean;
+  isAIThinking?: boolean;
   phase: TrainingPhase;
   secondaryOnly?: boolean;
   selectedCount?: number;
@@ -21,11 +22,13 @@ interface ActionButtonsProps {
   onStart?: () => void;
   onTip?: () => void;
   onUndo?: () => void;
+  onSkipAIWait?: () => void;
 }
 
 export function ActionButtons({
   compact = false,
   canAct = true,
+  isAIThinking = false,
   phase,
   secondaryOnly = false,
   selectedCount = 0,
@@ -38,7 +41,8 @@ export function ActionButtons({
   onSortHand,
   onStart,
   onTip,
-  onUndo
+  onUndo,
+  onSkipAIWait
 }: ActionButtonsProps) {
   return (
     <motion.div
@@ -61,6 +65,9 @@ export function ActionButtons({
 
       {phase === "playing" ? (
         <div className={cn("flex flex-col", compact ? "gap-2" : "gap-3")}>
+          {isAIThinking ? (
+            <ActionButton className="bg-white text-[#0f64a0]" compact={compact} label="跳过等待" onClick={onSkipAIWait} />
+          ) : null}
           <ActionButton className="bg-[#0f74ef] text-white" compact={compact} disabled={!canAct} label="不出" onClick={onPass} />
           {!secondaryOnly ? (
             <>
