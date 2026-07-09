@@ -14,23 +14,22 @@ export function getAIAction(player: GuandanPlayer, state: GameEngineState, level
     return {
       action: "pass",
       cards: [],
-      reason: "Phase 2 仅实现 normal AI"
+      reason: "V1 先使用 normal AI 模拟。"
     };
   }
 
   const cards = chooseNormalMove(player.hand, state.lastPlayedCards);
-
   if (cards.length === 0) {
     return {
       action: "pass",
       cards: [],
-      reason: "没有合适牌型，选择不出"
+      reason: "没有合适牌型，选择不出。"
     };
   }
 
   return {
     action: "play",
     cards,
-    reason: "优先减少手牌，同时保留炸弹"
+    reason: "优先减少手数，同时保留炸弹。"
   };
 }

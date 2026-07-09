@@ -5,6 +5,7 @@ import type { CoachFeedback } from "@/lib/coach/coachTypes";
 import { recommendDecision } from "@/lib/coach/DecisionEngine";
 import { detectContextualWarning } from "@/lib/coach/MistakeDetector";
 import { generateGameReview } from "@/training/replay";
+import { getRealtimeHint } from "@/lib/coach/TrainingCoachEngine";
 
 export interface CoachAnalyzerInput {
   state: GameEngineState;
@@ -27,8 +28,9 @@ export function analyzeCoachTip({ state }: CoachAnalyzerInput): CoachFeedback {
       type: "tip",
       level: "low",
       message: `${currentPlayer?.role ?? "AI"} 正在思考`,
-      reason: "观察它是否主动出炸弹、拆顺子，还是选择保留牌权资源。",
-      suggestion: "记住它跳过了哪些牌型，后面可以反推手牌结构。"
+      reason: "观察 AI 是主动出控制牌、拆顺子，还是选择保留资源。",
+      suggestion: "记住他跳过了哪些牌型，后面可以反推手牌结构。",
+      hint: undefined
     };
   }
 
@@ -36,9 +38,10 @@ export function analyzeCoachTip({ state }: CoachAnalyzerInput): CoachFeedback {
     return {
       type: "tip",
       level: "low",
-      message: `当前选择是${formatPattern(selectedPattern.type)}`,
+      message: `当前选择是 ${formatPattern(selectedPattern.type)}`,
       reason: "先确认它能否压过上一手，再看是否会破坏自己的牌型结构。",
-      suggestion: "如果会拆掉炸弹、顺子或对子，先考虑更低成本的打法。"
+      suggestion: "如果会拆掉炸弹、顺子或对子，先考虑更低成本的打法。",
+      hint: getRealtimeHint(state, "before_play") ?? undefined
     };
   }
 
@@ -48,7 +51,8 @@ export function analyzeCoachTip({ state }: CoachAnalyzerInput): CoachFeedback {
       level: "medium",
       message: "进入残局收尾",
       reason: "手牌少时，牌权比单张大小更重要。",
-      suggestion: "优先让牌型成组，别轻易拆炸弹。"
+      suggestion: "优先让牌型成组，别轻易拆炸弹。",
+      hint: getRealtimeHint(state, "before_play") ?? undefined
     };
   }
 
@@ -57,7 +61,8 @@ export function analyzeCoachTip({ state }: CoachAnalyzerInput): CoachFeedback {
     level: "low",
     message: "先处理散牌",
     reason: "开中局阶段不要急着交控制资源。",
-    suggestion: "保留炸弹和关键对子，先用低成本牌型试探。"
+    suggestion: "保留炸弹和关键对子，先用低成本牌型试探。",
+    hint: getRealtimeHint(state, "before_play") ?? undefined
   };
 }
 

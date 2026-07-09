@@ -1,9 +1,7 @@
 import type { Card } from "@/lib/guandan/card";
 
 export type PlayerId = "player" | "enemyAI1" | "partnerAI" | "enemyAI2";
-
 export type PlayerKind = "human" | "ai";
-
 export type PlayerSeat = "bottom" | "right" | "top" | "left";
 
 export interface GuandanPlayer {
@@ -22,7 +20,7 @@ const PLAYER_ORDER: Array<Omit<GuandanPlayer, "hand" | "passed">> = [
   {
     id: "player",
     name: "KAI",
-    role: "我",
+    role: "我方",
     team: "blue",
     kind: "human",
     seat: "bottom",

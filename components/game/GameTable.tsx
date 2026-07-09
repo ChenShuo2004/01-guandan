@@ -11,10 +11,17 @@ interface GameTableProps {
   levelRank: string;
   players: ArenaPlayer[];
   roundActions: Partial<Record<PlayerId, PlayerRoundAction>>;
+  showTurnStatus?: boolean;
   turnAction: TurnActionState;
 }
 
-export function GameTable({ levelRank, players, roundActions, turnAction }: GameTableProps) {
+export function GameTable({
+  levelRank,
+  players,
+  roundActions,
+  showTurnStatus = true,
+  turnAction
+}: GameTableProps) {
   return (
     <div className="absolute inset-0">
       <motion.div
@@ -27,7 +34,7 @@ export function GameTable({ levelRank, players, roundActions, turnAction }: Game
         <div className="relative h-full rounded-[50%] border border-white/76 bg-[radial-gradient(circle_at_50%_35%,rgba(235,250,255,0.82),rgba(75,184,255,0.46)_38%,rgba(59,168,235,0.62)_100%)] shadow-[inset_0_0_95px_rgba(255,255,255,0.45),inset_0_-38px_70px_rgba(33,112,184,0.18),0_0_56px_rgba(75,184,255,0.48)]">
           <div className="absolute inset-[8%] rounded-[50%] border border-white/30" />
           <div className="absolute inset-[15%] rounded-[50%] border border-dashed border-white/30" />
-          <TurnStatusLabel turnAction={turnAction} />
+          {showTurnStatus ? <TurnStatusLabel turnAction={turnAction} /> : null}
           <div className="absolute inset-0 rounded-[50%] bg-[linear-gradient(105deg,transparent_0%,rgba(255,255,255,0.22)_46%,transparent_54%)] opacity-70" />
         </div>
       </motion.div>
@@ -46,7 +53,7 @@ export function GameTable({ levelRank, players, roundActions, turnAction }: Game
 
 function TurnStatusLabel({ turnAction }: { turnAction: TurnActionState }) {
   return (
-    <div className="absolute left-1/2 top-[30%] z-20 -translate-x-1/2 rounded-full border border-white/70 bg-white/80 px-5 py-2 text-center text-[#12395a] shadow-[0_12px_28px_rgba(43,127,191,0.16)] backdrop-blur">
+    <div className="absolute left-1/2 top-[30%] z-20 -translate-x-1/2 rounded-full border border-white/70 bg-white/85 px-5 py-2 text-center text-[#12395a] shadow-[0_12px_28px_rgba(43,127,191,0.16)] backdrop-blur">
       <p className="text-xs font-black uppercase tracking-[0.12em] text-[#34749c]">当前行动</p>
       <p className="text-base font-black">{turnAction.label}</p>
       {typeof turnAction.remainingSeconds === "number" ? (
@@ -75,9 +82,7 @@ function RoundActionZone({
       initial={{ opacity: 0, y: 16, scale: 0.96 }}
       transition={{ duration: 0.85, ease: "easeOut" }}
     >
-      {action.action === "pass" ? null : (
-        <PlayedCards cards={action.cards} compact levelRank={levelRank} />
-      )}
+      {action.action === "pass" ? null : <PlayedCards cards={action.cards} compact levelRank={levelRank} />}
     </motion.div>
   );
 }

@@ -1,9 +1,9 @@
-import type { CoachFeedback } from "@/lib/coach/coachTypes";
+import type { AIHint, CoachFeedback, TrainingPlan, TrainingReview } from "@/lib/coach/coachTypes";
+import { generateTrainingPlan, getRealtimeHint } from "@/lib/coach/TrainingCoachEngine";
 import { sortCardsForHand } from "@/lib/cards/cardSort";
 import { getCardLabel, type Card, type CardRank } from "@/lib/guandan/card";
 import { createDeck, dealCards, shuffleDeck } from "@/lib/guandan/deck";
-import { initializePlayers, type GuandanPlayer, type PlayerId } from "@/lib/guandan/player";
-import type { PlayerSeat } from "@/lib/guandan/player";
+import { initializePlayers, type GuandanPlayer, type PlayerId, type PlayerSeat } from "@/lib/guandan/player";
 
 export type GameStatus = "playing" | "finished";
 export type TrainingPhase = "idle" | "playing" | "analysis" | "completed";
@@ -71,6 +71,10 @@ export interface GameEngineState {
   animationState: CardAnimationState;
   coachMessage: string;
   coachFeedback: CoachFeedback;
+  activeHint: AIHint | null;
+  hintHistory: AIHint[];
+  trainingPlan: TrainingPlan;
+  trainingReview: TrainingReview | null;
   tipMessage: string | null;
 }
 
@@ -95,18 +99,17 @@ export function createInitialGameState(seed = 20260708): GameEngineState {
     label: "等待你出牌",
     remainingSeconds: 15
   };
-
-  return {
+  const draftState = {
     players,
-    levelRank: 10,
+    levelRank: 10 as CardRank,
     currentTurn: 0,
     lastPlayedCards: [],
     lastPlayerId: null,
     selectedCards: [],
     invalidCardIds: [],
     invalidPulseKey: 0,
-    trainingPhase: "playing",
-    gameStatus: "playing",
+    trainingPhase: "playing" as TrainingPhase,
+    gameStatus: "playing" as GameStatus,
     winner: null,
     passCount: 0,
     turnNumber: 1,
@@ -125,7 +128,33 @@ export function createInitialGameState(seed = 20260708): GameEngineState {
     },
     coachMessage: initialCoachFeedback.message,
     coachFeedback: initialCoachFeedback,
+    activeHint: null,
+    hintHistory: [],
+    trainingPlan: {
+      goal: "",
+      focusProblems: [],
+      recommendedContent: [],
+      estimatedMinutes: 0
+    },
+    trainingReview: null,
     tipMessage: null
+  } satisfies GameEngineState;
+  const startHint = getRealtimeHint(draftState, "game_start");
+
+  return {
+    ...draftState,
+    trainingPlan: generateTrainingPlan(draftState),
+    activeHint: startHint,
+    hintHistory: startHint ? [startHint] : [],
+    coachFeedback: startHint
+      ? {
+          ...initialCoachFeedback,
+          message: startHint.title,
+          reason: startHint.reason,
+          suggestion: startHint.action ?? startHint.content,
+          hint: startHint
+        }
+      : initialCoachFeedback
   };
 }
 
@@ -145,10 +174,7 @@ export function createInitialCardRemainingCount(): CardRemainingCount {
   }, {});
 }
 
-export function decrementCardRemainingCount(
-  current: CardRemainingCount,
-  cards: Card[]
-): CardRemainingCount {
+export function decrementCardRemainingCount(current: CardRemainingCount, cards: Card[]): CardRemainingCount {
   return cards.reduce<CardRemainingCount>(
     (counts, card) => {
       const label = getCardLabel(card);
@@ -179,7 +205,6 @@ export function updatePlayerActionState(
   turnAction: TurnActionState
 ): PlayerActionStateMap {
   if (!turnAction.playerId) return current;
-
   return {
     ...current,
     [turnAction.playerId]: turnAction
