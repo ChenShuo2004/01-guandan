@@ -65,10 +65,6 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
     setQuestionState("idle");
   }
 
-  function startTraining() {
-    questionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-
   return (
     <motion.div
       animate="show"
@@ -206,7 +202,6 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
         </main>
 
         <aside className="min-w-0 space-y-6 xl:sticky xl:top-20 xl:self-start">
-          <AceCoachAssistant onStartTraining={startTraining} />
           {primaryQuestion ? (
             <TrainingQuestionCard
               isCorrect={isCorrect}
@@ -227,69 +222,6 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
       {coachOpen ? <CoachPanel course={course} onClose={() => setCoachOpen(false)} /> : null}
       {selectedCard ? <FocusModal card={selectedCard} onClose={() => setSelectedCard(null)} /> : null}
     </motion.div>
-  );
-}
-
-function AceCoachAssistant({ onStartTraining }: { onStartTraining: () => void }) {
-  return (
-    <motion.section
-      className="relative overflow-hidden rounded-[32px] border border-[#adc6ff]/70 bg-white/85 p-6 shadow-[0_18px_56px_rgba(0,88,190,0.12)] backdrop-blur-xl"
-      variants={blockVariants}
-    >
-      <div className="pointer-events-none absolute -right-14 -top-16 h-40 w-40 rounded-full bg-[#64a8fe]/25 blur-3xl" />
-      <div className="relative flex items-start gap-4">
-        <div className="relative h-16 w-16 shrink-0">
-          <span className="absolute -inset-2 rounded-2xl bg-[#0058be]/20 blur-xl" />
-          <span className="relative block h-16 w-16 overflow-hidden rounded-2xl border border-[#adc6ff] bg-[#e7eeff]">
-            <Image
-              alt="Ace Coach"
-              className="object-cover"
-              fill
-              sizes="64px"
-              src="/assets/coach/coach-analysis-mode.png"
-            />
-          </span>
-        </div>
-        <div>
-          <p className="text-xs font-black tracking-[0.14em] text-[#0058be]">ACE COACH</p>
-          <h2 className="mt-1 text-2xl font-black leading-8 text-[#111c2d]">
-            今日训练目标
-          </h2>
-          <p className="mt-1 text-lg font-black text-[#0058be]">牌权判断</p>
-        </div>
-      </div>
-
-      <div className="relative mt-6 rounded-2xl border border-[#d8e3fb] bg-[#f0f7ff]/80 p-4">
-        <p className="text-xs font-black text-[#0058be]">AI 提示</p>
-        <p className="mt-2 text-base font-black leading-7 text-[#12395a]">不要急着出牌。</p>
-        <p className="mt-2 text-sm font-semibold leading-6 text-[#424754]">
-          先把判断顺序稳定下来，出牌自然会更准。
-        </p>
-      </div>
-
-      <div className="mt-6 space-y-3">
-        {["当前谁掌握牌权", "对手剩余牌", "队友需求"].map((item, index) => (
-          <div
-            className="flex items-center gap-3 rounded-2xl border border-[#e2e8f0] bg-white/80 p-3"
-            key={item}
-          >
-            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-[#0058be] text-xs font-black text-white">
-              {index + 1}
-            </span>
-            <span className="text-sm font-bold text-[#334155]">{item}</span>
-          </div>
-        ))}
-      </div>
-
-      <motion.div className="mt-6" variants={blockVariants}>
-        <Button
-          className="h-14 w-full rounded-xl text-base shadow-[0_16px_36px_rgba(0,88,190,0.22)]"
-          onClick={onStartTraining}
-        >
-          开始训练
-        </Button>
-      </motion.div>
-    </motion.section>
   );
 }
 
