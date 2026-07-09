@@ -14,7 +14,7 @@ const sideNavItems = [
   { href: "/training", icon: "dashboard", label: "竞技大厅" },
   { href: "/assessment/start", icon: "analytics", label: "能力测评" },
   { href: "/learning-path", icon: "fitness_center", label: "训练路线" },
-  { href: "/practice", icon: "extension", label: "残局挑战" },
+  { href: "/practice", icon: "extension", label: "训练营" },
   { href: "/profile", icon: "person", label: "能力画像" },
   { href: "/history", icon: "history", label: "我的记录" }
 ];
