@@ -28,26 +28,8 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
   const [questionState, setQuestionState] = useState<QuestionState>("idle");
   const [coachOpen, setCoachOpen] = useState(false);
 
-  const cards = useMemo(
-    () => [
-      {
-        title: course.title,
-        eyebrow: "核心知识卡",
-        body: course.description,
-        detail: course.coreExplanation,
-        tone: "blue" as const
-      },
-      {
-        title: course.slogan.replace(/^口诀：/, ""),
-        eyebrow: "口诀卡",
-        body: "把这句话先记住，再看牌局。",
-        detail: course.aiCoachPrompt,
-        tone: "blue" as const
-      }
-    ],
-    [course]
-  );
-
+  const sourceImage = course.exampleImages[0] ?? "/assets/coach/coach-analysis-mode.png";
+  const slogan = useMemo(() => course.slogan.replace(/^口诀：/, ""), [course.slogan]);
   const isCorrect = selectedAnswer === primaryQuestion?.answer;
 
   function submitAnswer() {
@@ -62,51 +44,116 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
 
   return (
     <div className="relative">
-      <section className="grid gap-5 xl:grid-cols-[minmax(0,7fr)_minmax(280px,3fr)]">
-        <main className="min-w-0 space-y-4">
-          <div className="rounded-[28px] border border-[#d8e3fb] bg-white p-5 shadow-[0_20px_60px_rgba(0,88,190,0.06)]">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-[#e7eeff] px-3 py-1.5 text-xs font-black text-[#0058be]">
-                {course.category}
-              </span>
-              <span className="rounded-full bg-[#f0f7ff] px-3 py-1.5 text-xs font-black text-[#52657a]">
-                {course.difficulty}
-              </span>
-              <span className="rounded-full bg-[#f0f7ff] px-3 py-1.5 text-xs font-black text-[#52657a]">
-                {course.sourceChapter}
-              </span>
+      <section className="grid gap-6 xl:grid-cols-[minmax(0,65fr)_minmax(340px,35fr)]">
+        <main className="min-w-0">
+          <section className="relative overflow-hidden rounded-[32px] border border-white/30 bg-[linear-gradient(145deg,rgba(96,73,110,0.50)_0%,rgba(113,196,255,0.28)_100%)] p-5 shadow-2xl backdrop-blur-xl md:p-8">
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_78%_18%,rgba(255,255,255,0.20),transparent_34%),radial-gradient(circle_at_18%_86%,rgba(100,168,254,0.22),transparent_38%)]" />
+            <div className="pointer-events-none absolute inset-0 opacity-[0.05] [background-image:radial-gradient(circle,white_1px,transparent_1px)] [background-size:40px_40px]" />
+
+            <div className="relative z-10 rounded-2xl border border-white/10 bg-white/8 p-4 backdrop-blur-md">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <span className="material-symbols-outlined text-[#adc6ff]">lightbulb</span>
+                  <span className="text-sm font-bold leading-6 text-white/90">
+                    今日重点：不要急着出牌，先判断牌权、角色和对手变化
+                  </span>
+                </div>
+                <span className="material-symbols-outlined text-sm text-white/45">close</span>
+              </div>
             </div>
-            <h1 className="mt-4 text-3xl font-black leading-10 text-[#12395a]">
-              {course.title}
-            </h1>
-            <p className="mt-3 max-w-3xl text-sm font-semibold leading-7 text-[#52657a]">
-              这是一张 AI 掼蛋训练知识卡。先理解判断，再进入训练题，不用在 PDF 大图里找重点。
-            </p>
-          </div>
 
-          <section className="grid gap-4 lg:grid-cols-2">
-            {cards.map((card) => (
-              <KnowledgeCard card={card} key={card.eyebrow} onOpen={setSelectedCard} />
-            ))}
+            <section className="relative z-10 mt-8 flex items-start justify-between gap-6">
+              <button
+                className="space-y-4 text-left"
+                onClick={() =>
+                  setSelectedCard({
+                    title: course.title,
+                    eyebrow: "核心知识卡",
+                    body: course.description,
+                    detail: course.coreExplanation,
+                    tone: "blue"
+                  })
+                }
+                type="button"
+              >
+                <span className="inline-flex rounded-full bg-[#0058be]/24 px-4 py-2 text-xs font-black tracking-wider text-[#adc6ff] backdrop-blur-sm">
+                  核心知识卡
+                </span>
+                <h1 className="text-[40px] font-black leading-tight text-white drop-shadow-md">
+                  {course.title}
+                </h1>
+                <p className="max-w-2xl text-lg font-bold leading-8 text-white/72">
+                  {course.description}
+                </p>
+              </button>
+
+              <button
+                aria-label="打开 AI 教练讲解"
+                className="relative hidden shrink-0 md:block"
+                onClick={() => setCoachOpen(true)}
+                type="button"
+              >
+                <span className="absolute -inset-4 rounded-full bg-[#0058be]/30 blur-xl" />
+                <span className="relative block h-28 w-28 overflow-hidden rounded-2xl border-2 border-white/20 shadow-2xl">
+                  <Image
+                    alt="AI Coach Ace"
+                    className="object-cover"
+                    fill
+                    sizes="112px"
+                    src="/assets/coach/coach-analysis-mode.png"
+                  />
+                </span>
+                <span className="absolute -bottom-2 -right-3 rounded-lg bg-white px-3 py-1 text-[10px] font-black text-[#0058be] shadow-lg">
+                  ACE COACH
+                </span>
+              </button>
+            </section>
+
+            <button
+              className="relative z-10 mt-8 w-full overflow-hidden rounded-2xl border border-white/20 bg-white/62 p-7 text-center shadow-[0_4px_24px_rgba(0,0,0,0.05)] backdrop-blur-sm"
+              onClick={() =>
+                setSelectedCard({
+                  title: slogan,
+                  eyebrow: "口诀卡",
+                  body: "把这句话先记住，再看牌局。",
+                  detail: course.aiCoachPrompt,
+                  tone: "blue"
+                })
+              }
+              type="button"
+            >
+              <div className="absolute right-4 top-3 flex items-center gap-1 text-[#424754]/45">
+                <span className="text-[10px] font-black">口诀卡</span>
+                <span className="material-symbols-outlined text-sm">zoom_in</span>
+              </div>
+              <p className="px-3 text-[28px] font-black leading-relaxed text-[#0058be] drop-shadow-sm">
+                “{slogan}”
+              </p>
+              <p className="mt-4 text-xs font-bold text-[#424754]/60">
+                {course.sourceChapter} · PDF 页码 {course.sourcePages.join("、")}
+              </p>
+            </button>
+
+            <section className="relative z-10 mt-8 grid gap-6 md:grid-cols-2">
+              <ComparisonCard
+                body={course.wrongPlay}
+                image={sourceImage}
+                label="错误打法"
+                onOpen={setSelectedCard}
+                tone="red"
+              />
+              <ComparisonCard
+                body={course.correctPlay}
+                image={sourceImage}
+                label="正确打法"
+                onOpen={setSelectedCard}
+                tone="green"
+              />
+            </section>
           </section>
+        </main>
 
-          <section className="grid gap-4 lg:grid-cols-2">
-            <ContrastCard
-              body={course.wrongPlay}
-              label="错误打法"
-              marker="X"
-              onOpen={setSelectedCard}
-              tone="red"
-            />
-            <ContrastCard
-              body={course.correctPlay}
-              label="正确打法"
-              marker="OK"
-              onOpen={setSelectedCard}
-              tone="green"
-            />
-          </section>
-
+        <aside className="min-w-0 space-y-6 xl:sticky xl:top-8 xl:self-start">
           {primaryQuestion ? (
             <TrainingQuestionCard
               isCorrect={isCorrect}
@@ -117,59 +164,17 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
               question={primaryQuestion}
               questionState={questionState}
               selectedAnswer={selectedAnswer}
+              title={course.title}
             />
           ) : null}
-        </main>
-
-        <aside className="xl:sticky xl:top-8 xl:self-start">
-          <section className="rounded-[28px] border border-[#d8e3fb] bg-white p-5 shadow-[0_18px_48px_rgba(0,88,190,0.05)]">
-            <p className="text-sm font-black text-[#0058be]">AI 教练知识总结</p>
-            <h2 className="mt-3 text-2xl font-black leading-8 text-[#12395a]">
-              今天重点
-            </h2>
-            <p className="mt-3 text-sm font-bold leading-7 text-[#334155]">
-              不要急着出牌，先判断牌权、角色和这手打完后的局势变化。
-            </p>
-            <div className="mt-4 grid gap-2">
-              {course.knowledgePoints.slice(0, 5).map((point) => (
-                <div
-                  className="rounded-[18px] border border-[#d8e3fb] bg-[#f8fbff] px-3 py-2 text-sm font-bold text-[#52657a]"
-                  key={point}
-                >
-                  {point}
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 rounded-[20px] bg-[#f0f7ff] p-4">
-              <p className="text-xs font-black text-[#0058be]">来源</p>
-              <p className="mt-2 text-sm font-bold leading-6 text-[#334155]">
-                {course.sourceChapter} · PDF 页码 {course.sourcePages.join("、")}
-              </p>
-              <p className="mt-2 text-xs font-semibold leading-5 text-[#52657a]">
-                PDF 原图仍作为课程资产绑定，但详情页默认转化为知识卡片，减少阅读噪音。
-              </p>
-            </div>
-            <Button className="mt-4 w-full" href="/learning-path" variant="secondary">
-              返回学习路线
-            </Button>
-          </section>
+          <CoachFeedback
+            isCorrect={isCorrect}
+            onOpen={() => setCoachOpen(true)}
+            questionState={questionState}
+            review={course.aiReview}
+          />
         </aside>
       </section>
-
-      <button
-        aria-label="打开 AI 教练讲解"
-        className="fixed bottom-5 right-5 z-30 grid h-16 w-16 place-items-center overflow-hidden rounded-3xl border border-[#adc6ff] bg-white shadow-[0_18px_48px_rgba(0,88,190,0.18)] transition hover:scale-[1.03]"
-        onClick={() => setCoachOpen(true)}
-        type="button"
-      >
-        <Image
-          alt="AI 教练"
-          className="object-cover"
-          fill
-          sizes="64px"
-          src="/assets/coach/coach-analysis-mode.png"
-        />
-      </button>
 
       {coachOpen ? <CoachPanel course={course} onClose={() => setCoachOpen(false)} /> : null}
       {selectedCard ? <FocusModal card={selectedCard} onClose={() => setSelectedCard(null)} /> : null}
@@ -177,73 +182,66 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
   );
 }
 
-function KnowledgeCard({
-  card,
-  onOpen
-}: {
-  card: FocusCard;
-  onOpen: (card: FocusCard) => void;
-}) {
-  return (
-    <button
-      className="group min-h-[220px] rounded-[24px] border border-[#adc6ff] bg-white p-5 text-left shadow-[0_14px_38px_rgba(0,88,190,0.08)] transition hover:-translate-y-0.5 hover:shadow-[0_18px_46px_rgba(0,88,190,0.12)]"
-      onClick={() => onOpen(card)}
-      type="button"
-    >
-      <div className="flex items-center justify-between gap-3">
-        <span className="rounded-full bg-[#e7eeff] px-3 py-1.5 text-xs font-black text-[#0058be]">
-          {card.eyebrow}
-        </span>
-        <span className="text-xs font-black text-[#8a96aa] group-hover:text-[#0058be]">
-          点击放大
-        </span>
-      </div>
-      <h2 className="mt-5 text-2xl font-black leading-8 text-[#12395a]">{card.title}</h2>
-      <p className="mt-4 text-sm font-semibold leading-7 text-[#52657a]">{card.body}</p>
-    </button>
-  );
-}
-
-function ContrastCard({
+function ComparisonCard({
   body,
+  image,
   label,
-  marker,
   onOpen,
   tone
 }: {
   body: string;
+  image: string;
   label: string;
-  marker: string;
   onOpen: (card: FocusCard) => void;
   tone: "red" | "green";
 }) {
-  const toneClass =
-    tone === "red"
-      ? "border-[#ffc9c9] bg-[#fff6f6] text-[#b4232f]"
-      : "border-[#bdf1d2] bg-[#f3fff8] text-[#17814d]";
+  const isError = tone === "red";
 
   return (
     <button
-      className={`min-h-[190px] rounded-[24px] border p-5 text-left shadow-[0_12px_34px_rgba(0,88,190,0.05)] transition hover:-translate-y-0.5 ${toneClass}`}
+      className={[
+        "group flex min-h-[300px] flex-col gap-4 rounded-2xl border p-5 text-left backdrop-blur-sm transition duration-300 hover:-translate-y-2",
+        isError
+          ? "border-[#ef4444]/25 bg-[#ef4444]/5 shadow-[0_0_20px_rgba(239,68,68,0.10)]"
+          : "border-[#3b82f6]/25 bg-[#3b82f6]/5 shadow-[0_0_20px_rgba(59,130,246,0.10)]"
+      ].join(" ")}
       onClick={() =>
         onOpen({
           title: label,
-          eyebrow: marker,
+          eyebrow: isError ? "错误示范" : "正确示范",
           body,
-          detail:
-            tone === "red"
-              ? "这个错误的本质是只看眼前能不能出，忽略出完以后牌权和队友位置会怎样变化。"
-              : "正确打法先判断当前角色和牌权，再决定是否出牌、压牌或让牌。",
+          detail: isError
+            ? "这个错误的本质是只看眼前能不能出，忽略出完以后牌权和队友位置会怎样变化。"
+            : "正确打法先判断当前角色和牌权，再决定是否出牌、压牌或让牌。",
           tone
         })
       }
       type="button"
     >
-      <div className="flex items-center justify-between">
-        <p className="text-sm font-black">{label}</p>
-        <span className="rounded-full bg-white/70 px-3 py-1 text-xs font-black">{marker}</span>
+      <div className="relative flex h-40 items-center justify-center overflow-hidden rounded-xl bg-black/10">
+        <div
+          className={[
+            "relative h-28 w-20 overflow-hidden rounded-lg border shadow-2xl",
+            isError ? "-rotate-12 border-[#ba1a1a]/30" : "rotate-6 border-[#0058be]/30"
+          ].join(" ")}
+        >
+          <Image alt={label} className="object-cover" fill sizes="80px" src={image} />
+        </div>
       </div>
-      <p className="mt-5 text-lg font-black leading-8">{body}</p>
+      <div>
+        <h3
+          className={[
+            "flex items-center gap-2 text-xl font-black",
+            isError ? "text-[#ba1a1a]" : "text-[#0058be]"
+          ].join(" ")}
+        >
+          <span className="material-symbols-outlined text-base">
+            {isError ? "cancel" : "check_circle"}
+          </span>
+          {label}
+        </h3>
+        <p className="mt-2 text-sm font-semibold leading-6 text-[#424754]">{body}</p>
+      </div>
     </button>
   );
 }
@@ -256,7 +254,8 @@ function TrainingQuestionCard({
   onViewReview,
   question,
   questionState,
-  selectedAnswer
+  selectedAnswer,
+  title
 }: {
   isCorrect: boolean;
   onReset: () => void;
@@ -266,104 +265,158 @@ function TrainingQuestionCard({
   question: GuandanQuestion;
   questionState: QuestionState;
   selectedAnswer: string | null;
+  title: string;
 }) {
   return (
-    <section className="rounded-[28px] border border-[#adc6ff] bg-white p-5 shadow-[0_18px_48px_rgba(0,88,190,0.08)]">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <p className="text-sm font-black text-[#0058be]">训练题</p>
-          <h2 className="mt-2 text-2xl font-black leading-8 text-[#12395a]">
-            先回答，再看答案
-          </h2>
+    <section className="flex min-h-[640px] flex-col gap-6 rounded-[32px] border border-[#d8e3fb] bg-white/82 p-6 shadow-lg backdrop-blur-xl">
+      <div className="flex items-center justify-between border-b border-[#d8e3fb]/70 pb-4">
+        <div className="flex items-center gap-3">
+          <span className="material-symbols-outlined text-[#0058be]">quiz</span>
+          <h2 className="text-xl font-black text-[#111c2d]">训练题</h2>
         </div>
-        <span className="rounded-full bg-[#e7eeff] px-3 py-1.5 text-xs font-black text-[#0058be]">
+        <span className="rounded-full bg-[#e7eeff] px-4 py-1 text-xs font-bold text-[#424754]">
           {questionState === "idle" ? "第一阶段" : questionState === "answered" ? "第二阶段" : "第三阶段"}
         </span>
       </div>
 
-      <p className="mt-5 text-base font-black leading-8 text-[#334155]">
-        {question.question}
-      </p>
-
-      <div className="mt-4 grid gap-2 sm:grid-cols-2">
-        {question.options.map((option, index) => {
-          const selected = selectedAnswer === option;
-          return (
-            <button
-              className={[
-                "min-h-14 rounded-[18px] border px-4 py-3 text-left text-sm font-bold leading-6 transition",
-                selected
-                  ? "border-[#0058be] bg-[#e7eeff] text-[#0058be]"
-                  : "border-[#d8e3fb] bg-[#fbfdff] text-[#52657a] hover:border-[#64a8fe]",
-                questionState !== "idle" ? "cursor-default" : ""
-              ].join(" ")}
-              disabled={questionState !== "idle"}
-              key={option}
-              onClick={() => onSelect(option)}
-              type="button"
-            >
-              {String.fromCharCode(65 + index)}. {option}
-            </button>
-          );
-        })}
-      </div>
-
-      {questionState === "idle" ? (
-        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Button disabled={!selectedAnswer} onClick={onSubmit}>
-            提交答案
-          </Button>
-          <p className="text-sm font-semibold leading-6 text-[#6f7b91]">
-            提交前不会显示标准答案。
-          </p>
+      <div className="space-y-4">
+        <p className="text-lg font-black leading-8 text-[#111c2d]">
+          学习《{title}》后，遇到同类牌局应该先看什么？
+        </p>
+        <p className="text-sm font-semibold leading-6 text-[#727785]">{question.question}</p>
+        <div className="space-y-4 pt-2">
+          {question.options.map((option, index) => {
+            const selected = selectedAnswer === option;
+            return (
+              <button
+                className={[
+                  "flex w-full items-start gap-4 rounded-xl border p-4 text-left transition active:scale-[0.98]",
+                  selected
+                    ? "border-[#0058be] bg-[#0058be]/10"
+                    : "border-[#c2c6d6] hover:border-[#0058be] hover:bg-[#0058be]/5",
+                  questionState !== "idle" ? "cursor-default" : "cursor-pointer"
+                ].join(" ")}
+                disabled={questionState !== "idle"}
+                key={option}
+                onClick={() => onSelect(option)}
+                type="button"
+              >
+                <span
+                  className={[
+                    "mt-1 grid h-7 w-7 shrink-0 place-items-center rounded-full border-2 text-xs font-black",
+                    selected
+                      ? "border-[#0058be] bg-[#0058be] text-white"
+                      : "border-[#c2c6d6] text-[#424754]"
+                  ].join(" ")}
+                >
+                  {String.fromCharCode(65 + index)}
+                </span>
+                <span
+                  className={[
+                    "text-sm font-semibold leading-7",
+                    selected ? "text-[#0058be]" : "text-[#424754]"
+                  ].join(" ")}
+                >
+                  {option}
+                </span>
+              </button>
+            );
+          })}
         </div>
-      ) : null}
+      </div>
 
       {questionState === "answered" ? (
         <motion.div
           animate={{ opacity: 1, y: 0, scale: 1 }}
           className={[
-            "mt-5 rounded-[22px] border p-4 transition duration-300",
-            isCorrect ? "border-[#45D483] bg-[#45D483]/10" : "border-[#FF6B6B] bg-[#FF6B6B]/10"
+            "rounded-2xl border p-4",
+            isCorrect ? "border-[#45D483] bg-[#45D483]/10" : "border-[#ba1a1a] bg-[#ffdad6]/55"
           ].join(" ")}
           initial={{ opacity: 0, y: 8, scale: 0.98 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          <p className={["text-xl font-black", isCorrect ? "text-[#17814d]" : "text-[#b4232f]"].join(" ")}>
+          <p className={["text-lg font-black", isCorrect ? "text-[#17814d]" : "text-[#93000a]"].join(" ")}>
             {isCorrect ? "回答正确" : "回答错误"}
           </p>
-          <p className="mt-2 text-sm font-semibold leading-7 text-[#334155]">
-            {isCorrect ? "这一步判断是对的。" : question.wrongReasons[0] ?? "这个选择没有抓住当前牌局的核心判断。"}
+          <p className="mt-2 text-sm font-semibold leading-6 text-[#424754]">
+            {isCorrect ? "判断方向正确，继续看完整解析。" : question.wrongReasons[0] ?? "这个选择没有抓住牌权和角色判断。"}
           </p>
-          <div className="mt-4 flex gap-3">
-            <Button onClick={onViewReview}>查看标准答案</Button>
-            <Button onClick={onReset} variant="secondary">
-              重答
-            </Button>
-          </div>
         </motion.div>
       ) : null}
 
       {questionState === "review" ? (
         <motion.div
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          className="mt-5 rounded-[22px] border border-[#adc6ff] bg-[#f0f7ff] p-4"
+          className="rounded-2xl border border-[#adc6ff] bg-[#e7eeff] p-4"
           initial={{ opacity: 0, y: 8, scale: 0.98 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
         >
           <p className="text-xs font-black text-[#0058be]">标准答案</p>
-          <p className="mt-2 text-base font-black leading-7 text-[#12395a]">
-            {question.answer}
-          </p>
-          <p className="mt-3 text-sm font-semibold leading-7 text-[#52657a]">
-            {question.analysis}
-          </p>
-          <p className="mt-3 text-sm font-bold leading-7 text-[#334155]">
-            AI Coach：{question.aiCoachComment}
-          </p>
+          <p className="mt-2 text-base font-black leading-7 text-[#111c2d]">{question.answer}</p>
+          <p className="mt-3 text-sm font-semibold leading-7 text-[#424754]">{question.analysis}</p>
         </motion.div>
       ) : null}
+
+      <div className="mt-auto space-y-4">
+        <Button
+          className="h-20 w-full rounded-2xl text-xl shadow-lg shadow-[#0058be]/20"
+          disabled={!selectedAnswer || questionState !== "idle"}
+          onClick={onSubmit}
+        >
+          确认提交
+        </Button>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-1">
+          <Button disabled={!selectedAnswer} onClick={onViewReview} variant="secondary">
+            查看解析
+          </Button>
+          {questionState !== "idle" ? (
+            <Button onClick={onReset} variant="secondary">
+              重新作答
+            </Button>
+          ) : null}
+        </div>
+      </div>
     </section>
+  );
+}
+
+function CoachFeedback({
+  isCorrect,
+  onOpen,
+  questionState,
+  review
+}: {
+  isCorrect: boolean;
+  onOpen: () => void;
+  questionState: QuestionState;
+  review: string;
+}) {
+  const feedback =
+    questionState === "idle"
+      ? "先做判断，再看解析。训练的是你的第一反应。"
+      : isCorrect
+        ? "你的判断力提升了 12%，保持现状！"
+        : "这题暴露了判断顺序问题，先回到角色和牌权。";
+
+  return (
+    <button
+      className="flex w-full items-center gap-5 rounded-[28px] border border-[#0058be]/20 bg-[#0058be]/10 p-5 text-left backdrop-blur-md"
+      onClick={onOpen}
+      type="button"
+    >
+      <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[#0058be] text-white shadow-inner">
+        <span className="material-symbols-outlined">psychology</span>
+      </span>
+      <span>
+        <span className="text-xs font-black text-[#0058be]">AI 教练点评</span>
+        <span className="mt-1 block text-sm font-semibold leading-6 text-[#424754]">{feedback}</span>
+        {questionState === "review" ? (
+          <span className="mt-2 line-clamp-2 text-xs font-semibold leading-5 text-[#424754]/75">
+            {review}
+          </span>
+        ) : null}
+      </span>
+    </button>
   );
 }
 

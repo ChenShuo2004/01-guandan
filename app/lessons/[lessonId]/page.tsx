@@ -31,7 +31,7 @@ export default function LessonPage({ params }: LessonPageProps) {
 
   if (guandanCourse) {
     return (
-      <AppShell title={guandanCourse.title} subtitle="PDF 案例驱动的一页一知识点。">
+      <AppShell title={guandanCourse.title} subtitle="PDF 案例驱动的一页一知识点。" variant="wide">
         <GuandanCourseDetail
           course={guandanCourse}
           questions={getGuandanQuestionsForCourse(guandanCourse.id)}
@@ -47,7 +47,7 @@ export default function LessonPage({ params }: LessonPageProps) {
   }
 
   return (
-    <AppShell title={lesson.title} subtitle="一个页面只讲一个知识点。">
+    <AppShell title={lesson.title} subtitle="一个页面只讲一个知识点。" variant="wide">
       <LessonExperience lesson={lesson} />
     </AppShell>
   );
