@@ -1,147 +1,187 @@
 import { AppShell } from "@/components/layout/AppShell";
+import { AnimatedProgress } from "@/components/ui/AnimatedProgress";
+import { GlowCard } from "@/components/ui/GlowCard";
+import { MagicBento, type MagicBentoItem } from "@/components/ui/MagicBento";
+import { MasonryAnimation } from "@/components/ui/MasonryAnimation";
+import { RankFrame } from "@/components/ui/RankFrame";
 import { analyzeGrowth } from "@/lib/player/GrowthAnalyzer";
 import { defaultPlayerModel } from "@/lib/profile/PlayerModel";
 import { buildTrainingPlan } from "@/lib/training/TrainingPlanner";
 
 const levelTrack = ["青铜", "白银", "黄金", "大师"];
-const achievements = [
-  { title: "连续训练", value: "3 天" },
-  { title: "牌型稳定", value: "78 分" },
-  { title: "Coach 记录", value: "2 条" }
-];
 
 export default function ProfilePage() {
   const analysis = analyzeGrowth();
   const profile = analysis.profile;
   const plan = buildTrainingPlan(profile);
   const radarPointsValue = radarPointsFromScores(profile.skills.map((skill) => skill.score));
+  const abilityItems: MagicBentoItem[] = profile.skills.map((skill) => ({
+    id: skill.key,
+    title: skill.label,
+    score: skill.score,
+    label: trendLabel(skill.trend),
+    description: abilityDescription(skill.label, skill.score, skill.trend)
+  }));
 
   return (
-    <AppShell title="个人成长系统" subtitle="查看你的掼蛋能力画像、训练地图和 AI Coach 记忆。" variant="wide">
-      <div className="grid gap-5 xl:grid-cols-[330px_minmax(0,1fr)_300px]">
-        <section className="rounded-[28px] bg-white p-6 shadow-[0_20px_60px_rgba(0,88,190,0.06)]">
-          <p className="text-sm font-black text-[#0058be]">我的段位</p>
-          <div className="mt-6 rounded-[26px] bg-[linear-gradient(145deg,#eaf8ff,#ffffff)] p-5 text-center">
-            <div className="mx-auto grid h-28 w-28 place-items-center rounded-full border-[10px] border-[#d4e3ff] bg-white shadow-inner">
-              <span className="text-3xl font-black text-[#0058be]">{profile.level}</span>
-            </div>
-            <p className="mt-4 text-4xl font-black text-[#12395a]">{profile.totalScore}</p>
-            <p className="mt-1 text-sm font-bold text-[#657488]">综合成长分</p>
-          </div>
+    <AppShell title="个人成长系统" subtitle="Ace 正在把每次训练沉淀成你的能力档案。" variant="wide">
+      <MasonryAnimation
+        animateFrom="bottom"
+        blurToFocus
+        className="profile-training-space"
+        duration={0.6}
+        ease="power3.out"
+        hoverScale={0.98}
+        scaleOnHover
+        stagger={0.08}
+      >
+        <div data-profile-background />
 
-          <div className="mt-6 grid grid-cols-3 gap-2 text-center">
-            <Metric label="胜率" value={`${profile.winRate}%`} />
-            <Metric label="训练" value={`${profile.completedTrainings}`} />
-            <Metric label="连胜" value={`${profile.streakDays}`} />
-          </div>
-
-          <div className="mt-6">
-            <div className="flex items-center justify-between text-xs font-black text-[#657488]">
-              {levelTrack.map((level) => (
-                <span key={level}>{level}</span>
-              ))}
+        <div className="grid gap-5 xl:grid-cols-[330px_minmax(0,1fr)_300px]">
+          <GlowCard data-profile-card>
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-sm font-black text-[#0058be]">段位成长卡</p>
+                <h2 className="mt-1 text-2xl font-black text-[#12395a]">AI Rank Profile</h2>
+              </div>
+              <span className="rounded-full bg-[#eaf8ff] px-3 py-1 text-xs font-black text-[#0066ff]">
+                Live
+              </span>
             </div>
-            <div className="mt-3 h-3 overflow-hidden rounded-full bg-[#dcecff]">
-              <div
-                className="h-full rounded-full bg-[linear-gradient(90deg,#4bb8ff,#16c9bd)]"
-                style={{ width: `${(profile.levelIndex / (levelTrack.length - 1)) * 100}%` }}
+
+            <div className="mt-6 rounded-[26px] border border-[#d9ebff] bg-[linear-gradient(145deg,#f4fbff,#ffffff)] p-4 text-center shadow-inner">
+              <RankFrame label="综合积分" level={profile.level} score={profile.totalScore} />
+            </div>
+
+            <div className="mt-6 grid grid-cols-3 gap-2 text-center">
+              <Metric label="胜率" value={`${profile.winRate}%`} />
+              <Metric label="训练" value={`${profile.completedTrainings}`} />
+              <Metric label="连胜" value={`${profile.streakDays}`} />
+            </div>
+
+            <div className="mt-6">
+              <div className="flex items-center justify-between text-xs font-black text-[#657488]">
+                {levelTrack.map((level) => (
+                  <span key={level}>{level}</span>
+                ))}
+              </div>
+              <AnimatedProgress
+                className="mt-3"
+                value={(profile.levelIndex / (levelTrack.length - 1)) * 100}
               />
             </div>
-          </div>
-        </section>
+          </GlowCard>
 
-        <section className="rounded-[28px] bg-white p-6 shadow-[0_20px_60px_rgba(0,88,190,0.06)]">
-          <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-            <div>
-              <p className="text-sm font-black text-[#0058be]">能力雷达</p>
-              <h2 className="mt-1 text-2xl font-black text-[#12395a]">从“能打”走向“会赢”</h2>
+          <GlowCard data-profile-card>
+            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+              <div>
+                <p className="text-sm font-black text-[#0058be]">能力雷达</p>
+                <h2 className="mt-1 text-2xl font-black text-[#12395a]">从“能打”走向“会赢”</h2>
+              </div>
+              <span className="rounded-full bg-[#eaf8ff] px-4 py-2 text-sm font-black text-[#0058be]">
+                {plan.difficultyLabel}
+              </span>
             </div>
-            <span className="rounded-full bg-[#eaf8ff] px-4 py-2 text-sm font-black text-[#0058be]">
-              {plan.difficultyLabel}
-            </span>
-          </div>
 
-          <div className="mt-6 grid gap-6">
-            <div className="flex justify-center">
-              <svg className="h-[320px] w-[320px]" viewBox="0 0 260 260">
-                {[100, 76, 52, 28].map((radius) => (
+            <div className="mt-6 grid gap-6">
+              <div className="flex justify-center">
+                <svg className="h-[320px] w-[320px]" viewBox="0 0 260 260">
+                  <defs>
+                    <filter id="profileRadarGlow" x="-30%" y="-30%" width="160%" height="160%">
+                      <feGaussianBlur result="blur" stdDeviation="5" />
+                      <feMerge>
+                        <feMergeNode in="blur" />
+                        <feMergeNode in="SourceGraphic" />
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  {[100, 76, 52, 28].map((radius) => (
+                    <polygon
+                      fill="none"
+                      key={radius}
+                      points={radarPolygon(130, 130, radius, profile.skills.length)}
+                      stroke="#c7d7ed"
+                    />
+                  ))}
                   <polygon
-                    fill="none"
-                    key={radius}
-                    points={radarPolygon(130, 130, radius, profile.skills.length)}
-                    stroke="#c7d7ed"
+                    fill="rgba(0,198,255,0.18)"
+                    filter="url(#profileRadarGlow)"
+                    points={radarPointsValue}
+                    stroke="#0066ff"
+                    strokeWidth="4"
                   />
-                ))}
-                <polygon
-                  fill="rgba(75,184,255,0.24)"
-                  points={radarPointsValue}
-                  stroke="#0058be"
-                  strokeWidth="4"
-                />
-                {profile.skills.map((skill, index) => {
-                  const p = polarPoint(130, 130, 122, -90 + index * (360 / profile.skills.length));
-                  return (
-                    <text
-                      fill="#334155"
-                      fontSize="12"
-                      fontWeight="800"
-                      key={skill.key}
-                      textAnchor="middle"
-                      x={p.x}
-                      y={p.y}
-                    >
-                      {skill.label}
-                    </text>
-                  );
-                })}
-              </svg>
-            </div>
+                  {profile.skills.map((skill, index) => {
+                    const p = polarPoint(130, 130, 122, -90 + index * (360 / profile.skills.length));
+                    return (
+                      <text
+                        fill="#334155"
+                        fontSize="12"
+                        fontWeight="800"
+                        key={skill.key}
+                        textAnchor="middle"
+                        x={p.x}
+                        y={p.y}
+                      >
+                        {skill.label}
+                      </text>
+                    );
+                  })}
+                </svg>
+              </div>
 
-            <div className="grid content-start gap-3 md:grid-cols-2">
-              {profile.skills.map((skill) => (
-                <div className="rounded-2xl bg-[#f0f7ff] p-4" key={skill.key}>
-                  <div className="flex items-center justify-between gap-3 text-sm font-black">
-                    <span>{skill.label}</span>
-                    <span className="text-[#0058be]">{skill.score}</span>
-                  </div>
-                  <div className="mt-3 h-2 rounded-full bg-[#d7e8ff]">
-                    <div className="h-full rounded-full bg-[linear-gradient(90deg,#4bb8ff,#16c9bd)]" style={{ width: `${skill.score}%` }} />
-                  </div>
-                </div>
-              ))}
+              <MagicBento
+                clickEffect
+                enableBorderGlow
+                enableMagnetism
+                enableSpotlight
+                enableStars
+                enableTilt
+                glowColor="0, 180, 255"
+                items={abilityItems}
+                particleCount={12}
+                spotlightRadius={300}
+              />
             </div>
-          </div>
-        </section>
+          </GlowCard>
 
-        <aside className="grid content-start gap-5">
-          <section className="rounded-[28px] bg-[#0058be] p-6 text-white shadow-[0_20px_60px_rgba(0,88,190,0.18)]">
+          <GlowCard
+            className="ai-coach-card text-white shadow-[0_22px_70px_rgba(0,88,190,0.24)]"
+            data-profile-card
+          >
+            <div className="ai-coach-dots" />
+            <div className="ai-coach-scan" />
+
             <p className="text-sm font-black text-[#bfe9ff]">AI Coach 今日计划</p>
-            <h3 className="mt-3 text-2xl font-black">{plan.title}</h3>
+            <h3 className="mt-3 text-2xl font-black leading-tight">{plan.title}</h3>
             <p className="mt-3 text-sm font-semibold leading-6 text-[#ecf7ff]">{plan.focusReason}</p>
+
+            <div className="mt-5 rounded-[22px] border border-white/20 bg-white/12 p-4 backdrop-blur">
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-xs font-black uppercase tracking-[0.14em] text-[#d8f6ff]">
+                  Ace Memory
+                </span>
+                <span className="h-2 w-2 rounded-full bg-[#8cffef] shadow-[0_0_18px_rgba(140,255,239,0.86)]" />
+              </div>
+              <div className="mt-3 space-y-3">
+                {defaultPlayerModel.coachMemory.slice(0, 2).map((note) => (
+                  <div key={note.id}>
+                    <p className="text-sm font-black">{note.title}</p>
+                    <p className="mt-1 text-xs font-semibold leading-5 text-[#dff6ff]">{note.content}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <a
-              className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-2xl bg-white text-sm font-black text-[#0058be] transition hover:-translate-y-0.5"
+              className="ripple-button mt-6 inline-flex h-12 w-full items-center justify-center rounded-2xl bg-white text-sm font-black text-[#0058be] shadow-[0_16px_32px_rgba(0,28,90,0.18)] transition hover:-translate-y-0.5 hover:shadow-[0_20px_42px_rgba(0,198,255,0.28)]"
               href="/training"
             >
               进入训练桌
             </a>
-          </section>
+          </GlowCard>
+        </div>
 
-          <section className="rounded-[28px] bg-white p-6 shadow-[0_20px_60px_rgba(0,88,190,0.06)]">
-            <p className="text-sm font-black text-[#0058be]">Coach 记忆</p>
-            <div className="mt-4 space-y-3">
-              {defaultPlayerModel.coachMemory.map((note) => (
-                <div className="rounded-2xl bg-[#f0f7ff] p-4" key={note.id}>
-                  <p className="font-black text-[#12395a]">{note.title}</p>
-                  <p className="mt-2 text-sm font-semibold leading-6 text-[#52657a]">{note.content}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        </aside>
-      </div>
-
-      <div className="mt-5 grid gap-5 xl:grid-cols-[minmax(0,1fr)_330px]">
-        <section className="rounded-[28px] bg-white p-6 shadow-[0_20px_60px_rgba(0,88,190,0.06)]">
+        <GlowCard className="mt-5" data-profile-card>
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-sm font-black text-[#0058be]">训练地图</p>
@@ -153,7 +193,11 @@ export default function ProfilePage() {
           </div>
           <div className="mt-6 grid gap-4 md:grid-cols-3">
             {plan.tasks.map((task, index) => (
-              <div className="relative rounded-[24px] bg-[#f0f7ff] p-5" key={task.id}>
+              <div
+                className="relative overflow-hidden rounded-[24px] border border-[#d9ebff] bg-[#f0f7ff] p-5 transition hover:-translate-y-1 hover:border-[#9ee7ff] hover:shadow-[0_18px_40px_rgba(0,102,255,0.1)]"
+                key={task.id}
+              >
+                <div className="absolute right-0 top-0 h-20 w-20 rounded-bl-full bg-[radial-gradient(circle,rgba(0,198,255,0.24),transparent_68%)]" />
                 <span className="grid h-10 w-10 place-items-center rounded-2xl bg-[#4bb8ff] text-sm font-black text-white">
                   {index + 1}
                 </span>
@@ -166,20 +210,8 @@ export default function ProfilePage() {
               </div>
             ))}
           </div>
-        </section>
-
-        <section className="rounded-[28px] bg-white p-6 shadow-[0_20px_60px_rgba(0,88,190,0.06)]">
-          <p className="text-sm font-black text-[#0058be]">成就</p>
-          <div className="mt-5 grid gap-3">
-            {achievements.map((item) => (
-              <div className="flex items-center justify-between rounded-2xl bg-[#f0f7ff] p-4" key={item.title}>
-                <span className="font-black text-[#12395a]">{item.title}</span>
-                <span className="rounded-full bg-white px-3 py-1 text-sm font-black text-[#0058be]">{item.value}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
+        </GlowCard>
+      </MasonryAnimation>
     </AppShell>
   );
 }
@@ -191,6 +223,19 @@ function Metric({ label, value }: { label: string; value: string }) {
       <p className="mt-1 text-xl font-black text-[#0058be]">{value}</p>
     </div>
   );
+}
+
+function trendLabel(trend: string) {
+  if (trend === "up") return "Improving";
+  if (trend === "down") return "Needs Focus";
+  return "Stable";
+}
+
+function abilityDescription(label: string, score: number, trend: string) {
+  if (trend === "up") return `${label} 正在变稳，下一轮训练继续巩固关键判断。`;
+  if (trend === "down") return `${label} 是今日优先校准项，Ace 会给出更短的判断路径。`;
+  if (score >= 70) return `${label} 已接近稳定区，适合用实战题验证。`;
+  return `${label} 还在校准中，建议通过专项训练补齐。`;
 }
 
 function radarPointsFromScores(scores: number[]) {
