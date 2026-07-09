@@ -48,11 +48,6 @@ export function PlayingCard({
   };
   const selectedTransform = { y: -20, scale: 1.08 };
   const normalTransform = { y: 0, scale: 1 };
-  const hoverTransform = {
-    boxShadow: "0 24px 42px rgba(6,20,34,0.32)",
-    scale: 1.04,
-    y: -10
-  };
 
   return (
     <motion.button
@@ -68,13 +63,13 @@ export function PlayingCard({
       }
       aria-label={label}
       className={cn(
-        "relative shrink-0 touch-manipulation select-none rounded-[14px] border bg-white p-0 outline-none transition-colors hover:z-30 focus-visible:z-30 focus-visible:ring-2 focus-visible:ring-[#ffd700]",
+        "relative shrink-0 touch-manipulation select-none rounded-[14px] border bg-white p-0 outline-none transition-colors",
         disabled ? "cursor-default opacity-80" : "cursor-pointer",
         status === "normal" && "border-white/90 shadow-[0_8px_16px_rgba(6,20,34,0.16)]",
         status === "selected" &&
-          "z-20 border-[#ffd700] shadow-[0_0_0_2px_rgba(255,215,0,0.86),0_0_20px_rgba(255,215,0,0.80),0_22px_36px_rgba(6,20,34,0.34)]",
+          "border-[#ffd700] shadow-[0_0_0_2px_rgba(255,215,0,0.86),0_0_20px_rgba(255,215,0,0.80),0_22px_36px_rgba(6,20,34,0.34)]",
         status === "invalid" &&
-          "z-20 border-[#ff5c6a] shadow-[0_0_0_2px_rgba(255,92,106,0.72),0_0_18px_rgba(255,92,106,0.64),0_22px_36px_rgba(6,20,34,0.34)]"
+          "border-[#ff5c6a] shadow-[0_0_0_2px_rgba(255,92,106,0.72),0_0_18px_rgba(255,92,106,0.64),0_22px_36px_rgba(6,20,34,0.34)]"
       )}
       data-card-id={card.id}
       data-card-status={status}
@@ -86,8 +81,7 @@ export function PlayingCard({
       style={cardSize}
       transition={invalid ? { duration: 0.24, ease: "easeOut" } : pokeTransition}
       type="button"
-      whileHover={disabled ? undefined : selected ? { ...selectedTransform, boxShadow: "0 28px 48px rgba(6,20,34,0.34)" } : hoverTransform}
-      whileTap={disabled ? undefined : { scale: selected ? 1.04 : 0.96, y: selected ? -16 : -2 }}
+      whileHover={disabled ? undefined : selected ? selectedTransform : { y: -8, scale: 1.03 }}
     >
       <Image
         alt=""

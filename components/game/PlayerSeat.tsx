@@ -40,16 +40,26 @@ export function PlayerSeat({ player }: PlayerSeatProps) {
         {isSide ? <CardBackStack side={player.position === "left" ? "left" : "right"} /> : <CardBackFan />}
 
         <div className={cn("relative flex flex-col items-center", isSide && player.position === "right" && "order-2")}>
-          <div
+          <motion.div
+            animate={
+              isActive
+                ? {
+                    boxShadow: [
+                      "0 0 0 0 rgba(75,184,255,0.28)",
+                      "0 0 0 12px rgba(75,184,255,0.08)",
+                      "0 0 0 0 rgba(75,184,255,0.28)"
+                    ]
+                  }
+                : undefined
+            }
             className={cn(
               "relative flex h-[96px] w-[96px] items-center justify-center overflow-hidden rounded-[18px] border border-white/75 shadow-[0_16px_34px_rgba(36,125,185,0.24)] backdrop-blur-md",
-              player.isUser ? "bg-white/52" : "bg-[#a4e8ff]/36",
-              isActive && "ring-4 ring-[#4bb8ff]/30 shadow-[0_0_0_8px_rgba(75,184,255,0.10),0_18px_38px_rgba(36,125,185,0.30)]",
-              player.status === "thinking" && "ring-[#ffd84d]/45"
+              player.isUser ? "bg-white/52" : "bg-[#a4e8ff]/36"
             )}
+            transition={{ duration: 1.8, repeat: Infinity }}
           >
             <AvatarFace player={player} />
-          </div>
+          </motion.div>
 
           <div className="-mt-2 rounded-2xl border border-white/65 bg-[#12395a]/88 px-5 py-2 text-center text-white shadow-[0_12px_30px_rgba(18,57,90,0.24)] backdrop-blur-md">
             <p className="text-sm font-black leading-tight">{player.role}</p>
