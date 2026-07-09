@@ -35,7 +35,7 @@ export const defaultPlayerModel: PlayerModel = {
     },
     {
       id: "team-pass",
-      label: "队友领先时配合不错",
+      label: "队友领先时配合稳定",
       description: "能主动让出牌路，但还需要识别对手冲刺风险。",
       relatedSkill: "teamwork",
       confidence: 0.68
