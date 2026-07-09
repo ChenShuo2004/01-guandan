@@ -36,11 +36,10 @@ export function AssessmentStart() {
         />
       </section>
 
-      <div className="grid grid-cols-[0.8fr_1.2fr] gap-3">
-        <Button href="/" variant="secondary">
-          返回首页
+      <div>
+        <Button className="w-full" href="/learning-path">
+          查看学习路线
         </Button>
-        <Button href="/learning-path">查看学习路线</Button>
       </div>
     </div>
   );
