@@ -10,10 +10,9 @@ interface CardCounterProps {
   visible: boolean;
 }
 
-const rankGroups = [
+const rankRows = [
   ["A", "K", "Q", "J", "10"],
-  ["9", "8", "7", "6", "5"],
-  ["4", "3", "2"]
+  ["9", "8", "7", "6", "5", "4", "3", "2"]
 ];
 
 const rankTotal: Record<string, number> = {
@@ -40,42 +39,28 @@ export function CardCounter({ counts, levelRank = "10", visible }: CardCounterPr
   return (
     <motion.aside
       animate={{ opacity: 1, x: 0, scale: 1 }}
-      className="absolute left-5 top-[104px] z-[66] w-[252px] rounded-[22px] border border-[#d8e3fb] bg-white p-4 text-[#12395a] shadow-[0_22px_58px_rgba(25,92,148,0.22)] max-xl:left-auto max-xl:right-5 max-xl:top-[142px] max-lg:top-[92px] max-lg:w-[218px] max-lg:p-3"
-      initial={{ opacity: 0, x: -16, scale: 0.96 }}
+      className="training-card-counter absolute left-[430px] top-[88px] z-[66] flex w-fit items-stretch overflow-hidden rounded-[10px] border border-white/72 bg-white/90 text-[#12395a] shadow-[0_12px_28px_rgba(25,92,148,0.18)] backdrop-blur-md max-2xl:left-[400px] max-xl:left-auto max-xl:right-6 max-xl:top-[94px] max-lg:left-3 max-lg:right-auto max-lg:top-[88px] max-lg:scale-[0.82] max-lg:origin-top-left"
+      initial={{ opacity: 0, x: -10, scale: 0.98 }}
       transition={{ duration: 0.24, ease: "easeOut" }}
     >
-      <div className="flex items-start justify-between gap-3 border-b border-[#e7eef8] pb-3">
-        <div>
-          <p className="text-xs font-black text-[#0f64ff]">记牌器</p>
-          <h2 className="mt-1 text-lg font-black leading-6">剩余牌统计</h2>
-        </div>
-        <span className="material-symbols-outlined rounded-xl bg-[#eef6ff] p-2 text-[20px] text-[#0f64ff]">
-          data_usage
-        </span>
+      <div className="grid w-[54px] shrink-0 place-items-center border-r border-[#d6e4ef] bg-[#eef8ff] px-2 py-2 text-center">
+        <span className="material-symbols-outlined text-[22px] text-[#0f64ff]">data_usage</span>
+        <span className="text-[11px] font-black leading-4 text-[#0f64ff]">记牌</span>
       </div>
-
-      <div className="mt-3 space-y-2">
-        {rankGroups.map((group) => (
-          <div className="grid grid-cols-5 gap-2" key={group.join("-")}>
-            {group.map((rank) => (
-              <RankCell count={counts[rank] ?? 0} isLevel={rank === levelRank} key={rank} rank={rank} />
-            ))}
-          </div>
-        ))}
-      </div>
-
-      <section className="mt-3 rounded-2xl bg-[#f3f9ff] p-3">
-        <p className="text-xs font-black text-[#346d92]">大小王</p>
-        <div className="mt-2 grid grid-cols-2 gap-2">
-          <JokerCell count={counts.SJ ?? 0} label="小王" />
-          <JokerCell count={counts.BJ ?? 0} label="大王" />
+      <div className="space-y-1.5 px-2 py-2">
+        <div className="grid grid-cols-[repeat(7,38px)] gap-1">
+          <JokerCell count={counts.SJ ?? 0} label="小王" tone="small" />
+          <JokerCell count={counts.BJ ?? 0} label="大王" tone="big" />
+          {rankRows[0].map((rank) => (
+            <RankCell count={counts[rank] ?? 0} isLevel={rank === levelRank} key={rank} rank={rank} />
+          ))}
         </div>
-      </section>
-
-      <section className="mt-3 rounded-2xl border border-[#d8e3fb] bg-[#fbfdff] p-3">
-        <p className="text-xs font-black text-[#0f64ff]">Ace Coach 记牌提示</p>
-        <p className="mt-1 text-xs font-bold leading-5 text-[#42657c]">{buildCounterHint(counts)}</p>
-      </section>
+        <div className="grid grid-cols-[repeat(8,38px)] gap-1">
+          {rankRows[1].map((rank) => (
+            <RankCell count={counts[rank] ?? 0} isLevel={rank === levelRank} key={rank} rank={rank} />
+          ))}
+        </div>
+      </div>
     </motion.aside>
   );
 }
@@ -99,27 +84,42 @@ function RankCell({ count, isLevel, rank }: { count: number; isLevel?: boolean; 
   return (
     <div
       className={cn(
-        "rounded-xl border px-2 py-2 text-center",
+        "h-[40px] rounded-[5px] border px-1 text-center leading-none",
         count === 0 ? "border-[#ffd8d8] bg-[#fff3f3]" : "border-[#d8e3fb] bg-white",
-        isLevel && "border-[#f2c24c] bg-[#fff8dc] shadow-[0_0_0_1px_rgba(242,194,76,0.45)]"
+        isLevel && "border-[#f2c24c] bg-[#fff8dc] shadow-[0_0_0_1px_rgba(242,194,76,0.48),0_0_10px_rgba(242,194,76,0.36)]"
       )}
     >
-      <p className="text-sm font-black">
+      <p className="pt-1 text-[17px] font-black leading-4">
         {rank}
-        {isLevel ? <span className="ml-1 text-[10px] text-[#9a6800]">级</span> : null}
+        {isLevel ? <span className="ml-0.5 align-top text-[9px] text-[#9a6800]">级</span> : null}
       </p>
-      <p className={cn("mt-0.5 text-xs font-bold", count === 0 ? "text-[#ba1a1a]" : "text-[#346d92]")}>
-        剩余 {count}
+      <p className={cn("mt-0.5 text-[15px] font-black leading-4", count === 0 ? "text-[#ba1a1a]" : "text-[#c61922]")}>
+        {count}
       </p>
     </div>
   );
 }
 
-function JokerCell({ count, label }: { count: number; label: string }) {
+function JokerCell({
+  count,
+  label,
+  tone
+}: {
+  count: number;
+  label: string;
+  tone: "big" | "small";
+}) {
   return (
-    <div className="rounded-xl border border-[#d8e3fb] bg-white px-3 py-2">
-      <p className="text-xs font-black text-[#346d92]">{label}</p>
-      <p className="mt-1 text-xl font-black text-[#12395a]">{count}</p>
+    <div
+      className={cn(
+        "h-[40px] rounded-[5px] border px-1 text-center leading-none",
+        tone === "big"
+          ? "border-[#ffd0d0] bg-[#fff2f2] text-[#c61922]"
+          : "border-[#cfe0ff] bg-[#f2f7ff] text-[#1267d8]"
+      )}
+    >
+      <p className="pt-1 text-[10px] font-black leading-4">{label}</p>
+      <p className="mt-0.5 text-[15px] font-black leading-4">{count}</p>
     </div>
   );
 }
