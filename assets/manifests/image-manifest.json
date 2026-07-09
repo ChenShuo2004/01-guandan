@@ -125,6 +125,27 @@
     "alt": "下家掼蛋高手头像",
     "aspectRatio": "1:1"
   },
+  "training-camp-beginner-cover": {
+    "id": "training-camp-beginner-cover",
+    "type": "png",
+    "src": "/assets/training-camp/beginner-cover.png",
+    "alt": "AI 教练带领新手学习基础牌型和牌局判断的训练营封面",
+    "aspectRatio": "4:3"
+  },
+  "training-camp-intermediate-cover": {
+    "id": "training-camp-intermediate-cover",
+    "type": "png",
+    "src": "/assets/training-camp/intermediate-cover.png",
+    "alt": "AI 教练讲解中级掼蛋战术和队友配合的训练营封面",
+    "aspectRatio": "4:3"
+  },
+  "training-camp-advanced-cover": {
+    "id": "training-camp-advanced-cover",
+    "type": "png",
+    "src": "/assets/training-camp/advanced-cover.png",
+    "alt": "AI 教练分析高级残局记牌和全局博弈的训练营封面",
+    "aspectRatio": "4:3"
+  },
   "placeholder-when-to-bomb-cover": {
     "id": "placeholder-when-to-bomb-cover",
     "type": "placeholder",
