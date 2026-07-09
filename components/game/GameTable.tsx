@@ -11,10 +11,17 @@ interface GameTableProps {
   levelRank: string;
   players: ArenaPlayer[];
   roundActions: Partial<Record<PlayerId, PlayerRoundAction>>;
+  showTurnStatus?: boolean;
   turnAction: TurnActionState;
 }
 
-export function GameTable({ levelRank, players, roundActions, turnAction }: GameTableProps) {
+export function GameTable({
+  levelRank,
+  players,
+  roundActions,
+  showTurnStatus = true,
+  turnAction
+}: GameTableProps) {
   return (
     <div className="absolute inset-0">
       <motion.div
@@ -27,7 +34,7 @@ export function GameTable({ levelRank, players, roundActions, turnAction }: Game
         <div className="relative h-full rounded-[50%] border border-white/76 bg-[radial-gradient(circle_at_50%_35%,rgba(235,250,255,0.82),rgba(75,184,255,0.46)_38%,rgba(59,168,235,0.62)_100%)] shadow-[inset_0_0_95px_rgba(255,255,255,0.45),inset_0_-38px_70px_rgba(33,112,184,0.18),0_0_56px_rgba(75,184,255,0.48)]">
           <div className="absolute inset-[8%] rounded-[50%] border border-white/30" />
           <div className="absolute inset-[15%] rounded-[50%] border border-dashed border-white/30" />
-          <TurnStatusLabel turnAction={turnAction} />
+          {showTurnStatus ? <TurnStatusLabel turnAction={turnAction} /> : null}
           <div className="absolute inset-0 rounded-[50%] bg-[linear-gradient(105deg,transparent_0%,rgba(255,255,255,0.22)_46%,transparent_54%)] opacity-70" />
         </div>
       </motion.div>

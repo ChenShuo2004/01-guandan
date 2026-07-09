@@ -6,15 +6,18 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { ActionToolbar } from "@/components/game/ActionToolbar";
 import { buildCounterHint, CardCounter } from "@/components/game/CardCounter";
+import { DealAnimation } from "@/components/game/DealAnimation";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
 import { useGameStore } from "@/store/gameStore";
+import { smartSortCardsForGuandan } from "@/lib/cards/smartSort";
 import { getRankLabel } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
 import type { TrainingPhase } from "@/lib/guandan/gameState";
 import type { ArenaPlayer } from "@/types/game";
 
 type TrainingLevel = "beginner" | "intermediate" | "advanced";
+type DealStage = "dealing" | "sorting" | "ready";
 
 interface ArenaSettings {
   sound: boolean;
@@ -58,9 +61,18 @@ const defaultSettings: ArenaSettings = {
 
 export function GameArena() {
   const router = useRouter();
+  const arenaRef = useRef<HTMLElement | null>(null);
   const [activeLevel, setActiveLevel] = useState<TrainingLevel>("beginner");
   const [activePanel, setActivePanel] = useState<"coach" | "rules" | "settings" | null>(null);
   const [settings, setSettings] = useState<ArenaSettings>(defaultSettings);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showPortraitPrompt, setShowPortraitPrompt] = useState(false);
+  const [arenaCardScale, setArenaCardScale] = useState(0.92);
+  const [dealStage, setDealStage] = useState<DealStage>("dealing");
+  const [dealRunId, setDealRunId] = useState(0);
+  const [smartSortActive, setSmartSortActive] = useState(false);
+  const [sortPulseKey, setSortPulseKey] = useState(0);
+  const [trainingGoalOpen, setTrainingGoalOpen] = useState(false);
   const [, setAiCountdown] = useState<number | null>(null);
   const aiActionKeyRef = useRef<string | null>(null);
   const aiTimerRef = useRef<number | null>(null);
@@ -76,7 +88,6 @@ export function GameArena() {
     continueTraining,
     selectCard,
     setSelectedCards,
-    sortHand,
     playSelectedCards,
     pass,
     requestTip,
@@ -97,6 +108,45 @@ export function GameArena() {
     () => buildCounterHint(state.cardRemainingCount),
     [state.cardRemainingCount]
   );
+  const isDealLocked = dealStage !== "ready";
+  const totalCardCount = useMemo(
+    () => state.players.reduce((sum, player) => sum + player.hand.length, 0),
+    [state.players]
+  );
+  const displayedUserCards = useMemo(() => {
+    const hand = userPlayer?.hand ?? [];
+    return smartSortActive ? smartSortCardsForGuandan(hand, levelRankLabel) : hand;
+  }, [levelRankLabel, smartSortActive, userPlayer?.hand]);
+
+  const restartDealAnimation = useCallback(() => {
+    setDealStage("dealing");
+    setSmartSortActive(false);
+    setSortPulseKey((current) => current + 1);
+    setDealRunId((current) => current + 1);
+  }, []);
+
+  const completeDealAnimation = useCallback(() => {
+    setDealStage("ready");
+    setSmartSortActive(true);
+    setSortPulseKey((current) => current + 1);
+  }, []);
+
+  const restartTraining = useCallback(() => {
+    restart();
+    restartDealAnimation();
+  }, [restart, restartDealAnimation]);
+
+  const startTraining = useCallback(() => {
+    continueTraining();
+    restartDealAnimation();
+  }, [continueTraining, restartDealAnimation]);
+
+  const toggleSmartSort = useCallback(() => {
+    if (isDealLocked) return;
+
+    setSmartSortActive((active) => !active);
+    setSortPulseKey((current) => current + 1);
+  }, [isDealLocked]);
 
   const completeAIAction = useCallback(() => {
     if (aiTimerRef.current) {
@@ -109,7 +159,7 @@ export function GameArena() {
   }, [runAIAction]);
 
   useEffect(() => {
-    if (state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.kind !== "ai") return;
+    if (isDealLocked || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.kind !== "ai") return;
 
     const actionKey = `${state.turnNumber}-${currentPlayer.id}`;
     if (aiActionKeyRef.current === actionKey) return;
@@ -147,10 +197,10 @@ export function GameArena() {
         aiTimerRef.current = null;
       }
     };
-  }, [completeAIAction, currentPlayer?.id, currentPlayer?.kind, currentPlayer?.role, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
+  }, [completeAIAction, currentPlayer?.id, currentPlayer?.kind, currentPlayer?.role, isDealLocked, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
 
   useEffect(() => {
-    if (state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.id !== "player") return;
+    if (isDealLocked || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.id !== "player") return;
 
     const actionKey = `${state.turnNumber}-player`;
     if (userActionKeyRef.current === actionKey) return;
@@ -189,7 +239,7 @@ export function GameArena() {
         userTimerRef.current = null;
       }
     };
-  }, [currentPlayer?.id, requestTip, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
+  }, [currentPlayer?.id, isDealLocked, requestTip, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
 
   useEffect(() => {
     if (!state.roundComplete) return;
@@ -215,6 +265,55 @@ export function GameArena() {
   useEffect(() => {
     window.localStorage.setItem("guandan-training-arena-settings", JSON.stringify(settings));
   }, [settings]);
+
+  useEffect(() => {
+    function syncFullscreenState() {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+      window.dispatchEvent(new Event("resize"));
+    }
+
+    document.addEventListener("fullscreenchange", syncFullscreenState);
+    return () => document.removeEventListener("fullscreenchange", syncFullscreenState);
+  }, []);
+
+  useEffect(() => {
+    function syncOrientationPrompt() {
+      const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
+      const isPortrait = window.matchMedia("(orientation: portrait)").matches;
+      setShowPortraitPrompt(isTouchDevice && isPortrait);
+    }
+
+    syncOrientationPrompt();
+    window.addEventListener("resize", syncOrientationPrompt);
+    window.addEventListener("orientationchange", syncOrientationPrompt);
+    return () => {
+      window.removeEventListener("resize", syncOrientationPrompt);
+      window.removeEventListener("orientationchange", syncOrientationPrompt);
+    };
+  }, []);
+
+  useEffect(() => {
+    function syncArenaCardScale() {
+      const isLandscapeTraining = window.matchMedia("(orientation: landscape) and (max-height: 600px)").matches;
+
+      if (!isLandscapeTraining) {
+        setArenaCardScale(0.92);
+        return;
+      }
+
+      const targetCardHeight = window.innerHeight * 0.21;
+      const nextScale = Math.min(0.82, Math.max(0.66, targetCardHeight / 124));
+      setArenaCardScale(Number(nextScale.toFixed(2)));
+    }
+
+    syncArenaCardScale();
+    window.addEventListener("resize", syncArenaCardScale);
+    window.addEventListener("orientationchange", syncArenaCardScale);
+    return () => {
+      window.removeEventListener("resize", syncArenaCardScale);
+      window.removeEventListener("orientationchange", syncArenaCardScale);
+    };
+  }, []);
 
   const arenaPlayers = useMemo(
     () =>
@@ -271,7 +370,7 @@ export function GameArena() {
 
   function changeLevel(level: TrainingLevel) {
     setActiveLevel(level);
-    restart();
+    restartTraining();
   }
 
   function updateSettings(nextSettings: Partial<ArenaSettings>) {
@@ -282,9 +381,35 @@ export function GameArena() {
   }
 
   function skipAIWait() {
-    if (currentPlayer?.kind !== "ai" || state.trainingPhase !== "playing") return;
+    if (isDealLocked || currentPlayer?.kind !== "ai" || state.trainingPhase !== "playing") return;
     completeAIAction();
   }
+
+  const toggleFullscreen = useCallback(async () => {
+    try {
+      if (document.fullscreenElement) {
+        await document.exitFullscreen();
+      } else {
+        await (arenaRef.current ?? document.documentElement).requestFullscreen();
+      }
+    } catch {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    } finally {
+      window.setTimeout(() => window.dispatchEvent(new Event("resize")), 120);
+    }
+  }, []);
+
+  const enterLandscapeTraining = useCallback(async () => {
+    try {
+      await toggleFullscreen();
+      const orientation = screen.orientation as ScreenOrientation & {
+        lock?: (orientation: "landscape" | "portrait") => Promise<void>;
+      };
+      await orientation.lock?.("landscape");
+    } catch {
+      setShowPortraitPrompt(true);
+    }
+  }, [toggleFullscreen]);
 
   const coachTeachingText = state.cardCounterVisible
     ? `${formatCoachTeaching(
@@ -299,10 +424,15 @@ export function GameArena() {
       );
 
   return (
-    <main className="training-arena relative h-[100dvh] min-h-[390px] overflow-hidden bg-[#72caff] text-[#12395a]">
+    <main
+      className="training-arena relative h-[100dvh] min-h-[390px] overflow-hidden bg-[#72caff] text-[#12395a]"
+      data-fullscreen={isFullscreen ? "true" : "false"}
+      ref={arenaRef}
+    >
       <ArenaBackground />
       <ArenaTopBar
         activeLevel={activeLevel}
+        isFullscreen={isFullscreen}
         levelTitle={activeTrainingLevel.title}
         levelRank={levelRankLabel}
         onBackToLobby={goLobby}
@@ -310,14 +440,26 @@ export function GameArena() {
         onOpenRules={() => setActivePanel("rules")}
         onOpenSettings={() => setActivePanel("settings")}
         onSelectLevel={changeLevel}
+        onToggleFullscreen={toggleFullscreen}
         phase={phase}
       />
 
-      <section className="relative z-10 mx-auto h-full w-full max-w-[1680px] px-4 pb-3 pt-[84px] lg:px-5">
+      <section className="training-arena-stage relative z-10 mx-auto h-full w-full max-w-[1680px] px-4 pb-3 pt-[84px] lg:px-5">
+        <FloatingArenaControls
+          cardCounterVisible={state.cardCounterVisible}
+          isFullscreen={isFullscreen}
+          onOpenCoach={() => setActivePanel("coach")}
+          onOpenRules={() => setActivePanel("rules")}
+          onOpenSettings={() => setActivePanel("settings")}
+          onToggleCardCounter={toggleCardCounter}
+          onToggleFullscreen={toggleFullscreen}
+          tipsEnabled={settings.aiTips}
+        />
         <GameTable
           levelRank={levelRankLabel}
           players={arenaPlayers}
           roundActions={state.currentRoundActions}
+          showTurnStatus={!isDealLocked}
           turnAction={state.turnAction}
         />
 
@@ -326,7 +468,7 @@ export function GameArena() {
         {settings.aiTips ? (
           <motion.section
             animate={{ opacity: 1, x: 0 }}
-            className="absolute left-5 top-[190px] z-[62] flex max-h-[210px] w-[min(380px,28vw)] items-start gap-4 overflow-y-auto rounded-2xl bg-white px-5 py-4 text-left shadow-[0_22px_54px_rgba(42,132,196,0.24)] max-xl:top-[176px] max-xl:w-[330px] max-lg:left-3 max-lg:top-[96px] max-lg:max-h-[126px] max-lg:w-[300px] max-lg:gap-3 max-lg:px-4 max-lg:py-3"
+            className="training-coach-tip absolute left-5 top-[190px] z-[62] flex max-h-[210px] w-[min(380px,28vw)] items-start gap-4 overflow-y-auto rounded-2xl bg-white px-5 py-4 text-left shadow-[0_22px_54px_rgba(42,132,196,0.24)] max-xl:top-[176px] max-xl:w-[330px] max-lg:left-3 max-lg:top-[96px] max-lg:max-h-[126px] max-lg:w-[300px] max-lg:gap-3 max-lg:px-4 max-lg:py-3"
             initial={{ opacity: 0, x: -18 }}
             key={state.coachFeedback.message}
             transition={{ duration: 0.32, ease: "easeOut" }}
@@ -349,46 +491,79 @@ export function GameArena() {
           </motion.section>
         ) : null}
 
-        <div className="absolute right-7 top-[86px] z-50 hidden w-[238px] xl:block">
-          <PerformancePanel level={activeTrainingLevel} phase={phase} />
+        <div className="training-performance-panel absolute right-7 top-[86px] z-50 hidden w-[238px] xl:block">
+          {trainingGoalOpen ? (
+            <PerformancePanel
+              level={activeTrainingLevel}
+              onCollapse={() => setTrainingGoalOpen(false)}
+              phase={phase}
+            />
+          ) : (
+            <button
+              className="flex min-h-12 w-full items-center justify-between rounded-full border border-white/70 bg-white/74 px-4 text-sm font-black text-[#12395a] shadow-[0_16px_36px_rgba(42,132,196,0.18)] backdrop-blur-xl transition hover:-translate-y-0.5"
+              onClick={() => setTrainingGoalOpen(true)}
+              type="button"
+            >
+              <span>{activeTrainingLevel.label}训练目的</span>
+              <span className="material-symbols-outlined text-[18px]">expand_more</span>
+            </button>
+          )}
         </div>
 
-        <div className="pointer-events-none absolute left-1/2 top-[61%] z-40 w-[min(560px,42vw)] -translate-x-1/2 text-center text-white drop-shadow-[0_3px_8px_rgba(34,92,146,0.42)] max-lg:top-[54%] max-lg:w-[360px]">
+        <div className="training-analysis-panel pointer-events-none absolute left-1/2 top-[61%] z-40 w-[min(560px,42vw)] -translate-x-1/2 text-center text-white drop-shadow-[0_3px_8px_rgba(34,92,146,0.42)] max-lg:top-[54%] max-lg:w-[360px]">
           <AnalysisPanel reason={state.coachFeedback.reason} status={roundStatus} />
         </div>
 
         <section className="training-hand-dock absolute bottom-3 left-3 right-3 z-[60] min-w-0 lg:left-[120px] lg:right-[120px] 2xl:left-[150px] 2xl:right-[150px]">
-          <ActionToolbar
-            canAct={isUserTurn}
-            cardCounterVisible={state.cardCounterVisible}
-            isAIThinking={currentPlayer?.kind === "ai" && state.trainingPhase === "playing"}
-            onBackToLobby={goLobby}
-            onContinue={continueTraining}
-            onPass={pass}
-            onPlay={playSelectedCards}
-            onRestart={restart}
-            onShowSolution={showSolution}
-            onSortHand={sortHand}
-            onStart={continueTraining}
-            onTip={requestTip}
-            onToggleCardCounter={toggleCardCounter}
-            onUndo={clearSelectedCards}
-            onSkipAIWait={skipAIWait}
-            phase={phase}
-            selectedCount={state.selectedCards.length}
-          />
-          <HandCards
-            cards={userPlayer?.hand ?? []}
-            disabled={!isUserTurn}
-            invalidCardIds={state.invalidCardIds}
-            invalidPulseKey={state.invalidPulseKey}
-            levelRank={levelRankLabel}
-            onSelectionChange={setSelectedCards}
-            onSelectCard={selectCard}
-            selectedCardIds={selectedCardIds}
-            variant="arena"
-          />
+          {!isDealLocked ? (
+            <>
+              <ActionToolbar
+                canAct={isUserTurn && !isDealLocked}
+                cardCounterVisible={state.cardCounterVisible}
+                isAIThinking={currentPlayer?.kind === "ai" && state.trainingPhase === "playing"}
+                onBackToLobby={goLobby}
+                onContinue={continueTraining}
+                onPass={pass}
+                onPlay={playSelectedCards}
+                onRestart={restartTraining}
+                onShowSolution={showSolution}
+                onSortHand={toggleSmartSort}
+                onStart={startTraining}
+                onTip={requestTip}
+                onToggleCardCounter={toggleCardCounter}
+                onUndo={clearSelectedCards}
+                onSkipAIWait={skipAIWait}
+                phase={phase}
+                selectedCount={state.selectedCards.length}
+              />
+              <HandCards
+                cards={displayedUserCards}
+                disabled={!isUserTurn || isDealLocked}
+                invalidCardIds={state.invalidCardIds}
+                invalidPulseKey={state.invalidPulseKey}
+                levelRank={levelRankLabel}
+                onSelectionChange={setSelectedCards}
+                onSelectCard={selectCard}
+                selectedCardIds={selectedCardIds}
+                cardScale={arenaCardScale}
+                sortPulseKey={sortPulseKey}
+                variant="arena"
+              />
+            </>
+          ) : null}
         </section>
+        <SmartSortButton
+          active={smartSortActive}
+          disabled={isDealLocked}
+          onClick={toggleSmartSort}
+        />
+        <DealAnimation
+          active={isDealLocked}
+          cardCount={totalCardCount}
+          key={dealRunId}
+          onComplete={completeDealAnimation}
+          onStageChange={setDealStage}
+        />
       </section>
 
       <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "coach"} title="AI Coach">
@@ -418,6 +593,7 @@ export function GameArena() {
           </section>
         </div>
       </ArenaModal>
+      {showPortraitPrompt ? <PortraitTrainingPrompt onEnter={enterLandscapeTraining} /> : null}
     </main>
   );
 }
@@ -438,8 +614,122 @@ function ArenaBackground() {
   );
 }
 
+function SmartSortButton({
+  active,
+  disabled,
+  onClick
+}: {
+  active: boolean;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      aria-pressed={active}
+      className={cn(
+        "fixed bottom-6 right-6 z-[92] inline-flex min-h-14 items-center gap-2 rounded-full border px-5 text-base font-black shadow-[0_18px_38px_rgba(15,100,255,0.26)] backdrop-blur-xl transition hover:-translate-y-0.5 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-45 max-lg:bottom-[132px] max-lg:right-4 max-lg:min-h-12 max-lg:px-4 max-lg:text-sm",
+        active
+          ? "border-[#ffd36d] bg-[#ffe08a] text-[#755000]"
+          : "border-white/80 bg-[#0f64ff] text-white"
+      )}
+      disabled={disabled}
+      onClick={onClick}
+      type="button"
+    >
+      <span className="material-symbols-outlined text-[20px]">sort</span>
+      <span>{active ? "恢复原序" : "智能理牌"}</span>
+    </button>
+  );
+}
+
+function FloatingArenaControls({
+  cardCounterVisible,
+  isFullscreen,
+  onOpenCoach,
+  onOpenRules,
+  onOpenSettings,
+  onToggleCardCounter,
+  onToggleFullscreen,
+  tipsEnabled
+}: {
+  cardCounterVisible: boolean;
+  isFullscreen: boolean;
+  onOpenCoach: () => void;
+  onOpenRules: () => void;
+  onOpenSettings: () => void;
+  onToggleCardCounter: () => void;
+  onToggleFullscreen: () => void;
+  tipsEnabled: boolean;
+}) {
+  return (
+    <div className="training-floating-controls absolute right-4 top-4 z-[92] hidden items-center gap-2">
+      <FloatingControlButton active={tipsEnabled} icon="psychology" label="AI Coach" onClick={onOpenCoach} />
+      <FloatingControlButton icon="menu_book" label="训练规则" onClick={onOpenRules} />
+      <FloatingControlButton icon="settings" label="设置" onClick={onOpenSettings} />
+      <FloatingControlButton active={cardCounterVisible} icon="casino" label="记牌器" onClick={onToggleCardCounter} />
+      <FloatingControlButton
+        active={isFullscreen}
+        icon={isFullscreen ? "fullscreen_exit" : "fullscreen"}
+        label={isFullscreen ? "退出全屏" : "进入全屏"}
+        onClick={onToggleFullscreen}
+      />
+    </div>
+  );
+}
+
+function FloatingControlButton({
+  active = false,
+  icon,
+  label,
+  onClick
+}: {
+  active?: boolean;
+  icon: string;
+  label: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      aria-label={label}
+      className={cn(
+        "grid h-12 w-12 place-items-center rounded-2xl border border-white/75 bg-white/82 text-[#12395a] shadow-[0_12px_26px_rgba(28,109,172,0.18)] backdrop-blur-xl transition active:scale-[0.97]",
+        active && "bg-[#0f64ff] text-white ring-2 ring-white/70"
+      )}
+      onClick={onClick}
+      title={label}
+      type="button"
+    >
+      <span className="material-symbols-outlined text-[22px]">{icon}</span>
+    </button>
+  );
+}
+
+function PortraitTrainingPrompt({ onEnter }: { onEnter: () => void }) {
+  return (
+    <div className="fixed inset-0 z-[150] grid place-items-center bg-[#eef7fb]/96 p-6 text-center text-[#12395a] backdrop-blur-xl">
+      <div className="w-full max-w-sm rounded-[28px] border border-white/80 bg-white p-6 shadow-[0_24px_70px_rgba(42,132,196,0.20)]">
+        <span className="material-symbols-outlined mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[#eaf5ff] text-[30px] text-[#0f64ff]">
+          screen_rotation
+        </span>
+        <h2 className="mt-4 text-2xl font-black">请旋转手机横屏体验 AI 掼蛋训练</h2>
+        <p className="mt-3 text-sm font-bold leading-6 text-[#47708a]">
+          横屏会放大手牌、固定操作区，并让 Coach 提示不遮挡牌桌。
+        </p>
+        <button
+          className="mt-5 min-h-12 w-full rounded-full bg-[#0f64ff] px-5 text-base font-black text-white shadow-[0_14px_30px_rgba(15,100,255,0.26)]"
+          onClick={onEnter}
+          type="button"
+        >
+          进入横屏训练
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function ArenaTopBar({
   activeLevel,
+  isFullscreen,
   levelTitle,
   levelRank,
   onBackToLobby,
@@ -447,9 +737,11 @@ function ArenaTopBar({
   onOpenRules,
   onOpenSettings,
   onSelectLevel,
+  onToggleFullscreen,
   phase
 }: {
   activeLevel: TrainingLevel;
+  isFullscreen: boolean;
   levelTitle: string;
   levelRank: string;
   onBackToLobby: () => void;
@@ -457,10 +749,11 @@ function ArenaTopBar({
   onOpenRules: () => void;
   onOpenSettings: () => void;
   onSelectLevel: (level: TrainingLevel) => void;
+  onToggleFullscreen: () => void;
   phase: TrainingPhase;
 }) {
   return (
-    <header className="absolute inset-x-0 top-0 z-[80] h-[84px] border-b border-white/20 bg-[#d7f3ff]/28 shadow-[0_10px_32px_rgba(34,122,187,0.10)] backdrop-blur-md">
+    <header className="training-arena-topbar absolute inset-x-0 top-0 z-[80] h-[84px] border-b border-white/20 bg-[#d7f3ff]/28 shadow-[0_10px_32px_rgba(34,122,187,0.10)] backdrop-blur-md">
       <div className="flex h-full items-center justify-between gap-3 px-4 lg:px-7">
         <div className="relative flex h-[82px] w-[360px] shrink-0 items-center rounded-br-[28px] bg-white/76 pl-7 shadow-[0_10px_24px_rgba(37,126,191,0.14)] max-lg:w-[220px] max-lg:pl-4">
           <div>
@@ -501,6 +794,16 @@ function ArenaTopBar({
           <HudButton icon="ⓘ" label="规则" onClick={onOpenRules} />
           <HudButton icon="⚙" label="设置" onClick={onOpenSettings} />
           <button
+            aria-label={isFullscreen ? "退出全屏" : "进入全屏"}
+            className="grid h-12 w-12 place-items-center rounded-full bg-white/42 text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5"
+            onClick={onToggleFullscreen}
+            type="button"
+          >
+            <span className="material-symbols-outlined text-[22px]">
+              {isFullscreen ? "fullscreen_exit" : "fullscreen"}
+            </span>
+          </button>
+          <button
             className="h-12 rounded-full bg-[#0f64ff] px-7 text-base font-black text-white shadow-[0_14px_30px_rgba(15,100,255,0.28)] transition hover:-translate-y-0.5 max-lg:w-12 max-lg:px-0"
             onClick={onBackToLobby}
             type="button"
@@ -516,13 +819,13 @@ function ArenaTopBar({
 
 function LevelCardBadge({ levelRank }: { levelRank: string }) {
   return (
-    <section className="mr-1 flex h-10 items-center gap-2 rounded-full border border-[#f2c24c]/80 bg-white/90 px-2.5 text-[#12395a] shadow-[0_10px_24px_rgba(164,105,0,0.14)] backdrop-blur max-lg:h-12 max-lg:px-2">
-      <p className="whitespace-nowrap text-[10px] font-black text-[#9a6800] max-lg:hidden">
+    <section className="mr-2 flex h-14 items-center gap-3 rounded-full border-2 border-[#f2c24c]/90 bg-white/94 px-3 text-[#12395a] shadow-[0_14px_30px_rgba(164,105,0,0.18)] backdrop-blur max-lg:h-12 max-lg:gap-2 max-lg:px-2">
+      <p className="whitespace-nowrap text-xs font-black text-[#9a6800] max-lg:hidden">
         本局级牌
       </p>
-      <div className="relative grid h-8 w-8 place-items-center rounded-lg border-2 border-[#f2c24c] bg-white text-lg font-black text-[#0f172a] shadow-[0_6px_14px_rgba(164,105,0,0.12)] max-lg:h-9 max-lg:w-9">
+      <div className="relative grid h-11 w-11 place-items-center rounded-xl border-2 border-[#f2c24c] bg-white text-2xl font-black text-[#0f172a] shadow-[0_8px_18px_rgba(164,105,0,0.18)] max-lg:h-9 max-lg:w-9 max-lg:text-xl">
         {levelRank}
-        <span className="absolute -right-1 -top-1 rounded bg-[#ffd76a] px-1 text-[9px] leading-4 text-[#7a4a00]">
+        <span className="absolute -right-1.5 -top-1.5 rounded-md bg-[#ffd76a] px-1.5 text-[10px] leading-5 text-[#7a4a00] shadow-sm max-lg:text-[9px] max-lg:leading-4">
           级
         </span>
       </div>
@@ -552,15 +855,29 @@ function HudButton({ icon, label, onClick }: { icon: string; label: string; onCl
 
 function PerformancePanel({
   level,
+  onCollapse,
   phase
 }: {
   level: (typeof trainingLevels)[number];
+  onCollapse: () => void;
   phase: TrainingPhase;
 }) {
   return (
     <section className="rounded-[12px] border border-white/62 bg-white/68 p-4 text-[#12395a] shadow-[0_20px_45px_rgba(42,132,196,0.20)] backdrop-blur-xl">
-      <h2 className="text-base font-black">{level.title}</h2>
-      <p className="mt-1 text-sm font-bold text-[#346d92]">{level.goal}</p>
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <h2 className="text-base font-black">{level.title}</h2>
+          <p className="mt-1 text-sm font-bold text-[#346d92]">{level.goal}</p>
+        </div>
+        <button
+          aria-label="隐藏训练目的"
+          className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/72 text-[#17496d] shadow-sm transition hover:bg-white"
+          onClick={onCollapse}
+          type="button"
+        >
+          <span className="material-symbols-outlined text-[17px]">expand_less</span>
+        </button>
+      </div>
       <div className="mt-3 flex flex-wrap gap-2">
         {level.items.map((item) => (
           <span className="rounded-full bg-[#d9f3ff]/80 px-3 py-1 text-xs font-black text-[#0f64a0]" key={item}>
@@ -610,8 +927,8 @@ function ArenaModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-[120] grid place-items-center bg-[#08233d]/34 p-5 backdrop-blur-sm">
-      <section className="max-h-[86vh] w-[min(640px,92vw)] overflow-y-auto rounded-2xl bg-white p-6 shadow-[0_24px_70px_rgba(8,35,61,0.30)]">
+    <div className="training-arena-modal fixed inset-0 z-[120] grid place-items-center bg-[#08233d]/34 p-5 backdrop-blur-sm">
+      <section className="training-arena-modal-panel max-h-[86vh] w-[min(640px,92vw)] overflow-y-auto rounded-2xl bg-white p-6 shadow-[0_24px_70px_rgba(8,35,61,0.30)]">
         <div className="mb-5 flex items-center justify-between">
           <h2 className="text-2xl font-black text-[#12395a]">{title}</h2>
           <button

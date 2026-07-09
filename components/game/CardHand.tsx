@@ -136,10 +136,16 @@ export function CardHand({
   }
 
   if (variant === "arena") {
+    const arenaCardScale = cardScale;
+
     return (
       <div
         className={cn("relative overflow-visible px-2 py-1", disabled && "opacity-75")}
         data-selected-count={selectedCardIds.length}
+        style={{
+          ["--arena-card-overlap" as string]: `${Math.round(26 * arenaCardScale)}px`,
+          ["--arena-card-min-height" as string]: `${Math.round(168 * arenaCardScale)}px`
+        }}
       >
         {selectedCardIds.length > 1 ? (
           <div
@@ -148,7 +154,7 @@ export function CardHand({
           />
         ) : null}
 
-        <div className="relative flex min-h-[176px] min-w-0 items-end justify-center overflow-visible px-1 pb-2 pt-7">
+        <div className="arena-hand-row relative flex min-h-[var(--arena-card-min-height)] min-w-0 items-end justify-center overflow-visible px-1 pb-2 pt-7">
           {cards.map((card, index) => {
             const selected = selectedSet.has(card.id);
             const invalid = invalidSet.has(card.id);
@@ -158,7 +164,7 @@ export function CardHand({
                 animate={{
                   scale: sortPulseKey > 0 ? [1, 1.025, 1] : 1
                 }}
-                className={cn("relative shrink-0", index === 0 ? "" : "-ml-6 sm:-ml-7")}
+                className={cn("relative shrink-0", index === 0 ? "" : "-ml-[var(--arena-card-overlap)]")}
                 key={card.id}
                 layout
                 style={{ zIndex: selected || invalid ? 100 + index : index }}
@@ -176,7 +182,7 @@ export function CardHand({
                   onPointerDownCard={handlePointerDown}
                   onPointerEnterCard={handlePointerEnter}
                   selected={selected}
-                  sizeScale={0.76}
+                  sizeScale={arenaCardScale}
                 />
               </motion.div>
             );

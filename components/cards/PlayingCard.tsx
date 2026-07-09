@@ -52,6 +52,12 @@ export function PlayingCard({
     height: Math.round(baseSize.height * sizeScale),
     width: Math.round(baseSize.width * sizeScale)
   };
+  const scaledCardStyle = {
+    height: baseSize.height,
+    transform: `scale(${sizeScale})`,
+    transformOrigin: "top left",
+    width: baseSize.width
+  };
   const selectedTransform = { y: -20, scale: 1.08 };
   const normalTransform = { y: 0, scale: 1 };
 
@@ -88,13 +94,15 @@ export function PlayingCard({
       type="button"
       whileHover={disabled ? undefined : selected ? selectedTransform : { y: -8, scale: 1.03 }}
     >
-      <PokerCard
-        card={toPokerCardData(card, levelRank)}
-        compact={compact}
-        levelRank={levelRank}
-        selected={selected}
-        size={card.isJoker ? "joker" : compact ? "sm" : "md"}
-      />
+      <span className="block" style={scaledCardStyle}>
+        <PokerCard
+          card={toPokerCardData(card, levelRank)}
+          compact={compact}
+          levelRank={levelRank}
+          selected={selected}
+          size={card.isJoker ? "joker" : compact ? "sm" : "md"}
+        />
+      </span>
       <span
         aria-hidden
         className={cn(
