@@ -10,21 +10,22 @@ import {
   type GuandanCourse
 } from "@/lib/guandan/catalog";
 
-const topNavItems = ["Arena", "Diagnostic", "Training", "Skill Tree"];
-
 const sideNavItems = [
-  { href: "/", icon: "dashboard", label: "Home" },
-  { href: "/training", icon: "sports_esports", label: "Arena" },
-  { href: "/assessment/start", icon: "analytics", label: "Diagnostics" },
-  { href: "/learning-path", icon: "school", label: "Training" }
+  { href: "/training", icon: "dashboard", label: "竞技大厅" },
+  { href: "/assessment/start", icon: "analytics", label: "能力测评" },
+  { href: "/learning-path", icon: "fitness_center", label: "训练路线" },
+  { href: "/practice", icon: "extension", label: "残局挑战" },
+  { href: "/profile", icon: "person", label: "能力画像" },
+  { href: "/history", icon: "history", label: "我的记录" }
 ];
 
 const stageIcons = ["star", "trending_up", "psychology", "workspace_premium"];
 
 const mobileNavItems = [
-  { href: "/", icon: "dashboard", label: "Home" },
-  { href: "/learning-path", icon: "school", label: "Learn" },
-  { href: "/profile", icon: "person", label: "Profile" }
+  { href: "/training", icon: "dashboard", label: "大厅" },
+  { href: "/learning-path", icon: "fitness_center", label: "路线" },
+  { href: "/practice", icon: "extension", label: "残局" },
+  { href: "/profile", icon: "person", label: "我的" }
 ];
 
 export function GuandanLearningPath() {
@@ -37,13 +38,12 @@ export function GuandanLearningPath() {
   const courses = useMemo(() => getCategoryCourses(activeCategory), [activeCategory]);
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#f9f9ff] text-[#111c2d]">
-      <AcademyTopNav />
+    <div className="min-h-screen overflow-x-hidden bg-[linear-gradient(135deg,#f9f9ff_0%,#eef4ff_100%)] text-[#111c2d]">
       <AcademySideNav />
 
-      <main className="min-h-screen px-4 pb-28 pt-16 md:ml-64 md:px-12 md:pb-16">
+      <main className="min-h-screen px-4 pb-24 pt-8 md:ml-72 md:px-12 md:py-12">
         <HeroSection />
-        <ProgressStages activeCategory={activeCategory} />
+        <ProgressStages activeCategory={activeCategory} onChange={setActiveCategoryId} />
         <CategoryChapters
           activeCategoryId={activeCategory.id}
           categories={guandanLearningPath.categories}
@@ -58,145 +58,84 @@ export function GuandanLearningPath() {
   );
 }
 
-function AcademyTopNav() {
-  return (
-    <header className="fixed left-0 top-0 z-50 flex h-16 w-full items-center justify-between bg-[#2f7fd7] px-6 text-white shadow-md backdrop-blur-md">
-      <div className="flex min-w-0 items-center gap-10">
-        <Link className="shrink-0 text-xl font-black" href="/learning-path">
-          Guandan Academy
-        </Link>
-        <nav className="hidden items-center gap-7 lg:flex">
-          {topNavItems.map((item) => (
-            <Link
-              className={[
-                "border-b-2 pb-1 text-sm font-black transition",
-                item === "Training"
-                  ? "border-white text-white"
-                  : "border-transparent text-white/72 hover:text-white"
-              ].join(" ")}
-              href={item === "Training" ? "/learning-path" : "#"}
-              key={item}
-            >
-              {item}
-            </Link>
-          ))}
-        </nav>
-      </div>
-
-      <div className="hidden items-center gap-5 md:flex">
-        <div className="flex h-9 w-64 items-center justify-between rounded-2xl bg-white/14 px-4 text-sm font-bold text-white/92">
-          <span>Search strategies...</span>
-          <span className="material-symbols-outlined text-[22px] text-white/72">search</span>
-        </div>
-        <button className="grid h-9 w-9 place-items-center rounded-full transition hover:bg-white/12" type="button">
-          <span className="material-symbols-outlined text-[23px]">notifications</span>
-        </button>
-        <button className="grid h-9 w-9 place-items-center rounded-full transition hover:bg-white/12" type="button">
-          <span className="material-symbols-outlined text-[23px]">settings</span>
-        </button>
-        <Link
-          className="relative h-9 w-9 overflow-hidden rounded-full border-2 border-white/30 bg-[#d4e3ff]"
-          href="/profile"
-        >
-          <Image
-            alt="用户头像"
-            className="object-cover"
-            fill
-            sizes="36px"
-            src="/assets/coach/coach-master-certification.png"
-          />
-        </Link>
-      </div>
-    </header>
-  );
-}
-
 function AcademySideNav() {
   return (
-    <aside className="fixed bottom-0 left-0 top-16 z-40 hidden w-64 flex-col border-r border-[#c2c6d6]/35 bg-[#eef4ff]/82 p-6 backdrop-blur-xl md:flex">
-      <div className="flex items-center gap-4">
-        <div className="grid h-10 w-10 place-items-center rounded-xl bg-[#0058be] text-white">
+    <aside className="fixed bottom-0 left-0 top-0 z-40 hidden w-72 flex-col border-r border-[#dbe2f0] bg-[#f0f3ff] p-6 md:flex">
+      <Link className="mb-10 flex items-center gap-3 px-2" href="/learning-path">
+        <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#0058be] text-white">
           <span className="material-symbols-outlined text-[24px]">school</span>
-        </div>
-        <div>
-          <p className="text-xl font-black leading-6 text-[#0058be]">Coach Ace</p>
-          <p className="text-sm font-semibold text-[#424754]">Pro Rank 4</p>
-        </div>
-      </div>
+        </span>
+        <span>
+          <span className="block text-xl font-bold leading-tight text-[#111c2d]">掼蛋大师</span>
+          <span className="block text-[11px] font-medium tracking-wide text-[#424754]">
+            AI 进阶训练平台
+          </span>
+        </span>
+      </Link>
 
-      <nav className="mt-12 grid gap-4">
+      <nav className="flex flex-grow flex-col gap-1.5">
         {sideNavItems.map((item) => {
-          const active = item.label === "Training";
+          const active = item.label === "训练路线";
           return (
             <Link
               className={[
-                "flex h-12 items-center gap-4 rounded-lg px-4 text-sm font-black transition",
+                "flex items-center gap-3 rounded-2xl px-4 py-3.5 transition-all",
                 active
-                  ? "bg-[#0058be] text-white shadow-[0_8px_20px_rgba(0,88,190,0.24)]"
-                  : "text-[#424754] hover:bg-[#d8e3fb]"
+                  ? "bg-[#0058be] text-white shadow-lg shadow-[#0058be]/20"
+                  : "text-[#424754] hover:bg-white/50"
               ].join(" ")}
               href={item.href}
               key={item.label}
             >
               <span className="material-symbols-outlined text-[22px]">{item.icon}</span>
-              {item.label}
+              <span className="text-sm font-medium">{item.label}</span>
             </Link>
           );
         })}
       </nav>
 
-      <div className="mt-auto border-t border-[#c2c6d6]/45 pt-6">
-        <Link
-          className="flex h-12 items-center justify-center rounded-lg bg-[#2170e4] text-xl font-black text-white shadow-[0_10px_24px_rgba(33,112,228,0.25)]"
-          href="/training"
-        >
-          Quick Start
-        </Link>
-        <div className="mt-5 grid gap-4">
-          <Link className="flex items-center gap-4 text-sm font-bold text-[#424754]" href="/coach">
-            <span className="material-symbols-outlined text-[22px]">help</span>
-            Help
-          </Link>
-          <Link className="flex items-center gap-4 text-sm font-bold text-[#424754]" href="/profile">
-            <span className="material-symbols-outlined text-[22px]">logout</span>
-            Logout
-          </Link>
-        </div>
-      </div>
+      <Link
+        className="mt-auto flex w-full items-center justify-center rounded-2xl bg-[#0058be] py-4 text-sm font-bold text-white shadow-xl shadow-[#0058be]/25 transition-transform hover:scale-[1.02]"
+        href="/training"
+      >
+        开始训练
+      </Link>
     </aside>
   );
 }
 
 function HeroSection() {
   return (
-    <section className="relative flex min-h-[360px] items-center justify-between overflow-hidden py-12 lg:py-16">
-      <div className="relative z-10 max-w-4xl">
-        <h1 className="text-[72px] font-black leading-[0.98] text-[#111827] md:text-[88px]">
-          AI掼蛋
+    <section className="relative mb-16 flex flex-col justify-between gap-10 lg:flex-row lg:items-center">
+      <div className="z-10 max-w-2xl">
+        <h1 className="mb-8 text-5xl font-bold leading-[1.04] tracking-normal text-[#111c2d] sm:text-6xl lg:text-7xl">
+          AI 掼蛋
           <br />
           成长路线
         </h1>
-        <p className="mt-8 max-w-2xl text-lg font-semibold leading-8 text-[#424754]">
-          从新手到高手，AI陪你建立真正的牌局判断力。每一个阶段都拆解成可训练的知识节点，进入课程后直接学习一张 AI 知识卡。
+        <p className="max-w-xl text-base font-medium leading-relaxed text-[#424754]/80 md:text-lg">
+          从新手到高手，AI 陪你建立真正的牌局判断力。每一个阶段都拆解成可训练的知识节点，进入课程后直接学习一张 AI 知识卡。
         </p>
       </div>
-      <div className="relative hidden h-64 flex-1 lg:block" aria-hidden="true">
-        <div className="absolute right-10 top-12 grid w-72 gap-3 rounded-2xl border border-[#d8e3fb] bg-white/55 p-4 shadow-[0_18px_50px_rgba(0,88,190,0.08)] backdrop-blur-md">
-          <div className="h-3 w-28 rounded bg-[#0058be]" />
-          <div className="grid grid-cols-3 gap-2">
-            <div className="h-20 rounded-xl border border-[#d8e3fb] bg-white" />
-            <div className="h-20 rounded-xl border border-[#d8e3fb] bg-[#e7eeff]" />
-            <div className="h-20 rounded-xl border border-[#d8e3fb] bg-white" />
-          </div>
-          <div className="h-2 w-44 rounded bg-[#c2c6d6]" />
-          <div className="h-2 w-32 rounded bg-[#d8e3fb]" />
+
+      <div className="relative hidden w-full justify-center lg:flex lg:w-1/3" aria-hidden="true">
+        <div className="relative h-64 w-64">
+          <div className="absolute inset-0 rounded-full bg-[#0058be]/10 blur-[80px]" />
+          <div className="absolute right-0 top-1/4 h-4 w-4 rounded-full bg-[#0058be] opacity-40 blur-[2px]" />
+          <div className="absolute bottom-1/4 left-0 h-3 w-3 rounded-full bg-[#0060ac] opacity-30 blur-[1px]" />
         </div>
       </div>
     </section>
   );
 }
 
-function ProgressStages({ activeCategory }: { activeCategory: GuandanCategory }) {
+function ProgressStages({
+  activeCategory,
+  onChange
+}: {
+  activeCategory: GuandanCategory;
+  onChange: (categoryId: string) => void;
+}) {
   const activeIndex = Math.max(
     0,
     guandanLearningPath.categories.findIndex((category) => category.id === activeCategory.id)
@@ -204,40 +143,40 @@ function ProgressStages({ activeCategory }: { activeCategory: GuandanCategory })
 
   return (
     <section className="mb-16">
-      <h2 className="mb-6 text-2xl font-black text-[#111c2d]">你的成长阶段</h2>
-      <div className="grid gap-4 rounded-xl border border-white/70 bg-white/72 p-5 shadow-[0_14px_34px_rgba(59,130,246,0.10)] backdrop-blur-xl lg:grid-cols-4">
+      <h2 className="mb-6 text-sm font-bold uppercase tracking-widest text-[#424754]">
+        你的成长阶段
+      </h2>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {guandanLearningPath.categories.map((category, index) => {
           const active = index === activeIndex;
-          const passed = index < activeIndex;
           return (
             <button
-              className="relative flex min-h-16 items-center gap-4 text-left"
+              className={[
+                "flex min-h-[88px] items-center gap-4 rounded-[24px] p-5 text-left transition-all",
+                active
+                  ? "bg-[#0058be] text-white shadow-lg shadow-[#0058be]/20"
+                  : "border border-[#dbe2f0] bg-white text-[#111c2d]/50 hover:border-[#0058be]/30"
+              ].join(" ")}
               key={category.id}
+              onClick={() => onChange(category.id)}
               type="button"
             >
               <span
                 className={[
-                  "grid h-12 w-12 shrink-0 place-items-center rounded-xl text-[22px] shadow-sm",
-                  active
-                    ? "bg-[#0058be] text-white shadow-[0_0_20px_rgba(0,88,190,0.42)] ring-4 ring-[#0058be]/15"
-                    : passed
-                      ? "bg-[#d8e3fb] text-[#0058be]"
-                      : "bg-[#d8e3fb] text-[#727785]"
+                  "grid h-12 w-12 shrink-0 place-items-center rounded-full",
+                  active ? "bg-white/20 text-white" : "bg-[#eef2ff] text-[#0058be]"
                 ].join(" ")}
               >
-                <span className="material-symbols-outlined">{stageIcons[index] ?? "school"}</span>
+                <span className="material-symbols-outlined text-[24px]">
+                  {stageIcons[index] ?? "school"}
+                </span>
               </span>
               <span>
-                <span
-                  className={[
-                    "block text-xl font-black",
-                    active ? "text-[#0058be]" : "text-[#727785]"
-                  ].join(" ")}
-                >
-                  {getStageLabel(category.id)}
-                </span>
+                <span className="block text-base font-bold">{getStageLabel(category.id)}</span>
                 {active ? (
-                  <span className="mt-1 block text-xs font-bold text-[#424754]">当前进度 45%</span>
+                  <span className="mt-0.5 block text-[10px] font-medium text-white/70">
+                    当前进度 45%
+                  </span>
                 ) : null}
               </span>
             </button>
@@ -258,32 +197,47 @@ function CategoryChapters({
   onChange: (categoryId: string) => void;
 }) {
   return (
-    <section className="mb-16 grid gap-6 md:grid-cols-4">
+    <section className="mb-16 grid grid-cols-1 gap-6 md:grid-cols-4">
       {categories.map((category, index) => {
         const active = category.id === activeCategoryId;
         return (
           <button
             className={[
-              "group flex h-48 flex-col justify-between rounded-xl border bg-white/64 p-10 text-left backdrop-blur-xl transition",
+              "group relative flex h-56 flex-col items-center justify-center overflow-hidden rounded-[32px] border p-10 text-center transition-all",
               active
-                ? "border-[#0058be] shadow-[0_12px_30px_rgba(0,88,190,0.08)]"
-                : "border-white/50 opacity-60 hover:opacity-100"
+                ? "border-[#0058be]/20 bg-white/70 shadow-[0_4px_24px_-4px_rgba(0,88,190,0.08)] backdrop-blur-xl hover:bg-white"
+                : "border-[#dbe2f0]/30 bg-[#eef2ff]/50 hover:bg-white"
             ].join(" ")}
             key={category.id}
             onClick={() => onChange(category.id)}
             type="button"
           >
-            <span className="text-6xl font-black leading-none text-[#111c2d]/8">
+            <span
+              className={[
+                "absolute left-6 top-4 select-none text-8xl font-black leading-none",
+                active ? "text-[#0058be]/5" : "text-[#111c2d]/5"
+              ].join(" ")}
+            >
               {String(index + 1).padStart(2, "0")}
             </span>
-            <span>
-              <span className="block text-xl font-black text-[#111c2d]">{category.name}</span>
-              <span className="mt-1 block text-sm font-semibold text-[#727785]">
-                {getChapterSubtitle(category.id)}
-              </span>
-            </span>
+            <h3
+              className={[
+                "z-10 mb-1 text-xl font-bold",
+                active ? "text-[#111c2d]" : "text-[#111c2d]/40"
+              ].join(" ")}
+            >
+              {category.name}
+            </h3>
+            <p
+              className={[
+                "z-10 text-xs font-medium",
+                active ? "text-[#424754]" : "text-[#424754]/40"
+              ].join(" ")}
+            >
+              {getChapterSubtitle(category.id)}
+            </p>
             {active ? (
-              <span className="h-1.5 overflow-hidden rounded-full bg-[#0058be]/18">
+              <span className="absolute bottom-0 left-0 h-1 w-full bg-[#0058be]/20">
                 <span className="block h-full w-3/4 bg-[#0058be]" />
               </span>
             ) : null}
@@ -296,33 +250,42 @@ function CategoryChapters({
 
 function CourseGrid({ courses }: { courses: GuandanCourse[] }) {
   return (
-    <section className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-4">
-      {courses.slice(0, 12).map((course, index) => (
+    <section className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-4">
+      {courses.slice(0, 8).map((course, index) => (
         <article
-          className="group flex min-h-[390px] flex-col overflow-hidden rounded-2xl border border-white/70 bg-white/70 p-6 shadow-sm backdrop-blur-xl transition hover:-translate-y-1 hover:shadow-xl"
+          className="group flex h-full flex-col rounded-[28px] bg-white p-5 shadow-[0_4px_24px_-4px_rgba(0,88,190,0.08)] transition-all hover:-translate-y-1"
           key={course.id}
         >
-          <CoursePreview index={index} course={course} />
-          <div className="mb-3 flex items-start justify-between gap-3">
-            <span className="rounded-xl bg-[#0058be]/10 px-3 py-1 text-[10px] font-black text-[#0058be]">
+          <CoursePreview course={course} />
+          <div className="mb-3 flex items-center gap-2">
+            <span
+              className={[
+                "rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider",
+                index === 2
+                  ? "bg-orange-500/10 text-orange-600"
+                  : "bg-[#0058be]/10 text-[#0058be]"
+              ].join(" ")}
+            >
               {getCourseTag(course, index)}
             </span>
-            <span className="text-xs font-bold text-[#727785]">{15 + (index % 4) * 5} Mins</span>
+            <span className="text-[11px] font-medium text-[#424754]">
+              {15 + (index % 4) * 5} Mins
+            </span>
           </div>
-          <div className="flex-1">
-            <h3 className="line-clamp-1 text-2xl font-black leading-8 text-[#111c2d]">
+          <div className="flex-grow">
+            <h4 className="mb-2 line-clamp-2 text-xl font-bold leading-tight text-[#111c2d]">
               {course.title}
-            </h3>
-            <p className="mt-2 line-clamp-2 text-base font-semibold leading-7 text-[#424754]">
+            </h4>
+            <p className="mb-6 line-clamp-2 text-sm leading-relaxed text-[#424754]">
               {course.description}
             </p>
           </div>
           <Link
-            className="mt-6 flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#0058be] text-sm font-black text-white shadow-[0_10px_24px_rgba(0,88,190,0.18)] transition hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(59,130,246,0.45)]"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-[#0058be] py-3.5 text-sm font-bold text-white transition-colors hover:bg-blue-700"
             href={`/lessons/${course.id}`}
           >
             开始训练
-            <span className="material-symbols-outlined text-[18px]">play_arrow</span>
+            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
           </Link>
         </article>
       ))}
@@ -330,49 +293,24 @@ function CourseGrid({ courses }: { courses: GuandanCourse[] }) {
   );
 }
 
-function CoursePreview({ course, index }: { course: GuandanCourse; index: number }) {
-  const symbols = ["A", "K", "Q", "J", "10"];
-  const colors = [
-    "from-[#e7eeff] to-[#ffffff]",
-    "from-[#d4e3ff] to-[#f9f9ff]",
-    "from-[#f0f3ff] to-[#ffffff]",
-    "from-[#dee8ff] to-[#ffffff]"
-  ];
+function CoursePreview({ course }: { course: GuandanCourse }) {
+  const image = course.exampleImages[0];
 
   return (
-    <div
-      className={`mb-5 flex h-48 items-center justify-center overflow-hidden rounded-xl bg-gradient-to-br ${colors[index % colors.length]} transition group-hover:scale-[1.02]`}
-      aria-label={`${course.title} 训练预览`}
-    >
-      <div className="relative h-28 w-44">
-        {symbols.slice(0, 4).map((symbol, cardIndex) => (
-          <div
-            className="absolute top-2 h-24 w-16 rounded-lg border border-[#d8e3fb] bg-white shadow-[0_8px_24px_rgba(0,88,190,0.10)]"
-            key={symbol}
-            style={{
-              left: `${cardIndex * 32}px`,
-              transform: `rotate(${(cardIndex - 1.5) * 5}deg)`
-            }}
-          >
-            <span
-              className={[
-                "absolute left-2 top-2 text-lg font-black",
-                cardIndex % 2 === 0 ? "text-[#ba1a1a]" : "text-[#111c2d]"
-              ].join(" ")}
-            >
-              {symbol}
-            </span>
-            <span
-              className={[
-                "absolute bottom-2 right-2 text-2xl",
-                cardIndex % 2 === 0 ? "text-[#ba1a1a]" : "text-[#111c2d]"
-              ].join(" ")}
-            >
-              {cardIndex % 2 === 0 ? "♥" : "♣"}
-            </span>
-          </div>
-        ))}
-      </div>
+    <div className="mb-5 aspect-[4/3] w-full overflow-hidden rounded-[20px] bg-[#eef2ff]">
+      {image ? (
+        <Image
+          alt={`${course.title} 课程缩略图`}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          height={360}
+          src={image}
+          width={480}
+        />
+      ) : (
+        <div className="grid h-full place-items-center text-[#0058be]">
+          <span className="material-symbols-outlined text-[36px]">style</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -380,18 +318,19 @@ function CoursePreview({ course, index }: { course: GuandanCourse; index: number
 function CoachBubble() {
   return (
     <div className="pointer-events-none fixed bottom-8 right-8 z-50 hidden items-end gap-4 md:flex">
-      <div className="pointer-events-auto max-w-xs rounded-3xl rounded-br-none border border-[#0058be]/20 bg-white/90 p-4 shadow-xl backdrop-blur-md">
-        <p className="text-sm font-bold leading-6 text-[#111c2d]">
-          Ace: 今天建议训练 <span className="text-[#0058be]">牌力判断</span>，你离升级只有一步之遥了！
+      <div className="pointer-events-auto max-w-xs rounded-[32px] rounded-br-none border border-[#0058be]/10 bg-white/95 p-5 shadow-2xl backdrop-blur-md">
+        <p className="text-[13px] font-medium leading-relaxed text-[#111c2d]">
+          Ace: 今天建议训练 <span className="font-bold text-[#0058be]">牌力判断</span>
+          ，你离升级只有一步之遥了！
         </p>
       </div>
       <Link
-        className="group pointer-events-auto relative grid h-16 w-16 place-items-center overflow-hidden rounded-full border-2 border-white bg-[#0058be] shadow-2xl"
+        className="group pointer-events-auto relative grid h-16 w-16 place-items-center overflow-hidden rounded-full border-4 border-white bg-[#0058be] shadow-2xl transition-transform hover:scale-105"
         href="/coach"
       >
         <Image
           alt="AI Coach Ace"
-          className="object-cover transition group-hover:scale-110"
+          className="object-cover"
           fill
           sizes="64px"
           src="/assets/coach/coach-analysis-mode.png"
@@ -403,12 +342,15 @@ function CoachBubble() {
 
 function MobileBottomNav() {
   return (
-    <nav className="fixed bottom-0 left-0 z-50 flex h-16 w-full items-center justify-around border-t border-[#c2c6d6]/35 bg-[#eef4ff]/92 backdrop-blur-xl md:hidden">
+    <nav className="fixed bottom-0 left-0 z-50 flex h-16 w-full items-center justify-around border-t border-[#dbe2f0] bg-white/94 backdrop-blur-xl md:hidden">
       {mobileNavItems.map((item) => {
         const active = item.href === "/learning-path";
         return (
           <Link
-            className={["flex flex-col items-center gap-1 text-[10px] font-bold", active ? "text-[#0058be]" : "text-[#424754]"].join(" ")}
+            className={[
+              "flex flex-col items-center gap-1 text-[10px] font-bold",
+              active ? "text-[#0058be]" : "text-[#424754]"
+            ].join(" ")}
             href={item.href}
             key={item.label}
           >
@@ -442,8 +384,8 @@ function getStageLabel(categoryId: string) {
 }
 
 function getCourseTag(course: GuandanCourse, index: number) {
-  if (index === 0) return "INTRO";
-  if (course.difficulty.includes("高级")) return "LEVEL 3";
-  if (course.difficulty.includes("中级")) return "LEVEL 2";
-  return "LEVEL 1";
+  if (index === 0) return "Intro";
+  if (course.difficulty.includes("高级")) return "Level 3";
+  if (course.difficulty.includes("中级")) return index === 2 ? "Level 2" : "Level 1";
+  return "Level 1";
 }
