@@ -12,6 +12,7 @@ interface CardHandProps {
   selectedCardIds: string[];
   invalidCardIds?: string[];
   invalidPulseKey?: number;
+  levelRank?: string;
   disabled?: boolean;
   compact?: boolean;
   cardScale?: number;
@@ -24,6 +25,7 @@ export function CardHand({
   selectedCardIds,
   invalidCardIds = [],
   invalidPulseKey = 0,
+  levelRank = "10",
   disabled = false,
   compact = false,
   cardScale = 1,
@@ -132,10 +134,10 @@ export function CardHand({
   return (
     <div
       className={cn(
-        "relative overflow-hidden backdrop-blur-xl",
+        "relative backdrop-blur-xl",
         variant === "arena"
-          ? "rounded-[22px] border border-white/55 bg-[#d8f1ff]/58 px-3 py-3 shadow-[0_18px_42px_rgba(35,112,178,0.20)]"
-          : "rounded-[26px] border border-white/20 bg-[#061a24]/78 px-3 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-4",
+          ? "overflow-visible rounded-[26px] border border-white/55 bg-[#d8f1ff]/58 px-3 py-3 shadow-[0_18px_42px_rgba(35,112,178,0.20)]"
+          : "overflow-hidden rounded-[26px] border border-white/20 bg-[#061a24]/78 px-3 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-4",
         disabled && "opacity-75"
       )}
       data-selected-count={selectedCardIds.length}
@@ -151,19 +153,20 @@ export function CardHand({
         className={cn(
           "relative flex min-w-0 items-end justify-center px-2",
           variant === "arena"
-            ? "max-h-[36vh] flex-wrap gap-x-1 gap-y-0 overflow-visible pb-1 pt-2 lg:max-h-[29vh]"
+            ? "min-h-[212px] justify-start gap-x-1 overflow-x-auto overflow-y-visible pb-7 pt-6"
             : "gap-3 overflow-x-auto pb-4 pt-6 sm:gap-4"
         )}
       >
         {groups.map((group) => (
           <CardGroup
-            sizeScale={cardScale}
+            sizeScale={variant === "arena" ? 1 : cardScale}
             compact={compact}
             disabled={disabled}
             group={group}
             invalidCardIds={invalidSet}
             invalidPulseKey={invalidPulseKey}
             key={group.id}
+            levelRank={levelRank}
             layout={variant === "arena" ? "stack" : "row"}
             onGroupPointerDown={handleGroupPointerDown}
             onGroupPointerEnter={handleGroupPointerEnter}

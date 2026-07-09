@@ -15,14 +15,18 @@ export const SUITS: CardSuit[] = ["spade", "heart", "club", "diamond"];
 export const NORMAL_RANKS: CardRank[] = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
 
 export function getCardLabel(card: Card) {
-  if (card.rank === 16) return "SJ";
-  if (card.rank === 17) return "BJ";
-  if (card.rank === 14) return "A";
-  if (card.rank === 15) return "2";
-  if (card.rank === 11) return "J";
-  if (card.rank === 12) return "Q";
-  if (card.rank === 13) return "K";
-  return String(card.rank);
+  return getRankLabel(card.rank);
+}
+
+export function getRankLabel(rank: CardRank) {
+  if (rank === 16) return "SJ";
+  if (rank === 17) return "BJ";
+  if (rank === 14) return "A";
+  if (rank === 15) return "2";
+  if (rank === 11) return "J";
+  if (rank === 12) return "Q";
+  if (rank === 13) return "K";
+  return String(rank);
 }
 
 export function getCardSortValue(card: Card) {

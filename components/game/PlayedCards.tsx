@@ -8,9 +8,10 @@ import type { Card } from "@/lib/guandan/card";
 interface PlayedCardsProps {
   cards: Card[];
   compact?: boolean;
+  levelRank?: string;
 }
 
-export function PlayedCards({ cards, compact = false }: PlayedCardsProps) {
+export function PlayedCards({ cards, compact = false, levelRank = "10" }: PlayedCardsProps) {
   const pattern = cards.length > 0 ? detectCardPattern(cards) : null;
 
   return (
@@ -29,7 +30,7 @@ export function PlayedCards({ cards, compact = false }: PlayedCardsProps) {
             key={card.id}
           transition={{ duration: 0.95, ease: "easeOut" }}
         >
-          <PlayingCard card={card} compact={compact} disabled />
+          <PlayingCard card={card} compact={compact} disabled levelRank={levelRank} />
           </motion.div>
         ))}
 

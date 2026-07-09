@@ -9,6 +9,7 @@ interface PlayingCardProps {
   card: Card;
   compact?: boolean;
   disabled?: boolean;
+  levelRank?: string;
   selected?: boolean;
   onClick?: (card: Card) => void;
 }
@@ -17,6 +18,7 @@ export function PlayingCard({
   card,
   compact = false,
   disabled = false,
+  levelRank = "10",
   selected = false,
   onClick
 }: PlayingCardProps) {
@@ -31,14 +33,15 @@ export function PlayingCard({
       onClick={() => onClick?.(card)}
       type="button"
     >
-      <PokerCard card={toPokerCardData(card)} compact={compact} selected={selected} />
+      <PokerCard card={toPokerCardData(card, levelRank)} compact={compact} levelRank={levelRank} selected={selected} variant="played" />
     </button>
   );
 }
 
-function toPokerCardData(card: Card): PokerCardData {
+function toPokerCardData(card: Card, levelRank: string): PokerCardData {
   return {
     id: card.id,
+    isWild: !card.isJoker && getCardLabel(card) === levelRank,
     rank: getCardLabel(card) as PokerRank,
     suit: card.isJoker ? undefined : (card.suit as PokerSuit)
   };

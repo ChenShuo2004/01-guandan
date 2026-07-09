@@ -8,12 +8,13 @@ import type { PlayerId } from "@/lib/guandan/player";
 import type { ArenaPlayer } from "@/types/game";
 
 interface GameTableProps {
+  levelRank: string;
   players: ArenaPlayer[];
   roundActions: Partial<Record<PlayerId, PlayerRoundAction>>;
   turnAction: TurnActionState;
 }
 
-export function GameTable({ players, roundActions, turnAction }: GameTableProps) {
+export function GameTable({ levelRank, players, roundActions, turnAction }: GameTableProps) {
   return (
     <div className="absolute inset-0">
       <motion.div
@@ -31,10 +32,10 @@ export function GameTable({ players, roundActions, turnAction }: GameTableProps)
         </div>
       </motion.div>
 
-      <RoundActionZone action={roundActions.enemyAI2} className="left-[24%] top-[42%]" />
-      <RoundActionZone action={roundActions.partnerAI} className="left-1/2 top-[24%] -translate-x-1/2" />
-      <RoundActionZone action={roundActions.enemyAI1} className="right-[21%] top-[42%]" />
-      <RoundActionZone action={roundActions.player} className="left-1/2 bottom-[24%] -translate-x-1/2" />
+      <RoundActionZone action={roundActions.enemyAI2} className="left-[24%] top-[42%]" levelRank={levelRank} />
+      <RoundActionZone action={roundActions.partnerAI} className="left-1/2 top-[24%] -translate-x-1/2" levelRank={levelRank} />
+      <RoundActionZone action={roundActions.enemyAI1} className="right-[21%] top-[42%]" levelRank={levelRank} />
+      <RoundActionZone action={roundActions.player} className="left-1/2 bottom-[24%] -translate-x-1/2" levelRank={levelRank} />
 
       {players.map((player) => (
         <PlayerSeat key={player.id} player={player} />
@@ -57,10 +58,12 @@ function TurnStatusLabel({ turnAction }: { turnAction: TurnActionState }) {
 
 function RoundActionZone({
   action,
-  className
+  className,
+  levelRank
 }: {
   action?: PlayerRoundAction;
   className: string;
+  levelRank: string;
 }) {
   if (!action) return null;
 
@@ -84,7 +87,7 @@ function RoundActionZone({
             Pass
           </div>
         ) : (
-          <PlayedCards cards={action.cards} compact />
+          <PlayedCards cards={action.cards} compact levelRank={levelRank} />
         )}
       </div>
     </motion.div>

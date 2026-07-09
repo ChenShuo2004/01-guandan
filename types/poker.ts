@@ -23,3 +23,15 @@ export interface PokerCardData {
   rank: PokerRank;
   isWild?: boolean;
 }
+
+export type CardType = "normal" | "joker" | "levelCard";
+export type CardVariant = "hand" | "played" | "counter" | "levelBadge";
+export type CardSize = "sm" | "md" | "lg" | "joker";
+
+export interface CardTypeState {
+  type: CardType;
+  variant: CardVariant;
+  size: CardSize;
+  selected?: boolean;
+  disabled?: boolean;
+}

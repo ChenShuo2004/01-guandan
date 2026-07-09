@@ -13,6 +13,7 @@ interface CardGroupProps {
   invalidCardIds: Set<string>;
   invalidPulseKey: number;
   layout?: "row" | "stack";
+  levelRank?: string;
   sizeScale?: number;
   selectedCardIds: Set<string>;
   onGroupPointerDown?: (cards: Card[], event: PointerEvent<HTMLButtonElement>) => void;
@@ -28,6 +29,7 @@ export function CardGroup({
   invalidCardIds,
   invalidPulseKey,
   layout = "row",
+  levelRank = "10",
   onGroupPointerDown,
   onGroupPointerEnter,
   onPointerDownCard,
@@ -36,10 +38,10 @@ export function CardGroup({
   selectedCardIds
 }: CardGroupProps) {
   if (layout === "stack") {
-    const baseSize = compact ? { height: 90, width: 64 } : { height: 122, width: 86 };
+    const baseSize = compact ? { height: 78, width: 54 } : { height: 124, width: 86 };
     const cardWidth = Math.round(baseSize.width * sizeScale);
     const cardHeight = Math.round(baseSize.height * sizeScale);
-    const stackStep = Math.max(15, Math.round(cardHeight * 0.26));
+    const stackStep = Math.max(24, Math.round(cardHeight * 0.34));
     const selectedGroup = group.cards.some((card) => selectedCardIds.has(card.id));
 
     return (
@@ -86,6 +88,7 @@ export function CardGroup({
                 disabled={disabled}
                 invalid={invalid}
                 invalidPulseKey={invalidPulseKey}
+                levelRank={levelRank}
                 onPointerDownCard={onPointerDownCard}
                 onPointerEnterCard={onPointerEnterCard}
                 selected={selected}
@@ -122,6 +125,7 @@ export function CardGroup({
               disabled={disabled}
               invalid={invalid}
               invalidPulseKey={invalidPulseKey}
+              levelRank={levelRank}
               onPointerDownCard={onPointerDownCard}
               onPointerEnterCard={onPointerEnterCard}
               selected={selected}

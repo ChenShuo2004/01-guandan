@@ -9,19 +9,16 @@ import { buildCounterHint, CardCounter } from "@/components/game/CardCounter";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
 import { useGameStore } from "@/store/gameStore";
+import { getRankLabel } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
 import type { TrainingPhase } from "@/lib/guandan/gameState";
 import type { ArenaPlayer } from "@/types/game";
 
 type TrainingLevel = "beginner" | "intermediate" | "advanced";
-type TrainingSpeed = "slow" | "standard" | "fast" | "skip";
 
 interface ArenaSettings {
   sound: boolean;
-  animations: boolean;
   aiTips: boolean;
-  aiSpeed: TrainingSpeed;
-  cardScale: number;
 }
 
 const trainingLevels: Array<{
@@ -56,27 +53,14 @@ const trainingLevels: Array<{
 
 const defaultSettings: ArenaSettings = {
   sound: true,
-  animations: true,
-  aiTips: true,
-  aiSpeed: "standard",
-  cardScale: 0.62
-};
-
-const aiSpeedSeconds: Record<TrainingSpeed, number> = {
-  slow: 5,
-  standard: 3,
-  fast: 1,
-  skip: 0
+  aiTips: true
 };
 
 export function GameArena() {
   const router = useRouter();
   const [activeLevel, setActiveLevel] = useState<TrainingLevel>("beginner");
-  const [activePanel, setActivePanel] = useState<"coach" | "rules" | "settings" | "feedback" | null>(null);
+  const [activePanel, setActivePanel] = useState<"coach" | "rules" | "settings" | null>(null);
   const [settings, setSettings] = useState<ArenaSettings>(defaultSettings);
-  const [feedbackText, setFeedbackText] = useState("");
-  const [feedbackSaved, setFeedbackSaved] = useState(false);
-  const [compactLayout, setCompactLayout] = useState(false);
   const [, setAiCountdown] = useState<number | null>(null);
   const aiActionKeyRef = useRef<string | null>(null);
   const aiTimerRef = useRef<number | null>(null);
@@ -108,7 +92,7 @@ export function GameArena() {
     () => trainingLevels.find((level) => level.id === activeLevel) ?? trainingLevels[0],
     [activeLevel]
   );
-  const effectiveCardScale = compactLayout ? 0.38 : settings.cardScale;
+  const levelRankLabel = getRankLabel(state.levelRank);
   const cardCounterHint = useMemo(
     () => buildCounterHint(state.cardRemainingCount),
     [state.cardRemainingCount]
@@ -127,11 +111,11 @@ export function GameArena() {
   useEffect(() => {
     if (state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.kind !== "ai") return;
 
-    const actionKey = `${state.turnNumber}-${currentPlayer.id}-${settings.aiSpeed}`;
+    const actionKey = `${state.turnNumber}-${currentPlayer.id}`;
     if (aiActionKeyRef.current === actionKey) return;
 
     aiActionKeyRef.current = actionKey;
-    const seconds = aiSpeedSeconds[settings.aiSpeed];
+    const seconds = 5;
 
     setTurnAction({
       playerId: currentPlayer.id,
@@ -139,11 +123,6 @@ export function GameArena() {
       label: `AI ${currentPlayer.role} 思考中`,
       remainingSeconds: seconds
     });
-
-    if (seconds === 0) {
-      window.setTimeout(completeAIAction, 350);
-      return;
-    }
 
     setAiCountdown(seconds);
     let remaining = seconds;
@@ -168,7 +147,7 @@ export function GameArena() {
         aiTimerRef.current = null;
       }
     };
-  }, [completeAIAction, currentPlayer?.id, currentPlayer?.kind, currentPlayer?.role, setTurnAction, settings.aiSpeed, state.gameStatus, state.trainingPhase, state.turnNumber]);
+  }, [completeAIAction, currentPlayer?.id, currentPlayer?.kind, currentPlayer?.role, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
 
   useEffect(() => {
     if (state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.id !== "player") return;
@@ -218,16 +197,6 @@ export function GameArena() {
     const timer = window.setTimeout(clearRoundActions, 1200);
     return () => window.clearTimeout(timer);
   }, [clearRoundActions, state.roundClearKey, state.roundComplete]);
-
-  useEffect(() => {
-    function syncLayout() {
-      setCompactLayout(window.innerWidth < 1024 || window.innerHeight < 620);
-    }
-
-    syncLayout();
-    window.addEventListener("resize", syncLayout);
-    return () => window.removeEventListener("resize", syncLayout);
-  }, []);
 
   useEffect(() => {
     const raw = window.localStorage.getItem("guandan-training-arena-settings");
@@ -317,22 +286,6 @@ export function GameArena() {
     completeAIAction();
   }
 
-  function saveFeedback() {
-    if (!feedbackText.trim()) return;
-
-    const feedback = {
-      id: `feedback-${Date.now()}`,
-      text: feedbackText.trim(),
-      level: activeLevel,
-      phase,
-      createdAt: new Date().toISOString()
-    };
-    const previous = JSON.parse(window.localStorage.getItem("guandan-training-feedback") ?? "[]") as Array<typeof feedback>;
-    window.localStorage.setItem("guandan-training-feedback", JSON.stringify([feedback, ...previous]));
-    setFeedbackText("");
-    setFeedbackSaved(true);
-  }
-
   const coachTeachingText = state.cardCounterVisible
     ? `${formatCoachTeaching(
         state.coachFeedback.message,
@@ -350,9 +303,9 @@ export function GameArena() {
       <ArenaBackground />
       <ArenaTopBar
         activeLevel={activeLevel}
+        levelTitle={activeTrainingLevel.title}
         onBackToLobby={goLobby}
         onOpenCoach={() => setActivePanel("coach")}
-        onOpenFeedback={() => setActivePanel("feedback")}
         onOpenRules={() => setActivePanel("rules")}
         onOpenSettings={() => setActivePanel("settings")}
         onSelectLevel={changeLevel}
@@ -361,23 +314,23 @@ export function GameArena() {
 
       <section className="relative z-10 mx-auto h-full w-full max-w-[1680px] px-4 pb-3 pt-[84px] lg:px-5">
         <GameTable
+          levelRank={levelRankLabel}
           players={arenaPlayers}
           roundActions={state.currentRoundActions}
           turnAction={state.turnAction}
         />
 
-        <CardCounter counts={state.cardRemainingCount} visible={state.cardCounterVisible} />
+        <LevelCardBadge levelRank={levelRankLabel} />
+
+        <CardCounter counts={state.cardRemainingCount} levelRank={levelRankLabel} visible={state.cardCounterVisible} />
 
         {settings.aiTips ? (
           <motion.section
-            animate={
-              settings.animations
-                ? { opacity: 1, y: [0, -4, 0] }
-                : { opacity: 1, y: 0 }
-            }
-            className="absolute left-1/2 top-[92px] z-[62] flex max-h-[184px] w-[min(560px,44vw)] -translate-x-1/2 items-start gap-4 overflow-y-auto rounded-2xl bg-white px-5 py-4 text-left shadow-[0_22px_54px_rgba(42,132,196,0.24)] max-lg:top-[90px] max-lg:max-h-[120px] max-lg:w-[320px] max-lg:gap-3 max-lg:px-4 max-lg:py-3"
-            initial={{ opacity: 0, y: -14 }}
-            transition={settings.animations ? { duration: 3.2, repeat: Infinity, ease: "easeInOut" } : undefined}
+            animate={{ opacity: 1, x: 0 }}
+            className="absolute left-5 top-[190px] z-[62] flex max-h-[210px] w-[min(380px,28vw)] items-start gap-4 overflow-y-auto rounded-2xl bg-white px-5 py-4 text-left shadow-[0_22px_54px_rgba(42,132,196,0.24)] max-xl:top-[176px] max-xl:w-[330px] max-lg:left-3 max-lg:top-[96px] max-lg:max-h-[126px] max-lg:w-[300px] max-lg:gap-3 max-lg:px-4 max-lg:py-3"
+            initial={{ opacity: 0, x: -18 }}
+            key={state.coachFeedback.message}
+            transition={{ duration: 0.32, ease: "easeOut" }}
           >
             <span className="relative block h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-white/70 bg-white/62 shadow-[0_10px_24px_rgba(45,125,188,0.18)] max-lg:h-10 max-lg:w-10">
               <Image
@@ -405,7 +358,7 @@ export function GameArena() {
           <AnalysisPanel reason={state.coachFeedback.reason} status={roundStatus} />
         </div>
 
-        <section className="training-hand-dock absolute bottom-3 left-3 right-3 z-[60] min-w-0 lg:left-[220px] lg:right-[220px] 2xl:left-[300px] 2xl:right-[300px]">
+        <section className="training-hand-dock absolute bottom-3 left-3 right-3 z-[60] min-w-0 lg:left-[120px] lg:right-[120px] 2xl:left-[150px] 2xl:right-[150px]">
           <ActionToolbar
             canAct={isUserTurn}
             cardCounterVisible={state.cardCounterVisible}
@@ -427,10 +380,10 @@ export function GameArena() {
           />
           <HandCards
             cards={userPlayer?.hand ?? []}
-            cardScale={effectiveCardScale}
             disabled={!isUserTurn}
             invalidCardIds={state.invalidCardIds}
             invalidPulseKey={state.invalidPulseKey}
+            levelRank={levelRankLabel}
             onSelectionChange={setSelectedCards}
             onSelectCard={selectCard}
             selectedCardIds={selectedCardIds}
@@ -451,6 +404,8 @@ export function GameArena() {
         <div className="space-y-4 text-base font-bold leading-7 text-[#24557a]">
           <RuleBlock title="掼蛋基础规则" items={["四人两两组队，目标是尽快出完手牌。", "轮到你时必须出同牌型且更大的牌，炸弹可压普通牌型。", "一圈都不出时，牌权回到上一位出牌者。"]} />
           <RuleBlock title="牌型说明" items={["单牌、对子、三张、三带二、顺子是基础牌型。", "四张及以上同点数为炸弹，四王炸最大。", "顺子不包含 2 和大小王。"]} />
+          <RuleBlock title="级牌说明" items={["本局级牌会在牌桌顶部显示。", "手牌中的级牌使用金色边框和“级”标签标出。", "做判断时先确认级牌能否改变牌权。"]} />
+          <RuleBlock title="大小王说明" items={["小王使用蓝色主题，牌面显示 SMALL JOKER。", "大王使用红色主题，牌面显示 BIG JOKER。", "大小王尺寸略大于普通牌，便于第一眼识别。"]} />
           <RuleBlock title="训练规则" items={["选择等级后会生成一局训练牌局。", "先操作，再看 Ace Coach 的分析和推荐思路。", "每轮完成 学习 → 判断 → 反馈 → 成长。"]} />
         </div>
       </ArenaModal>
@@ -458,47 +413,10 @@ export function GameArena() {
       <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "settings"} title="设置">
         <div className="space-y-4 text-[#12395a]">
           <SettingToggle checked={settings.sound} label="音效" onChange={(sound) => updateSettings({ sound })} />
-          <SettingToggle checked={settings.animations} label="动画" onChange={(animations) => updateSettings({ animations })} />
           <SettingToggle checked={settings.aiTips} label="AI 提示" onChange={(aiTips) => updateSettings({ aiTips })} />
-          <SpeedSelector speed={settings.aiSpeed} onChange={(aiSpeed) => updateSettings({ aiSpeed })} />
-          <label className="block rounded-2xl bg-[#f3f9ff] p-5 font-black">
-            <span className="flex items-center justify-between text-lg">
-              牌面大小
-              <span>{Math.round(settings.cardScale * 100)}%</span>
-            </span>
-            <input
-              className="mt-3 w-full accent-[#0f64ff]"
-              max="0.9"
-              min="0.52"
-              onChange={(event) => updateSettings({ cardScale: Number(event.target.value) })}
-              step="0.02"
-              type="range"
-              value={settings.cardScale}
-            />
-          </label>
-        </div>
-      </ArenaModal>
-
-      <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "feedback"} title="反馈">
-        <div className="space-y-4 text-[#12395a]">
-          <textarea
-            className="min-h-[180px] w-full resize-none rounded-2xl border border-[#cbe7f8] bg-[#f8fcff] p-5 text-base font-bold leading-7 outline-none placeholder:text-[#6d91aa]"
-            onChange={(event) => {
-              setFeedbackSaved(false);
-              setFeedbackText(event.target.value);
-            }}
-            placeholder="描述你遇到的问题或希望增加的训练能力..."
-            value={feedbackText}
-          />
-          <button
-            className="h-14 w-full rounded-2xl bg-[#0f64ff] text-lg font-black text-white shadow-[0_14px_30px_rgba(15,100,255,0.28)] disabled:cursor-not-allowed disabled:opacity-45"
-            disabled={!feedbackText.trim()}
-            onClick={saveFeedback}
-            type="button"
-          >
-            提交反馈
-          </button>
-          {feedbackSaved ? <p className="text-sm font-black text-[#0f8d55]">已保存到本地反馈记录。</p> : null}
+          <section className="rounded-2xl bg-[#f3f9ff] p-5 text-base font-bold leading-7 text-[#345f78]">
+            AI 行动固定 5 秒。牌面固定 100%，训练场不再提供缩放。
+          </section>
         </div>
       </ArenaModal>
     </main>
@@ -523,18 +441,18 @@ function ArenaBackground() {
 
 function ArenaTopBar({
   activeLevel,
+  levelTitle,
   onBackToLobby,
   onOpenCoach,
-  onOpenFeedback,
   onOpenRules,
   onOpenSettings,
   onSelectLevel,
   phase
 }: {
   activeLevel: TrainingLevel;
+  levelTitle: string;
   onBackToLobby: () => void;
   onOpenCoach: () => void;
-  onOpenFeedback: () => void;
   onOpenRules: () => void;
   onOpenSettings: () => void;
   onSelectLevel: (level: TrainingLevel) => void;
@@ -552,7 +470,7 @@ function ArenaTopBar({
               AI Coach 陪你从基础规则到高级牌局决策。
             </p>
             <p className="mt-0.5 text-[8px] font-black uppercase tracking-[0.16em] text-[#2b6b93] max-lg:hidden">
-              Training Arena
+              {levelTitle}
             </p>
           </div>
         </div>
@@ -580,7 +498,6 @@ function ArenaTopBar({
           <HudButton icon="◉" label="AI Coach" onClick={onOpenCoach} />
           <HudButton icon="ⓘ" label="规则" onClick={onOpenRules} />
           <HudButton icon="⚙" label="设置" onClick={onOpenSettings} />
-          <HudButton icon="▣" label="反馈" onClick={onOpenFeedback} />
           <button
             className="h-12 rounded-full bg-[#0f64ff] px-7 text-base font-black text-white shadow-[0_14px_30px_rgba(15,100,255,0.28)] transition hover:-translate-y-0.5 max-lg:w-12 max-lg:px-0"
             onClick={onBackToLobby}
@@ -592,6 +509,20 @@ function ArenaTopBar({
         </nav>
       </div>
     </header>
+  );
+}
+
+function LevelCardBadge({ levelRank }: { levelRank: string }) {
+  return (
+    <section className="absolute left-1/2 top-[96px] z-[64] -translate-x-1/2 rounded-2xl border border-[#f2c24c] bg-white/90 px-4 py-3 text-center shadow-[0_18px_42px_rgba(164,105,0,0.20)] backdrop-blur max-lg:top-[88px] max-lg:px-3 max-lg:py-2">
+      <p className="text-xs font-black text-[#9a6800]">本局级牌</p>
+      <div className="relative mx-auto mt-1 grid h-[72px] w-[52px] place-items-center rounded-xl border-2 border-[#f2c24c] bg-white text-[34px] font-black text-[#0f172a] shadow-[0_8px_18px_rgba(164,105,0,0.16)] max-lg:h-[56px] max-lg:w-[42px] max-lg:text-[26px]">
+        {levelRank}
+        <span className="absolute mt-[-48px] ml-[34px] rounded bg-[#ffd76a] px-1 text-[10px] text-[#7a4a00] max-lg:mt-[-38px] max-lg:ml-[28px]">
+          级
+        </span>
+      </div>
+    </section>
   );
 }
 
@@ -735,43 +666,6 @@ function SettingToggle({
         />
       </button>
     </label>
-  );
-}
-
-function SpeedSelector({
-  onChange,
-  speed
-}: {
-  onChange: (speed: TrainingSpeed) => void;
-  speed: TrainingSpeed;
-}) {
-  const options: Array<{ id: TrainingSpeed; label: string; note: string }> = [
-    { id: "slow", label: "慢速", note: "5 秒" },
-    { id: "standard", label: "标准", note: "3 秒" },
-    { id: "fast", label: "快速", note: "1 秒" },
-    { id: "skip", label: "跳过", note: "立即" }
-  ];
-
-  return (
-    <section className="rounded-2xl bg-[#f3f9ff] p-5">
-      <p className="text-lg font-black text-[#12395a]">AI 行动速度</p>
-      <div className="mt-4 grid grid-cols-4 gap-3">
-        {options.map((option) => (
-          <button
-            className={cn(
-              "rounded-2xl px-3 py-3 text-center font-black transition",
-              speed === option.id ? "bg-[#0f64ff] text-white shadow-[0_10px_24px_rgba(15,100,255,0.22)]" : "bg-white text-[#24557a]"
-            )}
-            key={option.id}
-            onClick={() => onChange(option.id)}
-            type="button"
-          >
-            <span className="block text-base">{option.label}</span>
-            <span className="mt-1 block text-sm opacity-75">{option.note}</span>
-          </button>
-        ))}
-      </div>
-    </section>
   );
 }
 

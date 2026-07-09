@@ -8,6 +8,7 @@ interface HandCardsProps {
   selectedCardIds: string[];
   invalidCardIds?: string[];
   invalidPulseKey?: number;
+  levelRank?: string;
   compact?: boolean;
   cardScale?: number;
   disabled?: boolean;
@@ -23,6 +24,7 @@ export function HandCards({
   selectedCardIds,
   invalidCardIds = [],
   invalidPulseKey = 0,
+  levelRank = "10",
   compact = false,
   cardScale = 1,
   disabled = false,
@@ -51,6 +53,7 @@ export function HandCards({
       disabled={disabled}
       invalidCardIds={invalidCardIds}
       invalidPulseKey={invalidPulseKey}
+      levelRank={levelRank}
       onSelectionChange={updateSelection}
       selectedCardIds={selectedCardIds}
       variant={variant}

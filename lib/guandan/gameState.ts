@@ -1,6 +1,6 @@
 import type { CoachFeedback } from "@/lib/coach/coachTypes";
 import { sortCardsForHand } from "@/lib/cards/cardSort";
-import { getCardLabel, type Card } from "@/lib/guandan/card";
+import { getCardLabel, type Card, type CardRank } from "@/lib/guandan/card";
 import { createDeck, dealCards, shuffleDeck } from "@/lib/guandan/deck";
 import { initializePlayers, type GuandanPlayer, type PlayerId } from "@/lib/guandan/player";
 import type { PlayerSeat } from "@/lib/guandan/player";
@@ -48,6 +48,7 @@ export interface GameHistoryEntry {
 
 export interface GameEngineState {
   players: GuandanPlayer[];
+  levelRank: CardRank;
   currentTurn: number;
   lastPlayedCards: Card[];
   lastPlayerId: PlayerId | null;
@@ -97,6 +98,7 @@ export function createInitialGameState(seed = 20260708): GameEngineState {
 
   return {
     players,
+    levelRank: 10,
     currentTurn: 0,
     lastPlayedCards: [],
     lastPlayerId: null,

@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 interface CardCounterProps {
   counts: CardRemainingCount;
+  levelRank?: string;
   visible: boolean;
 }
 
@@ -33,7 +34,7 @@ const rankTotal: Record<string, number> = {
   BJ: 2
 };
 
-export function CardCounter({ counts, visible }: CardCounterProps) {
+export function CardCounter({ counts, levelRank = "10", visible }: CardCounterProps) {
   if (!visible) return null;
 
   return (
@@ -57,7 +58,7 @@ export function CardCounter({ counts, visible }: CardCounterProps) {
         {rankGroups.map((group) => (
           <div className="grid grid-cols-5 gap-2" key={group.join("-")}>
             {group.map((rank) => (
-              <RankCell count={counts[rank] ?? 0} key={rank} rank={rank} />
+              <RankCell count={counts[rank] ?? 0} isLevel={rank === levelRank} key={rank} rank={rank} />
             ))}
           </div>
         ))}
@@ -94,15 +95,19 @@ export function buildCounterHint(counts: CardRemainingCount) {
   return `当前 A 已出现 ${aAppeared} 张，剩余 ${aRemaining} 张。先记大牌，再判断是否抢牌权。`;
 }
 
-function RankCell({ count, rank }: { count: number; rank: string }) {
+function RankCell({ count, isLevel, rank }: { count: number; isLevel?: boolean; rank: string }) {
   return (
     <div
       className={cn(
         "rounded-xl border px-2 py-2 text-center",
-        count === 0 ? "border-[#ffd8d8] bg-[#fff3f3]" : "border-[#d8e3fb] bg-white"
+        count === 0 ? "border-[#ffd8d8] bg-[#fff3f3]" : "border-[#d8e3fb] bg-white",
+        isLevel && "border-[#f2c24c] bg-[#fff8dc] shadow-[0_0_0_1px_rgba(242,194,76,0.45)]"
       )}
     >
-      <p className="text-sm font-black">{rank}</p>
+      <p className="text-sm font-black">
+        {rank}
+        {isLevel ? <span className="ml-1 text-[10px] text-[#9a6800]">级</span> : null}
+      </p>
       <p className={cn("mt-0.5 text-xs font-bold", count === 0 ? "text-[#ba1a1a]" : "text-[#346d92]")}>
         剩余 {count}
       </p>
