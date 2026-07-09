@@ -2,7 +2,9 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import type { PointerEvent } from "react";
+import { motion } from "framer-motion";
 import { CardGroup } from "@/components/game/CardGroup";
+import { PlayingCard } from "@/components/cards/PlayingCard";
 import { groupCardsForHand, sortCardsForHand } from "@/lib/cards/cardSort";
 import type { Card } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
@@ -16,6 +18,7 @@ interface CardHandProps {
   disabled?: boolean;
   compact?: boolean;
   cardScale?: number;
+  sortPulseKey?: number;
   onSelectionChange: (cards: Card[]) => void;
   variant?: "default" | "arena";
 }
@@ -29,6 +32,7 @@ export function CardHand({
   disabled = false,
   compact = false,
   cardScale = 1,
+  sortPulseKey = 0,
   onSelectionChange,
   variant = "default"
 }: CardHandProps) {
@@ -131,13 +135,61 @@ export function CardHand({
     addCardGroup(groupCards);
   }
 
+  if (variant === "arena") {
+    return (
+      <div
+        className={cn("relative overflow-visible px-2 py-1", disabled && "opacity-75")}
+        data-selected-count={selectedCardIds.length}
+      >
+        {selectedCardIds.length > 1 ? (
+          <div
+            aria-hidden
+            className="pointer-events-none absolute bottom-4 left-1/2 h-8 w-[60%] -translate-x-1/2 rounded-full bg-[#ffd700]/28 blur-xl"
+          />
+        ) : null}
+
+        <div className="relative flex min-h-[176px] min-w-0 items-end justify-center overflow-visible px-1 pb-2 pt-7">
+          {cards.map((card, index) => {
+            const selected = selectedSet.has(card.id);
+            const invalid = invalidSet.has(card.id);
+
+            return (
+              <motion.div
+                animate={{
+                  scale: sortPulseKey > 0 ? [1, 1.025, 1] : 1
+                }}
+                className={cn("relative shrink-0", index === 0 ? "" : "-ml-6 sm:-ml-7")}
+                key={card.id}
+                layout
+                style={{ zIndex: selected || invalid ? 100 + index : index }}
+                transition={{
+                  layout: { duration: 0.4, ease: "easeOut" },
+                  scale: { delay: 0.4, duration: 0.22, ease: "easeOut" }
+                }}
+              >
+                <PlayingCard
+                  card={card}
+                  disabled={disabled}
+                  invalid={invalid}
+                  invalidPulseKey={invalidPulseKey}
+                  levelRank={levelRank}
+                  onPointerDownCard={handlePointerDown}
+                  onPointerEnterCard={handlePointerEnter}
+                  selected={selected}
+                  sizeScale={0.76}
+                />
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
-        "relative",
-        variant === "arena"
-          ? "overflow-visible px-3 py-1"
-          : "overflow-hidden rounded-[26px] border border-white/20 bg-[#061a24]/78 px-3 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-4",
+        "relative overflow-hidden rounded-[26px] border border-white/20 bg-[#061a24]/78 px-3 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-4",
         disabled && "opacity-75"
       )}
       data-selected-count={selectedCardIds.length}
@@ -150,16 +202,11 @@ export function CardHand({
       ) : null}
 
       <div
-        className={cn(
-          "relative flex min-w-0 items-end justify-center px-2",
-          variant === "arena"
-            ? "min-h-[188px] justify-start gap-x-1 overflow-x-auto overflow-y-visible pb-4 pt-7"
-            : "gap-3 overflow-x-auto pb-4 pt-6 sm:gap-4"
-        )}
+        className="relative flex min-w-0 items-end justify-center gap-3 overflow-x-auto px-2 pb-4 pt-6 sm:gap-4"
       >
         {groups.map((group) => (
           <CardGroup
-            sizeScale={variant === "arena" ? 1 : cardScale}
+            sizeScale={cardScale}
             compact={compact}
             disabled={disabled}
             group={group}
@@ -167,7 +214,7 @@ export function CardHand({
             invalidPulseKey={invalidPulseKey}
             key={group.id}
             levelRank={levelRank}
-            layout={variant === "arena" ? "stack" : "row"}
+            layout="row"
             onGroupPointerDown={handleGroupPointerDown}
             onGroupPointerEnter={handleGroupPointerEnter}
             onPointerDownCard={handlePointerDown}

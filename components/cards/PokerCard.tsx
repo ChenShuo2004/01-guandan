@@ -58,15 +58,19 @@ export function PokerCard({
         cardSizeClass,
         selected && "-translate-y-5 border-[#ffd700] shadow-[0_0_0_3px_rgba(255,215,0,0.78),0_18px_28px_rgba(17,24,39,0.30)]",
         cardType === "normal" && "border-[#c8d0d8]",
-        cardType === "levelCard" && "border-[#f0b72f] ring-2 ring-[#ffd76a]/70",
-        isSmallJoker && "border-[#2b7cff] bg-[linear-gradient(180deg,#ffffff,#eaf4ff)]",
-        isBigJoker && "border-[#d62d2d] bg-[linear-gradient(180deg,#ffffff,#fff0f0)]"
+        cardType === "levelCard" &&
+          "border-[#f0b72f] shadow-[0_0_0_2px_rgba(255,215,0,0.72),0_0_24px_rgba(255,215,0,0.70),0_14px_26px_rgba(120,84,0,0.24)] ring-2 ring-[#ffd76a]/80",
+        isSmallJoker &&
+          "border-[#2b7cff] bg-[linear-gradient(180deg,#ffffff,#eaf4ff)] shadow-[0_12px_24px_rgba(18,103,216,0.28)]",
+        isBigJoker &&
+          "border-[#d62d2d] bg-[linear-gradient(180deg,#ffffff,#fff0f0)] shadow-[0_12px_24px_rgba(214,45,45,0.28)]"
       )}
       data-card-type={cardType}
     >
       {isLevelCard ? (
-        <span className="absolute right-1 top-1 z-10 rounded-[5px] bg-[#ffd76a] px-1.5 py-0.5 text-[10px] font-black text-[#7a4a00] shadow">
-          级
+        <span className="absolute right-1 top-1 z-10 inline-flex items-center gap-0.5 rounded-[6px] bg-[#ffd76a] px-1.5 py-0.5 text-[10px] font-black text-[#7a4a00] shadow">
+          <span className="text-[11px] leading-none">♛</span>
+          <span>级</span>
         </span>
       ) : null}
       {isJoker ? (
@@ -80,7 +84,7 @@ export function PokerCard({
         </span>
       ) : null}
       {isLevelCard ? (
-        <span className="pointer-events-none absolute inset-0 rounded-[12px] bg-[radial-gradient(circle_at_50%_10%,rgba(255,224,126,0.42),transparent_42%)]" />
+        <span className="pointer-events-none absolute inset-0 rounded-[12px] bg-[radial-gradient(circle_at_50%_10%,rgba(255,232,140,0.52),transparent_46%),linear-gradient(135deg,rgba(255,255,255,0.22),transparent_44%)]" />
       ) : null}
     </div>
   );
@@ -122,7 +126,7 @@ function JokerFace({ big }: { big: boolean }) {
         {big ? "BJ" : "SJ"}
       </span>
       <div className="flex flex-1 flex-col items-center justify-center gap-1">
-        <span className={cn("rounded-full px-2 py-1 text-[10px] font-black", accent)}>
+        <span className={cn("rounded-full px-2 py-1 text-[10px] font-black shadow-sm", accent)}>
           {big ? "BIG" : "SMALL"}
         </span>
         <span className="text-center text-[18px] font-black leading-none tracking-[0.08em]">

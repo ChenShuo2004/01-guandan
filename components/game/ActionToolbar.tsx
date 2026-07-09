@@ -16,7 +16,6 @@ interface ActionToolbarProps {
   onPlay: () => void;
   onRestart: () => void;
   onShowSolution: () => void;
-  onSortHand: () => void;
   onStart: () => void;
   onTip: () => void;
   onToggleCardCounter: () => void;
@@ -36,7 +35,6 @@ export function ActionToolbar({
   onPlay,
   onRestart,
   onShowSolution,
-  onSortHand,
   onStart,
   onTip,
   onToggleCardCounter,
@@ -62,7 +60,6 @@ export function ActionToolbar({
           <ToolbarButton disabled={!canAct} icon="block" label="Pass" onClick={onPass} tone="quiet" />
           <ToolbarButton disabled={!canAct} icon="tips_and_updates" label="Hint" onClick={onTip} tone="warning" />
           <ToolbarButton active={cardCounterVisible} icon="casino" label="Count" onClick={onToggleCardCounter} />
-          <ToolbarButton icon="sort" label="Sort" onClick={onSortHand} />
           <ToolbarButton
             disabled={!canAct || selectedCount === 0}
             icon="send"

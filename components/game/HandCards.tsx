@@ -11,6 +11,7 @@ interface HandCardsProps {
   levelRank?: string;
   compact?: boolean;
   cardScale?: number;
+  sortPulseKey?: number;
   disabled?: boolean;
   variant?: "default" | "arena";
   onSelectCard: (card: Card) => void;
@@ -27,6 +28,7 @@ export function HandCards({
   levelRank = "10",
   compact = false,
   cardScale = 1,
+  sortPulseKey = 0,
   disabled = false,
   onSelectCard,
   onSelectionChange,
@@ -56,6 +58,7 @@ export function HandCards({
       levelRank={levelRank}
       onSelectionChange={updateSelection}
       selectedCardIds={selectedCardIds}
+      sortPulseKey={sortPulseKey}
       variant={variant}
     />
   );
