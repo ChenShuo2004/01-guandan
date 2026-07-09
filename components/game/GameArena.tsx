@@ -304,6 +304,7 @@ export function GameArena() {
       <ArenaTopBar
         activeLevel={activeLevel}
         levelTitle={activeTrainingLevel.title}
+        levelRank={levelRankLabel}
         onBackToLobby={goLobby}
         onOpenCoach={() => setActivePanel("coach")}
         onOpenRules={() => setActivePanel("rules")}
@@ -319,8 +320,6 @@ export function GameArena() {
           roundActions={state.currentRoundActions}
           turnAction={state.turnAction}
         />
-
-        <LevelCardBadge levelRank={levelRankLabel} />
 
         <CardCounter counts={state.cardRemainingCount} levelRank={levelRankLabel} visible={state.cardCounterVisible} />
 
@@ -442,6 +441,7 @@ function ArenaBackground() {
 function ArenaTopBar({
   activeLevel,
   levelTitle,
+  levelRank,
   onBackToLobby,
   onOpenCoach,
   onOpenRules,
@@ -451,6 +451,7 @@ function ArenaTopBar({
 }: {
   activeLevel: TrainingLevel;
   levelTitle: string;
+  levelRank: string;
   onBackToLobby: () => void;
   onOpenCoach: () => void;
   onOpenRules: () => void;
@@ -476,6 +477,7 @@ function ArenaTopBar({
         </div>
 
         <div className="hidden shrink-0 items-center gap-2 rounded-full bg-white/34 px-3 py-2 text-base font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl md:flex max-lg:gap-1 max-lg:px-2">
+          <LevelCardBadge levelRank={levelRank} />
           {trainingLevels.map((level) => (
             <button
               className={cn(
@@ -514,11 +516,13 @@ function ArenaTopBar({
 
 function LevelCardBadge({ levelRank }: { levelRank: string }) {
   return (
-    <section className="absolute left-1/2 top-[96px] z-[64] -translate-x-1/2 rounded-2xl border border-[#f2c24c] bg-white/90 px-4 py-3 text-center shadow-[0_18px_42px_rgba(164,105,0,0.20)] backdrop-blur max-lg:top-[88px] max-lg:px-3 max-lg:py-2">
-      <p className="text-xs font-black text-[#9a6800]">本局级牌</p>
-      <div className="relative mx-auto mt-1 grid h-[72px] w-[52px] place-items-center rounded-xl border-2 border-[#f2c24c] bg-white text-[34px] font-black text-[#0f172a] shadow-[0_8px_18px_rgba(164,105,0,0.16)] max-lg:h-[56px] max-lg:w-[42px] max-lg:text-[26px]">
+    <section className="mr-1 flex h-10 items-center gap-2 rounded-full border border-[#f2c24c]/80 bg-white/90 px-2.5 text-[#12395a] shadow-[0_10px_24px_rgba(164,105,0,0.14)] backdrop-blur max-lg:h-12 max-lg:px-2">
+      <p className="whitespace-nowrap text-[10px] font-black text-[#9a6800] max-lg:hidden">
+        本局级牌
+      </p>
+      <div className="relative grid h-8 w-8 place-items-center rounded-lg border-2 border-[#f2c24c] bg-white text-lg font-black text-[#0f172a] shadow-[0_6px_14px_rgba(164,105,0,0.12)] max-lg:h-9 max-lg:w-9">
         {levelRank}
-        <span className="absolute mt-[-48px] ml-[34px] rounded bg-[#ffd76a] px-1 text-[10px] text-[#7a4a00] max-lg:mt-[-38px] max-lg:ml-[28px]">
+        <span className="absolute -right-1 -top-1 rounded bg-[#ffd76a] px-1 text-[9px] leading-4 text-[#7a4a00]">
           级
         </span>
       </div>

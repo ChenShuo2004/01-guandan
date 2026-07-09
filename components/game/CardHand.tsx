@@ -134,9 +134,9 @@ export function CardHand({
   return (
     <div
       className={cn(
-        "relative backdrop-blur-xl",
+        "relative",
         variant === "arena"
-          ? "overflow-visible rounded-[26px] border border-white/55 bg-[#d8f1ff]/58 px-3 py-3 shadow-[0_18px_42px_rgba(35,112,178,0.20)]"
+          ? "overflow-visible px-3 py-1"
           : "overflow-hidden rounded-[26px] border border-white/20 bg-[#061a24]/78 px-3 py-4 shadow-[0_24px_70px_rgba(0,0,0,0.28)] sm:px-4",
         disabled && "opacity-75"
       )}
@@ -153,7 +153,7 @@ export function CardHand({
         className={cn(
           "relative flex min-w-0 items-end justify-center px-2",
           variant === "arena"
-            ? "min-h-[212px] justify-start gap-x-1 overflow-x-auto overflow-y-visible pb-7 pt-6"
+            ? "min-h-[188px] justify-start gap-x-1 overflow-x-auto overflow-y-visible pb-4 pt-7"
             : "gap-3 overflow-x-auto pb-4 pt-6 sm:gap-4"
         )}
       >

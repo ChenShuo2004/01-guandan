@@ -75,35 +75,9 @@ function RoundActionZone({
       initial={{ opacity: 0, y: 16, scale: 0.96 }}
       transition={{ duration: 0.85, ease: "easeOut" }}
     >
-      <div className="min-w-[150px] rounded-2xl border border-white/70 bg-white/86 px-3 py-2 text-[#12395a] shadow-[0_18px_42px_rgba(35,112,178,0.20)] backdrop-blur">
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <span className="text-sm font-black">【{action.role}】</span>
-          <span className="rounded-full bg-[#dff4ff] px-2 py-0.5 text-xs font-black text-[#0f64a0]">
-            {action.action === "pass" ? "不出" : patternLabel(action.result)}
-          </span>
-        </div>
-        {action.action === "pass" ? (
-          <div className="grid h-12 place-items-center rounded-xl border border-[#b8dcf0] bg-[#eef9ff] text-base font-black text-[#557b93]">
-            Pass
-          </div>
-        ) : (
-          <PlayedCards cards={action.cards} compact levelRank={levelRank} />
-        )}
-      </div>
+      {action.action === "pass" ? null : (
+        <PlayedCards cards={action.cards} compact levelRank={levelRank} />
+      )}
     </motion.div>
   );
-}
-
-function patternLabel(type: string) {
-  const labels: Record<string, string> = {
-    single: "单牌",
-    pair: "对子",
-    triple: "三张",
-    tripleWithPair: "三带二",
-    straight: "顺子",
-    bomb: "炸弹",
-    fourJokers: "四王炸"
-  };
-
-  return labels[type] ?? type;
 }
