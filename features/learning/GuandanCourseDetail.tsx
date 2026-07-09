@@ -320,11 +320,14 @@ function TrainingQuestionCard({
       ) : null}
 
       {questionState === "answered" ? (
-        <div
+        <motion.div
+          animate={{ opacity: 1, y: 0, scale: 1 }}
           className={[
             "mt-5 rounded-[22px] border p-4 transition duration-300",
             isCorrect ? "border-[#45D483] bg-[#45D483]/10" : "border-[#FF6B6B] bg-[#FF6B6B]/10"
           ].join(" ")}
+          initial={{ opacity: 0, y: 8, scale: 0.98 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
         >
           <p className={["text-xl font-black", isCorrect ? "text-[#17814d]" : "text-[#b4232f]"].join(" ")}>
             {isCorrect ? "回答正确" : "回答错误"}
@@ -338,11 +341,16 @@ function TrainingQuestionCard({
               重答
             </Button>
           </div>
-        </div>
+        </motion.div>
       ) : null}
 
       {questionState === "review" ? (
-        <div className="mt-5 rounded-[22px] border border-[#adc6ff] bg-[#f0f7ff] p-4">
+        <motion.div
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          className="mt-5 rounded-[22px] border border-[#adc6ff] bg-[#f0f7ff] p-4"
+          initial={{ opacity: 0, y: 8, scale: 0.98 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
           <p className="text-xs font-black text-[#0058be]">标准答案</p>
           <p className="mt-2 text-base font-black leading-7 text-[#12395a]">
             {question.answer}
@@ -353,7 +361,7 @@ function TrainingQuestionCard({
           <p className="mt-3 text-sm font-bold leading-7 text-[#334155]">
             AI Coach：{question.aiCoachComment}
           </p>
-        </div>
+        </motion.div>
       ) : null}
     </section>
   );
