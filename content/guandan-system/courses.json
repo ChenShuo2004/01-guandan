@@ -1,0 +1,3836 @@
+[
+  {
+    "id": "B01",
+    "title": "为什么要学掼蛋",
+    "category": "基础入门",
+    "difficulty": "简单",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第1篇",
+    "sourcePage": "9",
+    "sourcePages": [
+      9
+    ],
+    "sourcePrintedPages": [
+      7
+    ],
+    "knowledgePoints": [
+      "起源",
+      "团队配合",
+      "学习价值"
+    ],
+    "exampleImages": [
+      "gd-p009-source-fullpage"
+    ],
+    "imageUsage": "封面页转课程头图",
+    "mistakes": [
+      "把掼蛋理解成单人比大小"
+    ],
+    "exercises": [
+      "D-B01"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「起源」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：把掼蛋理解成单人比大小的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p009-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p009-source-fullpage"
+    ],
+    "questionIds": [
+      "D-B01"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [],
+    "nextCourses": [
+      "B02"
+    ]
+  },
+  {
+    "id": "B02",
+    "title": "胜负规则与牌型比较",
+    "category": "基础入门",
+    "difficulty": "简单",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第2篇",
+    "sourcePage": "10",
+    "sourcePages": [
+      10
+    ],
+    "sourcePrintedPages": [
+      8
+    ],
+    "knowledgePoints": [
+      "头游",
+      "升级",
+      "同型比较",
+      "炸弹例外"
+    ],
+    "exampleImages": [
+      "gd-p010-source-fullpage"
+    ],
+    "imageUsage": "规则流程图",
+    "mistakes": [
+      "认为任何普通牌型都可以跨型比大小"
+    ],
+    "exercises": [
+      "S01",
+      "S02",
+      "A01"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「头游」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：认为任何普通牌型都可以跨型比大小的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p010-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p010-source-fullpage"
+    ],
+    "questionIds": [
+      "S01",
+      "S02",
+      "A01"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "B01"
+    ],
+    "nextCourses": [
+      "B03"
+    ]
+  },
+  {
+    "id": "B03",
+    "title": "头游的四种方式",
+    "category": "基础入门",
+    "difficulty": "简单",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第3篇",
+    "sourcePage": "11",
+    "sourcePages": [
+      11
+    ],
+    "sourcePrintedPages": [
+      9
+    ],
+    "knowledgePoints": [
+      "炸弹胜",
+      "闯关胜",
+      "听牌胜",
+      "偷袭胜"
+    ],
+    "exampleImages": [
+      "gd-p011-source-fullpage"
+    ],
+    "imageUsage": "四象限示意图",
+    "mistakes": [
+      "把记牌误当成头游方式"
+    ],
+    "exercises": [
+      "S03",
+      "A03"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「炸弹胜」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：把记牌误当成头游方式的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p011-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p011-source-fullpage"
+    ],
+    "questionIds": [
+      "S03",
+      "A03"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "B02"
+    ],
+    "nextCourses": [
+      "B04"
+    ]
+  },
+  {
+    "id": "B04",
+    "title": "闯关与登基牌",
+    "category": "基础入门",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第4-5篇",
+    "sourcePage": "12-14",
+    "sourcePages": [
+      12,
+      13,
+      14
+    ],
+    "sourcePrintedPages": [
+      10,
+      11,
+      12
+    ],
+    "knowledgePoints": [
+      "闯关",
+      "净关",
+      "登基牌",
+      "回手"
+    ],
+    "exampleImages": [
+      "gd-p012-source-fullpage",
+      "gd-p013-source-fullpage",
+      "gd-p014-source-fullpage"
+    ],
+    "imageUsage": "登基牌高亮图",
+    "mistakes": [
+      "只记得牌面大，不看同型最大牌"
+    ],
+    "exercises": [
+      "S04",
+      "A04"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「闯关」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：只记得牌面大，不看同型最大牌的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p012-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p012-source-fullpage",
+      "gd-p013-source-fullpage",
+      "gd-p014-source-fullpage"
+    ],
+    "questionIds": [
+      "S04",
+      "A04"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "B03"
+    ],
+    "nextCourses": [
+      "B05"
+    ]
+  },
+  {
+    "id": "B05",
+    "title": "牌力衡量",
+    "category": "基础入门",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第6篇",
+    "sourcePage": "15-17",
+    "sourcePages": [
+      15,
+      16,
+      17
+    ],
+    "sourcePrintedPages": [
+      13,
+      14,
+      15
+    ],
+    "knowledgePoints": [
+      "牌力",
+      "强牌",
+      "中牌",
+      "弱牌",
+      "计点"
+    ],
+    "exampleImages": [
+      "gd-p015-source-fullpage",
+      "gd-p016-source-fullpage",
+      "gd-p017-source-fullpage"
+    ],
+    "imageUsage": "原书牌例切图加点数标注",
+    "mistakes": [
+      "只凭感觉说牌好，没有可执行判断"
+    ],
+    "exercises": [
+      "S05"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「牌力」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：只凭感觉说牌好，没有可执行判断的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p015-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p015-source-fullpage",
+      "gd-p016-source-fullpage",
+      "gd-p017-source-fullpage"
+    ],
+    "questionIds": [
+      "S05"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "B04"
+    ],
+    "nextCourses": [
+      "B06"
+    ]
+  },
+  {
+    "id": "B06",
+    "title": "炸弹的真实作用",
+    "category": "基础入门",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第7篇",
+    "sourcePage": "18-19",
+    "sourcePages": [
+      18,
+      19
+    ],
+    "sourcePrintedPages": [
+      16,
+      17
+    ],
+    "knowledgePoints": [
+      "炸弹",
+      "牌路扭转",
+      "阻挡",
+      "护牌"
+    ],
+    "exampleImages": [
+      "gd-p018-source-fullpage",
+      "gd-p019-source-fullpage"
+    ],
+    "imageUsage": "大炸小炸对比图",
+    "mistakes": [
+      "看到炸弹就想立刻打掉"
+    ],
+    "exercises": [
+      "S06",
+      "A02"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「炸弹」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：看到炸弹就想立刻打掉的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p018-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p018-source-fullpage",
+      "gd-p019-source-fullpage"
+    ],
+    "questionIds": [
+      "S06",
+      "A02"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "B05"
+    ],
+    "nextCourses": [
+      "B07"
+    ]
+  },
+  {
+    "id": "B07",
+    "title": "配炸入门",
+    "category": "基础入门",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第8篇",
+    "sourcePage": "20-21",
+    "sourcePages": [
+      20,
+      21
+    ],
+    "sourcePrintedPages": [
+      18,
+      19
+    ],
+    "knowledgePoints": [
+      "配炸",
+      "数量",
+      "质量",
+      "逢人配"
+    ],
+    "exampleImages": [
+      "gd-p020-source-fullpage",
+      "gd-p021-source-fullpage"
+    ],
+    "imageUsage": "红桃2配法对比图",
+    "mistakes": [
+      "为了成炸牺牲整体牌路"
+    ],
+    "exercises": [
+      "D-B07"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「配炸」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：为了成炸牺牲整体牌路的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p020-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p020-source-fullpage",
+      "gd-p021-source-fullpage"
+    ],
+    "questionIds": [
+      "D-B07"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "B06"
+    ],
+    "nextCourses": [
+      "B08"
+    ]
+  },
+  {
+    "id": "B08",
+    "title": "七种牌路的属性",
+    "category": "基础入门",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第9篇",
+    "sourcePage": "22-23",
+    "sourcePages": [
+      22,
+      23
+    ],
+    "sourcePrintedPages": [
+      20,
+      21
+    ],
+    "knowledgePoints": [
+      "单张",
+      "对子",
+      "三同牌",
+      "3+2",
+      "顺子",
+      "木板",
+      "钢板"
+    ],
+    "exampleImages": [
+      "gd-p022-source-fullpage",
+      "gd-p023-source-fullpage"
+    ],
+    "imageUsage": "七牌路雷达图",
+    "mistakes": [
+      "只看牌型大小，不看速度和灵活性"
+    ],
+    "exercises": [
+      "D-B08"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「单张」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：只看牌型大小，不看速度和灵活性的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p022-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p022-source-fullpage",
+      "gd-p023-source-fullpage"
+    ],
+    "questionIds": [
+      "D-B08"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "B07"
+    ],
+    "nextCourses": [
+      "B09"
+    ]
+  },
+  {
+    "id": "B09",
+    "title": "七种牌路的实战特点",
+    "category": "基础入门",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第10篇",
+    "sourcePage": "24-25",
+    "sourcePages": [
+      24,
+      25
+    ],
+    "sourcePrintedPages": [
+      22,
+      23
+    ],
+    "knowledgePoints": [
+      "牌路特点",
+      "控制",
+      "灵活性"
+    ],
+    "exampleImages": [
+      "gd-p024-source-fullpage",
+      "gd-p025-source-fullpage"
+    ],
+    "imageUsage": "牌路优缺点信息图",
+    "mistakes": [
+      "不区分先出牌路和后发牌路"
+    ],
+    "exercises": [
+      "D-B09"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「牌路特点」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：不区分先出牌路和后发牌路的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p024-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p024-source-fullpage",
+      "gd-p025-source-fullpage"
+    ],
+    "questionIds": [
+      "D-B09"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "B08"
+    ],
+    "nextCourses": [
+      "B10"
+    ]
+  },
+  {
+    "id": "B10",
+    "title": "主攻与助攻分工",
+    "category": "基础入门",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第11篇",
+    "sourcePage": "26-31",
+    "sourcePages": [
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "sourcePrintedPages": [
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
+    "knowledgePoints": [
+      "主攻",
+      "助攻",
+      "职责",
+      "角色转换"
+    ],
+    "exampleImages": [
+      "gd-p026-source-fullpage",
+      "gd-p027-source-fullpage",
+      "gd-p028-source-fullpage"
+    ],
+    "imageUsage": "双角色职责图",
+    "mistakes": [
+      "弱牌也强行主攻"
+    ],
+    "exercises": [
+      "S07"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「主攻」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：弱牌也强行主攻的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p026-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p026-source-fullpage",
+      "gd-p027-source-fullpage",
+      "gd-p028-source-fullpage",
+      "gd-p029-source-fullpage",
+      "gd-p030-source-fullpage",
+      "gd-p031-source-fullpage"
+    ],
+    "questionIds": [
+      "S07"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "B09"
+    ],
+    "nextCourses": [
+      "B11"
+    ]
+  },
+  {
+    "id": "B11",
+    "title": "进贡与还贡基础",
+    "category": "基础入门",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第34-35篇",
+    "sourcePage": "82-84",
+    "sourcePages": [
+      82,
+      83,
+      84
+    ],
+    "sourcePrintedPages": [
+      80,
+      81,
+      82
+    ],
+    "knowledgePoints": [
+      "进贡",
+      "还贡",
+      "防成炸"
+    ],
+    "exampleImages": [
+      "gd-p082-source-fullpage",
+      "gd-p083-source-fullpage",
+      "gd-p084-source-fullpage"
+    ],
+    "imageUsage": "进贡前后牌型变化图",
+    "mistakes": [
+      "还贡只看单张大小，不看是否送炸"
+    ],
+    "exercises": [
+      "D-B11"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「进贡」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：还贡只看单张大小，不看是否送炸的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p082-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p082-source-fullpage",
+      "gd-p083-source-fullpage",
+      "gd-p084-source-fullpage"
+    ],
+    "questionIds": [
+      "D-B11"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "B10"
+    ],
+    "nextCourses": [
+      "B12"
+    ]
+  },
+  {
+    "id": "B12",
+    "title": "记牌入门",
+    "category": "基础入门",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第36-39篇",
+    "sourcePage": "85-90",
+    "sourcePages": [
+      85,
+      86,
+      87,
+      88,
+      89,
+      90
+    ],
+    "sourcePrintedPages": [
+      83,
+      84,
+      85,
+      86,
+      87,
+      88
+    ],
+    "knowledgePoints": [
+      "记王",
+      "记主牌",
+      "记A",
+      "记炸弹",
+      "牌路推断"
+    ],
+    "exampleImages": [
+      "gd-p085-source-fullpage",
+      "gd-p086-source-fullpage",
+      "gd-p087-source-fullpage"
+    ],
+    "imageUsage": "卡片式记牌器UI",
+    "mistakes": [
+      "一上来就想记全部牌"
+    ],
+    "exercises": [
+      "S10"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「记王」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：一上来就想记全部牌的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p085-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p085-source-fullpage",
+      "gd-p086-source-fullpage",
+      "gd-p087-source-fullpage",
+      "gd-p088-source-fullpage",
+      "gd-p089-source-fullpage",
+      "gd-p090-source-fullpage"
+    ],
+    "questionIds": [
+      "S10"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "B11"
+    ],
+    "nextCourses": [
+      "J01"
+    ]
+  },
+  {
+    "id": "J01",
+    "title": "主攻先手与处理弱路",
+    "category": "进阶技巧",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第12篇",
+    "sourcePage": "32",
+    "sourcePages": [
+      32
+    ],
+    "sourcePrintedPages": [
+      30
+    ],
+    "knowledgePoints": [
+      "先手",
+      "弱路",
+      "单张",
+      "后发制人"
+    ],
+    "exampleImages": [
+      "gd-p032-source-fullpage"
+    ],
+    "imageUsage": "弱路先后手动画",
+    "mistakes": [
+      "把小单张长期留到残局"
+    ],
+    "exercises": [
+      "A05",
+      "A06"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「先手」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：把小单张长期留到残局的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p032-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p032-source-fullpage"
+    ],
+    "questionIds": [
+      "A05",
+      "A06"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "B12"
+    ],
+    "nextCourses": [
+      "J02"
+    ]
+  },
+  {
+    "id": "J02",
+    "title": "尾牌原理",
+    "category": "进阶技巧",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第13篇",
+    "sourcePage": "33-34",
+    "sourcePages": [
+      33,
+      34
+    ],
+    "sourcePrintedPages": [
+      31,
+      32
+    ],
+    "knowledgePoints": [
+      "尾牌",
+      "张力",
+      "卡位"
+    ],
+    "exampleImages": [
+      "gd-p033-source-fullpage",
+      "gd-p034-source-fullpage"
+    ],
+    "imageUsage": "单张3/6先后对比图",
+    "mistakes": [
+      "留最大牌作尾，忽略下家顺走"
+    ],
+    "exercises": [
+      "A07"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「尾牌」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：留最大牌作尾，忽略下家顺走的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p033-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p033-source-fullpage",
+      "gd-p034-source-fullpage"
+    ],
+    "questionIds": [
+      "A07"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J01"
+    ],
+    "nextCourses": [
+      "J03"
+    ]
+  },
+  {
+    "id": "J03",
+    "title": "尾牌原理在残局中的应用",
+    "category": "进阶技巧",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第14篇",
+    "sourcePage": "35-37",
+    "sourcePages": [
+      35,
+      36,
+      37
+    ],
+    "sourcePrintedPages": [
+      33,
+      34,
+      35
+    ],
+    "knowledgePoints": [
+      "单张尾牌",
+      "对子尾牌",
+      "3+2尾牌"
+    ],
+    "exampleImages": [
+      "gd-p035-source-fullpage",
+      "gd-p036-source-fullpage",
+      "gd-p037-source-fullpage"
+    ],
+    "imageUsage": "四家残局图裁剪",
+    "mistakes": [
+      "只看能否走完，不看谁会顺走"
+    ],
+    "exercises": [
+      "S11",
+      "A08"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「单张尾牌」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：只看能否走完，不看谁会顺走的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p035-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p035-source-fullpage",
+      "gd-p036-source-fullpage",
+      "gd-p037-source-fullpage"
+    ],
+    "questionIds": [
+      "S11",
+      "A08"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J02"
+    ],
+    "nextCourses": [
+      "J04"
+    ]
+  },
+  {
+    "id": "J04",
+    "title": "初期顺牌与不打上家",
+    "category": "进阶技巧",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第15篇",
+    "sourcePage": "38",
+    "sourcePages": [
+      38
+    ],
+    "sourcePrintedPages": [
+      36
+    ],
+    "knowledgePoints": [
+      "顺牌",
+      "上家",
+      "信息暴露"
+    ],
+    "exampleImages": [
+      "gd-p038-source-fullpage"
+    ],
+    "imageUsage": "时序示意动画",
+    "mistakes": [
+      "把“初期不打上家”理解成绝对禁令"
+    ],
+    "exercises": [
+      "A09"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「顺牌」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：把“初期不打上家”理解成绝对禁令的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p038-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p038-source-fullpage"
+    ],
+    "questionIds": [
+      "A09"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J03"
+    ],
+    "nextCourses": [
+      "J05"
+    ]
+  },
+  {
+    "id": "J05",
+    "title": "出炸之炸什么",
+    "category": "进阶技巧",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第16篇",
+    "sourcePage": "39-40",
+    "sourcePages": [
+      39,
+      40
+    ],
+    "sourcePrintedPages": [
+      37,
+      38
+    ],
+    "knowledgePoints": [
+      "出炸",
+      "超打",
+      "经济性"
+    ],
+    "exampleImages": [
+      "gd-p039-source-fullpage",
+      "gd-p040-source-fullpage"
+    ],
+    "imageUsage": "炸弹价值排序卡",
+    "mistakes": [
+      "用过大炸弹去压小层级炸弹"
+    ],
+    "exercises": [
+      "A10"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「出炸」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：用过大炸弹去压小层级炸弹的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p039-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p039-source-fullpage",
+      "gd-p040-source-fullpage"
+    ],
+    "questionIds": [
+      "A10"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J04"
+    ],
+    "nextCourses": [
+      "J06"
+    ]
+  },
+  {
+    "id": "J06",
+    "title": "出炸之炸谁与何时炸",
+    "category": "进阶技巧",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第17-18篇",
+    "sourcePage": "41-43",
+    "sourcePages": [
+      41,
+      42,
+      43
+    ],
+    "sourcePrintedPages": [
+      39,
+      40,
+      41
+    ],
+    "knowledgePoints": [
+      "炸谁",
+      "时机",
+      "小炸",
+      "大炸"
+    ],
+    "exampleImages": [
+      "gd-p041-source-fullpage",
+      "gd-p042-source-fullpage",
+      "gd-p043-source-fullpage"
+    ],
+    "imageUsage": "上家下家对家流程图",
+    "mistakes": [
+      "炸下家后立刻放小单"
+    ],
+    "exercises": [
+      "A11",
+      "A12",
+      "A13"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「炸谁」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：炸下家后立刻放小单的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p041-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p041-source-fullpage",
+      "gd-p042-source-fullpage",
+      "gd-p043-source-fullpage"
+    ],
+    "questionIds": [
+      "A11",
+      "A12",
+      "A13"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J05"
+    ],
+    "nextCourses": [
+      "J07"
+    ]
+  },
+  {
+    "id": "J07",
+    "title": "出炸之用哪个炸",
+    "category": "进阶技巧",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第19篇",
+    "sourcePage": "44-45",
+    "sourcePages": [
+      44,
+      45
+    ],
+    "sourcePrintedPages": [
+      42,
+      43
+    ],
+    "knowledgePoints": [
+      "炸弹大小",
+      "诱炸",
+      "灵活性"
+    ],
+    "exampleImages": [
+      "gd-p044-source-fullpage",
+      "gd-p045-source-fullpage"
+    ],
+    "imageUsage": "多炸选择动画",
+    "mistakes": [
+      "先用最灵活的炸，把自己打死"
+    ],
+    "exercises": [
+      "A14"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「炸弹大小」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：先用最灵活的炸，把自己打死的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p044-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p044-source-fullpage",
+      "gd-p045-source-fullpage"
+    ],
+    "questionIds": [
+      "A14"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J06"
+    ],
+    "nextCourses": [
+      "J08"
+    ]
+  },
+  {
+    "id": "J08",
+    "title": "优化手数",
+    "category": "进阶技巧",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第20篇",
+    "sourcePage": "46-47",
+    "sourcePages": [
+      46,
+      47
+    ],
+    "sourcePrintedPages": [
+      44,
+      45
+    ],
+    "knowledgePoints": [
+      "手数",
+      "组牌",
+      "回收",
+      "接手张"
+    ],
+    "exampleImages": [
+      "gd-p046-source-fullpage",
+      "gd-p047-source-fullpage"
+    ],
+    "imageUsage": "理牌前后对比动图",
+    "mistakes": [
+      "只看单手大小，不看总手数"
+    ],
+    "exercises": [
+      "A15"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「手数」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：只看单手大小，不看总手数的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p046-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p046-source-fullpage",
+      "gd-p047-source-fullpage"
+    ],
+    "questionIds": [
+      "A15"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J07"
+    ],
+    "nextCourses": [
+      "J09"
+    ]
+  },
+  {
+    "id": "J09",
+    "title": "拆炸技巧",
+    "category": "进阶技巧",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第21篇",
+    "sourcePage": "48-49",
+    "sourcePages": [
+      48,
+      49
+    ],
+    "sourcePrintedPages": [
+      46,
+      47
+    ],
+    "knowledgePoints": [
+      "拆炸",
+      "减手数",
+      "增登基"
+    ],
+    "exampleImages": [
+      "gd-p048-source-fullpage",
+      "gd-p049-source-fullpage"
+    ],
+    "imageUsage": "拆炸分叉图",
+    "mistakes": [
+      "认为拆炸永远不值得"
+    ],
+    "exercises": [
+      "A16"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「拆炸」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：认为拆炸永远不值得的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p048-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p048-source-fullpage",
+      "gd-p049-source-fullpage"
+    ],
+    "questionIds": [
+      "A16"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J08"
+    ],
+    "nextCourses": [
+      "J10"
+    ]
+  },
+  {
+    "id": "J10",
+    "title": "保留实力与无奈等待",
+    "category": "进阶技巧",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第22篇",
+    "sourcePage": "50-51",
+    "sourcePages": [
+      50,
+      51
+    ],
+    "sourcePrintedPages": [
+      48,
+      49
+    ],
+    "knowledgePoints": [
+      "保留实力",
+      "等待",
+      "控制"
+    ],
+    "exampleImages": [
+      "gd-p050-source-fullpage",
+      "gd-p051-source-fullpage"
+    ],
+    "imageUsage": "等待与开炸对比图",
+    "mistakes": [
+      "形成冲刺前把控制牌全交掉"
+    ],
+    "exercises": [
+      "A17"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「保留实力」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：形成冲刺前把控制牌全交掉的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p050-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p050-source-fullpage",
+      "gd-p051-source-fullpage"
+    ],
+    "questionIds": [
+      "A17"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J09"
+    ],
+    "nextCourses": [
+      "J11"
+    ]
+  },
+  {
+    "id": "J11",
+    "title": "残局逢炸为先与骗炸",
+    "category": "进阶技巧",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第23-24篇",
+    "sourcePage": "52-54",
+    "sourcePages": [
+      52,
+      53,
+      54
+    ],
+    "sourcePrintedPages": [
+      50,
+      51,
+      52
+    ],
+    "knowledgePoints": [
+      "逢炸为先",
+      "骗炸",
+      "残血局"
+    ],
+    "exampleImages": [
+      "gd-p052-source-fullpage",
+      "gd-p053-source-fullpage",
+      "gd-p054-source-fullpage"
+    ],
+    "imageUsage": "先炸后炸对局动画",
+    "mistakes": [
+      "把骗炸理解成单纯骗掉一炸"
+    ],
+    "exercises": [
+      "A18",
+      "A19"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「逢炸为先」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：把骗炸理解成单纯骗掉一炸的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p052-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p052-source-fullpage",
+      "gd-p053-source-fullpage",
+      "gd-p054-source-fullpage"
+    ],
+    "questionIds": [
+      "A18",
+      "A19"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J10"
+    ],
+    "nextCourses": [
+      "J12"
+    ]
+  },
+  {
+    "id": "J12",
+    "title": "留风技巧",
+    "category": "进阶技巧",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第25篇",
+    "sourcePage": "55-56",
+    "sourcePages": [
+      55,
+      56
+    ],
+    "sourcePrintedPages": [
+      53,
+      54
+    ],
+    "knowledgePoints": [
+      "留风",
+      "头游",
+      "升级"
+    ],
+    "exampleImages": [
+      "gd-p055-source-fullpage",
+      "gd-p056-source-fullpage"
+    ],
+    "imageUsage": "留风结果树",
+    "mistakes": [
+      "只看能否头游，不看升级收益"
+    ],
+    "exercises": [
+      "A20"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「留风」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：只看能否头游，不看升级收益的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p055-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p055-source-fullpage",
+      "gd-p056-source-fullpage"
+    ],
+    "questionIds": [
+      "A20"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J11"
+    ],
+    "nextCourses": [
+      "J13"
+    ]
+  },
+  {
+    "id": "J13",
+    "title": "助攻起手与防守",
+    "category": "进阶技巧",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第26-29篇",
+    "sourcePage": "68-73",
+    "sourcePages": [
+      68,
+      69,
+      70,
+      71,
+      72,
+      73
+    ],
+    "sourcePrintedPages": [
+      66,
+      67,
+      68,
+      69,
+      70,
+      71
+    ],
+    "knowledgePoints": [
+      "对子先行",
+      "单张防守",
+      "侦察",
+      "初期不炸下家"
+    ],
+    "exampleImages": [
+      "gd-p068-source-fullpage",
+      "gd-p069-source-fullpage",
+      "gd-p070-source-fullpage"
+    ],
+    "imageUsage": "Q/J/10卡位示意图",
+    "mistakes": [
+      "情况不明时盲目强攻"
+    ],
+    "exercises": [
+      "S08",
+      "S09",
+      "A21",
+      "A22",
+      "A23",
+      "A24"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「对子先行」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：情况不明时盲目强攻的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p068-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p068-source-fullpage",
+      "gd-p069-source-fullpage",
+      "gd-p070-source-fullpage",
+      "gd-p071-source-fullpage",
+      "gd-p072-source-fullpage",
+      "gd-p073-source-fullpage"
+    ],
+    "questionIds": [
+      "S08",
+      "S09",
+      "A21",
+      "A22",
+      "A23",
+      "A24"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J12"
+    ],
+    "nextCourses": [
+      "J14"
+    ]
+  },
+  {
+    "id": "J14",
+    "title": "助攻送牌与转主攻",
+    "category": "进阶技巧",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第30-33篇",
+    "sourcePage": "74-81",
+    "sourcePages": [
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81
+    ],
+    "sourcePrintedPages": [
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79
+    ],
+    "knowledgePoints": [
+      "送桥",
+      "送听",
+      "角色转换"
+    ],
+    "exampleImages": [
+      "gd-p074-source-fullpage",
+      "gd-p075-source-fullpage",
+      "gd-p076-source-fullpage"
+    ],
+    "imageUsage": "送牌路径动画",
+    "mistakes": [
+      "送牌只送自己顺手的牌"
+    ],
+    "exercises": [
+      "A25",
+      "A26",
+      "A27",
+      "A28"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「送桥」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：送牌只送自己顺手的牌的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p074-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p074-source-fullpage",
+      "gd-p075-source-fullpage",
+      "gd-p076-source-fullpage",
+      "gd-p077-source-fullpage",
+      "gd-p078-source-fullpage",
+      "gd-p079-source-fullpage",
+      "gd-p080-source-fullpage",
+      "gd-p081-source-fullpage"
+    ],
+    "questionIds": [
+      "A25",
+      "A26",
+      "A27",
+      "A28"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J13"
+    ],
+    "nextCourses": [
+      "G01"
+    ]
+  },
+  {
+    "id": "G01",
+    "title": "逢人配进阶",
+    "category": "高手体系",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第40篇",
+    "sourcePage": "95",
+    "sourcePages": [
+      95
+    ],
+    "sourcePrintedPages": [
+      93
+    ],
+    "knowledgePoints": [
+      "逢人配",
+      "补缺",
+      "灵活性"
+    ],
+    "exampleImages": [
+      "gd-p095-source-fullpage"
+    ],
+    "imageUsage": "逢人配三方案对比图",
+    "mistakes": [
+      "逢人配只为成炸，不看手数"
+    ],
+    "exercises": [
+      "A29"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「逢人配」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：逢人配只为成炸，不看手数的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p095-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p095-source-fullpage"
+    ],
+    "questionIds": [
+      "A29"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "J14"
+    ],
+    "nextCourses": [
+      "G02"
+    ]
+  },
+  {
+    "id": "G02",
+    "title": "炸弹的护牌作用",
+    "category": "高手体系",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第41篇",
+    "sourcePage": "96-99",
+    "sourcePages": [
+      96,
+      97,
+      98,
+      99
+    ],
+    "sourcePrintedPages": [
+      94,
+      95,
+      96,
+      97
+    ],
+    "knowledgePoints": [
+      "护牌",
+      "残局",
+      "炸弹优势"
+    ],
+    "exampleImages": [
+      "gd-p096-source-fullpage",
+      "gd-p097-source-fullpage",
+      "gd-p098-source-fullpage"
+    ],
+    "imageUsage": "护牌案例连帧图",
+    "mistakes": [
+      "残局里只追求立刻净关"
+    ],
+    "exercises": [
+      "A30"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「护牌」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：残局里只追求立刻净关的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p096-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p096-source-fullpage",
+      "gd-p097-source-fullpage",
+      "gd-p098-source-fullpage",
+      "gd-p099-source-fullpage"
+    ],
+    "questionIds": [
+      "A30"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "G01"
+    ],
+    "nextCourses": [
+      "G03"
+    ]
+  },
+  {
+    "id": "G03",
+    "title": "炸弹的阻挡作用",
+    "category": "高手体系",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第42篇",
+    "sourcePage": "100-101",
+    "sourcePages": [
+      100,
+      101
+    ],
+    "sourcePrintedPages": [
+      98,
+      99
+    ],
+    "knowledgePoints": [
+      "阻挡",
+      "止损",
+      "力挽狂澜"
+    ],
+    "exampleImages": [
+      "gd-p100-source-fullpage",
+      "gd-p101-source-fullpage"
+    ],
+    "imageUsage": "阻挡案例图",
+    "mistakes": [
+      "劣势局直接放弃节奏"
+    ],
+    "exercises": [
+      "D-G03"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「阻挡」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：劣势局直接放弃节奏的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p100-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p100-source-fullpage",
+      "gd-p101-source-fullpage"
+    ],
+    "questionIds": [
+      "D-G03"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "G02"
+    ],
+    "nextCourses": [
+      "G04"
+    ]
+  },
+  {
+    "id": "G04",
+    "title": "桥牌的运用",
+    "category": "高手体系",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第43篇",
+    "sourcePage": "102-103",
+    "sourcePages": [
+      102,
+      103
+    ],
+    "sourcePrintedPages": [
+      100,
+      101
+    ],
+    "knowledgePoints": [
+      "桥牌",
+      "送桥",
+      "接应"
+    ],
+    "exampleImages": [
+      "gd-p102-source-fullpage",
+      "gd-p103-source-fullpage"
+    ],
+    "imageUsage": "桥牌路径动图",
+    "mistakes": [
+      "把桥牌当成随便接一手"
+    ],
+    "exercises": [
+      "A31"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「桥牌」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：把桥牌当成随便接一手的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p102-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p102-source-fullpage",
+      "gd-p103-source-fullpage"
+    ],
+    "questionIds": [
+      "A31"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "G03"
+    ],
+    "nextCourses": [
+      "G05"
+    ]
+  },
+  {
+    "id": "G05",
+    "title": "组牌要出尽",
+    "category": "高手体系",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第44篇",
+    "sourcePage": "104-105",
+    "sourcePages": [
+      104,
+      105
+    ],
+    "sourcePrintedPages": [
+      102,
+      103
+    ],
+    "knowledgePoints": [
+      "组牌",
+      "出尽",
+      "节奏"
+    ],
+    "exampleImages": [
+      "gd-p104-source-fullpage",
+      "gd-p105-source-fullpage"
+    ],
+    "imageUsage": "多手3+2和顺子节奏图",
+    "mistakes": [
+      "为了保留大牌而拖死组牌"
+    ],
+    "exercises": [
+      "A32"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「组牌」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：为了保留大牌而拖死组牌的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p104-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p104-source-fullpage",
+      "gd-p105-source-fullpage"
+    ],
+    "questionIds": [
+      "A32"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "G04"
+    ],
+    "nextCourses": [
+      "G06"
+    ]
+  },
+  {
+    "id": "G06",
+    "title": "王多战法",
+    "category": "高手体系",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第45篇",
+    "sourcePage": "106-107",
+    "sourcePages": [
+      106,
+      107
+    ],
+    "sourcePrintedPages": [
+      104,
+      105
+    ],
+    "knowledgePoints": [
+      "王多",
+      "单路控制",
+      "诱炸"
+    ],
+    "exampleImages": [
+      "gd-p106-source-fullpage",
+      "gd-p107-source-fullpage"
+    ],
+    "imageUsage": "王牌分布图",
+    "mistakes": [
+      "王多时只想压死对手"
+    ],
+    "exercises": [
+      "A33"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「王多」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：王多时只想压死对手的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p106-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p106-source-fullpage",
+      "gd-p107-source-fullpage"
+    ],
+    "questionIds": [
+      "A33"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "G05"
+    ],
+    "nextCourses": [
+      "G07"
+    ]
+  },
+  {
+    "id": "G07",
+    "title": "无王战法与少输当赢",
+    "category": "高手体系",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第46篇",
+    "sourcePage": "108-109",
+    "sourcePages": [
+      108,
+      109
+    ],
+    "sourcePrintedPages": [
+      106,
+      107
+    ],
+    "knowledgePoints": [
+      "无王",
+      "止损",
+      "少输当赢"
+    ],
+    "exampleImages": [
+      "gd-p108-source-fullpage",
+      "gd-p109-source-fullpage"
+    ],
+    "imageUsage": "无王强牌弱牌对比图",
+    "mistakes": [
+      "认为无王就一定是弱牌"
+    ],
+    "exercises": [
+      "A34",
+      "A35"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「无王」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：认为无王就一定是弱牌的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p108-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p108-source-fullpage",
+      "gd-p109-source-fullpage"
+    ],
+    "questionIds": [
+      "A34",
+      "A35"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "G06"
+    ],
+    "nextCourses": [
+      "G08"
+    ]
+  },
+  {
+    "id": "G08",
+    "title": "放一家打一家",
+    "category": "高手体系",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第47篇",
+    "sourcePage": "110-111",
+    "sourcePages": [
+      110,
+      111
+    ],
+    "sourcePrintedPages": [
+      108,
+      109
+    ],
+    "knowledgePoints": [
+      "战略止损",
+      "放一家",
+      "打一家"
+    ],
+    "exampleImages": [
+      "gd-p110-source-fullpage",
+      "gd-p111-source-fullpage"
+    ],
+    "imageUsage": "放一家打一家决策树",
+    "mistakes": [
+      "把战略取舍理解成无脑放牌"
+    ],
+    "exercises": [
+      "A36"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「战略止损」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：把战略取舍理解成无脑放牌的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p110-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p110-source-fullpage",
+      "gd-p111-source-fullpage"
+    ],
+    "questionIds": [
+      "A36"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "G07"
+    ],
+    "nextCourses": [
+      "G09"
+    ]
+  },
+  {
+    "id": "G09",
+    "title": "谁打谁收与意图阻断",
+    "category": "高手体系",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第48-49篇",
+    "sourcePage": "112-115",
+    "sourcePages": [
+      112,
+      113,
+      114,
+      115
+    ],
+    "sourcePrintedPages": [
+      110,
+      111,
+      112,
+      113
+    ],
+    "knowledgePoints": [
+      "回收",
+      "阻断",
+      "封顶"
+    ],
+    "exampleImages": [
+      "gd-p112-source-fullpage",
+      "gd-p113-source-fullpage",
+      "gd-p114-source-fullpage"
+    ],
+    "imageUsage": "先打先收示意图",
+    "mistakes": [
+      "被动跟牌，不读对方回收意图"
+    ],
+    "exercises": [
+      "A37",
+      "A38"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「回收」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：被动跟牌，不读对方回收意图的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p112-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p112-source-fullpage",
+      "gd-p113-source-fullpage",
+      "gd-p114-source-fullpage",
+      "gd-p115-source-fullpage"
+    ],
+    "questionIds": [
+      "A37",
+      "A38"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "G08"
+    ],
+    "nextCourses": [
+      "G10"
+    ]
+  },
+  {
+    "id": "G10",
+    "title": "单张卡位与牌路多样性",
+    "category": "高手体系",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第50-53篇",
+    "sourcePage": "116-127",
+    "sourcePages": [
+      116,
+      120,
+      123,
+      127
+    ],
+    "sourcePrintedPages": [
+      114,
+      118,
+      121,
+      125
+    ],
+    "knowledgePoints": [
+      "卡位",
+      "多样性",
+      "灵活性"
+    ],
+    "exampleImages": [
+      "gd-p116-source-fullpage",
+      "gd-p120-source-fullpage",
+      "gd-p123-source-fullpage"
+    ],
+    "imageUsage": "单张卡位对比图",
+    "mistakes": [
+      "为了一手压住而耗尽变化"
+    ],
+    "exercises": [
+      "A39",
+      "A40"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「卡位」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：为了一手压住而耗尽变化的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p116-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p116-source-fullpage",
+      "gd-p120-source-fullpage",
+      "gd-p123-source-fullpage",
+      "gd-p127-source-fullpage"
+    ],
+    "questionIds": [
+      "A39",
+      "A40"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "G09"
+    ],
+    "nextCourses": [
+      "G11"
+    ]
+  },
+  {
+    "id": "G11",
+    "title": "信息收放与心理节奏",
+    "category": "高手体系",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第54、58-60篇",
+    "sourcePage": "128-139",
+    "sourcePages": [
+      128,
+      129,
+      137,
+      138,
+      139
+    ],
+    "sourcePrintedPages": [
+      126,
+      127,
+      135,
+      136,
+      137
+    ],
+    "knowledgePoints": [
+      "信息收放",
+      "心态",
+      "节奏"
+    ],
+    "exampleImages": [
+      "gd-p128-source-fullpage",
+      "gd-p129-source-fullpage",
+      "gd-p137-source-fullpage"
+    ],
+    "imageUsage": "信息显露层级图",
+    "mistakes": [
+      "输牌后立刻责怪队友"
+    ],
+    "exercises": [
+      "A41",
+      "A42"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「信息收放」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：输牌后立刻责怪队友的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p128-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p128-source-fullpage",
+      "gd-p129-source-fullpage",
+      "gd-p137-source-fullpage",
+      "gd-p138-source-fullpage",
+      "gd-p139-source-fullpage"
+    ],
+    "questionIds": [
+      "A41",
+      "A42"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "G10"
+    ],
+    "nextCourses": [
+      "G12"
+    ]
+  },
+  {
+    "id": "G12",
+    "title": "风格分析、座位与观察",
+    "category": "高手体系",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第61-64篇",
+    "sourcePage": "140-144",
+    "sourcePages": [
+      140,
+      141,
+      142,
+      143,
+      144
+    ],
+    "sourcePrintedPages": [
+      138,
+      139,
+      140,
+      141,
+      142
+    ],
+    "knowledgePoints": [
+      "风格",
+      "控制型",
+      "冲锋型",
+      "座位",
+      "观察"
+    ],
+    "exampleImages": [
+      "gd-p140-source-fullpage",
+      "gd-p141-source-fullpage",
+      "gd-p142-source-fullpage"
+    ],
+    "imageUsage": "风格画像卡",
+    "mistakes": [
+      "只看牌，不看人和位置"
+    ],
+    "exercises": [
+      "A43",
+      "A44"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「风格」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：只看牌，不看人和位置的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p140-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p140-source-fullpage",
+      "gd-p141-source-fullpage",
+      "gd-p142-source-fullpage",
+      "gd-p143-source-fullpage",
+      "gd-p144-source-fullpage"
+    ],
+    "questionIds": [
+      "A43",
+      "A44"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "G11"
+    ],
+    "nextCourses": [
+      "G13"
+    ]
+  },
+  {
+    "id": "G13",
+    "title": "迷惑、礼仪与行业视野",
+    "category": "高手体系",
+    "difficulty": "中等",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第65-71篇",
+    "sourcePage": "145-162",
+    "sourcePages": [
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162
+    ],
+    "sourcePrintedPages": [
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160
+    ],
+    "knowledgePoints": [
+      "迷惑",
+      "礼仪",
+      "报牌",
+      "AI",
+      "平台"
+    ],
+    "exampleImages": [
+      "gd-p145-source-fullpage",
+      "gd-p146-source-fullpage",
+      "gd-p147-source-fullpage"
+    ],
+    "imageUsage": "合规边界图和产品视野图",
+    "mistakes": [
+      "用明显表情或暗号做迷惑"
+    ],
+    "exercises": [
+      "A45",
+      "A50"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「迷惑」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：用明显表情或暗号做迷惑的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p145-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p145-source-fullpage",
+      "gd-p146-source-fullpage",
+      "gd-p147-source-fullpage",
+      "gd-p148-source-fullpage",
+      "gd-p149-source-fullpage",
+      "gd-p150-source-fullpage",
+      "gd-p151-source-fullpage",
+      "gd-p152-source-fullpage",
+      "gd-p153-source-fullpage",
+      "gd-p154-source-fullpage",
+      "gd-p155-source-fullpage",
+      "gd-p156-source-fullpage",
+      "gd-p157-source-fullpage",
+      "gd-p158-source-fullpage",
+      "gd-p159-source-fullpage",
+      "gd-p160-source-fullpage",
+      "gd-p161-source-fullpage",
+      "gd-p162-source-fullpage"
+    ],
+    "questionIds": [
+      "A45",
+      "A50"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "G12"
+    ],
+    "nextCourses": [
+      "C01"
+    ]
+  },
+  {
+    "id": "C01",
+    "title": "单张尾牌残局",
+    "category": "残局训练",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第14篇",
+    "sourcePage": "35",
+    "sourcePages": [
+      35
+    ],
+    "sourcePrintedPages": [
+      33
+    ],
+    "knowledgePoints": [
+      "尾牌",
+      "单张",
+      "卡下家"
+    ],
+    "exampleImages": [
+      "gd-p035-source-fullpage"
+    ],
+    "imageUsage": "PDF单张尾牌局切图",
+    "mistakes": [
+      "不评估下家顺走区间"
+    ],
+    "exercises": [
+      "D-C01"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「尾牌」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：不评估下家顺走区间的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p035-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p035-source-fullpage"
+    ],
+    "questionIds": [
+      "D-C01"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "G13"
+    ],
+    "nextCourses": [
+      "C02"
+    ]
+  },
+  {
+    "id": "C02",
+    "title": "对子与三带二尾牌残局",
+    "category": "残局训练",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第14篇",
+    "sourcePage": "36-37",
+    "sourcePages": [
+      36,
+      37
+    ],
+    "sourcePrintedPages": [
+      34,
+      35
+    ],
+    "knowledgePoints": [
+      "对子尾牌",
+      "3+2",
+      "残局"
+    ],
+    "exampleImages": [
+      "gd-p036-source-fullpage",
+      "gd-p037-source-fullpage"
+    ],
+    "imageUsage": "PDF对子/3+2图裁剪",
+    "mistakes": [
+      "拆成散牌后失去收尾能力"
+    ],
+    "exercises": [
+      "D-C02"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「对子尾牌」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：拆成散牌后失去收尾能力的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p036-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p036-source-fullpage",
+      "gd-p037-source-fullpage"
+    ],
+    "questionIds": [
+      "D-C02"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "C01"
+    ],
+    "nextCourses": [
+      "C03"
+    ]
+  },
+  {
+    "id": "C03",
+    "title": "炸弹护牌残局",
+    "category": "残局训练",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第41篇",
+    "sourcePage": "96-99",
+    "sourcePages": [
+      96,
+      97,
+      98,
+      99
+    ],
+    "sourcePrintedPages": [
+      94,
+      95,
+      96,
+      97
+    ],
+    "knowledgePoints": [
+      "炸弹",
+      "护牌",
+      "残局"
+    ],
+    "exampleImages": [
+      "gd-p096-source-fullpage",
+      "gd-p097-source-fullpage",
+      "gd-p098-source-fullpage"
+    ],
+    "imageUsage": "PDF第94-99页护牌案例切图",
+    "mistakes": [
+      "只看净关，不看护牌收益"
+    ],
+    "exercises": [
+      "A49"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「炸弹」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：只看净关，不看护牌收益的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p096-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p096-source-fullpage",
+      "gd-p097-source-fullpage",
+      "gd-p098-source-fullpage",
+      "gd-p099-source-fullpage"
+    ],
+    "questionIds": [
+      "A49"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "C02"
+    ],
+    "nextCourses": [
+      "C04"
+    ]
+  },
+  {
+    "id": "C04",
+    "title": "炸弹阻挡残局",
+    "category": "残局训练",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第42篇",
+    "sourcePage": "100-101",
+    "sourcePages": [
+      100,
+      101
+    ],
+    "sourcePrintedPages": [
+      98,
+      99
+    ],
+    "knowledgePoints": [
+      "阻挡",
+      "止损",
+      "反扑"
+    ],
+    "exampleImages": [
+      "gd-p100-source-fullpage",
+      "gd-p101-source-fullpage"
+    ],
+    "imageUsage": "PDF阻挡案例图",
+    "mistakes": [
+      "劣势局不敢用炸弹换节奏"
+    ],
+    "exercises": [
+      "D-C04"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「阻挡」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：劣势局不敢用炸弹换节奏的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p100-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p100-source-fullpage",
+      "gd-p101-source-fullpage"
+    ],
+    "questionIds": [
+      "D-C04"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "C03"
+    ],
+    "nextCourses": [
+      "C05"
+    ]
+  },
+  {
+    "id": "C05",
+    "title": "余五至余六张残局",
+    "category": "残局训练",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第55篇",
+    "sourcePage": "132",
+    "sourcePages": [
+      132
+    ],
+    "sourcePrintedPages": [
+      130
+    ],
+    "knowledgePoints": [
+      "余5",
+      "余6",
+      "听牌",
+      "防守"
+    ],
+    "exampleImages": [
+      "gd-p132-source-fullpage"
+    ],
+    "imageUsage": "报牌状态卡",
+    "mistakes": [
+      "只看大牌，不看剩余手数"
+    ],
+    "exercises": [
+      "A46"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「余5」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：只看大牌，不看剩余手数的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p132-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p132-source-fullpage"
+    ],
+    "questionIds": [
+      "A46"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "C04"
+    ],
+    "nextCourses": [
+      "C06"
+    ]
+  },
+  {
+    "id": "C06",
+    "title": "余七至余八张残局",
+    "category": "残局训练",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第56篇",
+    "sourcePage": "135",
+    "sourcePages": [
+      135
+    ],
+    "sourcePrintedPages": [
+      133
+    ],
+    "knowledgePoints": [
+      "余7",
+      "余8",
+      "危险牌型"
+    ],
+    "exampleImages": [
+      "gd-p135-source-fullpage"
+    ],
+    "imageUsage": "危险牌型图谱",
+    "mistakes": [
+      "过早送小单或对子"
+    ],
+    "exercises": [
+      "S12",
+      "A47"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「余7」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：过早送小单或对子的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p135-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p135-source-fullpage"
+    ],
+    "questionIds": [
+      "S12",
+      "A47"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "C05"
+    ],
+    "nextCourses": [
+      "C07"
+    ]
+  },
+  {
+    "id": "C07",
+    "title": "余九至余十张残局",
+    "category": "残局训练",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第57篇",
+    "sourcePage": "136",
+    "sourcePages": [
+      136
+    ],
+    "sourcePrintedPages": [
+      134
+    ],
+    "knowledgePoints": [
+      "余9",
+      "余10",
+      "3+2",
+      "顺子"
+    ],
+    "exampleImages": [
+      "gd-p136-source-fullpage"
+    ],
+    "imageUsage": "危险牌型图谱",
+    "mistakes": [
+      "忽略3+2或顺子型组合"
+    ],
+    "exercises": [
+      "A48"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「余9」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：忽略3+2或顺子型组合的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p136-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p136-source-fullpage"
+    ],
+    "questionIds": [
+      "A48"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "C06"
+    ],
+    "nextCourses": [
+      "C08"
+    ]
+  },
+  {
+    "id": "C08",
+    "title": "主攻残局冲刺",
+    "category": "残局训练",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第12-25篇",
+    "sourcePage": "32-55",
+    "sourcePages": [
+      32,
+      33,
+      34,
+      39,
+      40,
+      41,
+      50,
+      51,
+      55
+    ],
+    "sourcePrintedPages": [
+      30,
+      31,
+      32,
+      37,
+      38,
+      39,
+      48,
+      49,
+      53
+    ],
+    "knowledgePoints": [
+      "主攻冲刺",
+      "手数",
+      "留风"
+    ],
+    "exampleImages": [
+      "gd-p032-source-fullpage",
+      "gd-p033-source-fullpage",
+      "gd-p034-source-fullpage"
+    ],
+    "imageUsage": "连续牌局帧",
+    "mistakes": [
+      "主攻只顾冲，不看留风和控制"
+    ],
+    "exercises": [
+      "D-C08"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「主攻冲刺」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：主攻只顾冲，不看留风和控制的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p032-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p032-source-fullpage",
+      "gd-p033-source-fullpage",
+      "gd-p034-source-fullpage",
+      "gd-p039-source-fullpage",
+      "gd-p040-source-fullpage",
+      "gd-p041-source-fullpage",
+      "gd-p050-source-fullpage",
+      "gd-p051-source-fullpage",
+      "gd-p055-source-fullpage"
+    ],
+    "questionIds": [
+      "D-C08"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "C07"
+    ],
+    "nextCourses": [
+      "C09"
+    ]
+  },
+  {
+    "id": "C09",
+    "title": "助攻残局送桥与送听",
+    "category": "残局训练",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "第26-33篇",
+    "sourcePage": "68-81",
+    "sourcePages": [
+      68,
+      71,
+      74,
+      77,
+      81
+    ],
+    "sourcePrintedPages": [
+      66,
+      69,
+      72,
+      75,
+      79
+    ],
+    "knowledgePoints": [
+      "助攻",
+      "送桥",
+      "送听"
+    ],
+    "exampleImages": [
+      "gd-p068-source-fullpage",
+      "gd-p071-source-fullpage",
+      "gd-p074-source-fullpage"
+    ],
+    "imageUsage": "三步送桥动画",
+    "mistakes": [
+      "不看对家意愿，盲目送牌"
+    ],
+    "exercises": [
+      "D-C09"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「助攻」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：不看对家意愿，盲目送牌的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p068-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p068-source-fullpage",
+      "gd-p071-source-fullpage",
+      "gd-p074-source-fullpage",
+      "gd-p077-source-fullpage",
+      "gd-p081-source-fullpage"
+    ],
+    "questionIds": [
+      "D-C09"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "C08"
+    ],
+    "nextCourses": [
+      "C10"
+    ]
+  },
+  {
+    "id": "C10",
+    "title": "综合实战复盘关",
+    "category": "残局训练",
+    "difficulty": "全面",
+    "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+    "sourceChapter": "全书图例",
+    "sourcePage": "35-136",
+    "sourcePages": [
+      35,
+      41,
+      68,
+      95,
+      132,
+      135,
+      136
+    ],
+    "sourcePrintedPages": [
+      33,
+      39,
+      66,
+      93,
+      130,
+      133,
+      134
+    ],
+    "knowledgePoints": [
+      "复盘",
+      "路径推荐",
+      "错因分析"
+    ],
+    "exampleImages": [
+      "gd-p035-source-fullpage",
+      "gd-p041-source-fullpage",
+      "gd-p068-source-fullpage"
+    ],
+    "imageUsage": "多步回放动画",
+    "mistakes": [
+      "复盘只找一步错，不找错误链"
+    ],
+    "exercises": [
+      "D-C10"
+    ],
+    "aiReview": "PT-REVIEW",
+    "contentBlocks": [
+      {
+        "type": "coach",
+        "text": "这节课先把「复盘」变成可判断、可练习的牌局能力。"
+      },
+      {
+        "type": "slogan",
+        "text": "口诀：复盘只找一步错，不找错误链的反面，就是本课要练的判断。"
+      },
+      {
+        "type": "core",
+        "text": "先看角色与牌权，再看牌面大小；训练重点是做出下一手选择。"
+      },
+      {
+        "type": "example",
+        "assetIds": [
+          "gd-p035-source-fullpage"
+        ],
+        "text": "优先使用 PDF 原始页面作为教学证据，后续可在该页基础上做局部切图和标注层。"
+      }
+    ],
+    "assetIds": [
+      "gd-p035-source-fullpage",
+      "gd-p041-source-fullpage",
+      "gd-p068-source-fullpage",
+      "gd-p095-source-fullpage",
+      "gd-p132-source-fullpage",
+      "gd-p135-source-fullpage",
+      "gd-p136-source-fullpage"
+    ],
+    "questionIds": [
+      "D-C10"
+    ],
+    "aiPromptIds": [
+      "PT-COURSE",
+      "PT-QUIZ",
+      "PT-REVIEW"
+    ],
+    "prerequisites": [
+      "C09"
+    ],
+    "nextCourses": []
+  }
+]

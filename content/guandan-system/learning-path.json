@@ -1,0 +1,135 @@
+{
+  "id": "commercial-ai-guandan-path",
+  "title": "商业级 AI 掼蛋成长训练路线",
+  "sourcePdf": "掼蛋技巧秘籍-电子版160页",
+  "principle": "PDF 先成为 source of truth，再生成课程、题库、图片标注和 AI 复盘。",
+  "flow": [
+    "simple-assessment",
+    "基础入门",
+    "进阶技巧",
+    "高手体系",
+    "残局训练",
+    "full-assessment",
+    "ai-review-report",
+    "personal-remediation"
+  ],
+  "stages": [
+    {
+      "id": "beginner",
+      "order": 1,
+      "title": "基础入门",
+      "goal": "建立规则、牌型、牌力和角色分工的共同语言。",
+      "courseIds": [
+        "B01",
+        "B02",
+        "B03",
+        "B04",
+        "B05",
+        "B06",
+        "B07",
+        "B08",
+        "B09",
+        "B10",
+        "B11",
+        "B12"
+      ],
+      "entryTest": "simple-assessment",
+      "exitTest": "beginner-stage-review"
+    },
+    {
+      "id": "intermediate",
+      "order": 2,
+      "title": "进阶技巧",
+      "goal": "解决主攻、助攻、出炸和优化手数的核心胜率问题。",
+      "courseIds": [
+        "J01",
+        "J02",
+        "J03",
+        "J04",
+        "J05",
+        "J06",
+        "J07",
+        "J08",
+        "J09",
+        "J10",
+        "J11",
+        "J12",
+        "J13",
+        "J14"
+      ],
+      "entryTest": null,
+      "exitTest": "intermediate-stage-review"
+    },
+    {
+      "id": "master",
+      "order": 3,
+      "title": "高手体系",
+      "goal": "训练读局、控节奏、做取舍的高阶心智。",
+      "courseIds": [
+        "G01",
+        "G02",
+        "G03",
+        "G04",
+        "G05",
+        "G06",
+        "G07",
+        "G08",
+        "G09",
+        "G10",
+        "G11",
+        "G12",
+        "G13"
+      ],
+      "entryTest": null,
+      "exitTest": "master-stage-review"
+    },
+    {
+      "id": "endgame",
+      "order": 4,
+      "title": "残局训练",
+      "goal": "把 PDF 牌局例子转成可重复练的选择题和模拟题。",
+      "courseIds": [
+        "C01",
+        "C02",
+        "C03",
+        "C04",
+        "C05",
+        "C06",
+        "C07",
+        "C08",
+        "C09",
+        "C10"
+      ],
+      "entryTest": null,
+      "exitTest": "full-assessment"
+    }
+  ],
+  "assessmentEntrances": [
+    {
+      "id": "simple-assessment",
+      "title": "简单能力测试",
+      "questionCount": 12,
+      "goal": "快速判断用户是先补规则、主攻、助攻还是残局。",
+      "coverage": [
+        "规则",
+        "牌型",
+        "简单判断",
+        "主攻/助攻"
+      ]
+    },
+    {
+      "id": "full-assessment",
+      "title": "全面能力测试",
+      "questionCount": 50,
+      "goal": "生成能力画像、错题标签和个性化路线。",
+      "coverage": [
+        "牌力判断",
+        "炸弹使用",
+        "主攻策略",
+        "助攻策略",
+        "记牌",
+        "残局"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+[
+  {
+    "id": "PT-COURSE",
+    "name": "课程文案生成",
+    "task": "把 PDF 篇章与课程元数据转成课程页文案",
+    "inputFields": [
+      "course_title",
+      "course_goal",
+      "tags",
+      "source_pages",
+      "asset_descriptions",
+      "tone"
+    ],
+    "template": "你是掼蛋课程编辑器。基于课程标题、教学目标、标签、PDF参考页和可用素材，生成适用于在线学习系统的短课程文案。必须围绕 PDF 内容，不要发明规则。",
+    "outputSpec": [
+      "80-120字导语",
+      "3-5个核心概念",
+      "常见误区",
+      "一句话总结",
+      "2道练习建议"
+    ]
+  },
+  {
+    "id": "PT-VISUAL",
+    "name": "示例图与标注说明",
+    "task": "把 PDF 原图转为课程图或轻动画分镜说明",
+    "inputFields": [
+      "course_title",
+      "scene_type",
+      "page_ref",
+      "focus_tags",
+      "need_annotation"
+    ],
+    "template": "你是掼蛋教学可视化设计师。请优先基于 PDF 原图输出静态图说明或4帧轻动画说明。禁止改动原牌型逻辑。",
+    "outputSpec": [
+      "画面目标",
+      "元素清单",
+      "卡牌排布",
+      "文字标注",
+      "Frame1-Frame4"
+    ]
+  },
+  {
+    "id": "PT-QUIZ",
+    "name": "自动出题",
+    "task": "为课程生成题目或测试题",
+    "inputFields": [
+      "course_id",
+      "question_count",
+      "question_types",
+      "difficulty_mix",
+      "must_use_pdf_assets"
+    ],
+    "template": "你是掼蛋题库生成器。请为课程生成题目，输出 JSON 数组。若 must_use_pdf_assets=true，必须引用 assets.json 中 source=pdf 的素材。禁止发明书中没有的规则。",
+    "outputSpec": [
+      "id",
+      "type",
+      "difficulty",
+      "stem",
+      "options",
+      "answer",
+      "explanation",
+      "aiReviewPoints",
+      "requiresPdfImage",
+      "cropSpec"
+    ]
+  },
+  {
+    "id": "PT-REVIEW",
+    "name": "AI 复盘点评",
+    "task": "对用户答题或残局模拟做结构化点评",
+    "inputFields": [
+      "user_action",
+      "correct_action",
+      "tags",
+      "mistake_type",
+      "next_lesson"
+    ],
+    "template": "你是掼蛋AI复盘教练。请根据用户行为与标准答案，输出简洁但有行动指导的复盘。不要长篇讲规则，要指出下一次先看什么。",
+    "outputSpec": [
+      "一句话点评",
+      "你错在什么判断",
+      "下次先看什么",
+      "推荐回看哪一课"
+    ]
+  },
+  {
+    "id": "PT-PATH",
+    "name": "学习路径推荐",
+    "task": "根据测试结果自动推荐课程路线",
+    "inputFields": [
+      "profile_scores",
+      "wrong_tags",
+      "phase",
+      "time_budget"
+    ],
+    "template": "你是掼蛋学习路径推荐器。请根据用户画像，输出未来7天或14天学习顺序。要先诊断，再推课，最后给复测建议。",
+    "outputSpec": [
+      "总诊断",
+      "3个优先补课主题",
+      "每个主题2-3门课",
+      "学习顺序原因",
+      "复测建议"
+    ]
+  }
+]

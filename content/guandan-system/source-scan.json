@@ -1,0 +1,15 @@
+{
+  "sourcePdf": "D:\\coding\\00：知识大全\\掼蛋\\掼蛋技巧秘籍-电子版160页.pdf",
+  "pdfFileId": "guandan-techniques-160",
+  "pagesScanned": 162,
+  "textLayer": "empty/scanned-image",
+  "renderedPageAssets": 162,
+  "courseCount": 49,
+  "questionCount": 74,
+  "assetCount": 236,
+  "notes": [
+    "源 PDF 是扫描型，文本层基本为空，因此本次以全页渲染图作为原始证据资产。",
+    "课程与题库结构来自《将掼蛋技巧秘籍转化为商业级在线学习系统的完整方案》中的蓝图。",
+    "sourcePage 使用 PDF 文件页码；sourcePrintedPage 保留原书印刷页码估算（文件页约等于印刷页+2）。"
+  ]
+}
