@@ -21,7 +21,7 @@ export function AppShell({
     <div className="min-h-screen overflow-x-hidden bg-[#f9f9ff] text-[#111c2d]">
       <SidebarNavigation />
       <main className="min-h-screen pb-28 lg:pl-64 lg:pb-10">
-        <header className="sticky top-0 z-10 hidden h-16 items-center justify-between border-b border-[#e7eeff] bg-white/92 px-6 backdrop-blur lg:flex">
+        <header className="sticky top-0 z-10 hidden h-16 items-center justify-between border-b border-[#e7eeff] bg-white/90 px-6 backdrop-blur lg:flex">
           <div className="flex items-center gap-3">
             <span className="material-symbols-outlined text-[22px] text-[#0058be]">
               auto_awesome

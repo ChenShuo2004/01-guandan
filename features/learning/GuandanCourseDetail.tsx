@@ -65,6 +65,10 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
     setQuestionState("idle");
   }
 
+  function startTraining() {
+    questionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   return (
     <motion.div
       animate="show"
@@ -75,7 +79,7 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
       <section className="grid gap-6 xl:grid-cols-[minmax(0,70fr)_minmax(340px,30fr)]">
         <main className="min-w-0">
           <motion.section
-            className="relative overflow-hidden rounded-[32px] border border-white/45 bg-[linear-gradient(145deg,rgba(38,49,67,0.92)_0%,rgba(0,88,190,0.78)_46%,rgba(113,196,255,0.48)_100%)] p-5 shadow-[0_30px_80px_rgba(0,88,190,0.20)] backdrop-blur-xl md:p-8"
+            className="relative overflow-hidden rounded-[32px] border border-white/40 bg-[linear-gradient(145deg,rgba(38,49,67,0.92)_0%,rgba(0,88,190,0.78)_46%,rgba(113,196,255,0.48)_100%)] p-5 shadow-[0_30px_80px_rgba(0,88,190,0.20)] backdrop-blur-xl md:p-8"
             variants={blockVariants}
           >
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_16%,rgba(255,255,255,0.28),transparent_32%),radial-gradient(circle_at_18%_88%,rgba(173,198,255,0.25),transparent_36%)]" />
@@ -90,11 +94,11 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
                   <span className="material-symbols-outlined mt-0.5 text-[#adc6ff]">
                     lightbulb
                   </span>
-                  <p className="text-sm font-bold leading-6 text-white/92">
+                  <p className="text-sm font-bold leading-6 text-white/90">
                     今日重点：不要急着出牌，先判断牌权、角色和对手变化。
                   </p>
                 </div>
-                <span className="material-symbols-outlined text-sm text-white/45">close</span>
+                <span className="material-symbols-outlined text-sm text-white/40">close</span>
               </div>
             </motion.div>
 
@@ -113,13 +117,13 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
                 type="button"
                 variants={blockVariants}
               >
-                <span className="inline-flex rounded-full bg-white/14 px-4 py-2 text-xs font-black tracking-[0.14em] text-[#d8e2ff] backdrop-blur-sm">
+                <span className="inline-flex rounded-full bg-white/15 px-4 py-2 text-xs font-black tracking-[0.14em] text-[#d8e2ff] backdrop-blur-sm">
                   核心知识卡
                 </span>
                 <h1 className="max-w-2xl text-[34px] font-black leading-tight text-white drop-shadow-md md:text-[42px]">
                   {course.title}
                 </h1>
-                <p className="max-w-2xl text-lg font-bold leading-8 text-white/74">
+                <p className="max-w-2xl text-lg font-bold leading-8 text-white/75">
                   {course.description}
                 </p>
               </motion.button>
@@ -152,7 +156,7 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
             </section>
 
             <motion.button
-              className="relative z-10 mt-8 w-full overflow-hidden rounded-2xl border border-white/28 bg-white/72 p-7 text-center shadow-[0_18px_50px_rgba(0,0,0,0.08)] backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:bg-white/82 hover:shadow-[0_24px_60px_rgba(0,88,190,0.16)]"
+              className="relative z-10 mt-8 w-full overflow-hidden rounded-2xl border border-white/30 bg-white/75 p-7 text-center shadow-[0_18px_50px_rgba(0,0,0,0.08)] backdrop-blur-sm transition duration-300 hover:-translate-y-1 hover:bg-white/80 hover:shadow-[0_24px_60px_rgba(0,88,190,0.16)]"
               onClick={() =>
                 setSelectedCard({
                   title: slogan,
@@ -202,6 +206,7 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
         </main>
 
         <aside className="min-w-0 space-y-6 xl:sticky xl:top-20 xl:self-start">
+          <AceCoachAssistant onStartTraining={startTraining} />
           {primaryQuestion ? (
             <TrainingQuestionCard
               isCorrect={isCorrect}
@@ -216,12 +221,6 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
               title={course.title}
             />
           ) : null}
-          <CoachFeedback
-            isCorrect={isCorrect}
-            onOpen={() => setCoachOpen(true)}
-            questionState={questionState}
-            review={course.aiReview}
-          />
         </aside>
       </section>
 
@@ -231,12 +230,75 @@ export function GuandanCourseDetail({ course, questions }: GuandanCourseDetailPr
   );
 }
 
+function AceCoachAssistant({ onStartTraining }: { onStartTraining: () => void }) {
+  return (
+    <motion.section
+      className="relative overflow-hidden rounded-[32px] border border-[#adc6ff]/70 bg-white/85 p-6 shadow-[0_18px_56px_rgba(0,88,190,0.12)] backdrop-blur-xl"
+      variants={blockVariants}
+    >
+      <div className="pointer-events-none absolute -right-14 -top-16 h-40 w-40 rounded-full bg-[#64a8fe]/25 blur-3xl" />
+      <div className="relative flex items-start gap-4">
+        <div className="relative h-16 w-16 shrink-0">
+          <span className="absolute -inset-2 rounded-2xl bg-[#0058be]/20 blur-xl" />
+          <span className="relative block h-16 w-16 overflow-hidden rounded-2xl border border-[#adc6ff] bg-[#e7eeff]">
+            <Image
+              alt="Ace Coach"
+              className="object-cover"
+              fill
+              sizes="64px"
+              src="/assets/coach/coach-analysis-mode.png"
+            />
+          </span>
+        </div>
+        <div>
+          <p className="text-xs font-black tracking-[0.14em] text-[#0058be]">ACE COACH</p>
+          <h2 className="mt-1 text-2xl font-black leading-8 text-[#111c2d]">
+            今日训练目标
+          </h2>
+          <p className="mt-1 text-lg font-black text-[#0058be]">牌权判断</p>
+        </div>
+      </div>
+
+      <div className="relative mt-6 rounded-2xl border border-[#d8e3fb] bg-[#f0f7ff]/80 p-4">
+        <p className="text-xs font-black text-[#0058be]">AI 提示</p>
+        <p className="mt-2 text-base font-black leading-7 text-[#12395a]">不要急着出牌。</p>
+        <p className="mt-2 text-sm font-semibold leading-6 text-[#424754]">
+          先把判断顺序稳定下来，出牌自然会更准。
+        </p>
+      </div>
+
+      <div className="mt-6 space-y-3">
+        {["当前谁掌握牌权", "对手剩余牌", "队友需求"].map((item, index) => (
+          <div
+            className="flex items-center gap-3 rounded-2xl border border-[#e2e8f0] bg-white/80 p-3"
+            key={item}
+          >
+            <span className="grid h-8 w-8 shrink-0 place-items-center rounded-xl bg-[#0058be] text-xs font-black text-white">
+              {index + 1}
+            </span>
+            <span className="text-sm font-bold text-[#334155]">{item}</span>
+          </div>
+        ))}
+      </div>
+
+      <motion.div className="mt-6" variants={blockVariants}>
+        <Button
+          className="h-14 w-full rounded-xl text-base shadow-[0_16px_36px_rgba(0,88,190,0.22)]"
+          onClick={onStartTraining}
+        >
+          开始训练
+        </Button>
+      </motion.div>
+    </motion.section>
+  );
+}
+
 function LearningLoop() {
   const steps = ["知识理解", "口诀记忆", "案例分析", "训练题", "AI反馈"];
 
   return (
     <motion.section
-      className="mt-6 rounded-[28px] border border-[#d8e3fb] bg-white/74 p-5 shadow-[0_12px_40px_rgba(0,88,190,0.07)] backdrop-blur-xl"
+      className="mt-6 rounded-[28px] border border-[#d8e3fb] bg-white/75 p-5 shadow-[0_12px_40px_rgba(0,88,190,0.07)] backdrop-blur-xl"
       variants={blockVariants}
     >
       <div className="flex flex-wrap items-center gap-3">
@@ -277,8 +339,8 @@ function ComparisonCard({
       className={[
         "group flex min-h-[250px] flex-col gap-4 rounded-2xl border p-5 text-left backdrop-blur-sm transition duration-300 hover:-translate-y-2",
         isError
-          ? "border-[#ef4444]/30 bg-[#fff5f5]/82 shadow-[0_0_20px_rgba(239,68,68,0.12)] hover:shadow-[0_18px_42px_rgba(239,68,68,0.16)]"
-          : "border-[#3b82f6]/30 bg-[#f0f7ff]/86 shadow-[0_0_20px_rgba(59,130,246,0.12)] hover:shadow-[0_18px_42px_rgba(59,130,246,0.16)]"
+          ? "border-[#ef4444]/30 bg-[#fff5f5]/80 shadow-[0_0_20px_rgba(239,68,68,0.12)] hover:shadow-[0_18px_42px_rgba(239,68,68,0.16)]"
+          : "border-[#3b82f6]/30 bg-[#f0f7ff]/90 shadow-[0_0_20px_rgba(59,130,246,0.12)] hover:shadow-[0_18px_42px_rgba(59,130,246,0.16)]"
       ].join(" ")}
       onClick={() =>
         onOpen({
@@ -293,7 +355,7 @@ function ComparisonCard({
       }
       type="button"
     >
-      <div className="relative flex h-32 items-center justify-center overflow-hidden rounded-xl bg-white/44">
+      <div className="relative flex h-32 items-center justify-center overflow-hidden rounded-xl bg-white/40">
         <span
           className={[
             "absolute h-24 w-24 rounded-full blur-2xl",
@@ -352,7 +414,7 @@ function TrainingQuestionCard({
 }) {
   return (
     <motion.section
-      className="scroll-mt-24 rounded-[28px] border border-[#d8e3fb] bg-white/84 p-5 shadow-[0_18px_56px_rgba(0,88,190,0.10)] backdrop-blur-xl"
+      className="scroll-mt-24 rounded-[28px] border border-[#d8e3fb] bg-white/85 p-5 shadow-[0_18px_56px_rgba(0,88,190,0.10)] backdrop-blur-xl"
       ref={questionRef}
       variants={blockVariants}
     >
@@ -475,47 +537,6 @@ function TrainingQuestionCard({
         </div>
       </div>
     </motion.section>
-  );
-}
-
-function CoachFeedback({
-  isCorrect,
-  onOpen,
-  questionState,
-  review
-}: {
-  isCorrect: boolean;
-  onOpen: () => void;
-  questionState: QuestionState;
-  review: string;
-}) {
-  const feedback =
-    questionState === "idle"
-      ? "先做判断，再看解析。训练的是你的第一反应。"
-      : isCorrect
-        ? "你的判断力提升了 12%，保持现状！"
-        : "这题暴露了判断顺序问题，先回到角色和牌权。";
-
-  return (
-    <motion.button
-      className="flex w-full items-center gap-5 rounded-[28px] border border-[#0058be]/20 bg-[#0058be]/10 p-5 text-left backdrop-blur-md transition hover:-translate-y-1 hover:bg-[#0058be]/15"
-      onClick={onOpen}
-      type="button"
-      variants={blockVariants}
-    >
-      <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl bg-[#0058be] text-white shadow-inner">
-        <span className="material-symbols-outlined">psychology</span>
-      </span>
-      <span>
-        <span className="text-xs font-black text-[#0058be]">AI 教练点评</span>
-        <span className="mt-1 block text-sm font-semibold leading-6 text-[#424754]">{feedback}</span>
-        {questionState === "review" ? (
-          <span className="mt-2 line-clamp-2 text-xs font-semibold leading-5 text-[#424754]/75">
-            {review}
-          </span>
-        ) : null}
-      </span>
-    </motion.button>
   );
 }
 
