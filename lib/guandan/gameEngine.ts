@@ -40,15 +40,17 @@ export function clearSelection(state: GameEngineState): GameEngineState {
 
 export function playCards(state: GameEngineState, playerId: PlayerId, cards: Card[]): PlayCardsResult {
   if (state.gameStatus !== "playing") {
-    return { state, ok: false, message: "本局已经结束。" };
+    return { state, ok: false, message: "本局已经结束" };
   }
 
   const currentPlayer = state.players[state.currentTurn];
+
   if (!currentPlayer || currentPlayer.id !== playerId) {
-    return { state, ok: false, message: "还没轮到你。" };
+    return { state, ok: false, message: "还没轮到你" };
   }
 
   const compare = canBeatLastPlay(cards, state.lastPlayedCards);
+
   if (!compare.canPlay) {
     return {
       state: {
@@ -88,12 +90,6 @@ export function playCards(state: GameEngineState, playerId: PlayerId, cards: Car
     result: pattern.type,
     reason: compare.reason
   };
-  const turnAction = {
-    playerId,
-    status: "playing" as const,
-    label: `${currentPlayer.role} 出牌`,
-    remainingSeconds: null
-  };
   const nextState: GameEngineState = {
     ...state,
     players: nextPlayers,
@@ -122,8 +118,18 @@ export function playCards(state: GameEngineState, playerId: PlayerId, cards: Car
         result: roundAction.result
       }
     ],
-    turnAction,
-    playerActionState: updatePlayerActionState(state.playerActionState, turnAction),
+    turnAction: {
+      playerId,
+      status: "playing",
+      label: `${currentPlayer.role} 出牌`,
+      remainingSeconds: null
+    },
+    playerActionState: updatePlayerActionState(state.playerActionState, {
+      playerId,
+      status: "playing",
+      label: `${currentPlayer.role} 出牌`,
+      remainingSeconds: null
+    }),
     cardRemainingCount: decrementCardRemainingCount(state.cardRemainingCount, cards),
     animationState: {
       cardMoving: true,
@@ -134,17 +140,22 @@ export function playCards(state: GameEngineState, playerId: PlayerId, cards: Car
     tipMessage: null
   };
 
-  return { state: nextState, ok: true, message: compare.reason };
+  return {
+    state: nextState,
+    ok: true,
+    message: compare.reason
+  };
 }
 
 export function passTurn(state: GameEngineState, playerId: PlayerId): PlayCardsResult {
   if (state.gameStatus !== "playing") {
-    return { state, ok: false, message: "本局已经结束。" };
+    return { state, ok: false, message: "本局已经结束" };
   }
 
   const currentPlayer = state.players[state.currentTurn];
+
   if (!currentPlayer || currentPlayer.id !== playerId) {
-    return { state, ok: false, message: "还没轮到你。" };
+    return { state, ok: false, message: "还没轮到你" };
   }
 
   if (state.lastPlayedCards.length === 0 || state.lastPlayerId === playerId) {
@@ -155,7 +166,7 @@ export function passTurn(state: GameEngineState, playerId: PlayerId): PlayCardsR
         tipMessage: "有牌权时不能不出。"
       },
       ok: false,
-      message: "有牌权时不能不出。"
+      message: "有牌权时不能不出"
     };
   }
 
@@ -165,12 +176,6 @@ export function passTurn(state: GameEngineState, playerId: PlayerId): PlayCardsR
     trickResets && state.lastPlayerId
       ? state.players.findIndex((player) => player.id === state.lastPlayerId)
       : getNextActiveTurn(state);
-  const turnAction = {
-    playerId,
-    status: "playing" as const,
-    label: trickResets ? `${currentPlayer.role} 不出，本轮结束` : `${currentPlayer.role} 不出`,
-    remainingSeconds: null
-  };
 
   const nextState: GameEngineState = {
     ...state,
@@ -211,8 +216,18 @@ export function passTurn(state: GameEngineState, playerId: PlayerId): PlayCardsR
         result: trickResets ? "重新获得牌权" : "不出"
       }
     ],
-    turnAction,
-    playerActionState: updatePlayerActionState(state.playerActionState, turnAction),
+    turnAction: {
+      playerId,
+      status: "playing",
+      label: trickResets ? `${currentPlayer.role} 不出，本轮结束` : `${currentPlayer.role} 不出`,
+      remainingSeconds: null
+    },
+    playerActionState: updatePlayerActionState(state.playerActionState, {
+      playerId,
+      status: "playing",
+      label: trickResets ? `${currentPlayer.role} 不出，本轮结束` : `${currentPlayer.role} 不出`,
+      remainingSeconds: null
+    }),
     animationState: {
       cardMoving: false,
       cardShowing: true,
@@ -222,5 +237,9 @@ export function passTurn(state: GameEngineState, playerId: PlayerId): PlayCardsR
     tipMessage: null
   };
 
-  return { state: nextState, ok: true, message: "不出" };
+  return {
+    state: nextState,
+    ok: true,
+    message: "不出"
+  };
 }

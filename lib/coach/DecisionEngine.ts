@@ -4,7 +4,6 @@ import { canBeatLastPlay } from "@/lib/guandan/cardCompare";
 import { detectCardPattern } from "@/lib/guandan/cardRule";
 import type { GameEngineState } from "@/lib/guandan/gameState";
 import type { CoachFeedback } from "@/lib/coach/coachTypes";
-import { getRealtimeHint } from "@/lib/coach/TrainingCoachEngine";
 
 export interface DecisionInput {
   playerHand: Card[];
@@ -13,32 +12,29 @@ export interface DecisionInput {
 
 export function recommendDecision({ playerHand, state }: DecisionInput): CoachFeedback {
   const recommendedCards = chooseNormalMove(playerHand, state.lastPlayedCards);
-  const hint = getRealtimeHint(state, "before_play") ?? undefined;
+  const pattern = detectCardPattern(recommendedCards);
 
-  if (recommendedCards.length === 0) {
+  if (recommendedCards.length === 0 || !pattern.valid) {
     return {
       type: "tip",
       level: "low",
       message: "这手可以先不出",
       reason: "当前没有低成本牌型能压过上一手。",
       suggestion: "保留大牌和炸弹，等重新获得牌权。",
-      recommendedCards: [],
-      hint
+      recommendedCards: []
     };
   }
 
-  const pattern = detectCardPattern(recommendedCards);
   const compare = canBeatLastPlay(recommendedCards, state.lastPlayedCards);
   const label = recommendedCards.map(getCardLabel).join(" ");
 
   return {
     type: "tip",
     level: pattern.type === "bomb" || pattern.type === "fourJokers" ? "medium" : "low",
-    message: `推荐出：${label}`,
+    message: `推荐出 ${label}`,
     reason: compare.reason,
     suggestion: buildSuggestion(pattern.type),
-    recommendedCards,
-    hint
+    recommendedCards
   };
 }
 
@@ -58,7 +54,7 @@ export function findBetterDecision(state: GameEngineState, playedCards: Card[]) 
 
 function buildSuggestion(patternType: string) {
   if (patternType === "bomb" || patternType === "fourJokers") {
-    return "只有在抢关键牌权或进入收尾时，才建议用炸弹。";
+    return "只有在抢关键牌权或进入收尾时才建议炸。";
   }
 
   if (patternType === "tripleWithPair" || patternType === "straight") {
