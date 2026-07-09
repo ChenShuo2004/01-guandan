@@ -1,5 +1,6 @@
 "use client";
 
+import type { CSSProperties } from "react";
 import { useEffect, useRef, useState } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
@@ -23,6 +24,7 @@ interface SplitTextProps {
   threshold?: number;
   rootMargin?: string;
   textAlign?: "left" | "center" | "right";
+  overflow?: CSSProperties["overflow"];
   onLetterAnimationComplete?: () => void;
 }
 
@@ -44,6 +46,7 @@ export default function SplitText({
   threshold = 0.1,
   rootMargin = "-100px",
   textAlign = "center",
+  overflow = "hidden",
   tag = "p",
   onLetterAnimationComplete
 }: SplitTextProps) {
@@ -169,7 +172,7 @@ export default function SplitText({
       className={`split-parent ${className}`.trim()}
       style={{
         textAlign,
-        overflow: "hidden",
+        overflow,
         display: "inline-block",
         whiteSpace: "normal",
         wordWrap: "break-word",
