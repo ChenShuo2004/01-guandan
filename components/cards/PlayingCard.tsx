@@ -15,6 +15,7 @@ interface PlayingCardProps {
   invalid?: boolean;
   invalidPulseKey?: number;
   disabled?: boolean;
+  sizeScale?: number;
   onClick?: (card: Card) => void;
   onPointerDownCard?: (card: Card, event: PointerEvent<HTMLButtonElement>) => void;
   onPointerEnterCard?: (card: Card, event: PointerEvent<HTMLButtonElement>) => void;
@@ -32,6 +33,7 @@ export function PlayingCard({
   invalid = false,
   invalidPulseKey = 0,
   disabled = false,
+  sizeScale = 1,
   onClick,
   onPointerDownCard,
   onPointerEnterCard
@@ -39,6 +41,11 @@ export function PlayingCard({
   const status = getCardVisualStatus({ disabled, invalid, selected });
   const label = getCardLabel(card);
   const assetPath = getPlayingCardAsset(card);
+  const baseSize = compact ? { height: 90, width: 64 } : { height: 122, width: 86 };
+  const cardSize = {
+    height: Math.round(baseSize.height * sizeScale),
+    width: Math.round(baseSize.width * sizeScale)
+  };
   const selectedTransform = { y: -20, scale: 1.08 };
   const normalTransform = { y: 0, scale: 1 };
 
@@ -57,7 +64,6 @@ export function PlayingCard({
       aria-label={label}
       className={cn(
         "relative shrink-0 touch-manipulation select-none rounded-[14px] border bg-white p-0 outline-none transition-colors",
-        compact ? "h-[90px] w-[64px]" : "h-[122px] w-[86px]",
         disabled ? "cursor-default opacity-80" : "cursor-pointer",
         status === "normal" && "border-white/90 shadow-[0_8px_16px_rgba(6,20,34,0.16)]",
         status === "selected" &&
@@ -72,6 +78,7 @@ export function PlayingCard({
       onClick={() => onClick?.(card)}
       onPointerDown={(event) => onPointerDownCard?.(card, event)}
       onPointerEnter={(event) => onPointerEnterCard?.(card, event)}
+      style={cardSize}
       transition={invalid ? { duration: 0.24, ease: "easeOut" } : pokeTransition}
       type="button"
       whileHover={disabled ? undefined : selected ? selectedTransform : { y: -8, scale: 1.03 }}
@@ -81,7 +88,7 @@ export function PlayingCard({
         className="rounded-[13px] object-cover"
         draggable={false}
         fill
-        sizes={compact ? "64px" : "86px"}
+        sizes={`${cardSize.width}px`}
         src={assetPath}
       />
       <span

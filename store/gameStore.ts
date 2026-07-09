@@ -8,7 +8,7 @@ import type { CoachFeedback } from "@/lib/coach/coachTypes";
 import { detectMistakeAfterUserPlay } from "@/lib/coach/MistakeDetector";
 import type { Card } from "@/lib/guandan/card";
 import { sortCards } from "@/lib/guandan/card";
-import { playCards, passTurn, toggleSelectedCard } from "@/lib/guandan/gameEngine";
+import { clearSelection, playCards, passTurn, toggleSelectedCard } from "@/lib/guandan/gameEngine";
 import {
   createInitialGameState,
   getCurrentPlayer,
@@ -23,6 +23,7 @@ type GameAction =
   | { type: "continue-training" }
   | { type: "toggle-card"; card: Card }
   | { type: "set-selection"; cards: Card[] }
+  | { type: "clear-selection" }
   | { type: "sort-hand" }
   | { type: "play-selected" }
   | { type: "pass" }
@@ -89,6 +90,17 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
         selectedCards: sortCards(action.cards),
         invalidCardIds: [],
         tipMessage: null
+      });
+    }
+
+    case "clear-selection": {
+      if (state.selectedCards.length === 0) return state;
+      return applyCoachFeedback(clearSelection(state), {
+        type: "tip",
+        level: "low",
+        message: "已撤销当前选择",
+        reason: "上一步会清空你刚刚选中的牌，不会改变牌局。",
+        suggestion: "重新选择一组牌型，或者点击提示让 Ace Coach 给出建议。"
       });
     }
 
@@ -271,6 +283,10 @@ export function useGameStore() {
     dispatch({ type: "set-selection", cards });
   }, []);
 
+  const clearSelectedCards = useCallback(() => {
+    dispatch({ type: "clear-selection" });
+  }, []);
+
   const sortHand = useCallback(() => {
     dispatch({ type: "sort-hand" });
   }, []);
@@ -309,6 +325,7 @@ export function useGameStore() {
     continueTraining,
     selectCard,
     setSelectedCards,
+    clearSelectedCards,
     sortHand,
     playSelectedCards,
     pass,

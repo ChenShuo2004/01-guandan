@@ -9,6 +9,7 @@ interface HandCardsProps {
   invalidCardIds?: string[];
   invalidPulseKey?: number;
   compact?: boolean;
+  cardScale?: number;
   disabled?: boolean;
   variant?: "default" | "arena";
   onSelectCard: (card: Card) => void;
@@ -23,6 +24,7 @@ export function HandCards({
   invalidCardIds = [],
   invalidPulseKey = 0,
   compact = false,
+  cardScale = 1,
   disabled = false,
   onSelectCard,
   onSelectionChange,
@@ -44,6 +46,7 @@ export function HandCards({
   return (
     <CardHand
       cards={cards}
+      cardScale={cardScale}
       compact={compact}
       disabled={disabled}
       invalidCardIds={invalidCardIds}

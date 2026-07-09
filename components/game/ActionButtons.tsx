@@ -9,6 +9,7 @@ interface ActionButtonsProps {
   compact?: boolean;
   canAct?: boolean;
   phase: TrainingPhase;
+  secondaryOnly?: boolean;
   selectedCount?: number;
   onBackToLobby?: () => void;
   onContinue?: () => void;
@@ -19,12 +20,14 @@ interface ActionButtonsProps {
   onSortHand?: () => void;
   onStart?: () => void;
   onTip?: () => void;
+  onUndo?: () => void;
 }
 
 export function ActionButtons({
   compact = false,
   canAct = true,
   phase,
+  secondaryOnly = false,
   selectedCount = 0,
   onBackToLobby,
   onContinue,
@@ -34,7 +37,8 @@ export function ActionButtons({
   onShowSolution,
   onSortHand,
   onStart,
-  onTip
+  onTip,
+  onUndo
 }: ActionButtonsProps) {
   return (
     <motion.div
@@ -46,52 +50,56 @@ export function ActionButtons({
       initial={{ opacity: 0, x: 18 }}
       transition={{ duration: 0.45, delay: 0.2 }}
     >
-      <StatusPill canAct={canAct} phase={phase} />
+      <StatusPill canAct={canAct} compact={compact} phase={phase} />
 
       {phase === "idle" ? (
         <div className="flex flex-col gap-3">
-          <ActionButton className="bg-[#ffd84d] text-[#6a4b00]" label="开始训练" onClick={onStart} />
-          <ActionButton className="border border-white/65 bg-white/55 text-[#17496d]" label="返回大厅" onClick={onBackToLobby} />
+          <ActionButton className="bg-[#ffd84d] text-[#6a4b00]" compact={compact} label="开始训练" onClick={onStart} />
+          <ActionButton className="border border-white/65 bg-white/55 text-[#17496d]" compact={compact} label="返回大厅" onClick={onBackToLobby} />
         </div>
       ) : null}
 
       {phase === "playing" ? (
-        <div className="flex flex-col gap-3">
-          <ActionButton className="bg-[#0f74ef] text-white" disabled={!canAct} label="不出" onClick={onPass} />
-          <ActionButton className="relative bg-[#ffd84d] text-[#6a4b00]" disabled={!canAct} label="提示" onClick={onTip}>
-            <span className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full bg-[#ff335a] text-[10px] text-white">
-              2
-            </span>
-          </ActionButton>
-          {!compact || selectedCount === 0 ? (
-            <ActionButton className="bg-[#16c9bd] text-white" disabled={!canAct || selectedCount === 0} label={selectedCount > 0 ? `出牌 ${selectedCount}` : "出牌"} onClick={onPlay} />
+        <div className={cn("flex flex-col", compact ? "gap-2" : "gap-3")}>
+          <ActionButton className="bg-[#0f74ef] text-white" compact={compact} disabled={!canAct} label="不出" onClick={onPass} />
+          {!secondaryOnly ? (
+            <>
+              <ActionButton className="relative bg-[#ffd84d] text-[#6a4b00]" compact={compact} disabled={!canAct} label="提示" onClick={onTip}>
+                <span className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full bg-[#ff335a] text-[10px] text-white">
+                  2
+                </span>
+              </ActionButton>
+              {!compact || selectedCount === 0 ? (
+                <ActionButton className="bg-[#16c9bd] text-white" compact={compact} disabled={!canAct || selectedCount === 0} label={selectedCount > 0 ? `出牌 ${selectedCount}` : "出牌"} onClick={onPlay} />
+              ) : null}
+            </>
           ) : null}
-          <div className="grid grid-cols-2 gap-3 pt-4">
-            <MiniAction label="理牌" onClick={onSortHand} />
-            <MiniAction label="上一步" />
+          <div className={cn("grid grid-cols-2 gap-3", compact ? "pt-1" : "pt-4")}>
+            <MiniAction compact={compact} label="理牌" onClick={onSortHand} />
+            <MiniAction compact={compact} disabled={!canAct || selectedCount === 0} label="上一步" onClick={onUndo} />
           </div>
         </div>
       ) : null}
 
       {phase === "analysis" ? (
         <div className="flex flex-col gap-3">
-          <ActionButton className="bg-[#ffd84d] text-[#6a4b00]" label="查看推荐方案" onClick={onShowSolution} />
-          <ActionButton className="bg-[#16c9bd] text-white" label="继续训练" onClick={onContinue} />
-          <ActionButton className="border border-white/65 bg-white/55 text-[#17496d]" label="重新训练" onClick={onRestart} />
+          <ActionButton className="bg-[#ffd84d] text-[#6a4b00]" compact={compact} label="查看推荐方案" onClick={onShowSolution} />
+          <ActionButton className="bg-[#16c9bd] text-white" compact={compact} label="继续训练" onClick={onContinue} />
+          <ActionButton className="border border-white/65 bg-white/55 text-[#17496d]" compact={compact} label="重新训练" onClick={onRestart} />
         </div>
       ) : null}
 
       {phase === "completed" ? (
         <div className="flex flex-col gap-3">
-          <ActionButton className="bg-[#ffd84d] text-[#6a4b00]" label="重新训练" onClick={onRestart} />
-          <ActionButton className="border border-white/65 bg-white/55 text-[#17496d]" label="返回训练大厅" onClick={onBackToLobby} />
+          <ActionButton className="bg-[#ffd84d] text-[#6a4b00]" compact={compact} label="重新训练" onClick={onRestart} />
+          <ActionButton className="border border-white/65 bg-white/55 text-[#17496d]" compact={compact} label="返回训练大厅" onClick={onBackToLobby} />
         </div>
       ) : null}
     </motion.div>
   );
 }
 
-function StatusPill({ canAct, phase }: { canAct: boolean; phase: TrainingPhase }) {
+function StatusPill({ canAct, compact, phase }: { canAct: boolean; compact?: boolean; phase: TrainingPhase }) {
   const label: Record<TrainingPhase, string> = {
     idle: "准备开始",
     playing: canAct ? "等待你的判断" : "等待 AI 行动",
@@ -100,7 +108,7 @@ function StatusPill({ canAct, phase }: { canAct: boolean; phase: TrainingPhase }
   };
 
   return (
-    <div className="mb-4 flex items-center justify-center gap-2 rounded-full bg-white/42 px-3 py-2 text-sm font-black text-[#155175]">
+    <div className={cn("flex items-center justify-center gap-2 rounded-full bg-white/42 px-3 font-black text-[#155175]", compact ? "mb-2 py-1 text-xs" : "mb-4 py-2 text-sm")}>
       <span
         className={cn(
           "h-2.5 w-2.5 rounded-full",
@@ -115,12 +123,14 @@ function StatusPill({ canAct, phase }: { canAct: boolean; phase: TrainingPhase }
 function ActionButton({
   children,
   className,
+  compact,
   disabled,
   label,
   onClick
 }: {
   children?: ReactNode;
   className: string;
+  compact?: boolean;
   disabled?: boolean;
   label: string;
   onClick?: () => void;
@@ -128,7 +138,8 @@ function ActionButton({
   return (
     <button
       className={cn(
-        "relative min-h-14 rounded-2xl px-4 py-3 text-[20px] font-black shadow-[0_12px_24px_rgba(28,109,172,0.22)] transition hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0",
+        "relative rounded-2xl px-4 py-3 font-black shadow-[0_12px_24px_rgba(28,109,172,0.22)] transition hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0",
+        compact ? "min-h-11 text-base" : "min-h-14 text-[20px]",
         className
       )}
       disabled={disabled}
@@ -141,10 +152,14 @@ function ActionButton({
   );
 }
 
-function MiniAction({ label, onClick }: { label: string; onClick?: () => void }) {
+function MiniAction({ compact, disabled, label, onClick }: { compact?: boolean; disabled?: boolean; label: string; onClick?: () => void }) {
   return (
     <button
-      className="min-h-16 rounded-2xl bg-[#2f78b8]/62 px-3 py-2 text-base font-black text-white shadow-[0_10px_22px_rgba(28,109,172,0.18)] transition hover:-translate-y-0.5 active:scale-[0.98]"
+      className={cn(
+        "rounded-2xl bg-[#2f78b8]/62 px-3 py-2 font-black text-white shadow-[0_10px_22px_rgba(28,109,172,0.18)] transition hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0",
+        compact ? "min-h-11 text-sm" : "min-h-16 text-base"
+      )}
+      disabled={disabled}
       onClick={onClick}
       type="button"
     >

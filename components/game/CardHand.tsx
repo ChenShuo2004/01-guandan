@@ -14,6 +14,7 @@ interface CardHandProps {
   invalidPulseKey?: number;
   disabled?: boolean;
   compact?: boolean;
+  cardScale?: number;
   onSelectionChange: (cards: Card[]) => void;
   variant?: "default" | "arena";
 }
@@ -25,6 +26,7 @@ export function CardHand({
   invalidPulseKey = 0,
   disabled = false,
   compact = false,
+  cardScale = 1,
   onSelectionChange,
   variant = "default"
 }: CardHandProps) {
@@ -76,6 +78,29 @@ export function CardHand({
     commitSelection(nextIds);
   }
 
+  function toggleCardGroup(groupCards: Card[]) {
+    const currentIds = selectedIdsRef.current;
+    const groupIds = groupCards.map((card) => card.id);
+    const allSelected = groupIds.every((id) => currentIds.includes(id));
+    const nextIds = allSelected
+      ? currentIds.filter((id) => !groupIds.includes(id))
+      : [...currentIds, ...groupIds.filter((id) => !currentIds.includes(id))];
+
+    selectedIdsRef.current = nextIds;
+    commitSelection(nextIds);
+  }
+
+  function addCardGroup(groupCards: Card[]) {
+    const currentIds = selectedIdsRef.current;
+    const groupIds = groupCards.map((card) => card.id);
+    const nextIds = [...currentIds, ...groupIds.filter((id) => !currentIds.includes(id))];
+
+    if (nextIds.length === currentIds.length) return;
+
+    selectedIdsRef.current = nextIds;
+    commitSelection(nextIds);
+  }
+
   function handlePointerDown(card: Card, event: PointerEvent<HTMLButtonElement>) {
     if (disabled) return;
 
@@ -88,6 +113,20 @@ export function CardHand({
   function handlePointerEnter(card: Card) {
     if (disabled || !isDraggingRef.current) return;
     addCard(card);
+  }
+
+  function handleGroupPointerDown(groupCards: Card[], event: PointerEvent<HTMLButtonElement>) {
+    if (disabled) return;
+
+    event.preventDefault();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    isDraggingRef.current = true;
+    toggleCardGroup(groupCards);
+  }
+
+  function handleGroupPointerEnter(groupCards: Card[]) {
+    if (disabled || !isDraggingRef.current) return;
+    addCardGroup(groupCards);
   }
 
   return (
@@ -110,18 +149,24 @@ export function CardHand({
 
       <div
         className={cn(
-          "relative flex min-w-0 items-end justify-center overflow-x-auto px-2",
-          variant === "arena" ? "gap-1 pb-4 pt-2" : "gap-3 pb-4 pt-6 sm:gap-4"
+          "relative flex min-w-0 items-end justify-center px-2",
+          variant === "arena"
+            ? "max-h-[36vh] flex-wrap gap-x-1 gap-y-0 overflow-visible pb-1 pt-2 lg:max-h-[29vh]"
+            : "gap-3 overflow-x-auto pb-4 pt-6 sm:gap-4"
         )}
       >
         {groups.map((group) => (
           <CardGroup
+            sizeScale={cardScale}
             compact={compact}
             disabled={disabled}
             group={group}
             invalidCardIds={invalidSet}
             invalidPulseKey={invalidPulseKey}
             key={group.id}
+            layout={variant === "arena" ? "stack" : "row"}
+            onGroupPointerDown={handleGroupPointerDown}
+            onGroupPointerEnter={handleGroupPointerEnter}
             onPointerDownCard={handlePointerDown}
             onPointerEnterCard={handlePointerEnter}
             selectedCardIds={selectedSet}
