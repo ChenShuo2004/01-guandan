@@ -11,16 +11,17 @@ export function SidebarNavigation() {
   return (
     <aside className="fixed inset-y-0 left-0 z-20 hidden w-64 border-r border-[#d8e3fb] bg-[#f0f3ff] px-4 py-6 text-[#111c2d] lg:block">
       <div className="px-2">
-        <h2 className="text-[28px] font-black leading-8 text-[#0058be]">掼蛋大师</h2>
-        <p className="mt-1 text-sm font-semibold text-[#727785]">AI 进阶训练平台</p>
+        <h2 className="text-[28px] font-black leading-8 text-[#0058be]">
+          AI 掼蛋训练营
+        </h2>
+        <p className="mt-1 text-sm font-semibold text-[#727785]">专业训练空间</p>
       </div>
       <nav className="mt-10 grid gap-2">
         {sidebarNavigationItems.map((item) => {
           const isActive =
-            item.href === "/"
-              ? pathname === "/"
-              : pathname.startsWith(item.href) ||
-                (item.href === "/learning-path" && pathname.startsWith("/lessons"));
+            item.href === "/practice"
+              ? pathname === "/practice" || pathname.startsWith("/practice/")
+              : pathname === item.href || pathname.startsWith(`${item.href}/`);
 
           return (
             <Link

@@ -365,7 +365,7 @@ export function GameArena() {
       : isUserTurn
         ? "轮到你出牌"
         : `${currentPlayer?.role ?? "对家"}出牌中...`;
-  const goLobby = () => router.push("/");
+  const goLobby = () => router.push("/practice");
   const coachMood = state.coachFeedback.type === "mistake" ? "warning" : isUserTurn ? "teaching" : "thinking";
 
   function changeLevel(level: TrainingLevel) {

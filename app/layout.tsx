@@ -3,15 +3,15 @@ import { TrainingCampMusic } from "@/components/audio/TrainingCampMusic";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Ace AI 掼蛋训练",
-  description: "由 AI 教练引导的掼蛋学习和训练助手"
+  title: "Ace AI 掼蛋训练营",
+  description: "由 AI Coach 引导的专业掼蛋训练空间"
 };
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#f9f9ff"
+  themeColor: "#050b16"
 };
 
 export default function RootLayout({

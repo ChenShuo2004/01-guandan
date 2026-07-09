@@ -39,7 +39,7 @@ export function PracticeExperience({ practiceCase }: PracticeExperienceProps) {
 
   function finishTodayTraining() {
     completeDailyTraining();
-    router.push("/complete");
+    router.push("/practice");
   }
 
   return (
@@ -116,7 +116,7 @@ export function PracticeExperience({ practiceCase }: PracticeExperienceProps) {
             </section>
 
             <Button className="w-full" onClick={finishTodayTraining}>
-              完成今天训练
+              完成训练
             </Button>
           </>
         ) : null}
