@@ -31,12 +31,10 @@ export default function LessonPage({ params }: LessonPageProps) {
 
   if (guandanCourse) {
     return (
-      <AppShell title={guandanCourse.title} subtitle="PDF 案例驱动的一页一知识点。">
-        <GuandanCourseDetail
-          course={guandanCourse}
-          questions={getGuandanQuestionsForCourse(guandanCourse.id)}
-        />
-      </AppShell>
+      <GuandanCourseDetail
+        course={guandanCourse}
+        questions={getGuandanQuestionsForCourse(guandanCourse.id)}
+      />
     );
   }
 
