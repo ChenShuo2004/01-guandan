@@ -12,7 +12,6 @@ import { cn } from "@/lib/utils";
 import type { TrainingPhase } from "@/lib/guandan/gameState";
 import type { ArenaPlayer } from "@/types/game";
 
-type TrainingLevel = "beginner" | "intermediate" | "advanced";
 type TrainingSpeed = "slow" | "standard" | "fast" | "skip";
 
 interface ArenaSettings {
@@ -22,36 +21,6 @@ interface ArenaSettings {
   aiSpeed: TrainingSpeed;
   cardScale: number;
 }
-
-const trainingLevels: Array<{
-  id: TrainingLevel;
-  label: string;
-  title: string;
-  goal: string;
-  items: string[];
-}> = [
-  {
-    id: "beginner",
-    label: "初级",
-    title: "初级训练",
-    goal: "学习基础规则",
-    items: ["牌型认识", "出牌顺序", "基础组合", "简单判断"]
-  },
-  {
-    id: "intermediate",
-    label: "中级",
-    title: "中级训练",
-    goal: "提升牌局理解",
-    items: ["牌权判断", "队友配合", "控牌技巧", "进攻防守选择"]
-  },
-  {
-    id: "advanced",
-    label: "高级",
-    title: "高级训练",
-    goal: "高手决策训练",
-    items: ["残局分析", "复杂牌局推演", "风险判断", "最优策略选择"]
-  }
-];
 
 const defaultSettings: ArenaSettings = {
   sound: true,
@@ -68,10 +37,19 @@ const aiSpeedSeconds: Record<TrainingSpeed, number> = {
   skip: 0
 };
 
+const trainingPoints = {
+  total: 1280,
+  today: 80,
+  records: [
+    { label: "牌权判断", value: "+24", note: "识别当前回合能否接管牌权" },
+    { label: "控牌节奏", value: "+18", note: "减少过早消耗炸弹和关键对子" },
+    { label: "队友配合", value: "+16", note: "优先理解对家的压制与让牌信号" }
+  ]
+};
+
 export function GameArena() {
   const router = useRouter();
-  const [activeLevel, setActiveLevel] = useState<TrainingLevel>("beginner");
-  const [activePanel, setActivePanel] = useState<"coach" | "rules" | "settings" | "feedback" | null>(null);
+  const [activePanel, setActivePanel] = useState<"coach" | "rules" | "settings" | "feedback" | "points" | null>(null);
   const [settings, setSettings] = useState<ArenaSettings>(defaultSettings);
   const [feedbackText, setFeedbackText] = useState("");
   const [feedbackSaved, setFeedbackSaved] = useState(false);
@@ -102,10 +80,6 @@ export function GameArena() {
     restart
   } = useGameStore();
 
-  const activeTrainingLevel = useMemo(
-    () => trainingLevels.find((level) => level.id === activeLevel) ?? trainingLevels[0],
-    [activeLevel]
-  );
   const effectiveCardScale = compactLayout ? 0.38 : settings.cardScale;
 
   const completeAIAction = useCallback(() => {
@@ -278,11 +252,6 @@ export function GameArena() {
   const goLobby = () => router.push("/");
   const coachMood = state.coachFeedback.type === "mistake" ? "warning" : isUserTurn ? "teaching" : "thinking";
 
-  function changeLevel(level: TrainingLevel) {
-    setActiveLevel(level);
-    restart();
-  }
-
   function updateSettings(nextSettings: Partial<ArenaSettings>) {
     setSettings((current) => ({
       ...current,
@@ -301,7 +270,7 @@ export function GameArena() {
     const feedback = {
       id: `feedback-${Date.now()}`,
       text: feedbackText.trim(),
-      level: activeLevel,
+      source: "training-arena",
       phase,
       createdAt: new Date().toISOString()
     };
@@ -315,14 +284,14 @@ export function GameArena() {
     <main className="training-arena relative h-[100dvh] min-h-[390px] overflow-hidden bg-[#72caff] text-[#12395a]">
       <ArenaBackground />
       <ArenaTopBar
-        activeLevel={activeLevel}
         onBackToLobby={goLobby}
         onOpenCoach={() => setActivePanel("coach")}
         onOpenFeedback={() => setActivePanel("feedback")}
+        onOpenPoints={() => setActivePanel("points")}
         onOpenRules={() => setActivePanel("rules")}
         onOpenSettings={() => setActivePanel("settings")}
-        onSelectLevel={changeLevel}
         phase={phase}
+        points={trainingPoints}
       />
 
       <section className="relative z-10 mx-auto h-full w-full max-w-[1680px] px-4 pb-3 pt-[84px] lg:px-5">
@@ -334,14 +303,11 @@ export function GameArena() {
 
         {settings.aiTips ? (
           <motion.section
-            animate={
-              settings.animations
-                ? { opacity: 1, y: [0, -4, 0] }
-                : { opacity: 1, y: 0 }
-            }
+            animate={{ opacity: 1, y: 0 }}
             className="absolute left-1/2 top-[92px] z-[62] flex max-h-[184px] w-[min(560px,44vw)] -translate-x-1/2 items-start gap-4 overflow-y-auto rounded-2xl bg-white px-5 py-4 text-left shadow-[0_22px_54px_rgba(42,132,196,0.24)] max-lg:top-[90px] max-lg:max-h-[120px] max-lg:w-[320px] max-lg:gap-3 max-lg:px-4 max-lg:py-3"
             initial={{ opacity: 0, y: -14 }}
-            transition={settings.animations ? { duration: 3.2, repeat: Infinity, ease: "easeInOut" } : undefined}
+            key={`${state.coachFeedback.message}-${state.coachFeedback.reason}`}
+            transition={settings.animations ? { duration: 0.45, delay: 0.32, ease: "easeOut" } : { duration: 0 }}
           >
             <span className="relative block h-12 w-12 shrink-0 overflow-hidden rounded-2xl border border-white/70 bg-white/62 shadow-[0_10px_24px_rgba(45,125,188,0.18)] max-lg:h-10 max-lg:w-10">
               <Image
@@ -361,15 +327,25 @@ export function GameArena() {
           </motion.section>
         ) : null}
 
-        <div className="absolute right-7 top-[86px] z-50 hidden w-[238px] xl:block">
-          <PerformancePanel level={activeTrainingLevel} phase={phase} />
-        </div>
+        <motion.div
+          animate={{ opacity: 1, x: 0 }}
+          className="absolute right-7 top-[86px] z-50 hidden w-[238px] xl:block"
+          initial={{ opacity: 0, x: 18 }}
+          transition={settings.animations ? { duration: 0.42, delay: 0.62, ease: "easeOut" } : { duration: 0 }}
+        >
+          <TrainingPointsPanel phase={phase} points={trainingPoints} />
+        </motion.div>
 
         <div className="pointer-events-none absolute left-1/2 top-[61%] z-40 w-[min(560px,42vw)] -translate-x-1/2 text-center text-white drop-shadow-[0_3px_8px_rgba(34,92,146,0.42)] max-lg:top-[54%] max-lg:w-[360px]">
           <AnalysisPanel reason={state.coachFeedback.reason} status={roundStatus} />
         </div>
 
-        <section className="training-hand-dock absolute bottom-3 left-3 right-[158px] z-[60] min-w-0 lg:left-[220px] lg:right-[240px] 2xl:left-[300px] 2xl:right-[300px]">
+        <motion.section
+          animate={{ opacity: 1, y: 0 }}
+          className="training-hand-dock absolute bottom-3 left-3 right-[158px] z-[60] min-w-0 lg:left-[220px] lg:right-[240px] 2xl:left-[300px] 2xl:right-[300px]"
+          initial={{ opacity: 0, y: 24 }}
+          transition={settings.animations ? { duration: 0.5, delay: 0.72, ease: "easeOut" } : { duration: 0 }}
+        >
           <ReferenceActionBar
             canAct={isUserTurn}
             onPlay={playSelectedCards}
@@ -387,9 +363,14 @@ export function GameArena() {
             selectedCardIds={selectedCardIds}
             variant="arena"
           />
-        </section>
+        </motion.section>
 
-        <aside className="absolute bottom-3 right-3 z-[60] w-[142px] lg:right-7 lg:w-[188px]">
+        <motion.aside
+          animate={{ opacity: 1, x: 0 }}
+          className="absolute bottom-3 right-3 z-[60] w-[142px] lg:right-7 lg:w-[188px]"
+          initial={{ opacity: 0, x: 22 }}
+          transition={settings.animations ? { duration: 0.42, delay: 0.82, ease: "easeOut" } : { duration: 0 }}
+        >
           <div className="mb-2 rounded-[24px] border border-white/42 bg-[#6db8e8]/36 px-3 py-2 text-sm font-black text-[#143d5d] shadow-[0_18px_45px_rgba(38,126,190,0.18)] backdrop-blur-xl lg:mb-3 lg:px-4 lg:py-3 lg:text-base">
             <span className="mr-2 inline-block h-3 w-3 rounded-full bg-[#1ee271]" />
             本轮可出牌
@@ -413,7 +394,7 @@ export function GameArena() {
             phase={phase}
             selectedCount={state.selectedCards.length}
           />
-        </aside>
+        </motion.aside>
       </section>
 
       <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "coach"} title="AI Coach">
@@ -428,8 +409,12 @@ export function GameArena() {
         <div className="space-y-4 text-base font-bold leading-7 text-[#24557a]">
           <RuleBlock title="掼蛋基础规则" items={["四人两两组队，目标是尽快出完手牌。", "轮到你时必须出同牌型且更大的牌，炸弹可压普通牌型。", "一圈都不出时，牌权回到上一位出牌者。"]} />
           <RuleBlock title="牌型说明" items={["单牌、对子、三张、三带二、顺子是基础牌型。", "四张及以上同点数为炸弹，四王炸最大。", "顺子不包含 2 和大小王。"]} />
-          <RuleBlock title="训练规则" items={["选择等级后会生成一局训练牌局。", "先操作，再看 Ace Coach 的分析和推荐思路。", "每轮完成 学习 → 判断 → 反馈 → 成长。"]} />
+          <RuleBlock title="训练规则" items={["进入训练场后会生成一局训练牌局。", "先操作，再看 Ace Coach 的分析和推荐思路。", "每轮完成 学习 → 判断 → 反馈 → 成长。"]} />
         </div>
+      </ArenaModal>
+
+      <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "points"} title="训练点数">
+        <TrainingPointsDetails points={trainingPoints} />
       </ArenaModal>
 
       <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "settings"} title="设置">
@@ -484,7 +469,13 @@ export function GameArena() {
 
 function ArenaBackground() {
   return (
-    <div aria-hidden className="absolute inset-0">
+    <motion.div
+      animate={{ opacity: 1 }}
+      aria-hidden
+      className="absolute inset-0"
+      initial={{ opacity: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+    >
       <Image
         alt=""
         className="object-cover"
@@ -494,28 +485,28 @@ function ArenaBackground() {
         src="/assets/arena/sky-training-arena.png"
       />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(59,170,244,0.10)_55%,rgba(44,139,214,0.22))]" />
-    </div>
+    </motion.div>
   );
 }
 
 function ArenaTopBar({
-  activeLevel,
   onBackToLobby,
   onOpenCoach,
   onOpenFeedback,
+  onOpenPoints,
   onOpenRules,
   onOpenSettings,
-  onSelectLevel,
-  phase
+  phase,
+  points
 }: {
-  activeLevel: TrainingLevel;
   onBackToLobby: () => void;
   onOpenCoach: () => void;
   onOpenFeedback: () => void;
+  onOpenPoints: () => void;
   onOpenRules: () => void;
   onOpenSettings: () => void;
-  onSelectLevel: (level: TrainingLevel) => void;
   phase: TrainingPhase;
+  points: typeof trainingPoints;
 }) {
   return (
     <header className="absolute inset-x-0 top-0 z-[80] h-[84px] border-b border-white/20 bg-[#d7f3ff]/28 shadow-[0_10px_32px_rgba(34,122,187,0.10)] backdrop-blur-md">
@@ -534,24 +525,21 @@ function ArenaTopBar({
           </div>
         </div>
 
-        <div className="hidden shrink-0 items-center gap-2 rounded-full bg-white/34 px-3 py-2 text-base font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl md:flex max-lg:gap-1 max-lg:px-2">
-          {trainingLevels.map((level) => (
-            <button
-              className={cn(
-                "h-10 rounded-full px-5 text-sm font-black transition max-lg:h-12 max-lg:w-12 max-lg:px-0 max-lg:leading-4",
-                activeLevel === level.id
-                  ? "bg-[#0f64ff] text-white shadow-[0_10px_24px_rgba(15,100,255,0.24)]"
-                  : "bg-white/35 text-[#17496d] hover:bg-white/62"
-              )}
-              key={level.id}
-              onClick={() => onSelectLevel(level.id)}
-              type="button"
-            >
-              {level.label}
-            </button>
-          ))}
-          <span className="ml-2 rounded-full bg-[#12395a]/88 px-3 py-1 text-xs text-white max-lg:hidden">{phaseText[phase]}</span>
-        </div>
+        <button
+          className="flex shrink-0 items-center gap-4 rounded-full bg-white/72 px-5 py-2 text-left font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.16)] transition hover:-translate-y-0.5 hover:scale-[1.01] hover:bg-white hover:shadow-[0_16px_30px_rgba(52,142,207,0.22)] active:scale-[0.98] max-lg:gap-2 max-lg:px-3"
+          onClick={onOpenPoints}
+          type="button"
+        >
+          <span className="grid h-10 w-10 place-items-center rounded-full bg-[#0f64ff] text-white shadow-[0_10px_22px_rgba(15,100,255,0.24)] max-lg:h-9 max-lg:w-9">
+            分
+          </span>
+          <span>
+            <span className="block text-xs font-black text-[#34749c]">训练点数</span>
+            <span className="block text-xl leading-5 max-lg:text-base">{points.total}</span>
+          </span>
+          <span className="rounded-full bg-[#e9f7ff] px-3 py-1 text-sm text-[#0f8d55] max-lg:hidden">今日 +{points.today}</span>
+          <span className="rounded-full bg-[#12395a]/88 px-3 py-1 text-xs text-white max-lg:hidden">{phaseText[phase]}</span>
+        </button>
 
         <nav className="flex min-w-0 items-center gap-3 max-lg:gap-2">
           <HudButton icon="◉" label="AI Coach" onClick={onOpenCoach} />
@@ -559,7 +547,7 @@ function ArenaTopBar({
           <HudButton icon="⚙" label="设置" onClick={onOpenSettings} />
           <HudButton icon="▣" label="反馈" onClick={onOpenFeedback} />
           <button
-            className="h-12 rounded-full bg-[#0f64ff] px-7 text-base font-black text-white shadow-[0_14px_30px_rgba(15,100,255,0.28)] transition hover:-translate-y-0.5 max-lg:w-12 max-lg:px-0"
+            className="h-12 rounded-full bg-[#0f64ff] px-7 text-base font-black text-white shadow-[0_14px_30px_rgba(15,100,255,0.28)] transition hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_18px_34px_rgba(15,100,255,0.34)] active:scale-[0.97] max-lg:w-12 max-lg:px-0"
             onClick={onBackToLobby}
             type="button"
           >
@@ -582,7 +570,7 @@ const phaseText: Record<TrainingPhase, string> = {
 function HudButton({ icon, label, onClick }: { icon: string; label: string; onClick?: () => void }) {
   return (
     <button
-      className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-white/42 px-5 text-sm font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5 max-lg:w-11 max-lg:px-0"
+      className="inline-flex h-11 items-center justify-center gap-2 rounded-full bg-white/42 px-5 text-sm font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5 hover:scale-[1.03] hover:bg-white/72 hover:shadow-[0_14px_28px_rgba(52,142,207,0.20)] active:scale-[0.97] max-lg:w-11 max-lg:px-0"
       onClick={onClick}
       type="button"
     >
@@ -592,40 +580,62 @@ function HudButton({ icon, label, onClick }: { icon: string; label: string; onCl
   );
 }
 
-function PerformancePanel({
-  level,
-  phase
-}: {
-  level: (typeof trainingLevels)[number];
-  phase: TrainingPhase;
-}) {
+function TrainingPointsPanel({ phase, points }: { phase: TrainingPhase; points: typeof trainingPoints }) {
   return (
     <section className="rounded-[12px] border border-white/62 bg-white/68 p-4 text-[#12395a] shadow-[0_20px_45px_rgba(42,132,196,0.20)] backdrop-blur-xl">
-      <h2 className="text-base font-black">{level.title}</h2>
-      <p className="mt-1 text-sm font-bold text-[#346d92]">{level.goal}</p>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {level.items.map((item) => (
-          <span className="rounded-full bg-[#d9f3ff]/80 px-3 py-1 text-xs font-black text-[#0f64a0]" key={item}>
-            {item}
-          </span>
+      <h2 className="text-base font-black">训练点数</h2>
+      <p className="mt-1 text-sm font-bold text-[#346d92]">只记录能力成长，不做竞技排名。</p>
+      <div className="mt-3 rounded-2xl bg-white/74 p-3">
+        <p className="text-xs font-black text-[#34749c]">累计点数</p>
+        <p className="mt-1 text-3xl font-black text-[#0f64ff]">{points.total}</p>
+        <p className="text-sm font-black text-[#0f8d55]">今日获得 +{points.today}</p>
+      </div>
+      <div className="mt-3 grid grid-cols-2 gap-2 text-center text-sm font-black">
+        <span className="rounded-xl bg-[#e9f7ff] px-2 py-2 text-[#0f64a0]">{phaseText[phase]}</span>
+        <span className="rounded-xl bg-[#fff8df] px-2 py-2 text-[#8a6500]">成长记录</span>
+      </div>
+      <div className="mt-3 space-y-2">
+        {points.records.slice(0, 2).map((record) => (
+          <div className="rounded-xl bg-[#f3f9ff] px-3 py-2" key={record.label}>
+            <div className="flex items-center justify-between text-sm font-black">
+              <span>{record.label}</span>
+              <span className="text-[#0f8d55]">{record.value}</span>
+            </div>
+          </div>
         ))}
       </div>
-      <div className="mt-3 grid grid-cols-3 border-b border-[#8ecded]/60 pb-2 text-center text-sm font-bold text-[#346d92]">
-        <span>玩家</span>
-        <span>本轮</span>
-        <span>表现</span>
-      </div>
-      <div className="grid grid-cols-3 py-2 text-center text-sm font-black text-[#0f64a0]">
-        <span>我方</span>
-        <span>{phase === "completed" ? "20" : "--"}</span>
-        <span>--</span>
-      </div>
-      <div className="grid grid-cols-3 py-1 text-center text-sm font-bold text-[#346d92]">
-        <span>对方</span>
-        <span>--</span>
-        <span>--</span>
-      </div>
     </section>
+  );
+}
+
+function TrainingPointsDetails({ points }: { points: typeof trainingPoints }) {
+  return (
+    <article className="space-y-5 text-[#12395a]">
+      <section className="grid grid-cols-2 gap-4">
+        <div className="rounded-2xl bg-[#f3f9ff] p-5">
+          <p className="text-base font-black text-[#34749c]">今日获得</p>
+          <p className="mt-2 text-4xl font-black text-[#0f8d55]">+{points.today}</p>
+        </div>
+        <div className="rounded-2xl bg-[#f3f9ff] p-5">
+          <p className="text-base font-black text-[#34749c]">累计点数</p>
+          <p className="mt-2 text-4xl font-black text-[#0f64ff]">{points.total}</p>
+        </div>
+      </section>
+      <section className="rounded-2xl bg-white p-5 ring-1 ring-[#d8ecf8]">
+        <h3 className="text-xl font-black">能力提升记录</h3>
+        <div className="mt-4 space-y-3">
+          {points.records.map((record) => (
+            <div className="rounded-2xl bg-[#f8fcff] p-4" key={record.label}>
+              <div className="flex items-center justify-between gap-4">
+                <p className="text-lg font-black">{record.label}</p>
+                <span className="rounded-full bg-[#e8fff4] px-3 py-1 text-base font-black text-[#0f8d55]">{record.value}</span>
+              </div>
+              <p className="mt-2 text-base font-bold leading-7 text-[#345f78]">{record.note}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </article>
   );
 }
 
@@ -652,7 +662,7 @@ function ReferenceActionBar({
   return (
     <div className="mb-2 flex items-center justify-center gap-5 max-lg:mb-1 max-lg:gap-3">
       <button
-        className="h-12 min-w-[128px] rounded-full border border-white/65 bg-[linear-gradient(180deg,#62c6ff,#1f78f2)] px-8 text-lg font-black text-white shadow-[0_12px_28px_rgba(31,120,242,0.28)] transition hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 max-lg:h-10 max-lg:min-w-[96px] max-lg:px-5 max-lg:text-base"
+        className="h-12 min-w-[128px] rounded-full border border-white/65 bg-[linear-gradient(180deg,#62c6ff,#1f78f2)] px-8 text-lg font-black text-white shadow-[0_12px_28px_rgba(31,120,242,0.28)] transition hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_16px_32px_rgba(31,120,242,0.34)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:scale-100 max-lg:h-10 max-lg:min-w-[96px] max-lg:px-5 max-lg:text-base"
         disabled={!canAct}
         onClick={onTip}
         type="button"
@@ -663,7 +673,7 @@ function ReferenceActionBar({
         16
       </span>
       <button
-        className="h-12 min-w-[128px] rounded-full border border-white/65 bg-[linear-gradient(180deg,#ffd764,#ff9d20)] px-8 text-lg font-black text-white shadow-[0_12px_28px_rgba(255,157,32,0.30)] transition hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 max-lg:h-10 max-lg:min-w-[96px] max-lg:px-5 max-lg:text-base"
+        className="h-12 min-w-[128px] rounded-full border border-white/65 bg-[linear-gradient(180deg,#ffd764,#ff9d20)] px-8 text-lg font-black text-white shadow-[0_12px_28px_rgba(255,157,32,0.30)] transition hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_16px_32px_rgba(255,157,32,0.36)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:scale-100 max-lg:h-10 max-lg:min-w-[96px] max-lg:px-5 max-lg:text-base"
         disabled={!canAct || selectedCount === 0}
         onClick={onPlay}
         type="button"

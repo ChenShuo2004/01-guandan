@@ -145,7 +145,7 @@ function ActionButton({
   return (
     <button
       className={cn(
-        "relative rounded-2xl px-4 py-3 font-black shadow-[0_12px_24px_rgba(28,109,172,0.22)] transition hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0",
+        "relative rounded-2xl px-4 py-3 font-black shadow-[0_12px_24px_rgba(28,109,172,0.22)] transition hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_16px_30px_rgba(28,109,172,0.28)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0 disabled:hover:scale-100",
         compact ? "min-h-11 text-base" : "min-h-14 text-[20px]",
         className
       )}
@@ -163,7 +163,7 @@ function MiniAction({ compact, disabled, label, onClick }: { compact?: boolean; 
   return (
     <button
       className={cn(
-        "rounded-2xl bg-[#2f78b8]/62 px-3 py-2 font-black text-white shadow-[0_10px_22px_rgba(28,109,172,0.18)] transition hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0",
+        "rounded-2xl bg-[#2f78b8]/62 px-3 py-2 font-black text-white shadow-[0_10px_22px_rgba(28,109,172,0.18)] transition hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-[0_14px_28px_rgba(28,109,172,0.24)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0 disabled:hover:scale-100",
         compact ? "min-h-11 text-sm" : "min-h-16 text-base"
       )}
       disabled={disabled}
