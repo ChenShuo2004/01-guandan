@@ -1,13 +1,12 @@
+.env*
+!.env.example
+.git/
 .next/
 .next-dev/
 .vercel/
 node_modules/
 out/
 dist/
-.env*
-!.env.example
+tmp/
 *.log
 tsconfig.tsbuildinfo
-
-.vercel
-.env*
