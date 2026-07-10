@@ -26,7 +26,7 @@ export function AppShell({
             <span className="material-symbols-outlined text-[22px] text-[#0058be]">
               auto_awesome
             </span>
-            <h1 className="text-lg font-black text-[#0058be]">Guandan AI Academy</h1>
+            <h1 className="text-lg font-black text-[#0058be]">Guandan Memory Lab</h1>
           </div>
           <div className="flex items-center gap-4">
             <div className="flex h-9 w-72 items-center gap-2 rounded-xl border border-[#d8e3fb] bg-[#f9f9ff] px-4 text-sm font-semibold text-[#424754]">

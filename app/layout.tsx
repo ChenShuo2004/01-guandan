@@ -3,8 +3,8 @@ import { TrainingCampMusic } from "@/components/audio/TrainingCampMusic";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Ace AI 掼蛋训练营",
-  description: "由 AI Coach 引导的专业掼蛋训练空间"
+  title: "掼蛋记牌训练",
+  description: "通过自动牌局和即时测试训练掼蛋记牌能力。"
 };
 
 export const viewport: Viewport = {
@@ -14,17 +14,10 @@ export const viewport: Viewport = {
   themeColor: "#050b16"
 };
 
-export default function RootLayout({
-  children
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN" suppressHydrationWarning>
-      <body>
-        <TrainingCampMusic />
-        {children}
-      </body>
+      <body><TrainingCampMusic />{children}</body>
     </html>
   );
 }
