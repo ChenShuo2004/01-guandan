@@ -1,5 +1,5 @@
-import { OpeningHero } from "@/components/intro/OpeningHero";
+import { OpeningScene } from "@/components/scene/OpeningScene";
 
 export default function HomePage() {
-  return <OpeningHero />;
+  return <OpeningScene />;
 }
