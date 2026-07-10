@@ -38,7 +38,7 @@ export function CardGroup({
   selectedCardIds
 }: CardGroupProps) {
   if (layout === "stack") {
-    const baseSize = compact ? { height: 78, width: 54 } : { height: 124, width: 86 };
+    const baseSize = compact ? { height: 78, width: 56 } : { height: 124, width: 89 };
     const cardWidth = Math.round(baseSize.width * sizeScale);
     const cardHeight = Math.round(baseSize.height * sizeScale);
     const stackStep = Math.max(24, Math.round(cardHeight * 0.34));

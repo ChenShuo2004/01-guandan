@@ -44,10 +44,10 @@ export function PlayingCard({
   const status = getCardVisualStatus({ disabled, invalid, selected });
   const label = getCardLabel(card);
   const baseSize = card.isJoker
-    ? { height: 134, width: 92 }
+    ? { height: 134, width: 96 }
     : compact
-      ? { height: 78, width: 54 }
-      : { height: 124, width: 86 };
+      ? { height: 78, width: 56 }
+      : { height: 124, width: 89 };
   const cardSize = {
     height: Math.round(baseSize.height * sizeScale),
     width: Math.round(baseSize.width * sizeScale)

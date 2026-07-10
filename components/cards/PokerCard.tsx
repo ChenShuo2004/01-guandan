@@ -13,17 +13,17 @@ interface PokerCardProps {
 }
 
 const sizeClasses: Record<CardSize, string> = {
-  sm: "h-[72px] w-[50px]",
-  md: "h-[124px] w-[86px]",
-  lg: "h-[148px] w-[102px]",
-  joker: "h-[134px] w-[92px]"
+  sm: "h-[72px] w-[51px]",
+  md: "h-[124px] w-[89px]",
+  lg: "h-[148px] w-[106px]",
+  joker: "h-[134px] w-[96px]"
 };
 
 const playedSizeClasses: Record<CardSize, string> = {
-  sm: "h-[78px] w-[54px]",
-  md: "h-[104px] w-[72px]",
-  lg: "h-[124px] w-[86px]",
-  joker: "h-[112px] w-[78px]"
+  sm: "h-[78px] w-[56px]",
+  md: "h-[104px] w-[75px]",
+  lg: "h-[124px] w-[89px]",
+  joker: "h-[112px] w-[80px]"
 };
 
 export function PokerCard({
@@ -52,10 +52,10 @@ export function PokerCard({
     >
       <Image
         alt={`${card.rank}${card.suit ?? ""}`}
-        className="h-full w-full object-cover"
+        className="h-full w-full object-contain"
         draggable={false}
         fill
-        sizes="(max-width: 640px) 86px, 102px"
+        sizes="(max-width: 640px) 89px, 106px"
         src={getPokerCardAsset(card)}
       />
       {card.isWild ? (
