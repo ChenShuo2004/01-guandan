@@ -63,6 +63,9 @@ export function GameArena({
   const aiActionKeyRef = useRef<string | null>(null);
   const aiTimerRef = useRef<number | null>(null);
   const aiRemainingRef = useRef<number | null>(null);
+  const aiPausedActionKeyRef = useRef<string | null>(null);
+  const previousThinkSecondsRef = useRef(defaultSettings.aiThinkSeconds);
+  const settingsHydratedRef = useRef(false);
   const userActionKeyRef = useRef<string | null>(null);
   const userTimerRef = useRef<number | null>(null);
   const {
@@ -167,13 +170,17 @@ export function GameArena({
       aiTimerRef.current = null;
     }
 
+    aiRemainingRef.current = null;
+    aiPausedActionKeyRef.current = null;
     setAiCountdown(null);
     runAIAction();
   }, [runAIAction]);
 
   useEffect(() => {
     if (observerPaused || isPaused) {
-      // 记牌挑战暂停时不要锁住下一位 AI，答题结束后要从当前行动继续。
+      if (currentPlayer?.id && state.trainingPhase === "playing" && state.gameStatus === "playing") {
+        aiPausedActionKeyRef.current = `${state.turnNumber}-${currentPlayer.id}`;
+      }
       aiActionKeyRef.current = null;
       return;
     }
@@ -181,10 +188,30 @@ export function GameArena({
     if (isDealLocked || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || (!observerMode && currentPlayer?.kind !== "ai")) return;
 
     const actionKey = `${state.turnNumber}-${currentPlayer.id}`;
+    const thinkSecondsChanged = previousThinkSecondsRef.current !== settings.aiThinkSeconds;
+
+    if (thinkSecondsChanged) {
+      previousThinkSecondsRef.current = settings.aiThinkSeconds;
+      if (aiTimerRef.current) {
+        window.clearInterval(aiTimerRef.current);
+        aiTimerRef.current = null;
+      }
+      aiActionKeyRef.current = null;
+      aiRemainingRef.current = null;
+      aiPausedActionKeyRef.current = null;
+    }
+
     if (aiActionKeyRef.current === actionKey) return;
 
     aiActionKeyRef.current = actionKey;
-    const seconds = fastForward ? 0 : (aiRemainingRef.current ?? settings.aiThinkSeconds);
+
+    const shouldResume =
+      aiPausedActionKeyRef.current === actionKey &&
+      aiRemainingRef.current !== null &&
+      aiRemainingRef.current > 0;
+    const seconds = fastForward ? 0 : shouldResume ? aiRemainingRef.current! : settings.aiThinkSeconds;
+
+    aiPausedActionKeyRef.current = null;
     aiRemainingRef.current = null;
 
     setTurnAction({
@@ -275,19 +302,26 @@ export function GameArena({
 
   useEffect(() => {
     const raw = window.localStorage.getItem("guandan-training-arena-settings");
-    if (!raw) return;
-
-    try {
-      setSettings({
-        ...defaultSettings,
-        ...(JSON.parse(raw) as Partial<ArenaSettings>)
-      });
-    } catch {
-      setSettings(defaultSettings);
+    if (raw) {
+      try {
+        const stored = JSON.parse(raw) as Partial<ArenaSettings>;
+        setSettings({
+          ...defaultSettings,
+          ...stored
+        });
+        if (typeof stored.aiThinkSeconds === "number") {
+          previousThinkSecondsRef.current = stored.aiThinkSeconds;
+        }
+      } catch {
+        setSettings(defaultSettings);
+      }
     }
+
+    settingsHydratedRef.current = true;
   }, []);
 
   useEffect(() => {
+    if (!settingsHydratedRef.current) return;
     window.localStorage.setItem("guandan-training-arena-settings", JSON.stringify(settings));
   }, [settings]);
 
@@ -400,8 +434,70 @@ export function GameArena({
     }));
   }
 
+  const isObserverAutoWait =
+    observerMode &&
+    Boolean(currentPlayer?.id) &&
+    state.turnAction.playerId === currentPlayer.id &&
+    typeof state.turnAction.remainingSeconds === "number" &&
+    state.turnAction.remainingSeconds >= 0 &&
+    (state.turnAction.status === "thinking" || state.turnAction.status === "waiting");
+
+  const isAiThinkingWait =
+    !observerMode &&
+    currentPlayer?.kind === "ai" &&
+    state.turnAction.status === "thinking";
+
+  const isUserThinkingWait =
+    !observerMode &&
+    currentPlayer?.id === "player" &&
+    state.turnAction.status === "waiting" &&
+    typeof state.turnAction.remainingSeconds === "number" &&
+    state.turnAction.remainingSeconds > 0;
+
+  const canSkipTurnWait =
+    state.trainingPhase === "playing" &&
+    !isPaused &&
+    !isDealLocked &&
+    (isObserverAutoWait || isAiThinkingWait || isUserThinkingWait);
+
+  function skipUserWait() {
+    if (userTimerRef.current) {
+      window.clearInterval(userTimerRef.current);
+      userTimerRef.current = null;
+    }
+
+    userActionKeyRef.current = null;
+    setTurnAction({
+      playerId: "player",
+      status: "waiting",
+      label: "轮到你出牌",
+      remainingSeconds: null
+    });
+  }
+
   function skipAIWait() {
-    if (isPaused || isDealLocked || currentPlayer?.kind !== "ai" || state.trainingPhase !== "playing") return;
+    if (isPaused || isDealLocked || state.trainingPhase !== "playing") return;
+
+    if (observerMode) {
+      if (!canSkipTurnWait) return;
+
+      aiRemainingRef.current = null;
+      aiPausedActionKeyRef.current = null;
+      aiActionKeyRef.current = null;
+      completeAIAction();
+      return;
+    }
+
+    if (currentPlayer?.id === "player" && state.turnAction.status === "waiting") {
+      skipUserWait();
+      return;
+    }
+
+    if (currentPlayer?.kind !== "ai" || state.turnAction.status !== "thinking") return;
+
+    aiRemainingRef.current = null;
+    aiPausedActionKeyRef.current = null;
+    aiActionKeyRef.current = null;
     completeAIAction();
   }
 
@@ -451,6 +547,7 @@ export function GameArena({
     <main
       className="training-arena relative h-[100dvh] min-h-[390px] overflow-hidden bg-[#72caff] text-[#12395a]"
       data-fullscreen={isFullscreen ? "true" : "false"}
+      data-observer-mode={observerMode ? "true" : "false"}
       ref={arenaRef}
     >
       <ArenaBackground />
@@ -576,7 +673,7 @@ export function GameArena({
               {!observerMode ? <ActionToolbar
                 canAct={isUserTurn && !isDealLocked}
                 cardCounterVisible={state.cardCounterVisible}
-                isAIThinking={currentPlayer?.kind === "ai" && state.trainingPhase === "playing"}
+                isAIThinking={canSkipTurnWait}
                 onBackToLobby={goLobby}
                 onContinue={continueTraining}
                 onPass={pass}
@@ -600,12 +697,13 @@ export function GameArena({
         {observerMode ? (
           <ObserverHandTools
             hasStraightFlush={hasStraightFlush(displayedUserCards)}
-            isAIThinking={currentPlayer?.kind === "ai" && state.trainingPhase === "playing" && !isPaused}
+            isAIThinking={canSkipTurnWait}
             onOrganize={handleOrganizeHand}
             onSkipAIWait={skipAIWait}
             organized={restoreEnabled}
             onRestore={handleRestoreHand}
             restoreEnabled={restoreEnabled}
+            skipLabel={currentPlayer?.id === "player" ? "跳过等待" : "跳过 AI"}
           />
         ) : null}
         <DealAnimation
@@ -648,7 +746,7 @@ export function GameArena({
             value={settings.aiThinkSeconds}
           />
           <section className="rounded-2xl bg-[#f3f9ff] p-5 text-base font-bold leading-7 text-[#345f78]">
-            暂停会保留当前行动，恢复后继续倒计时。牌面固定 100%，训练场不提供缩放。
+            AI 思考时间会立即作用到当前倒计时，并自动保存。暂停会保留当前行动，恢复后继续倒计时。牌面固定 100%，训练场不提供缩放。
           </section>
         </div>
       </ArenaModal>
@@ -680,7 +778,8 @@ function ObserverHandTools({
   onSkipAIWait,
   organized,
   onRestore,
-  restoreEnabled
+  restoreEnabled,
+  skipLabel = "跳过 AI"
 }: {
   hasStraightFlush: boolean;
   isAIThinking: boolean;
@@ -689,9 +788,10 @@ function ObserverHandTools({
   organized: boolean;
   onRestore: () => void;
   restoreEnabled: boolean;
+  skipLabel?: string;
 }) {
   return (
-    <div className="absolute bottom-[1.8%] left-1/2 z-[115] flex w-[min(1080px,calc(100vw-2rem))] -translate-x-1/2 items-center justify-between gap-3 rounded-2xl border border-white/45 bg-[#083b42]/90 px-5 py-3 text-white shadow-[0_12px_30px_rgba(4,48,62,0.3)] backdrop-blur-xl max-lg:gap-2 max-lg:px-3 max-lg:py-2">
+    <div className="training-observer-tools absolute bottom-[1.8%] left-1/2 z-[115] flex w-[min(1080px,calc(100vw-2rem))] -translate-x-1/2 items-center justify-between gap-3 rounded-2xl border border-white/45 bg-[#083b42]/90 px-5 py-3 text-white shadow-[0_12px_30px_rgba(4,48,62,0.3)] backdrop-blur-xl max-lg:gap-2 max-lg:px-3 max-lg:py-2">
       <div className="flex min-w-[110px] items-center gap-3 border-r border-white/20 pr-5 max-lg:min-w-0 max-lg:gap-1.5 max-lg:pr-2">
         <span className="grid h-10 w-10 place-items-center rounded-full bg-[#ff9d22] text-lg font-black text-white max-lg:h-8 max-lg:w-8 max-lg:text-sm">倍</span>
         <span className="text-2xl font-black max-lg:text-lg">1</span>
@@ -733,7 +833,7 @@ function ObserverHandTools({
           onClick={onSkipAIWait}
           type="button"
         >
-          跳过 AI
+          {skipLabel}
         </button>
       )}
     </div>
@@ -875,7 +975,7 @@ function ArenaTopBar({
 }) {
   return (
     <header className="training-arena-topbar absolute inset-x-0 top-0 z-[80] h-[84px] border-b border-white/20 bg-[#d7f3ff]/28 shadow-[0_10px_32px_rgba(34,122,187,0.10)] backdrop-blur-md">
-      <div className="flex h-full items-center justify-between gap-3 px-4 lg:px-7">
+      <div className="training-desktop-hud flex h-full items-center justify-between gap-3 px-4 lg:px-7">
         <div className="relative flex h-[82px] w-[360px] shrink-0 items-center rounded-br-[28px] bg-white/76 pl-7 shadow-[0_10px_24px_rgba(37,126,191,0.14)] max-lg:w-[220px] max-lg:pl-4">
           <div>
             <p className="whitespace-nowrap text-[24px] font-black leading-7 text-[#f6b42d] max-lg:text-[18px]">
@@ -919,6 +1019,29 @@ function ArenaTopBar({
             <span>{observerMode ? "返回训练" : "退出房间"}</span>
           </button>
         </nav>
+      </div>
+      <div className="training-landscape-hud hidden h-full items-center justify-between gap-2">
+        <button aria-label="返回训练列表" className="training-hud-icon" onClick={onBackToLobby} type="button">
+          <span className="material-symbols-outlined">arrow_back</span>
+        </button>
+        <div className="training-hud-stat">
+          <span className="text-white/65">级牌</span>
+          <strong>{levelRank}</strong>
+        </div>
+        <div className="training-hud-stat">
+          <span className="text-white/65">局数</span>
+          <strong>第 1 局</strong>
+        </div>
+        <div className="training-hud-status min-w-0 flex-1">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-[#77f2bd]" />
+          <strong className="truncate">{observerMode ? "观察模式 · AI 自动行动" : phaseText[phase]}</strong>
+        </div>
+        <button aria-label={isPaused ? "继续" : "暂停"} className="training-hud-icon" onClick={onTogglePause} type="button">
+          <span className="material-symbols-outlined">{isPaused ? "play_arrow" : "pause"}</span>
+        </button>
+        <button aria-label="设置" className="training-hud-icon" onClick={onOpenSettings} type="button">
+          <span className="material-symbols-outlined">settings</span>
+        </button>
       </div>
     </header>
   );

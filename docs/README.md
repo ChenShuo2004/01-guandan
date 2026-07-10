@@ -11,6 +11,7 @@
 3. docs/ARCHITECTURE.md
 4. docs/PROJECT_OVERVIEW_FOR_GPT.md
 5. AGENTS.md 的“当前项目功能基线”章节
+6. docs/CODE_WIKI.md（开发者代码导读，不作为产品需求真源）
 
 当前开放功能只有：
 

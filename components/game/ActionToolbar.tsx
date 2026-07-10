@@ -122,7 +122,7 @@ function ToolbarButton({
   return (
     <button
       className={cn(
-        "inline-flex h-14 min-w-[92px] items-center justify-center gap-2 rounded-full border px-5 text-base font-black shadow-[0_10px_22px_rgba(28,109,172,0.18)] transition hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0 max-lg:h-11 max-lg:min-w-0 max-lg:px-3 max-lg:text-xs",
+        "inline-flex h-14 min-w-[92px] items-center justify-center gap-2 rounded-full border px-5 text-base font-black shadow-[0_10px_22px_rgba(28,109,172,0.18)] transition hover:-translate-y-0.5 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-45 disabled:hover:translate-y-0 max-lg:h-12 max-lg:min-w-12 max-lg:px-3 max-lg:text-xs",
         tone === "primary" && "border-[#0a57e5] bg-[#0f64ff] text-white",
         tone === "warning" && "border-[#ffd36d] bg-[#ffe08a] text-[#755000]",
         tone === "quiet" && "border-white/80 bg-white/85 text-[#17496d]",

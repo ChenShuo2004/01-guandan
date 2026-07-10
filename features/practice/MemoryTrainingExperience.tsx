@@ -395,7 +395,7 @@ export function MemoryTrainingExperience() {
 
       {training.phase === "AI_PLAYING" && !fastForward ? (
         <button
-          className="fixed bottom-24 left-1/2 z-[160] -translate-x-1/2 rounded-2xl border border-white/40 bg-white/15 px-6 py-3 text-base font-black text-white backdrop-blur-xl transition hover:bg-white/25 active:scale-[0.97]"
+          className="memory-fast-forward fixed bottom-24 left-1/2 z-[160] -translate-x-1/2 rounded-2xl border border-white/40 bg-white/15 px-6 py-3 text-base font-black text-white backdrop-blur-xl transition hover:bg-white/25 active:scale-[0.97]"
           onClick={() => setFastForward(true)}
           type="button"
         >

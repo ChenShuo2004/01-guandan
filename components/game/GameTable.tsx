@@ -23,10 +23,10 @@ export function GameTable({
   turnAction
 }: GameTableProps) {
   return (
-    <div className="absolute inset-0">
+    <div className="training-game-table absolute inset-0">
       <motion.div
         animate={{ opacity: 1, scale: 1 }}
-        className="absolute inset-x-[4%] bottom-[8%] top-[15%] rounded-[50%] bg-[linear-gradient(180deg,rgba(255,255,255,0.86),rgba(222,239,255,0.62)_18%,rgba(138,210,255,0.38)_100%)] p-[16px] shadow-[0_40px_70px_rgba(54,128,190,0.28),0_0_0_1px_rgba(255,255,255,0.72),inset_0_0_22px_rgba(255,255,255,0.9)]"
+        className="training-table-surface absolute inset-x-[4%] bottom-[8%] top-[15%] rounded-[50%] bg-[linear-gradient(180deg,rgba(255,255,255,0.86),rgba(222,239,255,0.62)_18%,rgba(138,210,255,0.38)_100%)] p-[16px] shadow-[0_40px_70px_rgba(54,128,190,0.28),0_0_0_1px_rgba(255,255,255,0.72),inset_0_0_22px_rgba(255,255,255,0.9)]"
         initial={{ opacity: 0, scale: 0.94 }}
         transition={{ duration: 0.75, ease: "easeOut" }}
       >
@@ -39,12 +39,12 @@ export function GameTable({
         </div>
       </motion.div>
 
-      <RoundActionZone action={roundActions.enemyAI2} className="left-[24%] top-[42%]" levelRank={levelRank} />
-      <RoundActionZone action={roundActions.partnerAI} className="left-1/2 top-[24%] -translate-x-1/2" levelRank={levelRank} />
-      <RoundActionZone action={roundActions.enemyAI1} className="right-[21%] top-[42%]" levelRank={levelRank} />
-      <RoundActionZone action={roundActions.player} className="left-1/2 bottom-[31%] -translate-x-1/2" compact={false} levelRank={levelRank} />
+      <RoundActionZone action={roundActions.enemyAI2} className="left-[24%] top-[42%]" levelRank={levelRank} position="left" />
+      <RoundActionZone action={roundActions.partnerAI} className="left-1/2 top-[24%] -translate-x-1/2" levelRank={levelRank} position="top" />
+      <RoundActionZone action={roundActions.enemyAI1} className="right-[21%] top-[42%]" levelRank={levelRank} position="right" />
+      <RoundActionZone action={roundActions.player} className="left-1/2 bottom-[31%] -translate-x-1/2" compact={false} levelRank={levelRank} position="bottom" />
 
-      {players.filter((player) => player.position !== "bottom").map((player) => (
+      {players.map((player) => (
         <PlayerSeat key={player.id} player={player} />
       ))}
     </div>
@@ -53,7 +53,7 @@ export function GameTable({
 
 function TurnStatusLabel({ turnAction }: { turnAction: TurnActionState }) {
   return (
-    <div className="absolute left-1/2 top-[30%] z-[50] -translate-x-1/2 rounded-full border border-white/70 bg-white/90 px-5 py-2 text-center text-[#12395a] shadow-[0_12px_28px_rgba(43,127,191,0.16)] backdrop-blur">
+    <div className="training-turn-status absolute left-1/2 top-[30%] z-[50] -translate-x-1/2 rounded-full border border-white/70 bg-white/90 px-5 py-2 text-center text-[#12395a] shadow-[0_12px_28px_rgba(43,127,191,0.16)] backdrop-blur">
       <p className="text-xs font-black uppercase tracking-[0.12em] text-[#34749c]">当前行动</p>
       <p className="text-base font-black">{turnAction.label}</p>
       {typeof turnAction.remainingSeconds === "number" ? (
@@ -66,25 +66,32 @@ function TurnStatusLabel({ turnAction }: { turnAction: TurnActionState }) {
 function RoundActionZone({
   action,
   className,
-  compact = true,
-  levelRank
+  compact = false,
+  levelRank,
+  position
 }: {
   action?: PlayerRoundAction;
   className: string;
   compact?: boolean;
   levelRank: string;
+  position: "bottom" | "left" | "right" | "top";
 }) {
   if (!action) return null;
 
   return (
     <motion.div
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      className={`absolute z-[35] ${className}`}
+      className={`training-round-action absolute z-[35] ${className}`}
+      data-action-position={position}
       exit={{ opacity: 0, y: 8, scale: 0.96 }}
       initial={{ opacity: 0, y: 16, scale: 0.96 }}
       transition={{ duration: 0.85, ease: "easeOut" }}
     >
-      {action.action === "pass" ? null : (
+      {action.action === "pass" ? (
+        <div className="rounded-full border border-white/70 bg-white/90 px-4 py-1.5 text-sm font-black text-[#34749c] shadow-[0_8px_20px_rgba(43,127,191,0.16)] backdrop-blur">
+          不出
+        </div>
+      ) : (
         <PlayedCards cards={action.cards} compact={compact} levelRank={levelRank} />
       )}
     </motion.div>

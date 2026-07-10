@@ -8,6 +8,10 @@ import { cn } from "@/lib/utils";
 
 interface CardGroupProps {
   group: CardHandGroup;
+  cardDimensions?: {
+    height: number;
+    width: number;
+  };
   compact?: boolean;
   disabled?: boolean;
   invalidCardIds: Set<string>;
@@ -15,6 +19,7 @@ interface CardGroupProps {
   layout?: "row" | "stack";
   levelRank?: string;
   sizeScale?: number;
+  stackStep?: number;
   selectedCardIds: Set<string>;
   onGroupPointerDown?: (cards: Card[], event: PointerEvent<HTMLButtonElement>) => void;
   onGroupPointerEnter?: (cards: Card[]) => void;
@@ -23,6 +28,7 @@ interface CardGroupProps {
 }
 
 export function CardGroup({
+  cardDimensions,
   compact = false,
   disabled = false,
   group,
@@ -35,13 +41,14 @@ export function CardGroup({
   onPointerDownCard,
   onPointerEnterCard,
   sizeScale = 1,
+  stackStep: requestedStackStep,
   selectedCardIds
 }: CardGroupProps) {
   if (layout === "stack") {
     const baseSize = compact ? { height: 94, width: 67 } : { height: 146, width: 104 };
-    const cardWidth = Math.round(baseSize.width * sizeScale);
-    const cardHeight = Math.round(baseSize.height * sizeScale);
-    const stackStep = Math.max(24, Math.round(cardHeight * 0.34));
+    const cardWidth = cardDimensions?.width ?? Math.round(baseSize.width * sizeScale);
+    const cardHeight = cardDimensions?.height ?? Math.round(baseSize.height * sizeScale);
+    const stackStep = requestedStackStep ?? Math.max(24, Math.round(cardHeight * 0.34));
     return (
       <div
         className={cn(
@@ -70,6 +77,7 @@ export function CardGroup({
             >
               <PlayingCard
                 card={card}
+                dimensions={cardDimensions}
                 compact={compact}
                 disabled={disabled}
                 invalid={invalid}
@@ -107,6 +115,7 @@ export function CardGroup({
           >
             <PlayingCard
               card={card}
+              dimensions={cardDimensions}
               compact={compact}
               disabled={disabled}
               invalid={invalid}

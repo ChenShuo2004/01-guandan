@@ -1,4 +1,11 @@
 {
+  "training-world-background": {
+    "id": "training-world-background",
+    "type": "png",
+    "src": "/assets/background/training-world-bg.png",
+    "alt": "蓝色星空与湖面交汇的 AI 掼蛋训练世界入口",
+    "aspectRatio": "16:9"
+  },
   "coach-home-welcome": {
     "id": "coach-home-welcome",
     "type": "png",

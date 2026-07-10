@@ -19,8 +19,9 @@ interface TiltedCardProps {
   containerHeight?: string;
   containerWidth?: string;
   displayOverlayContent?: boolean;
+  hideImage?: boolean;
   imageHeight?: string;
-  imageSrc: string;
+  imageSrc?: string;
   imageWidth?: string;
   overlayContent?: ReactNode;
   rotateAmplitude?: number;
@@ -37,8 +38,9 @@ export function TiltedCard({
   containerHeight = "420px",
   containerWidth = "100%",
   displayOverlayContent = false,
+  hideImage = false,
   imageHeight = "100%",
-  imageSrc,
+  imageSrc = "",
   imageWidth = "100%",
   overlayContent,
   rotateAmplitude = 8,
@@ -104,7 +106,11 @@ export function TiltedCard({
         className="tilted-card-inner"
         style={{ height: imageHeight, rotateX, rotateY, scale, width: imageWidth }}
       >
-        <Image alt={altText} className="tilted-card-img" fill sizes="(max-width: 768px) 92vw, 760px" src={imageSrc} />
+        {hideImage || !imageSrc ? (
+          <div aria-hidden="true" className="tilted-card-img tilted-card-img--hidden" />
+        ) : (
+          <Image alt={altText} className="tilted-card-img" fill sizes="(max-width: 768px) 92vw, 760px" src={imageSrc} />
+        )}
         {displayOverlayContent && overlayContent ? (
           <motion.div className="tilted-card-overlay">{overlayContent}</motion.div>
         ) : null}

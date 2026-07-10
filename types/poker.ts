@@ -26,7 +26,7 @@ export interface PokerCardData {
 
 export type CardType = "normal" | "joker" | "levelCard";
 export type CardVariant = "hand" | "played" | "counter" | "levelBadge";
-export type CardSize = "sm" | "md" | "lg" | "joker";
+export type CardSize = "sm" | "md" | "lg" | "joker" | "hero";
 
 export interface CardTypeState {
   type: CardType;

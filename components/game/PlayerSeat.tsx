@@ -21,10 +21,13 @@ export function PlayerSeat({ player }: PlayerSeatProps) {
   const isBottom = player.position === "bottom";
 
   return (
-    <div className={cn("pointer-events-none absolute z-40", positionClass[player.position])} data-position={player.position}>
+    <div
+      className={cn("training-player-seat pointer-events-none absolute z-40", isBottom && "hidden", positionClass[player.position])}
+      data-position={player.position}
+    >
       <motion.div
         animate={{ opacity: 1, y: 0 }}
-        className={cn("flex items-center gap-3", isBottom || player.position === "top" ? "flex-col" : "flex-row")}
+        className={cn("training-seat-content flex items-center gap-3", isBottom || player.position === "top" ? "flex-col" : "flex-row")}
         initial={{ opacity: 0, y: 12 }}
         transition={{ duration: 0.45, delay: player.position === "top" ? 0.16 : 0.26 }}
       >
@@ -40,7 +43,7 @@ export function PlayerSeat({ player }: PlayerSeatProps) {
 
 function CardBackFan() {
   return (
-    <div className="flex h-12 items-end justify-center">
+    <div className="training-card-backs flex h-12 items-end justify-center">
       {Array.from({ length: 5 }).map((_, index) => (
         <div
           className="-ml-2 h-[52px] w-[36px] rounded-lg border border-white/55 bg-[linear-gradient(145deg,#4f89dc,#1e4f9f)] shadow-[0_6px_12px_rgba(24,79,159,0.18)] first:ml-0"
@@ -54,7 +57,7 @@ function CardBackFan() {
 
 function CardBackStack({ side }: { side: "left" | "right" }) {
   return (
-    <div className={cn("flex w-[50px] flex-col items-center", side === "right" && "order-1")}>
+    <div className={cn("training-card-backs flex w-[50px] flex-col items-center", side === "right" && "order-1")}>
       {Array.from({ length: 6 }).map((_, index) => (
         <div
           className="-mt-7 h-[52px] w-[36px] rounded-lg border border-white/55 bg-[linear-gradient(145deg,#5a93df,#204f9a)] shadow-[0_6px_12px_rgba(24,79,159,0.18)] first:mt-0"

@@ -3,43 +3,55 @@
 import { useState, useEffect } from "react";
 import type { CardRank } from "@/lib/guandan/card";
 import { getRankDisplayName } from "@/lib/memory/ObserverMemoryTraining";
-import type { Card } from "@/lib/guandan/card";
+import { PokerCard } from "@/components/cards/PokerCard";
+import type { PokerCardData, PokerRank } from "@/types/poker";
+
+function cardRankToPokerCard(rank: CardRank): PokerCardData {
+  const rankMap: Record<number, PokerRank> = {
+    16: "SJ",
+    17: "BJ",
+    14: "A",
+    15: "2",
+    11: "J",
+    12: "Q",
+    13: "K",
+  };
+  const pokerRank = rankMap[rank] ?? (String(rank) as PokerRank);
+  const isJoker = rank >= 16;
+  return {
+    id: `target-${rank}`,
+    rank: pokerRank,
+    ...(isJoker ? {} : { suit: "spade" }),
+  };
+}
 
 interface MemoryTargetPanelProps {
   targetRanks: CardRank[];
   currentTargetCount: number;
-  allCardsById: Record<string, Card>;
   visible: boolean;
 }
 
 export function MemoryTargetPanel({
   targetRanks,
   currentTargetCount,
-  allCardsById,
   visible,
 }: MemoryTargetPanelProps) {
   if (!visible || targetRanks.length === 0) return null;
 
   return (
-    <div className="pointer-events-none fixed left-4 top-[104px] z-[100] w-[min(220px,22vw)] rounded-2xl border border-[#74dfff]/40 bg-[#0e2944]/95 p-4 text-white shadow-2xl backdrop-blur-xl max-lg:left-3 max-lg:top-[90px] max-lg:w-[180px]">
-      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#74dfff]">
-        TRACKING {currentTargetCount} TYPES
-      </p>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {targetRanks.map((rank) => (
-          <div
-            className="flex items-center gap-1.5 rounded-lg bg-white/10 px-2 py-1"
-            key={rank}
-          >
-            <span className="text-sm font-black text-[#f6c65b]">
-              {getRankDisplayName(rank)}
-            </span>
-          </div>
-        ))}
+    <div className="memory-target-panel pointer-events-none fixed left-4 top-[104px] z-[100] max-lg:left-3 max-lg:top-[90px]">
+      <div className="memory-target-panel-card rounded-2xl border border-[#74dfff]/40 bg-[#0e2944]/95 px-4 py-3 text-white shadow-2xl backdrop-blur-xl">
+        <p className="text-base font-black text-[#74dfff] max-lg:text-sm">当前需要记牌</p>
+        <div className="mt-3 flex flex-wrap gap-2.5">
+          {targetRanks.map((rank) => (
+            <PokerCard
+              card={cardRankToPokerCard(rank)}
+              key={rank}
+              size={rank >= 16 ? "joker" : "md"}
+            />
+          ))}
+        </div>
       </div>
-      <p className="mt-3 text-[10px] font-bold text-white/50">
-        记住已确认出现的数量
-      </p>
     </div>
   );
 }
@@ -62,31 +74,43 @@ export function MemoryTargetOverlay({
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] grid place-items-center bg-[#071426]/85 px-5 backdrop-blur-md">
-      <section className="w-full max-w-md rounded-[28px] border border-[#74dfff]/45 bg-[#0e2944] p-6 text-white shadow-2xl">
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-[#74dfff]">
-          OBSERVATION PHASE
-        </p>
-        <h2 className="mt-4 text-xl font-black">
-          记住这 {currentTargetCount} 种牌
-        </h2>
-        <div className="mt-5 flex flex-wrap justify-center gap-3">
-          {targetRanks.map((rank) => (
+    <div className="memory-target-overlay fixed inset-0 z-[200] grid place-items-center bg-[#071426]/88 px-4 py-4 backdrop-blur-lg sm:px-8">
+      <section
+        className="memory-target-overlay-panel relative flex min-h-[min(720px,82dvh)] w-full max-w-5xl flex-col overflow-hidden rounded-[34px] border border-[#8fe9ff]/45 bg-[radial-gradient(circle_at_22%_52%,rgba(232,65,255,0.24),transparent_34%),radial-gradient(circle_at_72%_28%,rgba(20,101,255,0.24),transparent_38%),linear-gradient(135deg,#10243b_0%,#09192d_58%,#101d31_100%)] px-6 py-6 text-white shadow-[0_35px_100px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.12)] sm:px-10 sm:py-8"
+      >
+        <div className="pointer-events-none absolute inset-0 opacity-45 [background-image:linear-gradient(120deg,transparent_28%,rgba(47,111,255,0.35)_29%,transparent_30%),linear-gradient(60deg,transparent_62%,rgba(237,63,255,0.28)_63%,transparent_64%)] [background-size:160px_140px]" />
+        <div className="relative z-10">
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-[#6ee7ff] sm:text-sm">
+            MEMORY · OBSERVATION PHASE
+          </p>
+          <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-5xl">
+            记住这 {currentTargetCount} 种牌
+          </h2>
+          <p className="mt-3 text-sm font-bold text-white/65 sm:text-base">
+            观察手牌中这些牌的数量
+          </p>
+        </div>
+        <div className="memory-target-cards relative z-10 flex flex-1 flex-wrap items-center justify-center gap-7 py-5 sm:gap-10">
+          {targetRanks.map((rank, index) => (
             <div
-              className="flex h-14 w-14 items-center justify-center rounded-xl border-2 border-[#f6c65b]/60 bg-[#f6c65b]/15 text-2xl font-black text-[#f6c65b]"
+              className="rounded-[18px] shadow-[0_0_0_4px_rgba(238,93,255,0.72),0_0_42px_rgba(223,55,255,0.75),0_28px_50px_rgba(0,0,0,0.42)]"
               key={rank}
+              style={{ transform: `rotate(${index % 2 === 0 ? -5 : 5}deg)` }}
             >
-              {getRankDisplayName(rank)}
+              <PokerCard
+                card={cardRankToPokerCard(rank)}
+                size="hero"
+                variant="played"
+              />
             </div>
           ))}
         </div>
-        <p className="mt-5 text-center text-sm font-bold text-white/60">
-          观察手牌中这些牌的数量
-        </p>
-        <ObservationTimer
-          durationMs={observationTimeMs}
-          onComplete={onObservationComplete}
-        />
+        <div className="relative z-10 mx-auto w-full max-w-2xl">
+          <ObservationTimer
+            durationMs={observationTimeMs}
+            onComplete={onObservationComplete}
+          />
+        </div>
       </section>
     </div>
   );
@@ -132,4 +156,3 @@ function ObservationTimer({
     </div>
   );
 }
-

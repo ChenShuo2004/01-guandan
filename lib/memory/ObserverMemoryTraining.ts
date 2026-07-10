@@ -1,7 +1,7 @@
-import type { Card, CardRank } from "@/lib/guandan/card";
-import { getRankLabel } from "@/lib/guandan/card";
-import type { GameEngineState } from "@/lib/guandan/gameState";
-import type { PlayerSeat } from "@/lib/guandan/player";
+import type { Card, CardRank } from "../guandan/card.ts";
+import { getRankLabel } from "../guandan/card.ts";
+import type { GameEngineState } from "../guandan/gameState.ts";
+import type { PlayerSeat } from "../guandan/player.ts";
 
 export type MemoryTrainingPhase =
   | "INITIALIZING"
@@ -99,22 +99,31 @@ export const DEFAULT_DURATION_MINUTES = 60;
 export const DEBUG_DURATION_MINUTES = 5;
 
 export function getRankDisplayName(rank: CardRank): string {
+  if (rank === 16) return "小王";
+  if (rank === 17) return "大王";
   return getRankLabel(rank);
 }
 
+const NORMAL_RANK_DECK_COUNT = 8;
+const TOTAL_JOKER_DECK_COUNT = 4;
+
 export function getAnswerOptions(maxCount: number): number[] {
-  const cap = Math.min(maxCount, 8);
-  return Array.from({ length: cap + 1 }, (_, i) => i);
+  const safeMax = Math.max(0, maxCount);
+  return Array.from({ length: safeMax + 1 }, (_, index) => index);
 }
 
 export function getMaxPossibleCount(rank: CardRank): number {
-  if (rank === 16 || rank === 17) return 2;
-  return 4;
+  if (rank === 16 || rank === 17) return TOTAL_JOKER_DECK_COUNT;
+  return NORMAL_RANK_DECK_COUNT;
+}
+
+export function getTotalJokerDeckCount(): number {
+  return TOTAL_JOKER_DECK_COUNT;
 }
 
 export function createTargetRanks(targetCount: number, levelRank: CardRank): CardRank[] {
   const candidates: CardRank[] = [
-    16, levelRank, 14, 15, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3,
+    17, 16, levelRank, 14, 15, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3,
   ];
   const unique: CardRank[] = [];
   const seen = new Set<CardRank>();
@@ -159,12 +168,21 @@ export function calculateCorrectAnswers(
   for (const rank of targetRanks) {
     result[String(rank)] = 0;
   }
-  for (const cardId of visibleCardIds) {
-    const card = allCardsById[cardId];
-    if (card && targetRanks.includes(card.rank)) {
-      result[String(card.rank)] += 1;
+
+  const visibleCards = visibleCardIds
+    .map((cardId) => allCardsById[cardId])
+    .filter((card): card is Card => Boolean(card));
+  const visibleJokerCount = visibleCards.filter((card) => card.rank === 16 || card.rank === 17).length;
+
+  for (const rank of targetRanks) {
+    if (rank === 16 || rank === 17) {
+      result[String(rank)] = visibleJokerCount;
+      continue;
     }
+
+    result[String(rank)] = visibleCards.filter((card) => card.rank === rank).length;
   }
+
   return result;
 }
 
@@ -172,6 +190,11 @@ export function buildAllCardsById(state: GameEngineState): Record<string, Card> 
   const map: Record<string, Card> = {};
   for (const player of state.players) {
     for (const card of player.hand) {
+      map[card.id] = card;
+    }
+  }
+  for (const entry of state.history) {
+    for (const card of entry.cards) {
       map[card.id] = card;
     }
   }

@@ -1,0 +1,316 @@
+.memory-lab-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 28px;
+  border: 1px solid rgba(104, 216, 255, 0.35);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(104, 216, 255, 0.12), transparent 42%),
+    linear-gradient(180deg, rgba(10, 32, 55, 0.92) 0%, rgba(6, 18, 36, 0.96) 100%);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.memory-lab-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-color: #071222;
+  background-image:
+    linear-gradient(30deg, rgba(26, 72, 118, 0.55) 12%, transparent 12.5%, transparent 87%, rgba(26, 72, 118, 0.55) 87.5%),
+    linear-gradient(150deg, rgba(26, 72, 118, 0.55) 12%, transparent 12.5%, transparent 87%, rgba(26, 72, 118, 0.55) 87.5%),
+    linear-gradient(30deg, rgba(26, 72, 118, 0.55) 12%, transparent 12.5%, transparent 87%, rgba(26, 72, 118, 0.55) 87.5%),
+    linear-gradient(150deg, rgba(26, 72, 118, 0.55) 12%, transparent 12.5%, transparent 87%, rgba(26, 72, 118, 0.55) 87.5%),
+    linear-gradient(60deg, rgba(18, 52, 88, 0.42) 25%, transparent 25.5%, transparent 75%, rgba(18, 52, 88, 0.42) 75%),
+    linear-gradient(60deg, rgba(18, 52, 88, 0.42) 25%, transparent 25.5%, transparent 75%, rgba(18, 52, 88, 0.42) 75%);
+  background-size: 34px 58px;
+  background-position:
+    0 0,
+    0 0,
+    17px 29px,
+    17px 29px,
+    0 0,
+    17px 29px;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+.memory-lab-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 82%, rgba(120, 70, 255, 0.22), transparent 28%),
+    radial-gradient(circle at 82% 78%, rgba(64, 170, 255, 0.2), transparent 30%),
+    linear-gradient(180deg, rgba(2, 8, 18, 0.08) 0%, rgba(2, 8, 18, 0.42) 100%);
+  pointer-events: none;
+}
+
+.memory-lab-card__content {
+  position: relative;
+  z-index: 1;
+}
+
+.memory-lab-card__menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+}
+
+.memory-lab-card__tag {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 6px 12px;
+  color: #102033;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.memory-lab-card__spade {
+  display: grid;
+  height: 56px;
+  width: 56px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffd978 0%, #f6c65b 100%);
+  box-shadow:
+    0 10px 24px rgba(246, 198, 91, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  color: #171101;
+  font-size: 1.75rem;
+}
+
+.memory-lab-card__pill {
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(7, 20, 38, 0.55);
+  padding: 8px 12px;
+  color: rgba(232, 246, 255, 0.92);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.memory-lab-card__pill--accent {
+  border-color: rgba(214, 132, 255, 0.82);
+  background: rgba(48, 18, 72, 0.42);
+  box-shadow:
+    0 0 16px rgba(186, 104, 255, 0.34),
+    inset 0 0 12px rgba(186, 104, 255, 0.12);
+}
+
+.memory-lab-card__stage {
+  position: relative;
+  margin-top: 10px;
+  min-height: 168px;
+}
+
+.memory-lab-card__table {
+  position: absolute;
+  left: 50%;
+  top: 58%;
+  width: min(78%, 360px);
+  aspect-ratio: 2.2 / 1;
+  transform: translate(-50%, -50%) perspective(900px) rotateX(58deg);
+  transform-style: preserve-3d;
+}
+
+.memory-lab-card__table-surface {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(104, 216, 255, 0.72);
+  background:
+    radial-gradient(circle at 50% 38%, rgba(72, 196, 255, 0.28), transparent 58%),
+    linear-gradient(180deg, rgba(8, 34, 62, 0.92) 0%, rgba(4, 16, 34, 0.98) 100%);
+  box-shadow:
+    0 0 28px rgba(72, 196, 255, 0.42),
+    0 18px 40px rgba(0, 0, 0, 0.42),
+    inset 0 0 24px rgba(104, 216, 255, 0.16);
+}
+
+.memory-lab-card__table-surface::before {
+  content: "";
+  position: absolute;
+  inset: 12% 18%;
+  border-radius: 50%;
+  border: 1px solid rgba(104, 216, 255, 0.28);
+  box-shadow: inset 0 0 18px rgba(104, 216, 255, 0.18);
+}
+
+.memory-lab-card__table-glow {
+  position: absolute;
+  inset: -18% -8%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(72, 196, 255, 0.24), transparent 68%);
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+.memory-lab-card__floating-card {
+  position: absolute;
+  z-index: 2;
+  filter: drop-shadow(0 0 14px rgba(104, 216, 255, 0.55));
+  transform-origin: center bottom;
+}
+
+.memory-lab-card__floating-card::after {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(104, 216, 255, 0.22), transparent 58%);
+  pointer-events: none;
+}
+
+.memory-lab-card__floating-card--a {
+  left: 50%;
+  top: 2%;
+  transform: translateX(-50%) rotate(-4deg) scale(0.92);
+}
+
+.memory-lab-card__floating-card--b {
+  left: 18%;
+  top: 18%;
+  transform: rotate(-14deg) scale(0.78);
+}
+
+.memory-lab-card__floating-card--c {
+  right: 16%;
+  top: 14%;
+  transform: rotate(12deg) scale(0.8);
+}
+
+.memory-lab-card__floating-card--d {
+  left: 34%;
+  top: 0;
+  transform: rotate(-18deg) scale(0.7);
+  opacity: 0.88;
+}
+
+.memory-lab-card__cta {
+  display: flex;
+  min-height: 56px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #2a7dff 0%, #0f64ff 100%);
+  box-shadow:
+    0 16px 34px rgba(15, 100, 255, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 900;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.memory-lab-card__cta:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(180deg, #3d8aff 0%, #2b7aff 100%);
+  box-shadow:
+    0 20px 40px rgba(15, 100, 255, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .memory-lab-card__floating-card--a {
+    animation: memory-lab-float-a 4.8s ease-in-out infinite;
+  }
+
+  .memory-lab-card__floating-card--b {
+    animation: memory-lab-float-b 5.4s ease-in-out infinite;
+  }
+
+  .memory-lab-card__floating-card--c {
+    animation: memory-lab-float-c 5.1s ease-in-out infinite;
+  }
+
+  .memory-lab-card__floating-card--d {
+    animation: memory-lab-float-d 6s ease-in-out infinite;
+  }
+}
+
+@keyframes memory-lab-float-a {
+  0%,
+  100% {
+    transform: translateX(-50%) translateY(0) rotate(-4deg) scale(0.92);
+  }
+
+  50% {
+    transform: translateX(-50%) translateY(-10px) rotate(-2deg) scale(0.94);
+  }
+}
+
+@keyframes memory-lab-float-b {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-14deg) scale(0.78);
+  }
+
+  50% {
+    transform: translateY(-8px) rotate(-10deg) scale(0.8);
+  }
+}
+
+@keyframes memory-lab-float-c {
+  0%,
+  100% {
+    transform: translateY(0) rotate(12deg) scale(0.8);
+  }
+
+  50% {
+    transform: translateY(-9px) rotate(8deg) scale(0.82);
+  }
+}
+
+@keyframes memory-lab-float-d {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-18deg) scale(0.7);
+  }
+
+  50% {
+    transform: translateY(-6px) rotate(-14deg) scale(0.72);
+  }
+}
+
+@media (max-width: 640px) {
+  .memory-lab-card__menu {
+    letter-spacing: 0.22em;
+  }
+
+  .memory-lab-card__tag {
+    font-size: 10px;
+    padding: 5px 10px;
+  }
+
+  .memory-lab-card__pill {
+    font-size: 11px;
+    padding: 7px 10px;
+    white-space: normal;
+  }
+
+  .memory-lab-card__stage {
+    min-height: 150px;
+  }
+
+  .memory-lab-card__spade {
+    height: 48px;
+    width: 48px;
+    border-radius: 14px;
+    font-size: 1.5rem;
+  }
+}

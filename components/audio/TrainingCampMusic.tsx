@@ -8,7 +8,7 @@ const TARGET_VOLUME = 0.3;
 const FADE_IN_MS = 1600;
 const FADE_OUT_MS = 1200;
 const FADE_STEP_MS = 50;
-const TRAINING_ROUTE_PREFIXES = ["/practice", "/training"];
+const TRAINING_ROUTE_PREFIXES = ["/practice"];
 
 let audio: HTMLAudioElement | null = null;
 let fadeTimer: number | null = null;

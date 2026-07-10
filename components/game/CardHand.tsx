@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent } from "react";
 import { motion } from "framer-motion";
 import { CardGroup } from "@/components/game/CardGroup";
@@ -24,6 +24,14 @@ interface CardHandProps {
   variant?: "default" | "arena";
 }
 
+interface ArenaCardMetrics {
+  cardHeight: number;
+  cardWidth: number;
+  groupGap: number;
+  minHeight: number;
+  stackStep: number;
+}
+
 export function CardHand({
   cards,
   selectedCardIds,
@@ -43,6 +51,7 @@ export function CardHand({
   const invalidSet = useMemo(() => new Set(invalidCardIds), [invalidCardIds]);
   const selectedIdsRef = useRef(selectedCardIds);
   const isDraggingRef = useRef(false);
+  const [arenaMetrics, setArenaMetrics] = useState<ArenaCardMetrics | null>(null);
 
   useEffect(() => {
     selectedIdsRef.current = selectedCardIds;
@@ -60,6 +69,59 @@ export function CardHand({
       window.removeEventListener("pointercancel", stopDragging);
     };
   }, []);
+
+  useEffect(() => {
+    if (variant !== "arena") return;
+
+    function syncArenaMetrics() {
+      const isPhoneLandscape =
+        window.innerWidth > window.innerHeight &&
+        window.matchMedia("(orientation: landscape) and (max-height: 600px)").matches;
+
+      if (!isPhoneLandscape) {
+        setArenaMetrics(null);
+        return;
+      }
+
+      const groupCount = Math.max(1, arenaGroups.length);
+      const maxGroupSize = Math.max(1, ...arenaGroups.map((group) => group.cards.length));
+      const horizontalPadding = Math.max(24, Math.min(72, window.innerWidth * 0.055));
+      const availableWidth = window.innerWidth - horizontalPadding;
+      const preferredGap = cards.length <= 10 ? 8 : cards.length <= 15 ? 4 : 2;
+      const heightRatio = cards.length <= 10 ? 0.29 : cards.length <= 15 ? 0.255 : 0.225;
+      const heightLimit = Math.max(68, Math.min(cards.length <= 10 ? 116 : 104, window.innerHeight * heightRatio));
+      const widthFromHeight = heightLimit * (89 / 124);
+      const widthFromAvailable = (availableWidth - preferredGap * (groupCount - 1)) / groupCount;
+      const cardWidth = Math.max(42, Math.min(widthFromHeight, widthFromAvailable));
+      const cardHeight = cardWidth * (124 / 89);
+      const remainingWidth = Math.max(0, availableWidth - cardWidth * groupCount);
+      const groupGap = groupCount > 1 ? Math.min(preferredGap, remainingWidth / (groupCount - 1)) : 0;
+      const stackHeightLimit = Math.max(cardHeight, window.innerHeight * 0.34);
+      const stackStep =
+        maxGroupSize > 1
+          ? Math.max(7, Math.min(cardHeight * 0.2, (stackHeightLimit - cardHeight) / (maxGroupSize - 1)))
+          : 0;
+      const minHeight = cardHeight + stackStep * (maxGroupSize - 1) + Math.max(12, cardHeight * 0.16);
+
+      setArenaMetrics({
+        cardHeight: Math.round(cardHeight),
+        cardWidth: Math.round(cardWidth),
+        groupGap: Number(groupGap.toFixed(1)),
+        minHeight: Math.round(minHeight),
+        stackStep: Number(stackStep.toFixed(1))
+      });
+    }
+
+    syncArenaMetrics();
+    window.addEventListener("resize", syncArenaMetrics);
+    window.addEventListener("orientationchange", syncArenaMetrics);
+    window.visualViewport?.addEventListener("resize", syncArenaMetrics);
+    return () => {
+      window.removeEventListener("resize", syncArenaMetrics);
+      window.removeEventListener("orientationchange", syncArenaMetrics);
+      window.visualViewport?.removeEventListener("resize", syncArenaMetrics);
+    };
+  }, [arenaGroups, cards.length, variant]);
 
   function commitSelection(nextIds: string[]) {
     const nextSet = new Set(nextIds);
@@ -140,6 +202,7 @@ export function CardHand({
   if (variant === "arena") {
     const arenaCardScale = cardScale;
     const arenaCardOverlap = cards.length > 20 ? 42 : cards.length > 16 ? 30 : 14;
+    const arenaMinHeight = arenaMetrics?.minHeight ?? Math.round(178 * arenaCardScale);
 
     return (
       <div
@@ -147,10 +210,13 @@ export function CardHand({
         data-selected-count={selectedCardIds.length}
         style={{
           ["--arena-card-overlap" as string]: `${Math.round(arenaCardOverlap * arenaCardScale)}px`,
-          ["--arena-card-min-height" as string]: `${Math.round(178 * arenaCardScale)}px`
+          ["--arena-card-min-height" as string]: `${arenaMinHeight}px`
         }}
       >
-        <div className="arena-hand-row relative flex min-h-[var(--arena-card-min-height)] min-w-0 items-end justify-center gap-1 overflow-visible px-1 pb-2 pt-7">
+        <div
+          className="arena-hand-row relative flex min-h-[var(--arena-card-min-height)] min-w-0 items-end justify-center overflow-visible px-1 pb-2 pt-7"
+          style={{ columnGap: arenaMetrics?.groupGap }}
+        >
           {arenaGroups.map((group, index) => (
             <motion.div
               animate={{ scale: sortPulseKey > 0 ? [1, 1.025, 1] : 1 }}
@@ -164,6 +230,7 @@ export function CardHand({
               }}
             >
               <CardGroup
+                cardDimensions={arenaMetrics ? { height: arenaMetrics.cardHeight, width: arenaMetrics.cardWidth } : undefined}
                 disabled={disabled}
                 group={group}
                 invalidCardIds={invalidSet}
@@ -174,6 +241,7 @@ export function CardHand({
                 onPointerEnterCard={handlePointerEnter}
                 selectedCardIds={selectedSet}
                 sizeScale={arenaCardScale}
+                stackStep={arenaMetrics?.stackStep}
               />
             </motion.div>
           ))}
