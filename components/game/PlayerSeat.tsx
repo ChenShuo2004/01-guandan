@@ -40,10 +40,10 @@ export function PlayerSeat({ player }: PlayerSeatProps) {
 
 function CardBackFan() {
   return (
-    <div className="flex h-16 items-end justify-center">
+    <div className="flex h-12 items-end justify-center">
       {Array.from({ length: 5 }).map((_, index) => (
         <div
-          className="-ml-2 h-[74px] w-[48px] rounded-lg border border-white/55 bg-[linear-gradient(145deg,#4f89dc,#1e4f9f)] shadow-[0_8px_16px_rgba(24,79,159,0.24)] first:ml-0"
+          className="-ml-2 h-[52px] w-[36px] rounded-lg border border-white/55 bg-[linear-gradient(145deg,#4f89dc,#1e4f9f)] shadow-[0_6px_12px_rgba(24,79,159,0.18)] first:ml-0"
           key={index}
           style={{ transform: `rotate(${(index - 2) * 3}deg)` }}
         />
@@ -54,10 +54,10 @@ function CardBackFan() {
 
 function CardBackStack({ side }: { side: "left" | "right" }) {
   return (
-    <div className={cn("flex w-[70px] flex-col items-center", side === "right" && "order-1")}>
+    <div className={cn("flex w-[50px] flex-col items-center", side === "right" && "order-1")}>
       {Array.from({ length: 6 }).map((_, index) => (
         <div
-          className="-mt-9 h-[72px] w-[48px] rounded-lg border border-white/55 bg-[linear-gradient(145deg,#5a93df,#204f9a)] shadow-[0_8px_16px_rgba(24,79,159,0.24)] first:mt-0"
+          className="-mt-7 h-[52px] w-[36px] rounded-lg border border-white/55 bg-[linear-gradient(145deg,#5a93df,#204f9a)] shadow-[0_6px_12px_rgba(24,79,159,0.18)] first:mt-0"
           key={index}
         />
       ))}

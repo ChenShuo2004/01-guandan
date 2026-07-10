@@ -53,12 +53,12 @@ export function DealAnimation({
 
       <motion.div
         animate={{ y: [0, -8, 0], scale: [1, 1.03, 1] }}
-        className="absolute left-1/2 top-1/2 z-20 grid h-36 w-24 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-3xl border border-white/50 bg-[#17489d] shadow-[0_0_46px_rgba(100,168,254,0.82),0_28px_58px_rgba(19,57,90,0.35)]"
+        className="absolute left-1/2 top-1/2 z-20 grid h-48 w-32 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-3xl border border-white/50 bg-[#17489d] shadow-[0_0_46px_rgba(100,168,254,0.82),0_28px_58px_rgba(19,57,90,0.35)]"
         transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
       >
         <div className="absolute -inset-8 rounded-full bg-[#64a8fe]/24 blur-2xl" />
-        <div className="relative h-32 w-20 overflow-hidden rounded-2xl border border-white/35 shadow-[inset_0_0_22px_rgba(255,255,255,0.22)]">
-          <Image alt="" className="object-cover" fill priority sizes="80px" src="/assets/poker-cards/backs/ai-training-card-back.png" />
+        <div className="relative h-44 w-28 overflow-hidden rounded-2xl border border-white/35 shadow-[inset_0_0_22px_rgba(255,255,255,0.22)]">
+          <Image alt="" className="object-cover" fill priority sizes="112px" src="/assets/poker-cards/backs/ai-training-card-back.png" />
         </div>
       </motion.div>
 
@@ -75,12 +75,12 @@ export function DealAnimation({
               x: [0, target.x * 0.42, target.x],
               y: [0, target.y * 0.22 - 80, target.y]
             }}
-            className="absolute left-1/2 top-1/2 h-20 w-14 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl border border-white/55 bg-[#17489d] shadow-[0_14px_28px_rgba(19,57,90,0.28)]"
+            className="absolute left-1/2 top-1/2 h-28 w-20 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-xl border border-white/55 bg-[#17489d] shadow-[0_14px_28px_rgba(19,57,90,0.28)]"
             initial={{ opacity: 0, rotate: 0, scale: 0.72, x: 0, y: 0 }}
             key={cardIndex}
             transition={{ delay, duration: 0.52, ease: "easeOut" }}
           >
-            <Image alt="" className="object-cover" fill sizes="56px" src="/assets/poker-cards/backs/ai-training-card-back.png" />
+            <Image alt="" className="object-cover" fill sizes="80px" src="/assets/poker-cards/backs/ai-training-card-back.png" />
           </motion.div>
         );
       })}

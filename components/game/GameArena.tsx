@@ -890,25 +890,23 @@ function ArenaTopBar({
           <span className="ml-2 rounded-full bg-[#12395a]/88 px-3 py-1 text-xs text-white max-lg:hidden">{observerMode ? "观察模式 · AI 自动行动" : phaseText[phase]}</span>
         </div>
 
-        <nav className={observerMode ? "hidden" : "flex min-w-0 items-center gap-3 max-lg:gap-2"}>
-          {!observerMode ? (
-            <>
-              <HudButton icon="◉" label="AI Coach" onClick={onOpenCoach} />
-              <HudButton icon="ⓘ" label="规则" onClick={onOpenRules} />
-              <HudButton icon="⚙" label="设置" onClick={onOpenSettings} />
-              <HudButton icon={isPaused ? "▶" : "Ⅱ"} label={isPaused ? "继续" : "暂停"} onClick={onTogglePause} />
-              <button
-                aria-label={isFullscreen ? "退出全屏" : "进入全屏"}
-                className="grid h-12 w-12 place-items-center rounded-full bg-white/42 text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5"
-                onClick={onToggleFullscreen}
-                type="button"
-              >
-                <span className="material-symbols-outlined text-[22px]">
-                  {isFullscreen ? "fullscreen_exit" : "fullscreen"}
-                </span>
-              </button>
-            </>
-          ) : null}
+        <nav className="flex min-w-0 items-center gap-3 max-lg:gap-2">
+          {!observerMode && <HudButton icon="◉" label="AI Coach" onClick={onOpenCoach} />}
+          {!observerMode && <HudButton icon="ⓘ" label="规则" onClick={onOpenRules} />}
+          <HudButton icon="⚙" label="设置" onClick={onOpenSettings} />
+          <HudButton icon={isPaused ? "▶" : "Ⅱ"} label={isPaused ? "继续" : "暂停"} onClick={onTogglePause} />
+          {!observerMode && (
+            <button
+              aria-label={isFullscreen ? "退出全屏" : "进入全屏"}
+              className="grid h-12 w-12 place-items-center rounded-full bg-white/42 text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5"
+              onClick={onToggleFullscreen}
+              type="button"
+            >
+              <span className="material-symbols-outlined text-[22px]">
+                {isFullscreen ? "fullscreen_exit" : "fullscreen"}
+              </span>
+            </button>
+          )}
           <button
             aria-label={observerMode ? "返回训练列表" : "退出房间"}
             className="flex h-12 items-center gap-1.5 rounded-full bg-[#0f64ff] px-6 text-base font-black text-white shadow-[0_14px_30px_rgba(15,100,255,0.28)] transition hover:-translate-y-0.5 max-lg:px-4"

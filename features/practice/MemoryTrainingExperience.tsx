@@ -3,13 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GameArena } from "@/components/game/GameArena";
-import { useGameStore } from "@/store/gameStore";
 import type { GameEngineState } from "@/lib/guandan/gameState";
 import { getRankLabel } from "@/lib/guandan/card";
 import { MemoryTargetPanel, MemoryTargetOverlay } from "@/components/memory/MemoryTargetPanel";
 import { MemoryCheckpointPanel } from "@/components/memory/MemoryCheckpointPanel";
 import { MemoryFeedbackPanel } from "@/components/memory/MemoryFeedbackPanel";
 import { MemorySessionSummaryPanel } from "@/components/memory/MemorySessionSummary";
+import { MemoryAnswerHistoryPanel } from "@/components/memory/MemoryAnswerHistoryPanel";
 import {
   createInitialTrainingState,
   createTargetRanks,
@@ -44,18 +44,19 @@ export function MemoryTrainingExperience() {
   const [showCheckpoint, setShowCheckpoint] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
+  const [arenaKey, setArenaKey] = useState(0);
 
   // ── Refs ──────────────────────────────────────────────────────────────────────
   const dealCompleteRef = useRef(false);
   const observationTimerRef = useRef<number | null>(null);
   const sessionTimerRef = useRef<number | null>(null);
+  const checkpointTransitionTimerRef = useRef<number | null>(null);
   const handSettlementTimerRef = useRef<number | null>(null);
   const phaseRef = useRef(training.phase);
 
   // ── Game store (observer mode) ─────────────────────────────────────────────────
-  const { state: gameState, restart, userPlayer } = useGameStore(true);
-  const gameStateRef = useRef(gameState);
-  useEffect(() => { gameStateRef.current = gameState; }, [gameState]);
+  const checkpointTriggeredRef = useRef(false);
+  const gameStateRef = useRef<GameEngineState | null>(null);
 
   // Keep phaseRef in sync
   useEffect(() => { phaseRef.current = training.phase; }, [training.phase]);
@@ -83,6 +84,7 @@ export function MemoryTrainingExperience() {
     return () => {
       if (observationTimerRef.current) window.clearTimeout(observationTimerRef.current);
       if (sessionTimerRef.current) window.clearTimeout(sessionTimerRef.current);
+      if (checkpointTransitionTimerRef.current) window.clearTimeout(checkpointTransitionTimerRef.current);
       if (handSettlementTimerRef.current) window.clearTimeout(handSettlementTimerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -93,8 +95,9 @@ export function MemoryTrainingExperience() {
     setShowTargetOverlay(false);
 
     const t = trainingRef.current;
-    const observerHand = userPlayer?.hand ?? [];
-    const allCardsById = buildAllCardsById(gameStateRef.current);
+    const currentState = gameStateRef.current;
+    const observerHand = currentState?.players.find((player) => player.id === "player")?.hand ?? [];
+    const allCardsById = currentState ? buildAllCardsById(currentState) : {};
     const visibleIds = initializeVisibleTargetCards(observerHand, t.targetRanks);
 
     const initialEvent: MemoryRelevantEvent | null = visibleIds.length > 0
@@ -124,7 +127,7 @@ export function MemoryTrainingExperience() {
     if (dealCompleteRef.current) {
       startHandObservationTimer();
     }
-  }, [startHandObservationTimer, userPlayer?.hand]);
+  }, [startHandObservationTimer]);
 
   // ── Handle deal completion ─────────────────────────────────────────────────────
   const handleDealComplete = useCallback(() => {
@@ -137,8 +140,10 @@ export function MemoryTrainingExperience() {
 
   // ── Checkpoint trigger ─────────────────────────────────────────────────────────
   const triggerCheckpoint = useCallback(() => {
+    if (checkpointTriggeredRef.current) return;
+    checkpointTriggeredRef.current = true;
     setTraining(prev => ({ ...prev, phase: "PAUSING_FOR_CHECKPOINT" }));
-    setTimeout(() => {
+    checkpointTransitionTimerRef.current = window.setTimeout(() => {
       setTraining(prev => ({ ...prev, phase: "ANSWERING" }));
       setShowCheckpoint(true);
     }, 300);
@@ -170,16 +175,17 @@ export function MemoryTrainingExperience() {
 
       const resetState = resetForNextHand(next);
       setTraining(resetState);
-      restart();
-      dealCompleteRef.current = true;
+      setArenaKey((current) => current + 1);
+      dealCompleteRef.current = false;
       setShowCheckpoint(false);
       setShowFeedback(false);
       setShowTargetOverlay(true);
     }, 1500);
-  }, [restart]);
+  }, []);
 
   // ── Game state change tracking ─────────────────────────────────────────────────
   const handleStateChange = useCallback((state: GameEngineState) => {
+    gameStateRef.current = state;
     const t = trainingRef.current;
     if (t.phase !== "AI_PLAYING") return;
 
@@ -189,6 +195,7 @@ export function MemoryTrainingExperience() {
     let newVisibleIds = [...t.visibleTargetCardIds];
     const newEvents = [...t.relevantEvents];
     let validPlays = t.validPlayCountSinceCheckpoint;
+    const allCardsById = { ...t.allCardsById, ...buildAllCardsById(state) };
 
     for (const entry of newEntries) {
       if (entry.action === "play" && entry.cards.length > 0) {
@@ -216,6 +223,7 @@ export function MemoryTrainingExperience() {
     setTraining(prev => ({
       ...prev,
       visibleTargetCardIds: newVisibleIds,
+      allCardsById,
       relevantEvents: newEvents,
       validPlayCountSinceCheckpoint: validPlays,
       lastProcessedHistoryLength: state.history.length,
@@ -224,6 +232,7 @@ export function MemoryTrainingExperience() {
     const updatedTraining = {
       ...t,
       visibleTargetCardIds: newVisibleIds,
+      allCardsById,
       relevantEvents: newEvents,
       validPlayCountSinceCheckpoint: validPlays,
       lastProcessedHistoryLength: state.history.length,
@@ -243,6 +252,7 @@ export function MemoryTrainingExperience() {
     if (trainingRef.current.phase !== "ANSWERING") return;
 
     const t = trainingRef.current;
+    checkpointTriggeredRef.current = false;
     const withAnswers = { ...t, currentAnswers: answers };
     const checkpoint = evaluateCheckpointWithCards(withAnswers, t.allCardsById);
 
@@ -276,7 +286,7 @@ export function MemoryTrainingExperience() {
       return;
     }
 
-    if (gameStateRef.current.gameStatus === "finished") {
+    if (gameStateRef.current?.gameStatus === "finished") {
       handleGameFinished();
       return;
     }
@@ -289,13 +299,14 @@ export function MemoryTrainingExperience() {
     if (observationTimerRef.current) window.clearTimeout(observationTimerRef.current);
     if (sessionTimerRef.current) window.clearTimeout(sessionTimerRef.current);
     if (handSettlementTimerRef.current) window.clearTimeout(handSettlementTimerRef.current);
+    if (checkpointTransitionTimerRef.current) window.clearTimeout(checkpointTransitionTimerRef.current);
 
     const newState = createInitialTrainingState({ debugMode: false, levelRank: 15 });
     const targetRanks = createTargetRanks(newState.currentTargetCount, newState.levelRank);
 
     setTraining({ ...newState, phase: "SHOWING_TARGETS", targetRanks, handCount: 1 });
-    restart();
-    dealCompleteRef.current = true;
+    setArenaKey((current) => current + 1);
+    dealCompleteRef.current = false;
     setShowTargetOverlay(true);
     setShowCheckpoint(false);
     setShowFeedback(false);
@@ -304,13 +315,14 @@ export function MemoryTrainingExperience() {
     sessionTimerRef.current = window.setTimeout(() => {
       setTraining(prev => ({ ...prev, sessionTimeExpired: true }));
     }, newState.durationMinutes * 60_000);
-  }, [restart]);
+  }, []);
 
   // ── Exit ───────────────────────────────────────────────────────────────────────
   const handleExit = useCallback(() => {
     if (observationTimerRef.current) window.clearTimeout(observationTimerRef.current);
     if (sessionTimerRef.current) window.clearTimeout(sessionTimerRef.current);
     if (handSettlementTimerRef.current) window.clearTimeout(handSettlementTimerRef.current);
+    if (checkpointTransitionTimerRef.current) window.clearTimeout(checkpointTransitionTimerRef.current);
     router.push("/practice");
   }, [router]);
 
@@ -321,6 +333,7 @@ export function MemoryTrainingExperience() {
   return (
     <div className="relative">
       <GameArena
+        key={arenaKey}
         observerMode
         observerPaused={observerPaused}
         onObserverStateChange={handleStateChange}
@@ -330,8 +343,16 @@ export function MemoryTrainingExperience() {
       <MemoryTargetPanel
         targetRanks={training.targetRanks}
         currentTargetCount={training.currentTargetCount}
-        allCardsById={training.allCardsById}
         visible={training.phase === "AI_PLAYING" || training.phase === "OBSERVING_INITIAL_HAND"}
+      />
+
+      <MemoryAnswerHistoryPanel
+        checkpoints={training.checkpoints}
+        currentAnswers={training.currentAnswers}
+        currentPhase={training.phase}
+        currentTargetRanks={training.targetRanks}
+        overallAccuracy={Math.round(training.overallAccuracy * 100)}
+        visible
       />
 
       {showTargetOverlay ? (
@@ -348,6 +369,7 @@ export function MemoryTrainingExperience() {
         <MemoryCheckpointPanel
           targetRanks={training.targetRanks}
           currentTargetCount={training.currentTargetCount}
+          levelRank={training.levelRank}
           onSubmit={handleCheckpointSubmit}
         />
       ) : null}

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { CardRank } from "@/lib/guandan/card";
+import { cn } from "@/lib/utils";
 import {
   getRankDisplayName,
   getAnswerOptions,
@@ -11,12 +12,14 @@ import {
 interface MemoryCheckpointPanelProps {
   targetRanks: CardRank[];
   currentTargetCount: number;
+  levelRank?: CardRank;
   onSubmit: (answers: Record<string, number>) => void;
 }
 
 export function MemoryCheckpointPanel({
   targetRanks,
   currentTargetCount,
+  levelRank,
   onSubmit,
 }: MemoryCheckpointPanelProps) {
   const [answers, setAnswers] = useState<Record<string, number>>(() => {
@@ -52,6 +55,7 @@ export function MemoryCheckpointPanel({
             <RankSelector
               key={rank}
               rank={rank}
+              isLevel={rank === levelRank}
               value={answers[String(rank)] ?? 0}
               onChange={(v) => setAnswer(rank, v)}
             />
@@ -71,10 +75,12 @@ export function MemoryCheckpointPanel({
 
 function RankSelector({
   rank,
+  isLevel = false,
   value,
   onChange,
 }: {
   rank: CardRank;
+  isLevel?: boolean;
   value: number;
   onChange: (value: number) => void;
 }) {
@@ -82,10 +88,23 @@ function RankSelector({
   const options = getAnswerOptions(max);
 
   return (
-    <div className="rounded-2xl bg-white/[0.06] p-4">
-      <p className="text-sm font-black text-[#f6c65b]">
-        {getRankDisplayName(rank)}
-      </p>
+    <div className={cn("rounded-2xl p-4", isLevel ? "bg-[#f6c65b]/10 ring-1 ring-[#f6c65b]/40" : "bg-white/[0.06]")}>
+      <div className="flex items-center gap-3">
+        <div
+          className={cn(
+            "grid h-11 w-11 shrink-0 place-items-center rounded-lg border-2 text-2xl font-black shadow-[0_5px_12px_rgba(164,105,0,0.16)]",
+            isLevel
+              ? "border-[#f6c65b] bg-white text-[#0f172a] shadow-[0_0_0_2px_rgba(246,198,91,0.50),0_0_16px_rgba(246,198,91,0.35),0_5px_12px_rgba(164,105,0,0.16)]"
+              : "border-white/40 bg-white/90 text-[#0f172a]"
+          )}
+        >
+          {getRankDisplayName(rank).replace("小王", "SJ").replace("大王", "BJ")}
+        </div>
+        <p className={cn("text-sm font-black", isLevel ? "text-[#f6c65b]" : "text-white/70")}>
+          {getRankDisplayName(rank)}
+          {isLevel ? <span className="ml-2 text-xs text-[#f6c65b]/80">级牌</span> : null}
+        </p>
+      </div>
       <div className="mt-3 flex flex-wrap gap-2">
         {options.map((option) => (
           <button
