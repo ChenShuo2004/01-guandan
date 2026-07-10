@@ -20,10 +20,10 @@ const sizeClasses: Record<CardSize, string> = {
 };
 
 const playedSizeClasses: Record<CardSize, string> = {
-  sm: "h-[78px] w-[56px]",
-  md: "h-[104px] w-[75px]",
-  lg: "h-[124px] w-[89px]",
-  joker: "h-[112px] w-[80px]"
+  sm: "h-[104px] w-[74px]",
+  md: "h-[132px] w-[95px]",
+  lg: "h-[148px] w-[106px]",
+  joker: "h-[136px] w-[97px]"
 };
 
 export function PokerCard({
@@ -45,7 +45,6 @@ export function PokerCard({
       className={cn(
         "relative flex shrink-0 select-none overflow-hidden rounded-[13px] bg-white shadow-[0_10px_18px_rgba(17,24,39,0.20)] transition",
         cardSizeClass,
-        selected && "-translate-y-5 shadow-[0_0_0_3px_rgba(255,215,0,0.78),0_18px_28px_rgba(17,24,39,0.30)]",
         cardType === "levelCard" && "shadow-[0_0_0_2px_rgba(255,215,0,0.72),0_0_24px_rgba(255,215,0,0.70),0_14px_26px_rgba(120,84,0,0.24)] ring-2 ring-[#ffd76a]/80"
       )}
       data-card-type={cardType}
@@ -58,11 +57,6 @@ export function PokerCard({
         sizes="(max-width: 640px) 89px, 106px"
         src={getPokerCardAsset(card)}
       />
-      {card.isWild ? (
-        <span className="absolute bottom-9 right-1 rounded-[5px] border border-[#e3a900] bg-[#fff4b8] px-1 text-[10px] font-black leading-4 text-[#8c5d00]">
-          Wild
-        </span>
-      ) : null}
       {isLevelCard ? (
         <span className="pointer-events-none absolute inset-0 rounded-[12px] bg-[radial-gradient(circle_at_50%_10%,rgba(255,232,140,0.52),transparent_46%),linear-gradient(135deg,rgba(255,255,255,0.22),transparent_44%)]" />
       ) : null}

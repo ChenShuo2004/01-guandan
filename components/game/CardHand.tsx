@@ -224,7 +224,7 @@ function groupCardsForArena(cards: Card[]): CardHandGroup[] {
   }
 
   return [...byRank.entries()]
-    .sort(([rankA], [rankB]) => rankA - rankB)
+    .sort(([rankA], [rankB]) => rankB - rankA)
     .map(([rank, rankCards]) => {
       const sortedCards = sortCardsForHand(rankCards);
       const type = sortedCards.length >= 4 ? "bomb" : sortedCards.length === 3 ? "triple" : sortedCards.length === 2 ? "pair" : "single";
