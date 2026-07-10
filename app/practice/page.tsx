@@ -1,5 +1,5 @@
-import TrainingCampLanding from "@/features/practice/TrainingCampLanding";
+import { PracticeHome } from "@/features/practice/PracticeHome";
 
 export default function PracticePage() {
-  return <TrainingCampLanding />;
+  return <PracticeHome />;
 }
