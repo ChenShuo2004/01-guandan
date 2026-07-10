@@ -1,216 +1,155 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { samplePracticeCases } from "@/content/cases/sample-practice";
 
-const trainingLevels = [
+const trainingEntries = [
   {
-    id: "beginner",
-    title: "基础判断",
-    description: "先把牌型、牌权和出牌顺序练稳。",
-    image: "/assets/training-camp/beginner-cover.png",
-    href: "/training?level=beginner",
-    badge: "Beginner",
-    accent: "from-[#54d7ff] via-[#1b7dff] to-[#0058be]"
-  },
-  {
-    id: "intermediate",
-    title: "牌局决策",
-    description: "练习配合、压制、让牌和节奏控制。",
-    image: "/assets/training-camp/intermediate-cover.png",
-    href: "/training?level=intermediate",
-    badge: "Intermediate",
-    accent: "from-[#8cf3ff] via-[#238bff] to-[#0047a8]"
-  },
-  {
-    id: "advanced",
-    title: "复盘训练",
-    description: "针对残局、炸弹时机和风险判断做专项训练。",
-    image: "/assets/training-camp/advanced-cover.png",
-    href: "/training?level=advanced",
-    badge: "Advanced",
-    accent: "from-[#f6c65b] via-[#4b7dff] to-[#142f7a]"
-  }
-];
-
-const taskCards = [
-  {
-    title: "AI 实战牌桌",
-    description: "进入完整四人牌局，边出牌边接受 AI Coach 提示。",
+    title: "AI实战牌桌",
+    description: "AI陪练真实牌局，练习判断、出牌与策略。",
     href: "/training",
-    icon: "casino",
+    eyebrow: "LIVE ARENA",
+    icon: "♠",
     primary: true
   },
   {
-    title: "残局判断",
-    description: "用一道题完成判断、反馈和复盘。",
+    title: "记牌训练模式",
+    description: "训练记忆能力，掌握牌型、概率与局势。",
     href: `/practice/${samplePracticeCases[0]?.id ?? "practice-when-to-bomb-001"}`,
-    icon: "psychology",
+    eyebrow: "MEMORY LAB",
+    icon: "◈",
     primary: false
   }
 ];
 
+function AboutModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      aria-labelledby="about-training-camp-title"
+      aria-modal="true"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-[#020711]/80 p-4 backdrop-blur-md"
+      role="dialog"
+      onMouseDown={(event) => {
+        if (event.target === event.currentTarget) onClose();
+      }}
+    >
+      <article className="relative max-h-[min(760px,calc(100dvh-2rem))] w-full max-w-2xl overflow-y-auto rounded-[28px] border border-[#72d9ff]/25 bg-[#09182a]/95 p-6 text-[#e9f5ff] shadow-[0_24px_100px_rgba(0,0,0,0.52)] sm:p-8">
+        <button
+          aria-label="关闭介绍"
+          className="absolute right-4 top-4 grid h-10 w-10 place-items-center rounded-full border border-white/10 bg-white/[0.06] text-xl text-[#a8c4dc] transition hover:border-[#72d9ff]/60 hover:text-white"
+          onClick={onClose}
+          type="button"
+        >
+          ×
+        </button>
+
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#6ddaff]">TRAINING SYSTEM</p>
+        <h2 id="about-training-camp-title" className="mt-3 pr-10 text-2xl font-black tracking-tight sm:text-3xl">
+          关于 AI 掼蛋训练营
+        </h2>
+
+        <div className="mt-7 space-y-7 text-sm leading-7 text-[#b9cde0]">
+          <section>
+            <h3 className="text-base font-bold text-white">AI掼蛋训练营：汇聚掼蛋高手经验，打造智能记牌训练体系</h3>
+            <p className="mt-2">我们重新整理了掼蛋高手多年积累的经验，致力于打造真正有效、可持续练习的 AI 掼蛋训练系统。</p>
+            <p className="mt-2">训练体系参考了公开资料、比赛案例、技巧分享与高手经验，包括高水平牌局、冠军选手公开复盘、教学资料，以及记牌、算牌和牌局判断方法。</p>
+          </section>
+
+          <section className="grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+              <h3 className="font-bold text-white">孙寅贵</h3>
+              <p className="mt-2">作为掼蛋文化推广的重要推动者之一，长期参与赛事组织与推广，推动竞技化发展、赛事体系建设与文化传播。</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
+              <h3 className="font-bold text-white">赵冬</h3>
+              <p className="mt-2">长期参与赛事活动与竞技交流，在公开赛事和推广活动中积累了丰富的实战经验。</p>
+            </div>
+          </section>
+
+          <section>
+            <h3 className="font-bold text-white">全国掼蛋赛事优秀选手体系</h3>
+            <p className="mt-2">我们通过分析高水平牌局，研究高手如何快速记忆关键牌、判断剩余牌型、控制出牌节奏，以及与队友进行策略配合。</p>
+          </section>
+
+          <section>
+            <h3 className="font-bold text-white">从高手经验，到 AI 训练模型</h3>
+            <p className="mt-2">高手的成长依赖长期实战，但其中的经验可以被结构化整理为高手经验库、经典牌局数据、AI 分析模型与记牌训练算法。</p>
+            <p className="mt-2">我们训练的不是“记住更多牌”，而是培养高手一样的信息处理能力：快速捕捉信息、建立牌局判断、预测未来变化，并做出更优选择。</p>
+          </section>
+
+          <section className="border-l-2 border-[#6ddaff]/60 pl-4">
+            <h3 className="font-bold text-white">产品理念</h3>
+            <p className="mt-2 text-[#d8efff]">AI不是替用户打牌，而是帮助玩家理解为什么这样打。每一次训练，都是一次能力提升。</p>
+          </section>
+        </div>
+      </article>
+    </div>
+  );
+}
+
 export default function TrainingCampLanding() {
-  const reviewPractice = samplePracticeCases[samplePracticeCases.length - 1];
+  const [isAboutOpen, setIsAboutOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isAboutOpen) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setIsAboutOpen(false);
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isAboutOpen]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#050b16] px-4 py-5 text-white sm:px-6 lg:px-10">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_48%_0%,rgba(84,215,255,0.18),transparent_32%),radial-gradient(circle_at_82%_38%,rgba(246,198,91,0.14),transparent_30%),linear-gradient(180deg,#071426_0%,#050b16_48%,#07111f_100%)]" />
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(119,215,255,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(119,215,255,0.045)_1px,transparent_1px)] bg-[size:56px_56px] opacity-70 [mask-image:radial-gradient(circle_at_center,black,transparent_82%)]" />
-      <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-white/10 to-transparent" />
+    <main className="relative flex min-h-[100dvh] items-center overflow-hidden bg-[#050b16] px-5 py-8 text-white sm:px-8 lg:px-12">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_-10%,rgba(54,184,255,0.22),transparent_38%),radial-gradient(circle_at_100%_100%,rgba(31,83,190,0.18),transparent_36%),linear-gradient(145deg,#071426_0%,#050b16_58%,#07111f_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(119,215,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(119,215,255,0.035)_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_78%)]" />
 
-      <section className="relative z-10 mx-auto flex min-h-[calc(100vh-2.5rem)] w-full max-w-7xl flex-col gap-6">
-        <header className="grid gap-6 pt-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-end lg:pt-10">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-[#54d7ff]/30 bg-[#54d7ff]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#9fe8ff]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#f6c65b] shadow-[0_0_18px_rgba(246,198,91,0.82)]" />
-              Ace Training Camp
-            </span>
-            <h1 className="mt-5 max-w-3xl text-4xl font-black leading-tight tracking-normal text-white sm:text-5xl lg:text-6xl">
-              AI 掼蛋训练营
-            </h1>
-            <p className="mt-4 max-w-2xl text-base font-semibold leading-7 text-[#c6d8ec] sm:text-lg">
-              这里不是棋牌大厅。你只需要选择训练难度，进入牌桌，完成判断，然后听 Ace 复盘这一手为什么该这么打。
-            </p>
-          </div>
+      <button
+        aria-label="关于 AI 掼蛋训练营"
+        className="camp-help-button fixed left-4 top-1/2 z-30 grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-[#72d9ff]/35 bg-[#0d2035]/70 text-xl font-semibold text-[#bceeff] shadow-[0_0_28px_rgba(64,188,255,0.22)] backdrop-blur-xl transition hover:scale-105 hover:border-[#72d9ff] hover:bg-[#123457] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#72d9ff]/60 sm:left-6"
+        onClick={() => setIsAboutOpen(true)}
+        type="button"
+      >
+        ?
+      </button>
 
-          <section className="rounded-[24px] border border-white/12 bg-white/[0.07] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
-            <div className="flex items-center gap-4">
-              <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border border-[#54d7ff]/20 bg-[#071a31]">
-                <Image
-                  alt="Ace AI Coach"
-                  className="object-cover"
-                  fill
-                  sizes="80px"
-                  src="/assets/coach/coach-bubble-hologram.png"
-                />
-              </div>
-              <div>
-                <p className="text-sm font-black text-[#f6c65b]">Ace Coach</p>
-                <p className="mt-1 text-sm font-semibold leading-6 text-[#d8e9ff]">
-                  今天目标：先练关键回合判断，不追求赢一整局，先把一手牌打明白。
-                </p>
-              </div>
-            </div>
-          </section>
+      <section className="relative z-10 mx-auto w-full max-w-5xl">
+        <header className="text-center">
+          <h1 className="text-4xl font-black tracking-[-0.04em] text-white sm:text-6xl lg:text-7xl">AI掼蛋训练营</h1>
         </header>
 
-        <section className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="rounded-[28px] border border-white/12 bg-white/[0.07] p-4 shadow-[0_24px_80px_rgba(0,0,0,0.28)] backdrop-blur-2xl sm:p-5">
-            <div className="mb-4 flex items-center justify-between">
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#9fe8ff]">
-                  Start Here
-                </p>
-                <h2 className="mt-1 text-2xl font-black">开始训练</h2>
+        <section className="mx-auto mt-12 grid max-w-4xl gap-5 md:grid-cols-2 md:gap-6 lg:mt-16">
+          {trainingEntries.map((entry, index) => (
+            <Link
+              className={`training-entry group relative min-h-[270px] overflow-hidden rounded-[28px] border p-6 shadow-[0_24px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl sm:min-h-[300px] sm:p-8 ${entry.primary ? "training-entry-primary border-[#68d8ff]/45 bg-[#0e2944]/80" : "border-white/14 bg-white/[0.065]"}`}
+              href={entry.href}
+              key={entry.title}
+              style={{ animationDelay: `${index * 120}ms` }}
+            >
+              <div className="relative flex h-full flex-col">
+                <div className="flex items-start justify-between">
+                  <span className="text-[11px] font-bold tracking-[0.2em] text-[#74dfff]">{entry.eyebrow}</span>
+                  <span className="training-entry-icon grid h-12 w-12 place-items-center rounded-2xl border border-white/12 bg-white/[0.07] text-2xl text-[#93e8ff]">
+                    {entry.icon}
+                  </span>
+                </div>
+                <div className="mt-auto">
+                  <h2 className="text-2xl font-black tracking-tight text-white sm:text-3xl">{entry.title}</h2>
+                  <p className="mt-3 max-w-xs text-sm font-medium leading-6 text-[#b8cde0]">{entry.description}</p>
+                  <span className="mt-7 inline-flex items-center gap-2 text-sm font-bold text-[#bceeff]">
+                    {entry.primary ? "进入牌桌" : "开始训练"} <span className="text-lg transition-transform group-hover:translate-x-1">→</span>
+                  </span>
+                </div>
               </div>
-              <span className="rounded-full bg-[#f6c65b] px-3 py-1.5 text-xs font-black text-[#171101]">
-                今日任务
-              </span>
-            </div>
-
-            <div className="grid gap-3">
-              {taskCards.map((task) => (
-                <Link
-                  className={[
-                    "group flex items-center justify-between gap-4 rounded-2xl border p-4 transition duration-200 hover:-translate-y-0.5",
-                    task.primary
-                      ? "border-[#f6c65b]/45 bg-[#f6c65b] text-[#171101] shadow-[0_18px_48px_rgba(246,198,91,0.16)]"
-                      : "border-white/12 bg-white/[0.06] text-white hover:border-[#54d7ff]/45"
-                  ].join(" ")}
-                  href={task.href}
-                  key={task.title}
-                >
-                  <span className="flex items-center gap-3">
-                    <span
-                      className={[
-                        "grid h-11 w-11 place-items-center rounded-xl",
-                        task.primary ? "bg-[#171101]/10" : "bg-[#54d7ff]/12 text-[#9fe8ff]"
-                      ].join(" ")}
-                    >
-                      <span className="material-symbols-outlined text-[22px]">{task.icon}</span>
-                    </span>
-                    <span>
-                      <span className="block text-base font-black">{task.title}</span>
-                      <span
-                        className={[
-                          "mt-1 block text-sm font-semibold leading-5",
-                          task.primary ? "text-[#3d2a00]" : "text-[#b8cbe0]"
-                        ].join(" ")}
-                      >
-                        {task.description}
-                      </span>
-                    </span>
-                  </span>
-                  <span className="material-symbols-outlined text-[22px] transition group-hover:translate-x-0.5">
-                    arrow_forward
-                  </span>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <section className="grid gap-4 sm:grid-cols-3">
-            {trainingLevels.map((level) => (
-              <Link
-                className="group relative min-h-[21rem] overflow-hidden rounded-[26px] border border-white/14 bg-white/[0.07] p-3 shadow-[0_24px_80px_rgba(0,0,0,0.28)] backdrop-blur-2xl transition duration-300 hover:-translate-y-2 hover:border-[#77d7ff]/65 hover:bg-white/[0.11]"
-                href={level.href}
-                key={level.id}
-              >
-                <div className={`absolute inset-x-8 -top-1 h-1 rounded-full bg-gradient-to-r ${level.accent} opacity-70 blur-sm transition group-hover:opacity-100`} />
-                <div className="relative aspect-[4/3] overflow-hidden rounded-[20px] bg-[#071a31]">
-                  <Image
-                    alt={`${level.title} 训练封面`}
-                    className="object-cover transition duration-500 group-hover:scale-105"
-                    fill
-                    priority={level.id === "beginner"}
-                    sizes="(min-width: 1024px) 23vw, (min-width: 640px) 30vw, 92vw"
-                    src={level.image}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#06111f] via-[#06111f]/18 to-transparent" />
-                  <span className="absolute left-3 top-3 rounded-full border border-white/20 bg-black/30 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#bfefff] backdrop-blur-md">
-                    {level.badge}
-                  </span>
-                </div>
-
-                <div className="px-2 pb-2 pt-4">
-                  <h2 className="text-2xl font-black leading-8 text-white">{level.title}</h2>
-                  <p className="mt-2 text-sm font-semibold leading-6 text-[#b8cbe0]">
-                    {level.description}
-                  </p>
-                  <div className="mt-4 flex h-11 items-center justify-between rounded-2xl border border-[#77d7ff]/24 bg-[#0f64ff]/18 px-4 text-sm font-black text-white">
-                    <span>进入牌桌</span>
-                    <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </section>
+            </Link>
+          ))}
         </section>
-
-        {reviewPractice ? (
-          <section className="mb-8 rounded-[24px] border border-white/12 bg-white/[0.06] p-4 backdrop-blur-2xl sm:p-5">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="text-xs font-black uppercase tracking-[0.16em] text-[#f6c65b]">
-                  Replay
-                </p>
-                <h2 className="mt-1 text-xl font-black">复盘专项：{reviewPractice.title}</h2>
-                <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-[#b8cbe0]">
-                  用一题完成：学习、判断、反馈、成长。
-                </p>
-              </div>
-              <Link
-                className="inline-flex h-12 items-center justify-center rounded-2xl border border-[#54d7ff]/30 bg-[#54d7ff]/12 px-5 text-sm font-black text-[#bfefff] transition hover:border-[#54d7ff]/70"
-                href={`/practice/${reviewPractice.id}`}
-              >
-                开始复盘
-              </Link>
-            </div>
-          </section>
-        ) : null}
       </section>
+
+      {isAboutOpen ? <AboutModal onClose={() => setIsAboutOpen(false)} /> : null}
     </main>
   );
 }
