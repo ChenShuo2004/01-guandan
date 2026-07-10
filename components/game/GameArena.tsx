@@ -135,7 +135,13 @@ export function GameArena({
   }, [runAIAction]);
 
   useEffect(() => {
-    if (isDealLocked || observerPaused || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || (!observerMode && currentPlayer?.kind !== "ai")) return;
+    if (observerPaused) {
+      // 记牌挑战暂停时不要锁住下一位 AI，答题结束后要从当前行动继续。
+      aiActionKeyRef.current = null;
+      return;
+    }
+
+    if (isDealLocked || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || (!observerMode && currentPlayer?.kind !== "ai")) return;
 
     const actionKey = `${state.turnNumber}-${currentPlayer.id}`;
     if (aiActionKeyRef.current === actionKey) return;
@@ -587,21 +593,21 @@ function ObserverHandTools({
   organized: boolean;
 }) {
   return (
-    <div className="absolute bottom-[1.8%] right-4 z-[115] flex items-center gap-2 rounded-2xl border border-white/45 bg-[#083b42]/90 px-3 py-2 text-white shadow-[0_12px_30px_rgba(4,48,62,0.3)] backdrop-blur-xl lg:right-8">
-      <div className="flex items-center gap-2 border-r border-white/20 pr-3">
-        <span className="grid h-8 w-8 place-items-center rounded-full bg-[#ff9d22] text-base font-black text-white">倍</span>
-        <span className="text-lg font-black">1</span>
+    <div className="absolute bottom-[1.8%] right-4 z-[115] flex w-[min(860px,calc(100vw-2rem))] items-center justify-between gap-4 rounded-2xl border border-white/45 bg-[#083b42]/90 px-5 py-3 text-white shadow-[0_12px_30px_rgba(4,48,62,0.3)] backdrop-blur-xl max-lg:gap-2 max-lg:px-3 max-lg:py-2 lg:right-8">
+      <div className="flex min-w-[110px] items-center gap-3 border-r border-white/20 pr-5 max-lg:min-w-0 max-lg:gap-1.5 max-lg:pr-2">
+        <span className="grid h-10 w-10 place-items-center rounded-full bg-[#ff9d22] text-lg font-black text-white max-lg:h-8 max-lg:w-8 max-lg:text-sm">倍</span>
+        <span className="text-2xl font-black max-lg:text-lg">1</span>
       </div>
-      <div className="flex items-center gap-1.5 border-r border-white/20 pr-3 text-sm font-black">
+      <div className="flex min-w-[300px] flex-1 items-center justify-center gap-3 border-r border-white/20 pr-5 text-base font-black max-lg:min-w-0 max-lg:gap-1 max-lg:pr-2 max-lg:text-xs">
         <span>同花顺</span>
-        <span className="text-lg text-white/85">♠</span>
-        <span className="text-lg text-[#ff7f8e]">♥</span>
-        <span className="text-lg text-white/85">♣</span>
-        <span className="text-lg text-[#ff7f8e]">♦</span>
+        <span className="text-2xl text-white/85 max-lg:text-lg">♠</span>
+        <span className="text-2xl text-[#ff7f8e] max-lg:text-lg">♥</span>
+        <span className="text-2xl text-white/85 max-lg:text-lg">♣</span>
+        <span className="text-2xl text-[#ff7f8e] max-lg:text-lg">♦</span>
         {straightFlush ? <span className="ml-1 text-[#8ff0c7]">已成</span> : null}
       </div>
       <button
-        className="rounded-xl bg-[#6676e8] px-4 py-2 text-sm font-black shadow-[0_6px_14px_rgba(69,77,190,0.3)] transition hover:-translate-y-0.5"
+        className="min-w-[170px] rounded-xl bg-[#6676e8] px-6 py-3 text-base font-black shadow-[0_6px_14px_rgba(69,77,190,0.3)] transition hover:-translate-y-0.5 max-lg:min-w-0 max-lg:px-3 max-lg:py-2 max-lg:text-xs"
         onClick={onOrganize}
         type="button"
       >
