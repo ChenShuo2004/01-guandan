@@ -14,21 +14,21 @@ const suitAssetName: Record<CardSuit, string> = {
 export function getPlayingCardAsset(card: Card) {
   if (card.isJoker) {
     return card.rank === 17
-      ? "/assets/poker-cards/fronts/joker-big.svg"
-      : "/assets/poker-cards/fronts/joker-small.svg";
+      ? "/assets/poker-cards/fronts/joker-big.png"
+      : "/assets/poker-cards/fronts/joker-small.png";
   }
 
   const suit = suitAssetName[card.suit as CardSuit];
   const label = getCardLabel(card).toLowerCase();
-  return `/assets/poker-cards/fronts/${suit}-${label}.svg`;
+  return `/assets/poker-cards/fronts/${suit}-${label}.png`;
 }
 
 export function getPokerCardAsset(card: PokerCardData) {
-  if (card.rank === "SJ") return "/assets/poker-cards/fronts/joker-small.svg";
-  if (card.rank === "BJ") return "/assets/poker-cards/fronts/joker-big.svg";
+  if (card.rank === "SJ") return "/assets/poker-cards/fronts/joker-small.png";
+  if (card.rank === "BJ") return "/assets/poker-cards/fronts/joker-big.png";
 
   const suit = card.suit ? suitAssetName[card.suit] : "spade";
-  return `/assets/poker-cards/fronts/${suit}-${card.rank.toLowerCase()}.svg`;
+  return `/assets/poker-cards/fronts/${suit}-${card.rank.toLowerCase()}.png`;
 }
 
 export function getCardVisualStatus({
