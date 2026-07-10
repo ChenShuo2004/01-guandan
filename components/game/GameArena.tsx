@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -53,7 +53,10 @@ export function GameArena({
   const [dealStage, setDealStage] = useState<DealStage>("dealing");
   const [dealRunId, setDealRunId] = useState(0);
   const [smartSortActive, setSmartSortActive] = useState(false);
+  const [observerCounterVisible, setObserverCounterVisible] = useState(true);
   const [sortPulseKey, setSortPulseKey] = useState(0);
+  const [restoreEnabled, setRestoreEnabled] = useState(false);
+  const originalHandRef = useRef<Card[] | null>(null);
   const [, setAiCountdown] = useState<number | null>(null);
   const aiActionKeyRef = useRef<string | null>(null);
   const aiTimerRef = useRef<number | null>(null);
@@ -78,7 +81,9 @@ export function GameArena({
     setTurnAction,
     clearRoundActions,
     runAIAction,
-    restart
+    restart,
+    sortHand,
+    restoreHand
   } = useGameStore(observerMode);
 
   const levelRankLabel = getRankLabel(state.levelRank);
@@ -103,6 +108,8 @@ export function GameArena({
   const restartDealAnimation = useCallback(() => {
     setDealStage("dealing");
     setSmartSortActive(false);
+    setRestoreEnabled(false);
+    originalHandRef.current = null;
     setSortPulseKey((current) => current + 1);
     setDealRunId((current) => current + 1);
   }, []);
@@ -130,6 +137,27 @@ export function GameArena({
     setSmartSortActive((active) => !active);
     setSortPulseKey((current) => current + 1);
   }, [isDealLocked]);
+
+  const handleOrganizeHand = useCallback(() => {
+    if (isDealLocked) return;
+
+    const currentHand = userPlayer?.hand ?? [];
+    if (currentHand.length === 0) return;
+
+    originalHandRef.current = [...currentHand];
+    setRestoreEnabled(true);
+    sortHand();
+    setSortPulseKey((current) => current + 1);
+  }, [isDealLocked, sortHand, userPlayer?.hand]);
+
+  const handleRestoreHand = useCallback(() => {
+    if (isDealLocked || !originalHandRef.current) return;
+
+    restoreHand(originalHandRef.current);
+    originalHandRef.current = null;
+    setRestoreEnabled(false);
+    setSortPulseKey((current) => current + 1);
+  }, [isDealLocked, restoreHand]);
 
   const completeAIAction = useCallback(() => {
     if (aiTimerRef.current) {
@@ -424,7 +452,7 @@ export function GameArena({
       ref={arenaRef}
     >
       <ArenaBackground />
-        <ArenaTopBar
+      <ArenaTopBar
           isFullscreen={isFullscreen}
           isPaused={isPaused}
           levelRank={levelRankLabel}
@@ -438,18 +466,32 @@ export function GameArena({
           phase={phase}
       />
 
+      {observerMode ? (
+        <button
+          aria-label="返回训练列表"
+          className="training-observer-back absolute left-3 top-3 z-[92] hidden h-12 items-center gap-1.5 rounded-2xl border border-white/75 bg-white/88 px-4 text-sm font-black text-[#12395a] shadow-[0_12px_26px_rgba(28,109,172,0.18)] backdrop-blur-xl transition active:scale-[0.97]"
+          onClick={goLobby}
+          type="button"
+        >
+          <span className="material-symbols-outlined text-[21px]">arrow_back</span>
+          返回
+        </button>
+      ) : null}
+
       <section className="training-arena-stage relative z-10 mx-auto h-full w-full max-w-[1680px] px-4 pb-3 pt-[84px] lg:px-5">
-        <FloatingArenaControls
-          cardCounterVisible={state.cardCounterVisible}
-          isFullscreen={isFullscreen}
-          observerMode={observerMode}
-          onOpenCoach={() => setActivePanel("coach")}
-          onOpenRules={() => setActivePanel("rules")}
-          onOpenSettings={() => setActivePanel("settings")}
-          onToggleCardCounter={toggleCardCounter}
-          onToggleFullscreen={toggleFullscreen}
-          tipsEnabled={settings.aiTips}
-        />
+        {!observerMode ? (
+          <FloatingArenaControls
+            cardCounterVisible={state.cardCounterVisible}
+            isFullscreen={isFullscreen}
+            observerMode={observerMode}
+            onOpenCoach={() => setActivePanel("coach")}
+            onOpenRules={() => setActivePanel("rules")}
+            onOpenSettings={() => setActivePanel("settings")}
+            onToggleCardCounter={toggleCardCounter}
+            onToggleFullscreen={toggleFullscreen}
+            tipsEnabled={settings.aiTips}
+          />
+        ) : null}
         <GameTable
           levelRank={levelRankLabel}
           players={arenaPlayers}
@@ -462,9 +504,23 @@ export function GameArena({
           counts={state.cardRemainingCount}
           levelRank={levelRankLabel}
           myRemaining={userPlayer?.hand.length ?? 0}
+          onHide={observerMode ? () => setObserverCounterVisible(false) : undefined}
           opponentRemaining={state.players.find((player) => player.role === "opponent")?.hand.length ?? 0}
-          visible={state.cardCounterVisible}
+          visible={!observerMode && state.cardCounterVisible}
         />
+
+        {observerMode && !observerCounterVisible ? (
+          <button
+            aria-label="显示记牌器"
+            className="absolute right-5 top-[94px] z-[66] flex h-10 items-center gap-1.5 rounded-xl border border-white/80 bg-white/90 px-3 text-xs font-black text-[#12395a] shadow-[0_10px_24px_rgba(25,92,148,0.18)] backdrop-blur-md transition hover:-translate-y-0.5 max-xl:right-3 max-lg:top-[86px]"
+            onClick={() => setObserverCounterVisible(true)}
+            title="显示记牌器"
+            type="button"
+          >
+            <span className="material-symbols-outlined text-[19px]">visibility</span>
+            记牌
+          </button>
+        ) : null}
 
         {settings.aiTips && !observerMode ? (
           <motion.section
@@ -523,14 +579,16 @@ export function GameArena({
                 onContinue={continueTraining}
                 onPass={pass}
                 onPlay={playSelectedCards}
-                onRestart={restartTraining}
-                onShowSolution={showSolution}
-                onSortHand={toggleSmartSort}
-                onStart={startTraining}
-                onTip={requestTip}
-                onToggleCardCounter={toggleCardCounter}
-                onUndo={clearSelectedCards}
-                onSkipAIWait={skipAIWait}
+              onRestart={restartTraining}
+              onShowSolution={showSolution}
+              onSortHand={handleOrganizeHand}
+              onStart={startTraining}
+              onTip={requestTip}
+              onToggleCardCounter={toggleCardCounter}
+              onUndo={clearSelectedCards}
+              onSkipAIWait={skipAIWait}
+              onRestoreHand={handleRestoreHand}
+              restoreEnabled={restoreEnabled}
                 phase={phase}
                 selectedCount={state.selectedCards.length}
               /> : null}
@@ -539,11 +597,13 @@ export function GameArena({
         </section>
         {observerMode ? (
           <ObserverHandTools
-            hasStraightFlush={hasStraightFlush(userPlayer?.hand ?? [])}
+            hasStraightFlush={hasStraightFlush(displayedUserCards)}
             isAIThinking={currentPlayer?.kind === "ai" && state.trainingPhase === "playing" && !isPaused}
-            onOrganize={toggleSmartSort}
+            onOrganize={handleOrganizeHand}
             onSkipAIWait={skipAIWait}
-            organized={smartSortActive}
+            organized={restoreEnabled}
+            onRestore={handleRestoreHand}
+            restoreEnabled={restoreEnabled}
           />
         ) : null}
         <DealAnimation
@@ -616,16 +676,20 @@ function ObserverHandTools({
   isAIThinking,
   onOrganize,
   onSkipAIWait,
-  organized
+  organized,
+  onRestore,
+  restoreEnabled
 }: {
   hasStraightFlush: boolean;
   isAIThinking: boolean;
   onOrganize: () => void;
   onSkipAIWait: () => void;
   organized: boolean;
+  onRestore: () => void;
+  restoreEnabled: boolean;
 }) {
   return (
-    <div className="absolute bottom-[1.8%] left-1/2 z-[115] flex w-[min(860px,calc(100vw-2rem))] -translate-x-1/2 items-center justify-between gap-4 rounded-2xl border border-white/45 bg-[#083b42]/90 px-5 py-3 text-white shadow-[0_12px_30px_rgba(4,48,62,0.3)] backdrop-blur-xl max-lg:gap-2 max-lg:px-3 max-lg:py-2">
+    <div className="absolute bottom-[1.8%] left-1/2 z-[115] flex w-[min(1080px,calc(100vw-2rem))] -translate-x-1/2 items-center justify-between gap-3 rounded-2xl border border-white/45 bg-[#083b42]/90 px-5 py-3 text-white shadow-[0_12px_30px_rgba(4,48,62,0.3)] backdrop-blur-xl max-lg:gap-2 max-lg:px-3 max-lg:py-2">
       <div className="flex min-w-[110px] items-center gap-3 border-r border-white/20 pr-5 max-lg:min-w-0 max-lg:gap-1.5 max-lg:pr-2">
         <span className="grid h-10 w-10 place-items-center rounded-full bg-[#ff9d22] text-lg font-black text-white max-lg:h-8 max-lg:w-8 max-lg:text-sm">倍</span>
         <span className="text-2xl font-black max-lg:text-lg">1</span>
@@ -639,13 +703,29 @@ function ObserverHandTools({
         {straightFlush ? <span className="ml-1 text-[#8ff0c7]">已成</span> : null}
       </div>
       <button
+        aria-label={restoreEnabled ? "恢复理牌前手牌" : "先点击理牌后再恢复"}
+        className={cn(
+          "flex min-w-[128px] items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-base font-black max-lg:min-w-0 max-lg:px-3 max-lg:py-2 max-lg:text-xs",
+          restoreEnabled
+            ? "bg-[#6676e8] text-white shadow-[0_6px_14px_rgba(69,77,190,0.3)] transition hover:-translate-y-0.5"
+            : "cursor-not-allowed bg-[#6676e8]/75 text-white/80"
+        )}
+        disabled={!restoreEnabled}
+        onClick={onRestore}
+        title={restoreEnabled ? "恢复理牌前手牌" : "先点击理牌后再恢复"}
+        type="button"
+      >
+        <span className="material-symbols-outlined text-[19px]">{restoreEnabled ? "undo" : "lock"}</span>
+        恢复
+      </button>
+      <button
         className="min-w-[170px] rounded-xl bg-[#6676e8] px-6 py-3 text-base font-black shadow-[0_6px_14px_rgba(69,77,190,0.3)] transition hover:-translate-y-0.5 max-lg:min-w-0 max-lg:px-3 max-lg:py-2 max-lg:text-xs"
         onClick={onOrganize}
         type="button"
       >
-        {organized ? "恢复" : "一键理牌"}
+        理牌
       </button>
-      {isAIThinking ? (
+      {isAIThinking && (
         <button
           className="min-w-[120px] rounded-xl border border-white/40 bg-white/15 px-5 py-3 text-base font-black text-white transition hover:bg-white/24 max-lg:min-w-0 max-lg:px-3 max-lg:py-2 max-lg:text-xs"
           onClick={onSkipAIWait}
@@ -653,7 +733,7 @@ function ObserverHandTools({
         >
           跳过 AI
         </button>
-      ) : null}
+      )}
     </div>
   );
 }
@@ -810,28 +890,33 @@ function ArenaTopBar({
           <span className="ml-2 rounded-full bg-[#12395a]/88 px-3 py-1 text-xs text-white max-lg:hidden">{observerMode ? "观察模式 · AI 自动行动" : phaseText[phase]}</span>
         </div>
 
-        <nav className={cn("flex min-w-0 items-center gap-3 max-lg:gap-2", observerMode && "[&>button:first-child]:hidden")}>
-          <HudButton icon="◉" label="AI Coach" onClick={onOpenCoach} />
-          <HudButton icon="ⓘ" label="规则" onClick={onOpenRules} />
-          <HudButton icon="⚙" label="设置" onClick={onOpenSettings} />
-          <HudButton icon={isPaused ? "▶" : "Ⅱ"} label={isPaused ? "继续" : "暂停"} onClick={onTogglePause} />
+        <nav className={observerMode ? "hidden" : "flex min-w-0 items-center gap-3 max-lg:gap-2"}>
+          {!observerMode ? (
+            <>
+              <HudButton icon="◉" label="AI Coach" onClick={onOpenCoach} />
+              <HudButton icon="ⓘ" label="规则" onClick={onOpenRules} />
+              <HudButton icon="⚙" label="设置" onClick={onOpenSettings} />
+              <HudButton icon={isPaused ? "▶" : "Ⅱ"} label={isPaused ? "继续" : "暂停"} onClick={onTogglePause} />
+              <button
+                aria-label={isFullscreen ? "退出全屏" : "进入全屏"}
+                className="grid h-12 w-12 place-items-center rounded-full bg-white/42 text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5"
+                onClick={onToggleFullscreen}
+                type="button"
+              >
+                <span className="material-symbols-outlined text-[22px]">
+                  {isFullscreen ? "fullscreen_exit" : "fullscreen"}
+                </span>
+              </button>
+            </>
+          ) : null}
           <button
-            aria-label={isFullscreen ? "退出全屏" : "进入全屏"}
-            className="grid h-12 w-12 place-items-center rounded-full bg-white/42 text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5"
-            onClick={onToggleFullscreen}
-            type="button"
-          >
-            <span className="material-symbols-outlined text-[22px]">
-              {isFullscreen ? "fullscreen_exit" : "fullscreen"}
-            </span>
-          </button>
-          <button
-            className="h-12 rounded-full bg-[#0f64ff] px-7 text-base font-black text-white shadow-[0_14px_30px_rgba(15,100,255,0.28)] transition hover:-translate-y-0.5 max-lg:w-12 max-lg:px-0"
+            aria-label={observerMode ? "返回训练列表" : "退出房间"}
+            className="flex h-12 items-center gap-1.5 rounded-full bg-[#0f64ff] px-6 text-base font-black text-white shadow-[0_14px_30px_rgba(15,100,255,0.28)] transition hover:-translate-y-0.5 max-lg:px-4"
             onClick={onBackToLobby}
             type="button"
           >
-            <span className="max-lg:sr-only">退出房间</span>
-            <span aria-hidden className="hidden max-lg:inline">退</span>
+            <span className="material-symbols-outlined text-[21px]">arrow_back</span>
+            <span>{observerMode ? "返回训练" : "退出房间"}</span>
           </button>
         </nav>
       </div>

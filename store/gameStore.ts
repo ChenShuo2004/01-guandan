@@ -28,6 +28,7 @@ type GameAction =
   | { type: "set-selection"; cards: Card[] }
   | { type: "clear-selection" }
   | { type: "sort-hand" }
+  | { type: "restore-hand"; cards: Card[] }
   | { type: "play-selected" }
   | { type: "pass" }
   | { type: "tip" }
@@ -151,6 +152,29 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
           message: "已按牌型和牌力整理手牌",
           reason: "整理后会保持当前选择，并把手牌恢复到稳定排序。",
           suggestion: "如果不确定下一手，先选一组牌再点“查看提示”。"
+        }
+      );
+    }
+
+    case "restore-hand": {
+      if (state.trainingPhase !== "playing" || state.gameStatus !== "playing") return state;
+
+      return applyCoachFeedback(
+        {
+          ...state,
+          players: state.players.map((player) =>
+            player.id === "player" ? { ...player, hand: action.cards } : player
+          ),
+          selectedCards: [],
+          invalidCardIds: [],
+          tipMessage: null
+        },
+        {
+          type: "tip",
+          level: "low",
+          message: "已恢复理牌前的手牌顺序",
+          reason: "恢复到你点击理牌之前的排列，方便对照原始牌序。",
+          suggestion: "如果想重新整理，再次点击“理牌”即可。"
         }
       );
     }
@@ -353,12 +377,14 @@ export function useGameStore(observerMode = false) {
   }, []);
 
   const selectCard = useCallback((card: Card) => {
+    if (observerMode) return;
     dispatch({ type: "toggle-card", card });
-  }, []);
+  }, [observerMode]);
 
   const setSelectedCards = useCallback((cards: Card[]) => {
+    if (observerMode) return;
     dispatch({ type: "set-selection", cards });
-  }, []);
+  }, [observerMode]);
 
   const clearSelectedCards = useCallback(() => {
     dispatch({ type: "clear-selection" });
@@ -368,25 +394,34 @@ export function useGameStore(observerMode = false) {
     dispatch({ type: "sort-hand" });
   }, []);
 
-  const playSelectedCards = useCallback(() => {
-    dispatch({ type: "play-selected" });
+  const restoreHand = useCallback((cards: Card[]) => {
+    dispatch({ type: "restore-hand", cards });
   }, []);
+
+  const playSelectedCards = useCallback(() => {
+    if (observerMode) return;
+    dispatch({ type: "play-selected" });
+  }, [observerMode]);
 
   const pass = useCallback(() => {
+    if (observerMode) return;
     dispatch({ type: "pass" });
-  }, []);
+  }, [observerMode]);
 
   const requestTip = useCallback(() => {
+    if (observerMode) return;
     dispatch({ type: "tip" });
-  }, []);
+  }, [observerMode]);
 
   const showSolution = useCallback(() => {
+    if (observerMode) return;
     dispatch({ type: "show-solution" });
-  }, []);
+  }, [observerMode]);
 
   const toggleCardCounter = useCallback(() => {
+    if (observerMode) return;
     dispatch({ type: "toggle-card-counter" });
-  }, []);
+  }, [observerMode]);
 
   const setTurnAction = useCallback((turnAction: TurnActionState) => {
     dispatch({ type: "set-turn-action", turnAction });
@@ -416,6 +451,7 @@ export function useGameStore(observerMode = false) {
     setSelectedCards,
     clearSelectedCards,
     sortHand,
+    restoreHand,
     playSelectedCards,
     pass,
     requestTip,

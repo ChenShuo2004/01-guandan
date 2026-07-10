@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import type { TrainingPhase } from "@/lib/guandan/gameState";
@@ -22,6 +22,8 @@ interface ActionToolbarProps {
   onToggleCardCounter: () => void;
   onUndo: () => void;
   onSkipAIWait: () => void;
+  onRestoreHand: () => void;
+  restoreEnabled: boolean;
 }
 
 export function ActionToolbar({
@@ -41,7 +43,9 @@ export function ActionToolbar({
   onTip,
   onToggleCardCounter,
   onUndo,
-  onSkipAIWait
+  onSkipAIWait,
+  onRestoreHand,
+  restoreEnabled
 }: ActionToolbarProps) {
   return (
     <motion.div
@@ -63,6 +67,7 @@ export function ActionToolbar({
           <ToolbarButton disabled={!canAct} icon="tips_and_updates" label="提示" onClick={onTip} tone="warning" />
           <ToolbarButton active={cardCounterVisible} icon="casino" label="记牌器" onClick={onToggleCardCounter} />
           <ToolbarButton icon="sort" label="理牌" onClick={onSortHand} />
+          <ToolbarButton disabled={!restoreEnabled} icon="undo" label="恢复" onClick={onRestoreHand} />
           <ToolbarButton
             disabled={!canAct || selectedCount === 0}
             icon="send"

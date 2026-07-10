@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useMemo, useRef } from "react";
 import type { PointerEvent } from "react";
@@ -143,7 +143,7 @@ export function CardHand({
 
     return (
       <div
-        className={cn("training-player-hand relative z-[90] overflow-visible px-2 py-1", disabled && "opacity-75")}
+        className="training-player-hand relative z-[90] overflow-visible px-2 py-1"
         data-selected-count={selectedCardIds.length}
         style={{
           ["--arena-card-overlap" as string]: `${Math.round(arenaCardOverlap * arenaCardScale)}px`,
@@ -159,8 +159,8 @@ export function CardHand({
               layout
               style={{ zIndex: index }}
               transition={{
-                layout: { duration: 0.4, ease: "easeOut" },
-                scale: { delay: 0.4, duration: 0.22, ease: "easeOut" }
+                layout: { duration: 0.3, ease: "easeOut" },
+                scale: { delay: 0.3, duration: 0.22, ease: "easeOut" }
               }}
             >
               <CardGroup
