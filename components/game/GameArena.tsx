@@ -32,6 +32,7 @@ const defaultSettings: ArenaSettings = {
 interface GameArenaProps {
   observerMode?: boolean;
   observerPaused?: boolean;
+  fastForward?: boolean;
   onObserverStateChange?: (state: GameEngineState) => void;
   onDealComplete?: () => void;
 }
@@ -39,6 +40,7 @@ interface GameArenaProps {
 export function GameArena({
   observerMode = false,
   observerPaused = false,
+  fastForward = false,
   onObserverStateChange,
   onDealComplete
 }: GameArenaProps) {
@@ -182,7 +184,7 @@ export function GameArena({
     if (aiActionKeyRef.current === actionKey) return;
 
     aiActionKeyRef.current = actionKey;
-    const seconds = aiRemainingRef.current ?? settings.aiThinkSeconds;
+    const seconds = fastForward ? 0 : (aiRemainingRef.current ?? settings.aiThinkSeconds);
     aiRemainingRef.current = null;
 
     setTurnAction({
@@ -216,7 +218,7 @@ export function GameArena({
         aiRemainingRef.current = remaining;
       }
     };
-  }, [completeAIAction, currentPlayer?.id, currentPlayer?.kind, currentPlayer?.role, isDealLocked, isPaused, observerMode, observerPaused, settings.aiThinkSeconds, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
+  }, [completeAIAction, currentPlayer?.id, currentPlayer?.kind, currentPlayer?.role, fastForward, isDealLocked, isPaused, observerMode, observerPaused, settings.aiThinkSeconds, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
 
   useEffect(() => {
     if (observerMode || isDealLocked || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.id !== "player") return;
