@@ -53,7 +53,7 @@ export function GameTable({
 
 function TurnStatusLabel({ turnAction }: { turnAction: TurnActionState }) {
   return (
-    <div className="absolute left-1/2 top-[30%] z-20 -translate-x-1/2 rounded-full border border-white/70 bg-white/80 px-5 py-2 text-center text-[#12395a] shadow-[0_12px_28px_rgba(43,127,191,0.16)] backdrop-blur">
+    <div className="absolute left-1/2 top-[30%] z-[50] -translate-x-1/2 rounded-full border border-white/70 bg-white/90 px-5 py-2 text-center text-[#12395a] shadow-[0_12px_28px_rgba(43,127,191,0.16)] backdrop-blur">
       <p className="text-xs font-black uppercase tracking-[0.12em] text-[#34749c]">当前行动</p>
       <p className="text-base font-black">{turnAction.label}</p>
       {typeof turnAction.remainingSeconds === "number" ? (

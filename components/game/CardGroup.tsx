@@ -38,12 +38,10 @@ export function CardGroup({
   selectedCardIds
 }: CardGroupProps) {
   if (layout === "stack") {
-    const baseSize = compact ? { height: 78, width: 56 } : { height: 124, width: 89 };
+    const baseSize = compact ? { height: 94, width: 67 } : { height: 146, width: 104 };
     const cardWidth = Math.round(baseSize.width * sizeScale);
     const cardHeight = Math.round(baseSize.height * sizeScale);
     const stackStep = Math.max(24, Math.round(cardHeight * 0.34));
-    const selectedGroup = group.cards.some((card) => selectedCardIds.has(card.id));
-
     return (
       <div
         className={cn(
@@ -56,18 +54,6 @@ export function CardGroup({
           width: cardWidth
         }}
       >
-        <button
-          aria-label={group.label}
-          className={cn(
-            "absolute inset-0 z-[220] rounded-xl outline-none transition",
-            !disabled && "cursor-pointer hover:bg-white/5",
-            selectedGroup && "ring-2 ring-[#ffd700]/80"
-          )}
-          disabled={disabled}
-          onPointerDown={(event) => onGroupPointerDown?.(group.cards, event)}
-          onPointerEnter={() => onGroupPointerEnter?.(group.cards)}
-          type="button"
-        />
         {group.cards.map((card, index) => {
           const selected = selectedCardIds.has(card.id);
           const invalid = invalidCardIds.has(card.id);
@@ -78,7 +64,7 @@ export function CardGroup({
               key={card.id}
               style={{
                 bottom: index * stackStep,
-                pointerEvents: "none",
+                pointerEvents: "auto",
                 zIndex: selected || invalid ? 100 + index : index
               }}
             >
@@ -134,7 +120,7 @@ export function CardGroup({
           </div>
         );
       })}
-      {group.type !== "single" ? (
+      {layout === "row" && group.type !== "single" ? (
         <span className="pointer-events-none absolute -bottom-4 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-full border border-white/20 bg-[#061a24]/82 px-2 py-0.5 text-[10px] font-black text-[#ffd84d] lg:block">
           {group.label}
         </span>

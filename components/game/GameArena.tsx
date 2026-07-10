@@ -10,7 +10,7 @@ import { DealAnimation } from "@/components/game/DealAnimation";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
 import { useGameStore } from "@/store/gameStore";
-import { getRankLabel, sortCardsAscending } from "@/lib/guandan/card";
+import { getRankLabel, sortCardsAscending, type Card } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
 import type { GameEngineState, TrainingPhase } from "@/lib/guandan/gameState";
 import type { ArenaPlayer } from "@/types/game";
@@ -471,7 +471,10 @@ export function GameArena({
           <AnalysisPanel reason={state.coachFeedback.reason} status={roundStatus} />
         </div> : null}
 
-        <section className="training-hand-dock absolute bottom-3 left-3 right-3 z-[70] min-w-0 lg:left-[120px] lg:right-[120px] 2xl:left-[150px] 2xl:right-[150px]">
+        <section className={cn(
+          "training-hand-dock absolute left-3 right-3 z-[70] min-w-0 lg:left-[120px] lg:right-[120px] 2xl:left-[150px] 2xl:right-[150px]",
+          observerMode ? "bottom-[8%]" : "bottom-3"
+        )}>
           {!isDealLocked ? (
             <>
               <HandCards
@@ -509,6 +512,13 @@ export function GameArena({
             </>
           ) : null}
         </section>
+        {observerMode ? (
+          <ObserverHandTools
+            hasStraightFlush={hasStraightFlush(userPlayer?.hand ?? [])}
+            onOrganize={toggleSmartSort}
+            organized={smartSortActive}
+          />
+        ) : null}
         <DealAnimation
           active={isDealLocked}
           cardCount={totalCardCount}
@@ -565,6 +575,61 @@ function ArenaBackground() {
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(59,170,244,0.10)_55%,rgba(44,139,214,0.22))]" />
     </div>
   );
+}
+
+function ObserverHandTools({
+  hasStraightFlush: straightFlush,
+  onOrganize,
+  organized
+}: {
+  hasStraightFlush: boolean;
+  onOrganize: () => void;
+  organized: boolean;
+}) {
+  return (
+    <div className="absolute bottom-[1.8%] right-4 z-[115] flex items-center gap-2 rounded-2xl border border-white/45 bg-[#083b42]/90 px-3 py-2 text-white shadow-[0_12px_30px_rgba(4,48,62,0.3)] backdrop-blur-xl lg:right-8">
+      <div className="flex items-center gap-2 border-r border-white/20 pr-3">
+        <span className="grid h-8 w-8 place-items-center rounded-full bg-[#ff9d22] text-base font-black text-white">倍</span>
+        <span className="text-lg font-black">1</span>
+      </div>
+      <div className="flex items-center gap-1.5 border-r border-white/20 pr-3 text-sm font-black">
+        <span>同花顺</span>
+        <span className="text-lg text-white/85">♠</span>
+        <span className="text-lg text-[#ff7f8e]">♥</span>
+        <span className="text-lg text-white/85">♣</span>
+        <span className="text-lg text-[#ff7f8e]">♦</span>
+        {straightFlush ? <span className="ml-1 text-[#8ff0c7]">已成</span> : null}
+      </div>
+      <button
+        className="rounded-xl bg-[#6676e8] px-4 py-2 text-sm font-black shadow-[0_6px_14px_rgba(69,77,190,0.3)] transition hover:-translate-y-0.5"
+        onClick={onOrganize}
+        type="button"
+      >
+        {organized ? "恢复" : "一键理牌"}
+      </button>
+    </div>
+  );
+}
+
+function hasStraightFlush(cards: Card[]) {
+  const suitRanks = new Map<string, number[]>();
+
+  for (const card of cards) {
+    if (card.isJoker) continue;
+    const ranks = suitRanks.get(card.suit) ?? [];
+    if (!ranks.includes(card.rank)) ranks.push(card.rank);
+    suitRanks.set(card.suit, ranks);
+  }
+
+  return [...suitRanks.values()].some((ranks) => {
+    const sorted = ranks.sort((a, b) => a - b);
+    let run = 1;
+    for (let index = 1; index < sorted.length; index += 1) {
+      run = sorted[index] === sorted[index - 1] + 1 ? run + 1 : 1;
+      if (run >= 5) return true;
+    }
+    return false;
+  });
 }
 
 function FloatingArenaControls({
@@ -684,7 +749,7 @@ function ArenaTopBar({
               Ace <span className="text-[#12395a]">掼蛋记牌训练空间</span>
             </p>
             <p className="mt-1 text-[10px] font-black text-[#255675] max-lg:line-clamp-2 max-lg:max-w-[185px]">
-              AI Coach 陪你从基础规则到高级牌局决策。
+              AI Coach 陪你完成每一轮牌局决策。
             </p>
           </div>
         </div>
