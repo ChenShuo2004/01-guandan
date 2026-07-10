@@ -57,6 +57,7 @@ export function GameArena({
   const [, setAiCountdown] = useState<number | null>(null);
   const aiActionKeyRef = useRef<string | null>(null);
   const aiTimerRef = useRef<number | null>(null);
+  const aiRemainingRef = useRef<number | null>(null);
   const userActionKeyRef = useRef<string | null>(null);
   const userTimerRef = useRef<number | null>(null);
   const {
@@ -153,7 +154,8 @@ export function GameArena({
     if (aiActionKeyRef.current === actionKey) return;
 
     aiActionKeyRef.current = actionKey;
-    const seconds = settings.aiThinkSeconds;
+    const seconds = aiRemainingRef.current ?? settings.aiThinkSeconds;
+    aiRemainingRef.current = null;
 
     setTurnAction({
       playerId: currentPlayer.id,
@@ -183,12 +185,17 @@ export function GameArena({
       if (aiTimerRef.current) {
         window.clearInterval(aiTimerRef.current);
         aiTimerRef.current = null;
+        aiRemainingRef.current = remaining;
       }
     };
   }, [completeAIAction, currentPlayer?.id, currentPlayer?.kind, currentPlayer?.role, isDealLocked, isPaused, observerMode, observerPaused, settings.aiThinkSeconds, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
 
   useEffect(() => {
-    if (observerMode || isDealLocked || isPaused || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.id !== "player") return;
+    if (observerMode || isDealLocked || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.id !== "player") return;
+    if (isPaused) {
+      userActionKeyRef.current = null;
+      return;
+    }
 
     const actionKey = `${state.turnNumber}-player`;
     if (userActionKeyRef.current === actionKey) return;
