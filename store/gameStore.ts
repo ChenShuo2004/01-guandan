@@ -275,7 +275,7 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
 
     case "ai-action": {
       const currentPlayer = getCurrentPlayer(state);
-      if (!currentPlayer || currentPlayer.kind !== "ai" || state.trainingPhase !== "playing" || state.gameStatus !== "playing") return state;
+      if (!currentPlayer || state.trainingPhase !== "playing" || state.gameStatus !== "playing") return state;
 
       const aiAction = getAIAction(currentPlayer, state, "normal");
       const result =
@@ -323,7 +323,7 @@ function applyCoachFeedback(state: GameEngineState, feedback: CoachFeedback): Ga
   };
 }
 
-export function useGameStore() {
+export function useGameStore(observerMode = false) {
   const [state, dispatch] = useReducer(gameReducer, undefined, createInitialGameState);
   const currentPlayer = getCurrentPlayer(state);
   const userPlayer = state.players.find((player) => player.id === "player");
@@ -331,7 +331,7 @@ export function useGameStore() {
     () => state.selectedCards.map((card) => card.id),
     [state.selectedCards]
   );
-  const isUserTurn = currentPlayer?.id === "player" && state.gameStatus === "playing" && state.trainingPhase === "playing";
+  const isUserTurn = !observerMode && currentPlayer?.id === "player" && state.gameStatus === "playing" && state.trainingPhase === "playing";
 
   const startTraining = useCallback(() => {
     dispatch({ type: "start-training" });

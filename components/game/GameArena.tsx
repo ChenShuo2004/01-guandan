@@ -13,7 +13,7 @@ import { useGameStore } from "@/store/gameStore";
 import { smartSortCardsForGuandan } from "@/lib/cards/smartSort";
 import { getRankLabel } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
-import type { TrainingPhase } from "@/lib/guandan/gameState";
+import type { GameEngineState, TrainingPhase } from "@/lib/guandan/gameState";
 import type { ArenaPlayer } from "@/types/game";
 
 type TrainingLevel = "beginner" | "intermediate" | "advanced";
@@ -59,10 +59,22 @@ const defaultSettings: ArenaSettings = {
   aiTips: true
 };
 
-export function GameArena() {
+interface GameArenaProps {
+  observerMode?: boolean;
+  observerPaused?: boolean;
+  observerLevel?: TrainingLevel;
+  onObserverStateChange?: (state: GameEngineState) => void;
+}
+
+export function GameArena({
+  observerMode = false,
+  observerPaused = false,
+  observerLevel,
+  onObserverStateChange
+}: GameArenaProps) {
   const router = useRouter();
   const arenaRef = useRef<HTMLElement | null>(null);
-  const [activeLevel, setActiveLevel] = useState<TrainingLevel>("beginner");
+  const [activeLevel, setActiveLevel] = useState<TrainingLevel>(observerLevel ?? "beginner");
   const [activePanel, setActivePanel] = useState<"coach" | "rules" | "settings" | null>(null);
   const [settings, setSettings] = useState<ArenaSettings>(defaultSettings);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -97,7 +109,7 @@ export function GameArena() {
     clearRoundActions,
     runAIAction,
     restart
-  } = useGameStore();
+  } = useGameStore(observerMode);
 
   const activeTrainingLevel = useMemo(
     () => trainingLevels.find((level) => level.id === activeLevel) ?? trainingLevels[0],
@@ -117,6 +129,10 @@ export function GameArena() {
     const hand = userPlayer?.hand ?? [];
     return smartSortActive ? smartSortCardsForGuandan(hand, levelRankLabel) : hand;
   }, [levelRankLabel, smartSortActive, userPlayer?.hand]);
+
+  useEffect(() => {
+    onObserverStateChange?.(state);
+  }, [onObserverStateChange, state]);
 
   const restartDealAnimation = useCallback(() => {
     setDealStage("dealing");
@@ -159,7 +175,7 @@ export function GameArena() {
   }, [runAIAction]);
 
   useEffect(() => {
-    if (isDealLocked || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.kind !== "ai") return;
+    if (isDealLocked || observerPaused || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || (!observerMode && currentPlayer?.kind !== "ai")) return;
 
     const actionKey = `${state.turnNumber}-${currentPlayer.id}`;
     if (aiActionKeyRef.current === actionKey) return;
@@ -197,10 +213,10 @@ export function GameArena() {
         aiTimerRef.current = null;
       }
     };
-  }, [completeAIAction, currentPlayer?.id, currentPlayer?.kind, currentPlayer?.role, isDealLocked, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
+  }, [completeAIAction, currentPlayer?.id, currentPlayer?.kind, currentPlayer?.role, isDealLocked, observerMode, observerPaused, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
 
   useEffect(() => {
-    if (isDealLocked || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.id !== "player") return;
+    if (observerMode || isDealLocked || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.id !== "player") return;
 
     const actionKey = `${state.turnNumber}-player`;
     if (userActionKeyRef.current === actionKey) return;
@@ -239,7 +255,7 @@ export function GameArena() {
         userTimerRef.current = null;
       }
     };
-  }, [currentPlayer?.id, isDealLocked, requestTip, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
+  }, [currentPlayer?.id, isDealLocked, observerMode, requestTip, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
 
   useEffect(() => {
     if (!state.roundComplete) return;
@@ -515,7 +531,7 @@ export function GameArena() {
         </div>
 
         <section className="training-hand-dock absolute bottom-3 left-3 right-3 z-[60] min-w-0 lg:left-[120px] lg:right-[120px] 2xl:left-[150px] 2xl:right-[150px]">
-          {!isDealLocked ? (
+          {!observerMode && !isDealLocked ? (
             <>
               <ActionToolbar
                 canAct={isUserTurn && !isDealLocked}
@@ -552,11 +568,13 @@ export function GameArena() {
             </>
           ) : null}
         </section>
-        <SmartSortButton
-          active={smartSortActive}
-          disabled={isDealLocked}
-          onClick={toggleSmartSort}
-        />
+        {!observerMode ? (
+          <SmartSortButton
+            active={smartSortActive}
+            disabled={isDealLocked}
+            onClick={toggleSmartSort}
+          />
+        ) : null}
         <DealAnimation
           active={isDealLocked}
           cardCount={totalCardCount}
