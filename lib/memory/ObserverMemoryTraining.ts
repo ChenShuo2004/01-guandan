@@ -114,7 +114,7 @@ export function getMaxPossibleCount(rank: CardRank): number {
 
 export function createTargetRanks(targetCount: number, levelRank: CardRank): CardRank[] {
   const candidates: CardRank[] = [
-    17, 16, levelRank, 14, 15, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3,
+    16, levelRank, 14, 15, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3,
   ];
   const unique: CardRank[] = [];
   const seen = new Set<CardRank>();
