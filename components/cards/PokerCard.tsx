@@ -58,7 +58,15 @@ export function PokerCard({
         src={getPokerCardAsset(card)}
       />
       {isLevelCard ? (
-        <span className="pointer-events-none absolute inset-0 rounded-[12px] bg-[radial-gradient(circle_at_50%_10%,rgba(255,232,140,0.52),transparent_46%),linear-gradient(135deg,rgba(255,255,255,0.22),transparent_44%)]" />
+        <>
+          <span className="pointer-events-none absolute inset-0 rounded-[12px] bg-[radial-gradient(circle_at_50%_10%,rgba(255,232,140,0.52),transparent_46%),linear-gradient(135deg,rgba(255,255,255,0.22),transparent_44%)]" />
+          <span
+            aria-label="级牌"
+            className="pointer-events-none absolute right-0 top-0 z-10 grid h-9 w-9 place-items-center bg-[#43d27d] pl-1 pb-1 text-xs font-black text-white shadow-[-2px_2px_8px_rgba(20,120,70,0.25)] [clip-path:polygon(100%_0,100%_100%,0_0)]"
+          >
+            <span className="translate-x-1 -translate-y-1 text-[10px]">级</span>
+          </span>
+        </>
       ) : null}
     </div>
   );

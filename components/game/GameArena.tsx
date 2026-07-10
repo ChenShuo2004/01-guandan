@@ -20,29 +20,34 @@ type DealStage = "dealing" | "sorting" | "ready";
 interface ArenaSettings {
   sound: boolean;
   aiTips: boolean;
+  aiThinkSeconds: number;
 }
 
 const defaultSettings: ArenaSettings = {
   sound: true,
-  aiTips: true
+  aiTips: true,
+  aiThinkSeconds: 5
 };
 
 interface GameArenaProps {
   observerMode?: boolean;
   observerPaused?: boolean;
   onObserverStateChange?: (state: GameEngineState) => void;
+  onDealComplete?: () => void;
 }
 
 export function GameArena({
   observerMode = false,
   observerPaused = false,
-  onObserverStateChange
+  onObserverStateChange,
+  onDealComplete
 }: GameArenaProps) {
   const router = useRouter();
   const arenaRef = useRef<HTMLElement | null>(null);
   const [activePanel, setActivePanel] = useState<"coach" | "rules" | "settings" | null>(null);
   const [settings, setSettings] = useState<ArenaSettings>(defaultSettings);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isPaused, setIsPaused] = useState(false);
   const [showPortraitPrompt, setShowPortraitPrompt] = useState(false);
   const [arenaCardScale, setArenaCardScale] = useState(0.92);
   const [dealStage, setDealStage] = useState<DealStage>("dealing");
@@ -105,7 +110,8 @@ export function GameArena({
     setDealStage("ready");
     setSmartSortActive(true);
     setSortPulseKey((current) => current + 1);
-  }, []);
+    onDealComplete?.();
+  }, [onDealComplete]);
 
   const restartTraining = useCallback(() => {
     restart();
@@ -135,7 +141,7 @@ export function GameArena({
   }, [runAIAction]);
 
   useEffect(() => {
-    if (observerPaused) {
+    if (observerPaused || isPaused) {
       // 记牌挑战暂停时不要锁住下一位 AI，答题结束后要从当前行动继续。
       aiActionKeyRef.current = null;
       return;
@@ -147,7 +153,7 @@ export function GameArena({
     if (aiActionKeyRef.current === actionKey) return;
 
     aiActionKeyRef.current = actionKey;
-    const seconds = 5;
+    const seconds = settings.aiThinkSeconds;
 
     setTurnAction({
       playerId: currentPlayer.id,
@@ -179,10 +185,10 @@ export function GameArena({
         aiTimerRef.current = null;
       }
     };
-  }, [completeAIAction, currentPlayer?.id, currentPlayer?.kind, currentPlayer?.role, isDealLocked, observerMode, observerPaused, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
+  }, [completeAIAction, currentPlayer?.id, currentPlayer?.kind, currentPlayer?.role, isDealLocked, isPaused, observerMode, observerPaused, settings.aiThinkSeconds, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
 
   useEffect(() => {
-    if (observerMode || isDealLocked || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.id !== "player") return;
+    if (observerMode || isDealLocked || isPaused || state.trainingPhase !== "playing" || state.gameStatus !== "playing" || currentPlayer?.id !== "player") return;
 
     const actionKey = `${state.turnNumber}-player`;
     if (userActionKeyRef.current === actionKey) return;
@@ -221,7 +227,7 @@ export function GameArena({
         userTimerRef.current = null;
       }
     };
-  }, [currentPlayer?.id, isDealLocked, observerMode, requestTip, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
+  }, [currentPlayer?.id, isDealLocked, isPaused, observerMode, requestTip, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
 
   useEffect(() => {
     if (!state.roundComplete) return;
@@ -358,8 +364,12 @@ export function GameArena({
   }
 
   function skipAIWait() {
-    if (isDealLocked || currentPlayer?.kind !== "ai" || state.trainingPhase !== "playing") return;
+    if (isPaused || isDealLocked || currentPlayer?.kind !== "ai" || state.trainingPhase !== "playing") return;
     completeAIAction();
+  }
+
+  function togglePause() {
+    setIsPaused((paused) => !paused);
   }
 
   const toggleFullscreen = useCallback(async () => {
@@ -409,14 +419,16 @@ export function GameArena({
       <ArenaBackground />
         <ArenaTopBar
           isFullscreen={isFullscreen}
+          isPaused={isPaused}
           levelRank={levelRankLabel}
           observerMode={observerMode}
         onBackToLobby={goLobby}
         onOpenCoach={() => setActivePanel("coach")}
         onOpenRules={() => setActivePanel("rules")}
-        onOpenSettings={() => setActivePanel("settings")}
-        onToggleFullscreen={toggleFullscreen}
-        phase={phase}
+          onOpenSettings={() => setActivePanel("settings")}
+          onToggleFullscreen={toggleFullscreen}
+          onTogglePause={togglePause}
+          phase={phase}
       />
 
       <section className="training-arena-stage relative z-10 mx-auto h-full w-full max-w-[1680px] px-4 pb-3 pt-[84px] lg:px-5">
@@ -521,7 +533,9 @@ export function GameArena({
         {observerMode ? (
           <ObserverHandTools
             hasStraightFlush={hasStraightFlush(userPlayer?.hand ?? [])}
+            isAIThinking={currentPlayer?.kind === "ai" && state.trainingPhase === "playing" && !isPaused}
             onOrganize={toggleSmartSort}
+            onSkipAIWait={skipAIWait}
             organized={smartSortActive}
           />
         ) : null}
@@ -557,8 +571,15 @@ export function GameArena({
         <div className="space-y-4 text-[#12395a]">
           <SettingToggle checked={settings.sound} label="音效" onChange={(sound) => updateSettings({ sound })} />
           {!observerMode ? <SettingToggle checked={settings.aiTips} label="AI 提示" onChange={(aiTips) => updateSettings({ aiTips })} /> : null}
+          <SettingRange
+            label="AI 思考时间"
+            max={10}
+            min={1}
+            onChange={(aiThinkSeconds) => updateSettings({ aiThinkSeconds })}
+            value={settings.aiThinkSeconds}
+          />
           <section className="rounded-2xl bg-[#f3f9ff] p-5 text-base font-bold leading-7 text-[#345f78]">
-            AI 行动固定 5 秒。牌面固定 100%，训练场不再提供缩放。
+            暂停会保留当前行动，恢复后继续倒计时。牌面固定 100%，训练场不提供缩放。
           </section>
         </div>
       </ArenaModal>
@@ -585,15 +606,19 @@ function ArenaBackground() {
 
 function ObserverHandTools({
   hasStraightFlush: straightFlush,
+  isAIThinking,
   onOrganize,
+  onSkipAIWait,
   organized
 }: {
   hasStraightFlush: boolean;
+  isAIThinking: boolean;
   onOrganize: () => void;
+  onSkipAIWait: () => void;
   organized: boolean;
 }) {
   return (
-    <div className="absolute bottom-[1.8%] right-4 z-[115] flex w-[min(860px,calc(100vw-2rem))] items-center justify-between gap-4 rounded-2xl border border-white/45 bg-[#083b42]/90 px-5 py-3 text-white shadow-[0_12px_30px_rgba(4,48,62,0.3)] backdrop-blur-xl max-lg:gap-2 max-lg:px-3 max-lg:py-2 lg:right-8">
+    <div className="absolute bottom-[1.8%] left-1/2 z-[115] flex w-[min(860px,calc(100vw-2rem))] -translate-x-1/2 items-center justify-between gap-4 rounded-2xl border border-white/45 bg-[#083b42]/90 px-5 py-3 text-white shadow-[0_12px_30px_rgba(4,48,62,0.3)] backdrop-blur-xl max-lg:gap-2 max-lg:px-3 max-lg:py-2">
       <div className="flex min-w-[110px] items-center gap-3 border-r border-white/20 pr-5 max-lg:min-w-0 max-lg:gap-1.5 max-lg:pr-2">
         <span className="grid h-10 w-10 place-items-center rounded-full bg-[#ff9d22] text-lg font-black text-white max-lg:h-8 max-lg:w-8 max-lg:text-sm">倍</span>
         <span className="text-2xl font-black max-lg:text-lg">1</span>
@@ -613,6 +638,15 @@ function ObserverHandTools({
       >
         {organized ? "恢复" : "一键理牌"}
       </button>
+      {isAIThinking ? (
+        <button
+          className="min-w-[120px] rounded-xl border border-white/40 bg-white/15 px-5 py-3 text-base font-black text-white transition hover:bg-white/24 max-lg:min-w-0 max-lg:px-3 max-lg:py-2 max-lg:text-xs"
+          onClick={onSkipAIWait}
+          type="button"
+        >
+          跳过 AI
+        </button>
+      ) : null}
     </div>
   );
 }
@@ -727,6 +761,7 @@ function PortraitTrainingPrompt({ onEnter }: { onEnter: () => void }) {
 
 function ArenaTopBar({
   isFullscreen,
+  isPaused,
   levelRank,
   observerMode,
   onBackToLobby,
@@ -734,9 +769,11 @@ function ArenaTopBar({
   onOpenRules,
   onOpenSettings,
   onToggleFullscreen,
+  onTogglePause,
   phase
 }: {
   isFullscreen: boolean;
+  isPaused: boolean;
   levelRank: string;
   observerMode: boolean;
   onBackToLobby: () => void;
@@ -744,6 +781,7 @@ function ArenaTopBar({
   onOpenRules: () => void;
   onOpenSettings: () => void;
   onToggleFullscreen: () => void;
+  onTogglePause: () => void;
   phase: TrainingPhase;
 }) {
   return (
@@ -760,15 +798,16 @@ function ArenaTopBar({
           </div>
         </div>
 
-        {!observerMode ? <div className="hidden shrink-0 items-center gap-2 rounded-full bg-white/34 px-3 py-2 text-base font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl md:flex max-lg:gap-1 max-lg:px-2">
+        <div className="hidden shrink-0 items-center gap-2 rounded-full bg-white/34 px-3 py-2 text-base font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl md:flex max-lg:gap-1 max-lg:px-2">
           <LevelCardBadge levelRank={levelRank} />
-          <span className="ml-2 rounded-full bg-[#12395a]/88 px-3 py-1 text-xs text-white max-lg:hidden">{phaseText[phase]}</span>
-        </div> : <div className="hidden rounded-full bg-white/44 px-5 py-3 text-sm font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,132,196,0.12)] backdrop-blur-xl md:block">观察模式 · AI 自动行动</div>}
+          <span className="ml-2 rounded-full bg-[#12395a]/88 px-3 py-1 text-xs text-white max-lg:hidden">{observerMode ? "观察模式 · AI 自动行动" : phaseText[phase]}</span>
+        </div>
 
         <nav className={cn("flex min-w-0 items-center gap-3 max-lg:gap-2", observerMode && "[&>button:first-child]:hidden")}>
           <HudButton icon="◉" label="AI Coach" onClick={onOpenCoach} />
           <HudButton icon="ⓘ" label="规则" onClick={onOpenRules} />
           <HudButton icon="⚙" label="设置" onClick={onOpenSettings} />
+          <HudButton icon={isPaused ? "▶" : "Ⅱ"} label={isPaused ? "继续" : "暂停"} onClick={onTogglePause} />
           <button
             aria-label={isFullscreen ? "退出全屏" : "进入全屏"}
             className="grid h-12 w-12 place-items-center rounded-full bg-white/42 text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5"
@@ -795,11 +834,15 @@ function ArenaTopBar({
 
 function LevelCardBadge({ levelRank }: { levelRank: string }) {
   return (
-    <section className="mr-1 flex h-16 items-center gap-2 rounded-xl border-2 border-[#f2c24c]/90 bg-white/95 px-2.5 text-[#12395a] shadow-[0_10px_24px_rgba(164,105,0,0.22)] backdrop-blur max-lg:h-14">
-      <p className="whitespace-nowrap text-sm font-black text-[#9a6800] max-lg:text-xs">级牌</p>
-      <div className="relative grid h-12 w-12 place-items-center rounded-lg border-2 border-[#f2c24c] bg-white text-2xl font-black text-[#0f172a] shadow-[0_5px_12px_rgba(164,105,0,0.16)] max-lg:h-10 max-lg:w-10 max-lg:text-xl">
-        {levelRank}
-      </div>
+    <section className="mr-1 flex items-center gap-2 rounded-xl border-2 border-[#f2c24c]/90 bg-white/95 px-2.5 py-2 text-[#12395a] shadow-[0_10px_24px_rgba(164,105,0,0.22)] backdrop-blur">
+      {[["我方", levelRank], ["对方", levelRank]].map(([label, rank]) => (
+        <div className="flex items-center gap-1.5" key={label}>
+          <p className="whitespace-nowrap text-xs font-black text-[#9a6800]">{label}</p>
+          <div className="relative grid h-11 w-11 place-items-center rounded-lg border-2 border-[#f2c24c] bg-white text-2xl font-black text-[#0f172a] shadow-[0_5px_12px_rgba(164,105,0,0.16)]">
+            {rank}
+          </div>
+        </div>
+      ))}
     </section>
   );
 }
@@ -906,6 +949,38 @@ function SettingToggle({
           )}
         />
       </button>
+    </label>
+  );
+}
+
+function SettingRange({
+  label,
+  max,
+  min,
+  onChange,
+  value
+}: {
+  label: string;
+  max: number;
+  min: number;
+  onChange: (value: number) => void;
+  value: number;
+}) {
+  return (
+    <label className="block rounded-2xl bg-[#f3f9ff] p-5">
+      <span className="flex items-center justify-between text-lg font-black">
+        <span>{label}</span>
+        <span className="rounded-full bg-white px-3 py-1 text-base text-[#0f64ff]">{value} 秒</span>
+      </span>
+      <input
+        aria-label={label}
+        className="mt-4 w-full accent-[#0f64ff]"
+        max={max}
+        min={min}
+        onChange={(event) => onChange(Number(event.target.value))}
+        type="range"
+        value={value}
+      />
     </label>
   );
 }

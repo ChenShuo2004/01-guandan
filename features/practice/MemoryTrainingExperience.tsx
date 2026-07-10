@@ -1,121 +1,372 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { GameArena } from "@/components/game/GameArena";
+import { useGameStore } from "@/store/gameStore";
 import type { GameEngineState } from "@/lib/guandan/gameState";
-import { CardTracker } from "@/lib/memory/CardTracker";
-import { createMemoryQuestion, type MemoryQuestion } from "@/lib/memory/MemoryQuestionGenerator";
-import { buildMemoryReport, type MemoryAnswerRecord } from "@/lib/memory/MemoryReport";
+import { getRankLabel } from "@/lib/guandan/card";
+import { MemoryTargetPanel, MemoryTargetOverlay } from "@/components/memory/MemoryTargetPanel";
+import { MemoryCheckpointPanel } from "@/components/memory/MemoryCheckpointPanel";
+import { MemoryFeedbackPanel } from "@/components/memory/MemoryFeedbackPanel";
+import { MemorySessionSummaryPanel } from "@/components/memory/MemorySessionSummary";
+import {
+  createInitialTrainingState,
+  createTargetRanks,
+  initializeVisibleTargetCards,
+  buildAllCardsById,
+  shouldTriggerMemoryCheckpoint,
+  evaluateCheckpointWithCards,
+  getErrorReplayEvents,
+  resetForNextHand,
+  checkShouldUpgrade,
+  getNextTargetCountStep,
+  handlePoorPerformance,
+  buildSessionSummary,
+  OBSERVATION_TIMES_MS,
+  TARGET_COUNT_STEPS,
+  type ObserverMemoryTrainingState,
+  type MemoryRelevantEvent,
+} from "@/lib/memory/ObserverMemoryTraining";
 
 export function MemoryTrainingExperience() {
-  const tracker = useMemo(() => new CardTracker(), []);
-  const [stage, setStage] = useState<"intro" | "playing" | "report">("intro");
-  const [state, setState] = useState<GameEngineState | null>(null);
-  const [question, setQuestion] = useState<MemoryQuestion | null>(null);
-  const [records, setRecords] = useState<MemoryAnswerRecord[]>([]);
-  const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
-  const lastCheckpoint = useRef(0);
+  const router = useRouter();
 
-  const report = useMemo(() => buildMemoryReport(records), [records]);
-  const memorySnapshot = useMemo(() => tracker.snapshot(state?.history ?? []), [state?.history, tracker]);
-  const appeared = (label: string) => {
-    return memorySnapshot.appeared[label] ?? 0;
-  };
+  // ── Training state ────────────────────────────────────────────────────────────
+  const [training, setTraining] = useState<ObserverMemoryTrainingState>(() =>
+    createInitialTrainingState({ debugMode: false, levelRank: 15 })
+  );
+  const trainingRef = useRef(training);
+  useEffect(() => { trainingRef.current = training; }, [training]);
 
-  const handleStateChange = useCallback((nextState: GameEngineState) => {
-    setState(nextState);
-    const historyLength = nextState.history.length;
-    if (historyLength > 0 && historyLength % 4 === 0 && lastCheckpoint.current !== historyLength && !question) {
-      lastCheckpoint.current = historyLength;
-      setQuestion(createQuantityChallenge(nextState.history, tracker, historyLength / 4));
-      setSelectedAnswer(null);
+  // ── UI visibility state ───────────────────────────────────────────────────────
+  const [showTargetOverlay, setShowTargetOverlay] = useState(false);
+  const [showCheckpoint, setShowCheckpoint] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
+
+  // ── Refs ──────────────────────────────────────────────────────────────────────
+  const dealCompleteRef = useRef(false);
+  const observationTimerRef = useRef<number | null>(null);
+  const sessionTimerRef = useRef<number | null>(null);
+  const handSettlementTimerRef = useRef<number | null>(null);
+  const phaseRef = useRef(training.phase);
+
+  // ── Game store (observer mode) ─────────────────────────────────────────────────
+  const { state: gameState, restart, userPlayer } = useGameStore(true);
+  const gameStateRef = useRef(gameState);
+  useEffect(() => { gameStateRef.current = gameState; }, [gameState]);
+
+  // Keep phaseRef in sync
+  useEffect(() => { phaseRef.current = training.phase; }, [training.phase]);
+
+  // ── Helper: start hand observation timer ───────────────────────────────────────
+  const startHandObservationTimer = useCallback(() => {
+    const t = trainingRef.current;
+    const duration = OBSERVATION_TIMES_MS[t.currentTargetCount] ?? 3000;
+    if (observationTimerRef.current) window.clearTimeout(observationTimerRef.current);
+    observationTimerRef.current = window.setTimeout(() => {
+      setTraining(prev => ({ ...prev, phase: "AI_PLAYING" }));
+    }, duration);
+  }, []);
+
+  // ── Initialization (mount only) ────────────────────────────────────────────────
+  useEffect(() => {
+    const targetRanks = createTargetRanks(training.currentTargetCount, training.levelRank);
+    setTraining(prev => ({ ...prev, phase: "SHOWING_TARGETS", targetRanks, handCount: 1 }));
+    setShowTargetOverlay(true);
+
+    sessionTimerRef.current = window.setTimeout(() => {
+      setTraining(prev => ({ ...prev, sessionTimeExpired: true }));
+    }, training.durationMinutes * 60_000);
+
+    return () => {
+      if (observationTimerRef.current) window.clearTimeout(observationTimerRef.current);
+      if (sessionTimerRef.current) window.clearTimeout(sessionTimerRef.current);
+      if (handSettlementTimerRef.current) window.clearTimeout(handSettlementTimerRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // ── Handle target overlay completion ───────────────────────────────────────────
+  const handleObservationComplete = useCallback(() => {
+    setShowTargetOverlay(false);
+
+    const t = trainingRef.current;
+    const observerHand = userPlayer?.hand ?? [];
+    const allCardsById = buildAllCardsById(gameStateRef.current);
+    const visibleIds = initializeVisibleTargetCards(observerHand, t.targetRanks);
+
+    const initialEvent: MemoryRelevantEvent | null = visibleIds.length > 0
+      ? {
+          id: `evt-init-${Date.now()}`,
+          handId: t.currentHandId,
+          playIndex: 0,
+          type: "INITIAL_VISIBLE_HAND",
+          seat: "bottom",
+          cardIds: visibleIds,
+          matchedTargetRanks: t.targetRanks.filter(rank =>
+            observerHand.some(card => card.rank === rank && visibleIds.includes(card.id))
+          ),
+          label: `初始手牌包含 ${visibleIds.length} 张目标牌`,
+        }
+      : null;
+
+    setTraining(prev => ({
+      ...prev,
+      phase: "OBSERVING_INITIAL_HAND",
+      visibleTargetCardIds: visibleIds,
+      allCardsById,
+      observerHandCardIds: observerHand.map(c => c.id),
+      relevantEvents: initialEvent ? [initialEvent] : [],
+    }));
+
+    if (dealCompleteRef.current) {
+      startHandObservationTimer();
     }
-  }, [question, tracker]);
+  }, [startHandObservationTimer, userPlayer?.hand]);
 
-  function openMemoryTest() {
-    if (!state || state.history.length === 0 || question) return;
-    setQuestion(createQuantityChallenge(state.history, tracker, Math.max(1, Math.ceil(state.history.length / 4))));
-    setSelectedAnswer(null);
-  }
+  // ── Handle deal completion ─────────────────────────────────────────────────────
+  const handleDealComplete = useCallback(() => {
+    if (dealCompleteRef.current) return;
+    dealCompleteRef.current = true;
+    if (phaseRef.current === "OBSERVING_INITIAL_HAND") {
+      startHandObservationTimer();
+    }
+  }, [startHandObservationTimer]);
 
-  function answer(option: string) {
-    if (!question || selectedAnswer) return;
-    setSelectedAnswer(option);
-    setRecords((current) => [...current, { question, answer: option, correct: option === question.answer }]);
-  }
+  // ── Checkpoint trigger ─────────────────────────────────────────────────────────
+  const triggerCheckpoint = useCallback(() => {
+    setTraining(prev => ({ ...prev, phase: "PAUSING_FOR_CHECKPOINT" }));
+    setTimeout(() => {
+      setTraining(prev => ({ ...prev, phase: "ANSWERING" }));
+      setShowCheckpoint(true);
+    }, 300);
+  }, []);
 
-  function continueGame() {
-    setQuestion(null);
-    setSelectedAnswer(null);
-  }
+  // ── Game finished handler ──────────────────────────────────────────────────────
+  const handleGameFinished = useCallback(() => {
+    const t = trainingRef.current;
+    if (t.phase === "HAND_SETTLEMENT" || t.phase === "STARTING_NEXT_HAND" || t.phase === "SESSION_FINISHED") return;
 
-  if (stage === "intro") {
-    return (
-      <main className="grid min-h-[100dvh] place-items-center bg-[#071426] px-5 text-white">
-        <section className="w-full max-w-md rounded-[30px] border border-[#68d8ff]/30 bg-[#0e2944]/90 p-7 shadow-2xl">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#74dfff]">MEMORY TRAINING</p>
-          <h1 className="mt-4 text-3xl font-black">掼蛋记牌训练场</h1>
-          <p className="mt-5 text-lg font-black leading-8">本轮不练出牌，只训练你记住牌面变化。</p>
-          <p className="mt-1 leading-7 text-[#b8cde0]">AI 会自动进行牌局。请观察已经出现的关键牌，在测试节点回答当前牌数量。</p>
-          <div className="mt-5 rounded-2xl bg-white/[0.06] p-4 text-sm leading-6 text-[#d8efff]">
-            训练目标：记住已经出现的炸弹、A、2 和大小王。
-          </div>
-          <button className="mt-7 min-h-14 w-full rounded-2xl bg-[#0f64ff] text-base font-black shadow-lg" onClick={() => setStage("playing")} type="button">
-            开始训练
-          </button>
-        </section>
-      </main>
-    );
-  }
+    if (t.sessionTimeExpired) {
+      setTraining(prev => ({ ...prev, phase: "SESSION_FINISHED" }));
+      setShowSummary(true);
+      return;
+    }
 
-  if (stage === "report") {
-    return (
-      <main className="grid min-h-[100dvh] place-items-center bg-[#071426] px-5 text-white">
-        <section className="w-full max-w-lg rounded-[30px] border border-[#68d8ff]/30 bg-[#0e2944]/90 p-7 shadow-2xl">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#74dfff]">MEMORY REPORT</p>
-          <h1 className="mt-3 text-3xl font-black">记牌训练总结</h1>
-          <div className="mt-7 rounded-3xl bg-white/[0.07] p-5 text-center"><p className="text-sm text-[#b8cde0]">记牌准确率</p><p className="mt-2 text-6xl font-black text-[#74dfff]">{report.accuracy}%</p></div>
-          <p className="mt-6 rounded-2xl bg-[#071426]/60 p-4 text-sm leading-6 text-[#d8efff]">{report.advice}</p>
-          <button className="mt-6 min-h-12 w-full rounded-2xl bg-[#0f64ff] font-black" onClick={() => window.location.assign("/practice")} type="button">返回训练大厅</button>
-        </section>
-      </main>
-    );
-  }
+    setTraining(prev => ({ ...prev, phase: "HAND_SETTLEMENT" }));
 
+    handSettlementTimerRef.current = window.setTimeout(() => {
+      let next = { ...trainingRef.current };
+
+      if (checkShouldUpgrade(next)) {
+        const newStepIndex = getNextTargetCountStep(next.targetCountStepIndex);
+        next = { ...next, targetCountStepIndex: newStepIndex, currentTargetCount: TARGET_COUNT_STEPS[newStepIndex] };
+      }
+
+      next = handlePoorPerformance(next);
+      next = { ...next, bestTargetCount: Math.max(next.bestTargetCount, next.currentTargetCount) };
+
+      const resetState = resetForNextHand(next);
+      setTraining(resetState);
+      restart();
+      dealCompleteRef.current = true;
+      setShowCheckpoint(false);
+      setShowFeedback(false);
+      setShowTargetOverlay(true);
+    }, 1500);
+  }, [restart]);
+
+  // ── Game state change tracking ─────────────────────────────────────────────────
+  const handleStateChange = useCallback((state: GameEngineState) => {
+    const t = trainingRef.current;
+    if (t.phase !== "AI_PLAYING") return;
+
+    const newEntries = state.history.slice(t.lastProcessedHistoryLength);
+    if (newEntries.length === 0) return;
+
+    let newVisibleIds = [...t.visibleTargetCardIds];
+    const newEvents = [...t.relevantEvents];
+    let validPlays = t.validPlayCountSinceCheckpoint;
+
+    for (const entry of newEntries) {
+      if (entry.action === "play" && entry.cards.length > 0) {
+        const targetCards = entry.cards.filter(c => t.targetRanks.includes(c.rank));
+        if (targetCards.length > 0) {
+          for (const card of targetCards) {
+            if (!newVisibleIds.includes(card.id)) newVisibleIds.push(card.id);
+          }
+          const player = state.players.find(p => p.id === entry.playerId);
+          newEvents.push({
+            id: `evt-${entry.turn}-${entry.playerId}-${Date.now()}`,
+            handId: t.currentHandId,
+            playIndex: entry.turn,
+            type: "CARD_PLAYED",
+            seat: player?.seat ?? "bottom",
+            cardIds: targetCards.map(c => c.id),
+            matchedTargetRanks: [...new Set(targetCards.map(c => c.rank))],
+            label: `${entry.playerName} 打出 ${targetCards.map(c => getRankLabel(c.rank)).join(", ")}`,
+          });
+        }
+        validPlays++;
+      }
+    }
+
+    setTraining(prev => ({
+      ...prev,
+      visibleTargetCardIds: newVisibleIds,
+      relevantEvents: newEvents,
+      validPlayCountSinceCheckpoint: validPlays,
+      lastProcessedHistoryLength: state.history.length,
+    }));
+
+    const updatedTraining = {
+      ...t,
+      visibleTargetCardIds: newVisibleIds,
+      relevantEvents: newEvents,
+      validPlayCountSinceCheckpoint: validPlays,
+      lastProcessedHistoryLength: state.history.length,
+    };
+
+    if (shouldTriggerMemoryCheckpoint(state, updatedTraining)) {
+      triggerCheckpoint();
+    }
+
+    if (state.gameStatus === "finished") {
+      handleGameFinished();
+    }
+  }, [handleGameFinished, triggerCheckpoint]);
+
+  // ── Checkpoint submit ──────────────────────────────────────────────────────────
+  const handleCheckpointSubmit = useCallback((answers: Record<string, number>) => {
+    if (trainingRef.current.phase !== "ANSWERING") return;
+
+    const t = trainingRef.current;
+    const withAnswers = { ...t, currentAnswers: answers };
+    const checkpoint = evaluateCheckpointWithCards(withAnswers, t.allCardsById);
+
+    setTraining(prev => ({
+      ...prev,
+      currentAnswers: answers,
+      phase: "SHOWING_FEEDBACK",
+      pendingCheckpoint: checkpoint,
+      checkpoints: [...prev.checkpoints, checkpoint],
+      validPlayCountSinceCheckpoint: 0,
+      stageAccuracy: checkpoint.accuracy,
+      overallAccuracy: prev.checkpoints.length > 0
+        ? (prev.checkpoints.reduce((s, cp) => s + cp.accuracy, 0) + checkpoint.accuracy) / (prev.checkpoints.length + 1)
+        : checkpoint.accuracy,
+      consecutiveLowAccuracyCheckpoints: checkpoint.accuracy < 0.6
+        ? prev.consecutiveLowAccuracyCheckpoints + 1
+        : 0,
+    }));
+
+    setShowCheckpoint(false);
+    setShowFeedback(true);
+  }, []);
+
+  // ── Feedback continue ──────────────────────────────────────────────────────────
+  const handleFeedbackContinue = useCallback(() => {
+    setShowFeedback(false);
+
+    if (trainingRef.current.sessionTimeExpired) {
+      setTraining(prev => ({ ...prev, phase: "SESSION_FINISHED" }));
+      setShowSummary(true);
+      return;
+    }
+
+    if (gameStateRef.current.gameStatus === "finished") {
+      handleGameFinished();
+      return;
+    }
+
+    setTraining(prev => ({ ...prev, phase: "AI_PLAYING", pendingCheckpoint: null }));
+  }, [handleGameFinished]);
+
+  // ── Restart ────────────────────────────────────────────────────────────────────
+  const handleRestart = useCallback(() => {
+    if (observationTimerRef.current) window.clearTimeout(observationTimerRef.current);
+    if (sessionTimerRef.current) window.clearTimeout(sessionTimerRef.current);
+    if (handSettlementTimerRef.current) window.clearTimeout(handSettlementTimerRef.current);
+
+    const newState = createInitialTrainingState({ debugMode: false, levelRank: 15 });
+    const targetRanks = createTargetRanks(newState.currentTargetCount, newState.levelRank);
+
+    setTraining({ ...newState, phase: "SHOWING_TARGETS", targetRanks, handCount: 1 });
+    restart();
+    dealCompleteRef.current = true;
+    setShowTargetOverlay(true);
+    setShowCheckpoint(false);
+    setShowFeedback(false);
+    setShowSummary(false);
+
+    sessionTimerRef.current = window.setTimeout(() => {
+      setTraining(prev => ({ ...prev, sessionTimeExpired: true }));
+    }, newState.durationMinutes * 60_000);
+  }, [restart]);
+
+  // ── Exit ───────────────────────────────────────────────────────────────────────
+  const handleExit = useCallback(() => {
+    if (observationTimerRef.current) window.clearTimeout(observationTimerRef.current);
+    if (sessionTimerRef.current) window.clearTimeout(sessionTimerRef.current);
+    if (handSettlementTimerRef.current) window.clearTimeout(handSettlementTimerRef.current);
+    router.push("/practice");
+  }, [router]);
+
+  // ── Computed ───────────────────────────────────────────────────────────────────
+  const observerPaused = training.phase !== "AI_PLAYING";
+
+  // ── Render ─────────────────────────────────────────────────────────────────────
   return (
     <div className="relative">
-      <GameArena observerMode observerPaused={Boolean(question)} onObserverStateChange={handleStateChange} />
-      <aside className="pointer-events-none fixed left-4 top-[104px] z-[100] w-[min(270px,24vw)] rounded-2xl border border-white/60 bg-white/80 p-4 text-[#12395a] shadow-xl backdrop-blur-xl max-lg:hidden">
-        <p className="text-xs font-black uppercase tracking-[0.16em] text-[#0f64ff]">训练状态</p>
-        <p className="mt-3 text-lg font-black">记牌专项训练</p>
-        <p className="mt-2 text-sm font-bold leading-6">本轮目标：记住已出现的炸弹和关键牌。</p>
-        <div className="mt-4 flex items-center justify-between border-t border-[#b7d9ea] pt-3 text-sm font-black"><span>当前阶段</span><span className="text-[#0f64ff]">{state?.gameStatus === "finished" ? "已完成" : "观察中"}</span></div>
-        <p className="mt-3 text-sm font-bold leading-6 text-[#345f78]">{state?.gameStatus === "finished" ? "训练结束，可以查看结果。" : "牌局正在自动推进，请专注观察。"}</p>
-      </aside>
-      <aside className="pointer-events-auto fixed right-4 top-[104px] z-[100] w-[min(270px,24vw)] rounded-2xl border border-white/60 bg-white/80 p-4 text-[#12395a] shadow-xl backdrop-blur-xl max-lg:hidden">
-        <p className="text-xs font-black uppercase tracking-[0.16em] text-[#0f64ff]">记牌数据</p>
-        <div className="mt-3 grid grid-cols-4 gap-2 text-center">{["A", "2", "SJ", "BJ"].map((label) => <div className="rounded-xl bg-[#edf8ff] p-2" key={label}><p className="text-xs font-black text-[#47718b]">{label}</p><p className="mt-1 text-lg font-black">{appeared(label)}</p><p className="text-[10px] font-bold text-[#6a8da0]">已出现</p></div>)}</div>
-        <button className="mt-4 min-h-11 w-full rounded-xl bg-[#0f64ff] text-sm font-black text-white disabled:cursor-not-allowed disabled:bg-[#9ab8c8]" disabled={!state?.history.length || Boolean(question)} onClick={openMemoryTest} type="button">记牌测试</button>
-        <div className="mt-4 border-t border-[#b7d9ea] pt-3"><p className="text-sm font-black">测试结果 · {records.length} 次</p>{records.length ? <p className="mt-2 text-sm font-bold text-[#345f78]">最近一次：{records.at(-1)?.correct ? "回答正确" : "需要再观察"}</p> : <p className="mt-2 text-sm font-bold text-[#7895a5]">完成测试后显示结果</p>}</div>
-        <button className="mt-3 w-full text-left text-sm font-black text-[#0f64ff] disabled:text-[#9ab8c8]" disabled={state?.gameStatus !== "finished"} onClick={() => setStage("report")} type="button">查看训练结果 →</button>
-      </aside>
-      {question ? (
-        <div className="fixed inset-0 z-[180] grid place-items-center bg-[#071426]/70 px-5 backdrop-blur-sm">
-          <section className="w-full max-w-md rounded-[28px] border border-[#74dfff]/45 bg-[#0e2944] p-6 text-white shadow-2xl">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#74dfff]">记牌挑战</p>
-            <h2 className="mt-4 text-xl font-black leading-8">请回答当前牌数量</h2>
-            <p className="mt-4 text-lg font-bold leading-8">{question.prompt}</p>
-            <div className="mt-5 grid grid-cols-2 gap-3">{question.options.map((option) => <button className={`min-h-12 rounded-2xl border font-black ${selectedAnswer === option ? option === question.answer ? "border-emerald-300 bg-emerald-400/20" : "border-red-300 bg-red-400/20" : "border-white/15 bg-white/[0.07]"}`} disabled={Boolean(selectedAnswer)} key={option} onClick={() => answer(option)} type="button">{option}</button>)}</div>
-            {selectedAnswer ? <div className="mt-5 rounded-2xl bg-white/[0.08] p-4 text-sm leading-6"><p className="font-black">{selectedAnswer === question.answer ? "回答正确，你已经掌握关键牌变化。" : "再关注已经出现的位置。"}</p><p className="mt-2 text-[#b8cde0]">正确答案：{question.answer}。{question.explanation}</p><button className="mt-4 min-h-11 w-full rounded-xl bg-[#0f64ff] font-black" onClick={continueGame} type="button">继续观察</button></div> : null}
-          </section>
-        </div>
+      <GameArena
+        observerMode
+        observerPaused={observerPaused}
+        onObserverStateChange={handleStateChange}
+        onDealComplete={handleDealComplete}
+      />
+
+      <MemoryTargetPanel
+        targetRanks={training.targetRanks}
+        currentTargetCount={training.currentTargetCount}
+        allCardsById={training.allCardsById}
+        visible={training.phase === "AI_PLAYING" || training.phase === "OBSERVING_INITIAL_HAND"}
+      />
+
+      {showTargetOverlay ? (
+        <MemoryTargetOverlay
+          targetRanks={training.targetRanks}
+          currentTargetCount={training.currentTargetCount}
+          observationTimeMs={OBSERVATION_TIMES_MS[training.currentTargetCount] ?? 3000}
+          onObservationComplete={handleObservationComplete}
+          visible
+        />
       ) : null}
-      {state?.gameStatus === "finished" && !question ? <button className="fixed bottom-8 left-1/2 z-[160] -translate-x-1/2 rounded-full bg-[#0f64ff] px-6 py-4 font-black text-white shadow-xl" onClick={() => setStage("report")} type="button">查看训练结果</button> : null}
+
+      {showCheckpoint ? (
+        <MemoryCheckpointPanel
+          targetRanks={training.targetRanks}
+          currentTargetCount={training.currentTargetCount}
+          onSubmit={handleCheckpointSubmit}
+        />
+      ) : null}
+
+      {showFeedback && training.pendingCheckpoint ? (
+        <MemoryFeedbackPanel
+          checkpoint={training.pendingCheckpoint}
+          errorEvents={getErrorReplayEvents(training.pendingCheckpoint, training.relevantEvents)}
+          onContinue={handleFeedbackContinue}
+        />
+      ) : null}
+
+      {showSummary ? (
+        <MemorySessionSummaryPanel
+          summary={buildSessionSummary(training)}
+          onRestart={handleRestart}
+          onExit={handleExit}
+        />
+      ) : null}
     </div>
   );
-}
-
-function createQuantityChallenge(history: GameEngineState["history"], tracker: CardTracker, checkpoint: number): MemoryQuestion {
-  const question = createMemoryQuestion(tracker.snapshot(history), checkpoint);
-  return question.type === "inference" ? createMemoryQuestion(tracker.snapshot(history), 2) : question;
 }
