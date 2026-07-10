@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useReducer } from "react";
 import { getAIAction } from "@/lib/ai/AIPlayer";
+import { chooseNormalMove } from "@/lib/ai/strategy";
 import { sortCardsForHand } from "@/lib/cards/cardSort";
 import { analyzeCoachTip, analyzeHint } from "@/lib/coach/CoachAnalyzer";
 import type { CoachFeedback } from "@/lib/coach/coachTypes";
@@ -278,10 +279,20 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
       if (!currentPlayer || state.trainingPhase !== "playing" || state.gameStatus !== "playing") return state;
 
       const aiAction = getAIAction(currentPlayer, state, "normal");
-      const result =
+      let result =
         aiAction.action === "play"
           ? playCards(state, currentPlayer.id, aiAction.cards)
           : passTurn(state, currentPlayer.id);
+
+      // 自动训练不能因为一次非法“不出”卡死。重新按有牌权处理，至少推进一张合法单牌。
+      if (!result.ok) {
+        const fallbackCards = chooseNormalMove(currentPlayer.hand, []);
+        result = fallbackCards.length
+          ? playCards(state, currentPlayer.id, fallbackCards)
+          : result;
+      }
+
+      if (!result.ok) return state;
 
       const turnAction: TurnActionState = {
         playerId: currentPlayer.id,

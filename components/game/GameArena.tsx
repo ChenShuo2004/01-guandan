@@ -417,6 +417,7 @@ export function GameArena({
         <FloatingArenaControls
           cardCounterVisible={state.cardCounterVisible}
           isFullscreen={isFullscreen}
+          observerMode={observerMode}
           onOpenCoach={() => setActivePanel("coach")}
           onOpenRules={() => setActivePanel("rules")}
           onOpenSettings={() => setActivePanel("settings")}
@@ -471,11 +472,11 @@ export function GameArena({
         </div> : null}
 
         <section className="training-hand-dock absolute bottom-3 left-3 right-3 z-[70] min-w-0 lg:left-[120px] lg:right-[120px] 2xl:left-[150px] 2xl:right-[150px]">
-          {!observerMode && !isDealLocked ? (
+          {!isDealLocked ? (
             <>
               <HandCards
                 cards={displayedUserCards}
-                disabled={!isUserTurn || isDealLocked}
+                disabled={observerMode || !isUserTurn || isDealLocked}
                 invalidCardIds={state.invalidCardIds}
                 invalidPulseKey={state.invalidPulseKey}
                 levelRank={levelRankLabel}
@@ -486,7 +487,7 @@ export function GameArena({
                 sortPulseKey={sortPulseKey}
                 variant="arena"
               />
-              <ActionToolbar
+              {!observerMode ? <ActionToolbar
                 canAct={isUserTurn && !isDealLocked}
                 cardCounterVisible={state.cardCounterVisible}
                 isAIThinking={currentPlayer?.kind === "ai" && state.trainingPhase === "playing"}
@@ -504,7 +505,7 @@ export function GameArena({
                 onSkipAIWait={skipAIWait}
                 phase={phase}
                 selectedCount={state.selectedCards.length}
-              />
+              /> : null}
             </>
           ) : null}
         </section>
@@ -569,6 +570,7 @@ function ArenaBackground() {
 function FloatingArenaControls({
   cardCounterVisible,
   isFullscreen,
+  observerMode,
   onOpenCoach,
   onOpenRules,
   onOpenSettings,
@@ -578,6 +580,7 @@ function FloatingArenaControls({
 }: {
   cardCounterVisible: boolean;
   isFullscreen: boolean;
+  observerMode: boolean;
   onOpenCoach: () => void;
   onOpenRules: () => void;
   onOpenSettings: () => void;
@@ -586,7 +589,7 @@ function FloatingArenaControls({
   tipsEnabled: boolean;
 }) {
   return (
-    <div className="training-floating-controls absolute right-4 top-4 z-[92] hidden items-center gap-2">
+    <div className={cn("training-floating-controls absolute right-4 top-4 z-[92] hidden items-center gap-2", observerMode && "[&>button:first-child]:hidden")}>
       <FloatingControlButton active={tipsEnabled} icon="psychology" label="AI Coach" onClick={onOpenCoach} />
       <FloatingControlButton icon="menu_book" label="训练规则" onClick={onOpenRules} />
       <FloatingControlButton icon="settings" label="设置" onClick={onOpenSettings} />
@@ -691,7 +694,7 @@ function ArenaTopBar({
           <span className="ml-2 rounded-full bg-[#12395a]/88 px-3 py-1 text-xs text-white max-lg:hidden">{phaseText[phase]}</span>
         </div> : <div className="hidden rounded-full bg-white/44 px-5 py-3 text-sm font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,132,196,0.12)] backdrop-blur-xl md:block">观察模式 · AI 自动行动</div>}
 
-        <nav className="flex min-w-0 items-center gap-3 max-lg:gap-2">
+        <nav className={cn("flex min-w-0 items-center gap-3 max-lg:gap-2", observerMode && "[&>button:first-child]:hidden")}>
           <HudButton icon="◉" label="AI Coach" onClick={onOpenCoach} />
           <HudButton icon="ⓘ" label="规则" onClick={onOpenRules} />
           <HudButton icon="⚙" label="设置" onClick={onOpenSettings} />

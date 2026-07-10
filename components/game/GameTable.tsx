@@ -42,7 +42,7 @@ export function GameTable({
       <RoundActionZone action={roundActions.enemyAI2} className="left-[24%] top-[42%]" levelRank={levelRank} />
       <RoundActionZone action={roundActions.partnerAI} className="left-1/2 top-[24%] -translate-x-1/2" levelRank={levelRank} />
       <RoundActionZone action={roundActions.enemyAI1} className="right-[21%] top-[42%]" levelRank={levelRank} />
-      <RoundActionZone action={roundActions.player} className="left-1/2 bottom-[24%] -translate-x-1/2" levelRank={levelRank} />
+      <RoundActionZone action={roundActions.player} className="left-1/2 bottom-[31%] -translate-x-1/2" compact={false} levelRank={levelRank} />
 
       {players.filter((player) => player.position !== "bottom").map((player) => (
         <PlayerSeat key={player.id} player={player} />
@@ -66,10 +66,12 @@ function TurnStatusLabel({ turnAction }: { turnAction: TurnActionState }) {
 function RoundActionZone({
   action,
   className,
+  compact = true,
   levelRank
 }: {
   action?: PlayerRoundAction;
   className: string;
+  compact?: boolean;
   levelRank: string;
 }) {
   if (!action) return null;
@@ -83,7 +85,7 @@ function RoundActionZone({
       transition={{ duration: 0.85, ease: "easeOut" }}
     >
       {action.action === "pass" ? null : (
-        <PlayedCards cards={action.cards} compact levelRank={levelRank} />
+        <PlayedCards cards={action.cards} compact={compact} levelRank={levelRank} />
       )}
     </motion.div>
   );
