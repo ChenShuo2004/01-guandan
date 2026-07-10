@@ -45,11 +45,8 @@ export function OpeningScene() {
             Ace AI Training Space
           </p>
           <h1 className="mt-4 text-[clamp(2rem,6vw,4rem)] font-black leading-tight tracking-[-0.03em] text-white drop-shadow-[0_0_28px_rgba(114,207,255,0.32)]">
-            今天想先解决哪一个问题？
+            一小时学会记11张牌
           </h1>
-          <p className="mt-4 text-sm font-medium leading-6 text-white/[0.64] sm:text-base">
-            不用选择等级，Ace 会从当前牌局开始，陪你完成一次判断训练。
-          </p>
         </motion.div>
 
         <motion.div
