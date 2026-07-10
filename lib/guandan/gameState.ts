@@ -1,6 +1,6 @@
 import type { CoachFeedback } from "@/lib/coach/coachTypes";
 import { sortCardsForHand } from "@/lib/cards/cardSort";
-import { getCardLabel, type Card, type CardRank } from "@/lib/guandan/card";
+import { getCardLabel, NORMAL_RANKS, type Card, type CardRank } from "@/lib/guandan/card";
 import { createDeck, dealCards, shuffleDeck } from "@/lib/guandan/deck";
 import { initializePlayers, type GuandanPlayer, type PlayerId } from "@/lib/guandan/player";
 import type { PlayerSeat } from "@/lib/guandan/player";
@@ -85,6 +85,7 @@ const initialCoachFeedback: CoachFeedback = {
 export function createInitialGameState(seed = 20260708): GameEngineState {
   const deck = shuffleDeck(createDeck(), seed);
   const hands = dealCards(deck, 4);
+  const levelRank = NORMAL_RANKS[Math.abs(seed) % NORMAL_RANKS.length];
   const players = initializePlayers(hands).map((player) => ({
     ...player,
     hand: sortCardsForHand(player.hand)
@@ -98,7 +99,7 @@ export function createInitialGameState(seed = 20260708): GameEngineState {
 
   return {
     players,
-    levelRank: 10,
+    levelRank,
     currentTurn: 0,
     lastPlayedCards: [],
     lastPlayerId: null,

@@ -10,49 +10,17 @@ import { DealAnimation } from "@/components/game/DealAnimation";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
 import { useGameStore } from "@/store/gameStore";
-import { smartSortCardsForGuandan } from "@/lib/cards/smartSort";
-import { getRankLabel } from "@/lib/guandan/card";
+import { getRankLabel, sortCardsAscending } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
 import type { GameEngineState, TrainingPhase } from "@/lib/guandan/gameState";
 import type { ArenaPlayer } from "@/types/game";
 
-type TrainingLevel = "beginner" | "intermediate" | "advanced";
 type DealStage = "dealing" | "sorting" | "ready";
 
 interface ArenaSettings {
   sound: boolean;
   aiTips: boolean;
 }
-
-const trainingLevels: Array<{
-  id: TrainingLevel;
-  label: string;
-  title: string;
-  goal: string;
-  items: string[];
-}> = [
-  {
-    id: "beginner",
-    label: "初级",
-    title: "初级训练",
-    goal: "学习基础规则",
-    items: ["牌型认识", "出牌顺序", "基础组合", "简单判断"]
-  },
-  {
-    id: "intermediate",
-    label: "中级",
-    title: "中级训练",
-    goal: "提升牌局理解",
-    items: ["牌权判断", "队友配合", "控牌技巧", "进攻防守选择"]
-  },
-  {
-    id: "advanced",
-    label: "高级",
-    title: "高级训练",
-    goal: "高手决策训练",
-    items: ["残局分析", "复杂牌局推演", "风险判断", "最优策略选择"]
-  }
-];
 
 const defaultSettings: ArenaSettings = {
   sound: true,
@@ -62,19 +30,16 @@ const defaultSettings: ArenaSettings = {
 interface GameArenaProps {
   observerMode?: boolean;
   observerPaused?: boolean;
-  observerLevel?: TrainingLevel;
   onObserverStateChange?: (state: GameEngineState) => void;
 }
 
 export function GameArena({
   observerMode = false,
   observerPaused = false,
-  observerLevel,
   onObserverStateChange
 }: GameArenaProps) {
   const router = useRouter();
   const arenaRef = useRef<HTMLElement | null>(null);
-  const [activeLevel, setActiveLevel] = useState<TrainingLevel>(observerLevel ?? "beginner");
   const [activePanel, setActivePanel] = useState<"coach" | "rules" | "settings" | null>(null);
   const [settings, setSettings] = useState<ArenaSettings>(defaultSettings);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -84,7 +49,6 @@ export function GameArena({
   const [dealRunId, setDealRunId] = useState(0);
   const [smartSortActive, setSmartSortActive] = useState(false);
   const [sortPulseKey, setSortPulseKey] = useState(0);
-  const [trainingGoalOpen, setTrainingGoalOpen] = useState(false);
   const [, setAiCountdown] = useState<number | null>(null);
   const aiActionKeyRef = useRef<string | null>(null);
   const aiTimerRef = useRef<number | null>(null);
@@ -111,10 +75,6 @@ export function GameArena({
     restart
   } = useGameStore(observerMode);
 
-  const activeTrainingLevel = useMemo(
-    () => trainingLevels.find((level) => level.id === activeLevel) ?? trainingLevels[0],
-    [activeLevel]
-  );
   const levelRankLabel = getRankLabel(state.levelRank);
   const cardCounterHint = useMemo(
     () => buildCounterHint(state.cardRemainingCount),
@@ -127,8 +87,8 @@ export function GameArena({
   );
   const displayedUserCards = useMemo(() => {
     const hand = userPlayer?.hand ?? [];
-    return smartSortActive ? smartSortCardsForGuandan(hand, levelRankLabel) : hand;
-  }, [levelRankLabel, smartSortActive, userPlayer?.hand]);
+    return smartSortActive ? sortCardsAscending(hand) : hand;
+  }, [smartSortActive, userPlayer?.hand]);
 
   useEffect(() => {
     onObserverStateChange?.(state);
@@ -384,11 +344,6 @@ export function GameArena({
   const goLobby = () => router.push("/practice");
   const coachMood = state.coachFeedback.type === "mistake" ? "warning" : isUserTurn ? "teaching" : "thinking";
 
-  function changeLevel(level: TrainingLevel) {
-    setActiveLevel(level);
-    restartTraining();
-  }
-
   function updateSettings(nextSettings: Partial<ArenaSettings>) {
     setSettings((current) => ({
       ...current,
@@ -447,16 +402,13 @@ export function GameArena({
     >
       <ArenaBackground />
         <ArenaTopBar
-          activeLevel={activeLevel}
           isFullscreen={isFullscreen}
-          levelTitle={activeTrainingLevel.title}
           levelRank={levelRankLabel}
           observerMode={observerMode}
         onBackToLobby={goLobby}
         onOpenCoach={() => setActivePanel("coach")}
         onOpenRules={() => setActivePanel("rules")}
         onOpenSettings={() => setActivePanel("settings")}
-        onSelectLevel={changeLevel}
         onToggleFullscreen={toggleFullscreen}
         phase={phase}
       />
@@ -480,7 +432,13 @@ export function GameArena({
           turnAction={state.turnAction}
         />
 
-        <CardCounter counts={state.cardRemainingCount} levelRank={levelRankLabel} visible={state.cardCounterVisible} />
+        <CardCounter
+          counts={state.cardRemainingCount}
+          levelRank={levelRankLabel}
+          myRemaining={userPlayer?.hand.length ?? 0}
+          opponentRemaining={state.players.find((player) => player.role === "opponent")?.hand.length ?? 0}
+          visible={state.cardCounterVisible}
+        />
 
         {settings.aiTips && !observerMode ? (
           <motion.section
@@ -508,32 +466,26 @@ export function GameArena({
           </motion.section>
         ) : null}
 
-        {!observerMode ? <div className="training-performance-panel absolute right-7 top-[86px] z-50 hidden w-[238px] xl:block">
-          {trainingGoalOpen ? (
-            <PerformancePanel
-              level={activeTrainingLevel}
-              onCollapse={() => setTrainingGoalOpen(false)}
-              phase={phase}
-            />
-          ) : (
-            <button
-              className="flex min-h-12 w-full items-center justify-between rounded-full border border-white/70 bg-white/74 px-4 text-sm font-black text-[#12395a] shadow-[0_16px_36px_rgba(42,132,196,0.18)] backdrop-blur-xl transition hover:-translate-y-0.5"
-              onClick={() => setTrainingGoalOpen(true)}
-              type="button"
-            >
-              <span>{activeTrainingLevel.label}训练目的</span>
-              <span className="material-symbols-outlined text-[18px]">expand_more</span>
-            </button>
-          )}
-        </div> : null}
-
         {!observerMode ? <div className="training-analysis-panel pointer-events-none absolute left-1/2 top-[61%] z-40 w-[min(560px,42vw)] -translate-x-1/2 text-center text-white drop-shadow-[0_3px_8px_rgba(34,92,146,0.42)] max-lg:top-[54%] max-lg:w-[360px]">
           <AnalysisPanel reason={state.coachFeedback.reason} status={roundStatus} />
         </div> : null}
 
-        <section className="training-hand-dock absolute bottom-3 left-3 right-3 z-[60] min-w-0 lg:left-[120px] lg:right-[120px] 2xl:left-[150px] 2xl:right-[150px]">
+        <section className="training-hand-dock absolute bottom-3 left-3 right-3 z-[70] min-w-0 lg:left-[120px] lg:right-[120px] 2xl:left-[150px] 2xl:right-[150px]">
           {!observerMode && !isDealLocked ? (
             <>
+              <HandCards
+                cards={displayedUserCards}
+                disabled={!isUserTurn || isDealLocked}
+                invalidCardIds={state.invalidCardIds}
+                invalidPulseKey={state.invalidPulseKey}
+                levelRank={levelRankLabel}
+                onSelectionChange={setSelectedCards}
+                onSelectCard={selectCard}
+                selectedCardIds={selectedCardIds}
+                cardScale={arenaCardScale}
+                sortPulseKey={sortPulseKey}
+                variant="arena"
+              />
               <ActionToolbar
                 canAct={isUserTurn && !isDealLocked}
                 cardCounterVisible={state.cardCounterVisible}
@@ -553,29 +505,9 @@ export function GameArena({
                 phase={phase}
                 selectedCount={state.selectedCards.length}
               />
-              <HandCards
-                cards={displayedUserCards}
-                disabled={!isUserTurn || isDealLocked}
-                invalidCardIds={state.invalidCardIds}
-                invalidPulseKey={state.invalidPulseKey}
-                levelRank={levelRankLabel}
-                onSelectionChange={setSelectedCards}
-                onSelectCard={selectCard}
-                selectedCardIds={selectedCardIds}
-                cardScale={arenaCardScale}
-                sortPulseKey={sortPulseKey}
-                variant="arena"
-              />
             </>
           ) : null}
         </section>
-        {!observerMode ? (
-          <SmartSortButton
-            active={smartSortActive}
-            disabled={isDealLocked}
-            onClick={toggleSmartSort}
-          />
-        ) : null}
         <DealAnimation
           active={isDealLocked}
           cardCount={totalCardCount}
@@ -631,34 +563,6 @@ function ArenaBackground() {
       />
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.04),rgba(59,170,244,0.10)_55%,rgba(44,139,214,0.22))]" />
     </div>
-  );
-}
-
-function SmartSortButton({
-  active,
-  disabled,
-  onClick
-}: {
-  active: boolean;
-  disabled: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      aria-pressed={active}
-      className={cn(
-        "fixed bottom-6 right-6 z-[92] inline-flex min-h-14 items-center gap-2 rounded-full border px-5 text-base font-black shadow-[0_18px_38px_rgba(15,100,255,0.26)] backdrop-blur-xl transition hover:-translate-y-0.5 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-45 max-lg:bottom-[132px] max-lg:right-4 max-lg:min-h-12 max-lg:px-4 max-lg:text-sm",
-        active
-          ? "border-[#ffd36d] bg-[#ffe08a] text-[#755000]"
-          : "border-white/80 bg-[#0f64ff] text-white"
-      )}
-      disabled={disabled}
-      onClick={onClick}
-      type="button"
-    >
-      <span className="material-symbols-outlined text-[20px]">sort</span>
-      <span>{active ? "恢复原序" : "智能理牌"}</span>
-    </button>
   );
 }
 
@@ -748,29 +652,23 @@ function PortraitTrainingPrompt({ onEnter }: { onEnter: () => void }) {
 }
 
 function ArenaTopBar({
-  activeLevel,
   isFullscreen,
-  levelTitle,
   levelRank,
   observerMode,
   onBackToLobby,
   onOpenCoach,
   onOpenRules,
   onOpenSettings,
-  onSelectLevel,
   onToggleFullscreen,
   phase
 }: {
-  activeLevel: TrainingLevel;
   isFullscreen: boolean;
-  levelTitle: string;
   levelRank: string;
   observerMode: boolean;
   onBackToLobby: () => void;
   onOpenCoach: () => void;
   onOpenRules: () => void;
   onOpenSettings: () => void;
-  onSelectLevel: (level: TrainingLevel) => void;
   onToggleFullscreen: () => void;
   phase: TrainingPhase;
 }) {
@@ -780,32 +678,16 @@ function ArenaTopBar({
         <div className="relative flex h-[82px] w-[360px] shrink-0 items-center rounded-br-[28px] bg-white/76 pl-7 shadow-[0_10px_24px_rgba(37,126,191,0.14)] max-lg:w-[220px] max-lg:pl-4">
           <div>
             <p className="whitespace-nowrap text-[24px] font-black leading-7 text-[#f6b42d] max-lg:text-[18px]">
-              Ace <span className="text-[#12395a]">掼蛋训练空间</span>
+              Ace <span className="text-[#12395a]">掼蛋记牌训练空间</span>
             </p>
             <p className="mt-1 text-[10px] font-black text-[#255675] max-lg:line-clamp-2 max-lg:max-w-[185px]">
               AI Coach 陪你从基础规则到高级牌局决策。
             </p>
-            {!observerMode ? <p className="mt-0.5 text-[8px] font-black uppercase tracking-[0.16em] text-[#2b6b93] max-lg:hidden">{levelTitle}</p> : null}
           </div>
         </div>
 
         {!observerMode ? <div className="hidden shrink-0 items-center gap-2 rounded-full bg-white/34 px-3 py-2 text-base font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl md:flex max-lg:gap-1 max-lg:px-2">
           <LevelCardBadge levelRank={levelRank} />
-          {trainingLevels.map((level) => (
-            <button
-              className={cn(
-                "h-10 rounded-full px-5 text-sm font-black transition max-lg:h-12 max-lg:w-12 max-lg:px-0 max-lg:leading-4",
-                activeLevel === level.id
-                  ? "bg-[#0f64ff] text-white shadow-[0_10px_24px_rgba(15,100,255,0.24)]"
-                  : "bg-white/35 text-[#17496d] hover:bg-white/62"
-              )}
-              key={level.id}
-              onClick={() => onSelectLevel(level.id)}
-              type="button"
-            >
-              {level.label}
-            </button>
-          ))}
           <span className="ml-2 rounded-full bg-[#12395a]/88 px-3 py-1 text-xs text-white max-lg:hidden">{phaseText[phase]}</span>
         </div> : <div className="hidden rounded-full bg-white/44 px-5 py-3 text-sm font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,132,196,0.12)] backdrop-blur-xl md:block">观察模式 · AI 自动行动</div>}
 
@@ -839,15 +721,10 @@ function ArenaTopBar({
 
 function LevelCardBadge({ levelRank }: { levelRank: string }) {
   return (
-    <section className="mr-2 flex h-14 items-center gap-3 rounded-full border-2 border-[#f2c24c]/90 bg-white/94 px-3 text-[#12395a] shadow-[0_14px_30px_rgba(164,105,0,0.18)] backdrop-blur max-lg:h-12 max-lg:gap-2 max-lg:px-2">
-      <p className="whitespace-nowrap text-xs font-black text-[#9a6800] max-lg:hidden">
-        本局级牌
-      </p>
-      <div className="relative grid h-11 w-11 place-items-center rounded-xl border-2 border-[#f2c24c] bg-white text-2xl font-black text-[#0f172a] shadow-[0_8px_18px_rgba(164,105,0,0.18)] max-lg:h-9 max-lg:w-9 max-lg:text-xl">
+    <section className="mr-1 flex h-16 items-center gap-2 rounded-xl border-2 border-[#f2c24c]/90 bg-white/95 px-2.5 text-[#12395a] shadow-[0_10px_24px_rgba(164,105,0,0.22)] backdrop-blur max-lg:h-14">
+      <p className="whitespace-nowrap text-sm font-black text-[#9a6800] max-lg:text-xs">级牌</p>
+      <div className="relative grid h-12 w-12 place-items-center rounded-lg border-2 border-[#f2c24c] bg-white text-2xl font-black text-[#0f172a] shadow-[0_5px_12px_rgba(164,105,0,0.16)] max-lg:h-10 max-lg:w-10 max-lg:text-xl">
         {levelRank}
-        <span className="absolute -right-1.5 -top-1.5 rounded-md bg-[#ffd76a] px-1.5 text-[10px] leading-5 text-[#7a4a00] shadow-sm max-lg:text-[9px] max-lg:leading-4">
-          级
-        </span>
       </div>
     </section>
   );
@@ -870,60 +747,6 @@ function HudButton({ icon, label, onClick }: { icon: string; label: string; onCl
       <span>{icon}</span>
       <span className="max-lg:sr-only">{label}</span>
     </button>
-  );
-}
-
-function PerformancePanel({
-  level,
-  onCollapse,
-  phase
-}: {
-  level: (typeof trainingLevels)[number];
-  onCollapse: () => void;
-  phase: TrainingPhase;
-}) {
-  return (
-    <section className="rounded-[12px] border border-white/62 bg-white/68 p-4 text-[#12395a] shadow-[0_20px_45px_rgba(42,132,196,0.20)] backdrop-blur-xl">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h2 className="text-base font-black">{level.title}</h2>
-          <p className="mt-1 text-sm font-bold text-[#346d92]">{level.goal}</p>
-        {/*
-        </div> : <div className="hidden rounded-full bg-white/44 px-5 py-3 text-sm font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,132,196,0.12)] backdrop-blur-xl md:block">观察模式 · AI 自动行动</div>}
-        */}
-        </div>
-        <button
-          aria-label="隐藏训练目的"
-          className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/72 text-[#17496d] shadow-sm transition hover:bg-white"
-          onClick={onCollapse}
-          type="button"
-        >
-          <span className="material-symbols-outlined text-[17px]">expand_less</span>
-        </button>
-      </div>
-      <div className="mt-3 flex flex-wrap gap-2">
-        {level.items.map((item) => (
-          <span className="rounded-full bg-[#d9f3ff]/80 px-3 py-1 text-xs font-black text-[#0f64a0]" key={item}>
-            {item}
-          </span>
-        ))}
-      </div>
-      <div className="mt-3 grid grid-cols-3 border-b border-[#8ecded]/60 pb-2 text-center text-sm font-bold text-[#346d92]">
-        <span>玩家</span>
-        <span>本轮</span>
-        <span>表现</span>
-      </div>
-      <div className="grid grid-cols-3 py-2 text-center text-sm font-black text-[#0f64a0]">
-        <span>我方</span>
-        <span>{phase === "completed" ? "20" : "--"}</span>
-        <span>--</span>
-      </div>
-      <div className="grid grid-cols-3 py-1 text-center text-sm font-bold text-[#346d92]">
-        <span>对方</span>
-        <span>--</span>
-        <span>--</span>
-      </div>
-    </section>
   );
 }
 

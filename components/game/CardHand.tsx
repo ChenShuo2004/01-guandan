@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from "react";
 import type { PointerEvent } from "react";
 import { motion } from "framer-motion";
 import { CardGroup } from "@/components/game/CardGroup";
+import type { CardHandGroup } from "@/lib/cards/cardSort";
 import { PlayingCard } from "@/components/cards/PlayingCard";
 import { groupCardsForHand, sortCardsForHand } from "@/lib/cards/cardSort";
 import type { Card } from "@/lib/guandan/card";
@@ -37,6 +38,7 @@ export function CardHand({
   variant = "default"
 }: CardHandProps) {
   const groups = useMemo(() => groupCardsForHand(cards), [cards]);
+  const arenaGroups = useMemo(() => groupCardsForArena(cards), [cards]);
   const selectedSet = useMemo(() => new Set(selectedCardIds), [selectedCardIds]);
   const invalidSet = useMemo(() => new Set(invalidCardIds), [invalidCardIds]);
   const selectedIdsRef = useRef(selectedCardIds);
@@ -141,53 +143,40 @@ export function CardHand({
 
     return (
       <div
-        className={cn("relative overflow-visible px-2 py-1", disabled && "opacity-75")}
+        className={cn("training-player-hand relative z-[90] overflow-visible px-2 py-1", disabled && "opacity-75")}
         data-selected-count={selectedCardIds.length}
         style={{
           ["--arena-card-overlap" as string]: `${Math.round(arenaCardOverlap * arenaCardScale)}px`,
           ["--arena-card-min-height" as string]: `${Math.round(178 * arenaCardScale)}px`
         }}
       >
-        {selectedCardIds.length > 1 ? (
-          <div
-            aria-hidden
-            className="pointer-events-none absolute bottom-4 left-1/2 h-8 w-[60%] -translate-x-1/2 rounded-full bg-[#ffd700]/28 blur-xl"
-          />
-        ) : null}
-
-        <div className="arena-hand-row relative flex min-h-[var(--arena-card-min-height)] min-w-0 items-end justify-center overflow-visible px-1 pb-2 pt-7">
-          {cards.map((card, index) => {
-            const selected = selectedSet.has(card.id);
-            const invalid = invalidSet.has(card.id);
-
-            return (
-              <motion.div
-                animate={{
-                  scale: sortPulseKey > 0 ? [1, 1.025, 1] : 1
-                }}
-                className={cn("relative shrink-0", index === 0 ? "" : "-ml-[var(--arena-card-overlap)]")}
-                key={card.id}
-                layout
-                style={{ zIndex: selected || invalid ? 100 + index : index }}
-                transition={{
-                  layout: { duration: 0.4, ease: "easeOut" },
-                  scale: { delay: 0.4, duration: 0.22, ease: "easeOut" }
-                }}
-              >
-                <PlayingCard
-                  card={card}
-                  disabled={disabled}
-                  invalid={invalid}
-                  invalidPulseKey={invalidPulseKey}
-                  levelRank={levelRank}
-                  onPointerDownCard={handlePointerDown}
-                  onPointerEnterCard={handlePointerEnter}
-                  selected={selected}
-                  sizeScale={arenaCardScale}
-                />
-              </motion.div>
-            );
-          })}
+        <div className="arena-hand-row relative flex min-h-[var(--arena-card-min-height)] min-w-0 items-end justify-center gap-1 overflow-visible px-1 pb-2 pt-7">
+          {arenaGroups.map((group, index) => (
+            <motion.div
+              animate={{ scale: sortPulseKey > 0 ? [1, 1.025, 1] : 1 }}
+              className="relative shrink-0"
+              key={group.id}
+              layout
+              style={{ zIndex: index }}
+              transition={{
+                layout: { duration: 0.4, ease: "easeOut" },
+                scale: { delay: 0.4, duration: 0.22, ease: "easeOut" }
+              }}
+            >
+              <CardGroup
+                disabled={disabled}
+                group={group}
+                invalidCardIds={invalidSet}
+                invalidPulseKey={invalidPulseKey}
+                layout="stack"
+                levelRank={levelRank}
+                onPointerDownCard={handlePointerDown}
+                onPointerEnterCard={handlePointerEnter}
+                selectedCardIds={selectedSet}
+                sizeScale={arenaCardScale}
+              />
+            </motion.div>
+          ))}
         </div>
       </div>
     );
@@ -201,13 +190,6 @@ export function CardHand({
       )}
       data-selected-count={selectedCardIds.length}
     >
-      {selectedCardIds.length > 1 ? (
-        <div
-          aria-hidden
-          className="pointer-events-none absolute bottom-5 left-1/2 h-9 w-[72%] -translate-x-1/2 rounded-full bg-[#ffd700]/34 blur-xl"
-        />
-      ) : null}
-
       <div
         className="relative flex min-w-0 items-end justify-center gap-3 overflow-x-auto px-2 pb-4 pt-6 sm:gap-4"
       >
@@ -232,4 +214,27 @@ export function CardHand({
       </div>
     </div>
   );
+}
+
+function groupCardsForArena(cards: Card[]): CardHandGroup[] {
+  const byRank = new Map<number, Card[]>();
+
+  for (const card of cards) {
+    byRank.set(card.rank, [...(byRank.get(card.rank) ?? []), card]);
+  }
+
+  return [...byRank.entries()]
+    .sort(([rankA], [rankB]) => rankA - rankB)
+    .map(([rank, rankCards]) => {
+      const sortedCards = sortCardsForHand(rankCards);
+      const type = sortedCards.length >= 4 ? "bomb" : sortedCards.length === 3 ? "triple" : sortedCards.length === 2 ? "pair" : "single";
+
+      return {
+        id: `arena-rank-${rank}`,
+        type,
+        label: String(rank),
+        power: rank,
+        cards: sortedCards
+      } satisfies CardHandGroup;
+    });
 }

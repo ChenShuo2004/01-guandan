@@ -580,20 +580,20 @@ select {
     transform: none !important;
   }
 
-  .training-hand-dock > div:first-child {
+  .training-action-toolbar {
     margin-bottom: 0.15rem;
     padding: 0.25rem 0.45rem;
   }
 
-  .training-hand-dock > div:first-child button {
+  .training-action-toolbar button {
     min-height: 48px;
     min-width: 48px;
     padding-left: 0.85rem;
     padding-right: 0.85rem;
   }
 
-  .training-hand-dock > div:first-child button span:last-child,
-  .training-hand-dock > div:first-child button:not(:has(.material-symbols-outlined)) {
+  .training-action-toolbar button span:last-child,
+  .training-action-toolbar button:not(:has(.material-symbols-outlined)) {
     display: none;
   }
 
@@ -602,7 +602,7 @@ select {
     padding-top: 1.1rem !important;
   }
 
-  .training-hand-dock [data-card-id] {
+  .training-player-hand [data-card-id] {
     margin-bottom: 0;
   }
 

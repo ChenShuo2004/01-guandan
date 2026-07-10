@@ -46,7 +46,7 @@ export function ActionToolbar({
   return (
     <motion.div
       animate={{ opacity: 1, y: 0 }}
-      className="mx-auto mb-3 flex w-fit max-w-full flex-nowrap items-center justify-center gap-2 rounded-full border border-white/62 bg-white/54 px-4 py-2.5 shadow-[0_16px_36px_rgba(28,109,172,0.20)] backdrop-blur-md max-lg:mb-1 max-lg:gap-1.5 max-lg:px-2 max-lg:py-1.5"
+      className="training-action-toolbar mx-auto mb-3 flex w-fit max-w-full flex-nowrap items-center justify-center gap-2 rounded-full border border-white/62 bg-white/54 px-4 py-2.5 shadow-[0_16px_36px_rgba(28,109,172,0.20)] backdrop-blur-md max-lg:mb-1 max-lg:gap-1.5 max-lg:px-2 max-lg:py-1.5"
       initial={{ opacity: 0, y: 12 }}
       transition={{ duration: 0.32, ease: "easeOut" }}
     >
