@@ -313,7 +313,7 @@ export function GameArena({
       const isLandscapeTraining = window.matchMedia("(orientation: landscape) and (max-height: 600px)").matches;
 
       if (!isLandscapeTraining) {
-        setArenaCardScale(0.92);
+        setArenaCardScale(1.02);
         return;
       }
 
@@ -446,11 +446,12 @@ export function GameArena({
       ref={arenaRef}
     >
       <ArenaBackground />
-      <ArenaTopBar
-        activeLevel={activeLevel}
-        isFullscreen={isFullscreen}
-        levelTitle={activeTrainingLevel.title}
-        levelRank={levelRankLabel}
+        <ArenaTopBar
+          activeLevel={activeLevel}
+          isFullscreen={isFullscreen}
+          levelTitle={activeTrainingLevel.title}
+          levelRank={levelRankLabel}
+          observerMode={observerMode}
         onBackToLobby={goLobby}
         onOpenCoach={() => setActivePanel("coach")}
         onOpenRules={() => setActivePanel("rules")}
@@ -481,7 +482,7 @@ export function GameArena({
 
         <CardCounter counts={state.cardRemainingCount} levelRank={levelRankLabel} visible={state.cardCounterVisible} />
 
-        {settings.aiTips ? (
+        {settings.aiTips && !observerMode ? (
           <motion.section
             animate={{ opacity: 1, x: 0 }}
             className="training-coach-tip absolute left-5 top-[190px] z-[62] flex max-h-[210px] w-[min(380px,28vw)] items-start gap-4 overflow-y-auto rounded-2xl bg-white px-5 py-4 text-left shadow-[0_22px_54px_rgba(42,132,196,0.24)] max-xl:top-[176px] max-xl:w-[330px] max-lg:left-3 max-lg:top-[96px] max-lg:max-h-[126px] max-lg:w-[300px] max-lg:gap-3 max-lg:px-4 max-lg:py-3"
@@ -507,7 +508,7 @@ export function GameArena({
           </motion.section>
         ) : null}
 
-        <div className="training-performance-panel absolute right-7 top-[86px] z-50 hidden w-[238px] xl:block">
+        {!observerMode ? <div className="training-performance-panel absolute right-7 top-[86px] z-50 hidden w-[238px] xl:block">
           {trainingGoalOpen ? (
             <PerformancePanel
               level={activeTrainingLevel}
@@ -524,11 +525,11 @@ export function GameArena({
               <span className="material-symbols-outlined text-[18px]">expand_more</span>
             </button>
           )}
-        </div>
+        </div> : null}
 
-        <div className="training-analysis-panel pointer-events-none absolute left-1/2 top-[61%] z-40 w-[min(560px,42vw)] -translate-x-1/2 text-center text-white drop-shadow-[0_3px_8px_rgba(34,92,146,0.42)] max-lg:top-[54%] max-lg:w-[360px]">
+        {!observerMode ? <div className="training-analysis-panel pointer-events-none absolute left-1/2 top-[61%] z-40 w-[min(560px,42vw)] -translate-x-1/2 text-center text-white drop-shadow-[0_3px_8px_rgba(34,92,146,0.42)] max-lg:top-[54%] max-lg:w-[360px]">
           <AnalysisPanel reason={state.coachFeedback.reason} status={roundStatus} />
-        </div>
+        </div> : null}
 
         <section className="training-hand-dock absolute bottom-3 left-3 right-3 z-[60] min-w-0 lg:left-[120px] lg:right-[120px] 2xl:left-[150px] 2xl:right-[150px]">
           {!observerMode && !isDealLocked ? (
@@ -584,11 +585,12 @@ export function GameArena({
         />
       </section>
 
-      <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "coach"} title="AI Coach">
+      <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "coach"} title={observerMode ? "记牌训练说明" : "AI Coach"}>
         <CoachTeachingContent
           message={state.coachFeedback.message}
           reason={state.coachFeedback.reason}
           suggestion={state.coachFeedback.suggestion}
+          observerMode={observerMode}
         />
       </ArenaModal>
 
@@ -605,7 +607,7 @@ export function GameArena({
       <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "settings"} title="设置">
         <div className="space-y-4 text-[#12395a]">
           <SettingToggle checked={settings.sound} label="音效" onChange={(sound) => updateSettings({ sound })} />
-          <SettingToggle checked={settings.aiTips} label="AI 提示" onChange={(aiTips) => updateSettings({ aiTips })} />
+          {!observerMode ? <SettingToggle checked={settings.aiTips} label="AI 提示" onChange={(aiTips) => updateSettings({ aiTips })} /> : null}
           <section className="rounded-2xl bg-[#f3f9ff] p-5 text-base font-bold leading-7 text-[#345f78]">
             AI 行动固定 5 秒。牌面固定 100%，训练场不再提供缩放。
           </section>
@@ -750,6 +752,7 @@ function ArenaTopBar({
   isFullscreen,
   levelTitle,
   levelRank,
+  observerMode,
   onBackToLobby,
   onOpenCoach,
   onOpenRules,
@@ -762,6 +765,7 @@ function ArenaTopBar({
   isFullscreen: boolean;
   levelTitle: string;
   levelRank: string;
+  observerMode: boolean;
   onBackToLobby: () => void;
   onOpenCoach: () => void;
   onOpenRules: () => void;
@@ -781,13 +785,11 @@ function ArenaTopBar({
             <p className="mt-1 text-[10px] font-black text-[#255675] max-lg:line-clamp-2 max-lg:max-w-[185px]">
               AI Coach 陪你从基础规则到高级牌局决策。
             </p>
-            <p className="mt-0.5 text-[8px] font-black uppercase tracking-[0.16em] text-[#2b6b93] max-lg:hidden">
-              {levelTitle}
-            </p>
+            {!observerMode ? <p className="mt-0.5 text-[8px] font-black uppercase tracking-[0.16em] text-[#2b6b93] max-lg:hidden">{levelTitle}</p> : null}
           </div>
         </div>
 
-        <div className="hidden shrink-0 items-center gap-2 rounded-full bg-white/34 px-3 py-2 text-base font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl md:flex max-lg:gap-1 max-lg:px-2">
+        {!observerMode ? <div className="hidden shrink-0 items-center gap-2 rounded-full bg-white/34 px-3 py-2 text-base font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl md:flex max-lg:gap-1 max-lg:px-2">
           <LevelCardBadge levelRank={levelRank} />
           {trainingLevels.map((level) => (
             <button
@@ -805,7 +807,7 @@ function ArenaTopBar({
             </button>
           ))}
           <span className="ml-2 rounded-full bg-[#12395a]/88 px-3 py-1 text-xs text-white max-lg:hidden">{phaseText[phase]}</span>
-        </div>
+        </div> : <div className="hidden rounded-full bg-white/44 px-5 py-3 text-sm font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,132,196,0.12)] backdrop-blur-xl md:block">观察模式 · AI 自动行动</div>}
 
         <nav className="flex min-w-0 items-center gap-3 max-lg:gap-2">
           <HudButton icon="◉" label="AI Coach" onClick={onOpenCoach} />
@@ -886,6 +888,9 @@ function PerformancePanel({
         <div>
           <h2 className="text-base font-black">{level.title}</h2>
           <p className="mt-1 text-sm font-bold text-[#346d92]">{level.goal}</p>
+        {/*
+        </div> : <div className="hidden rounded-full bg-white/44 px-5 py-3 text-sm font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,132,196,0.12)] backdrop-blur-xl md:block">观察模式 · AI 自动行动</div>}
+        */}
         </div>
         <button
           aria-label="隐藏训练目的"
@@ -1011,11 +1016,13 @@ function SettingToggle({
 function CoachTeachingContent({
   message,
   reason,
-  suggestion
+  suggestion,
+  observerMode = false
 }: {
   message: string;
   reason: string;
   suggestion: string;
+  observerMode?: boolean;
 }) {
   return (
     <article className="space-y-5 text-[#12395a]">

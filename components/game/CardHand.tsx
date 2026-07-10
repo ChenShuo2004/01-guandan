@@ -137,14 +137,15 @@ export function CardHand({
 
   if (variant === "arena") {
     const arenaCardScale = cardScale;
+    const arenaCardOverlap = cards.length > 20 ? 42 : cards.length > 16 ? 30 : 14;
 
     return (
       <div
         className={cn("relative overflow-visible px-2 py-1", disabled && "opacity-75")}
         data-selected-count={selectedCardIds.length}
         style={{
-          ["--arena-card-overlap" as string]: `${Math.round(26 * arenaCardScale)}px`,
-          ["--arena-card-min-height" as string]: `${Math.round(168 * arenaCardScale)}px`
+          ["--arena-card-overlap" as string]: `${Math.round(arenaCardOverlap * arenaCardScale)}px`,
+          ["--arena-card-min-height" as string]: `${Math.round(178 * arenaCardScale)}px`
         }}
       >
         {selectedCardIds.length > 1 ? (

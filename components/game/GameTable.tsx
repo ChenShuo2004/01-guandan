@@ -44,7 +44,7 @@ export function GameTable({
       <RoundActionZone action={roundActions.enemyAI1} className="right-[21%] top-[42%]" levelRank={levelRank} />
       <RoundActionZone action={roundActions.player} className="left-1/2 bottom-[24%] -translate-x-1/2" levelRank={levelRank} />
 
-      {players.map((player) => (
+      {players.filter((player) => player.position !== "bottom").map((player) => (
         <PlayerSeat key={player.id} player={player} />
       ))}
     </div>
