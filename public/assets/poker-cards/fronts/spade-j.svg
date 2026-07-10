@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="180" height="252" viewBox="0 0 180 252" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect x="5" y="5" width="170" height="242" rx="18" fill="url(#paper)" stroke="#f7f2e6" stroke-width="10"/>
-  <rect x="10" y="10" width="160" height="232" rx="14" stroke="#d6a83c" stroke-opacity="0.18" stroke-width="2"/>
-  <path d="M24 132C44 94 70 78 90 42C110 78 136 94 156 132C166 152 155 177 130 177C115 177 101 168 96 155V197H84V155C79 168 65 177 50 177C25 177 14 152 24 132Z" fill="#151922" fill-opacity="0.96"/>
-  <path d="M90 66C103 89 126 105 142 132C150 146 143 162 127 162C111 162 98 150 96 134C92 156 75 169 56 165C42 162 36 147 43 133C58 105 78 89 90 66Z" fill="#d6a83c" fill-opacity="0.24"/>
-  <text x="21" y="42" fill="#151922" font-family="Georgia, serif" font-size="32" font-weight="800">J</text>
-  <text x="23" y="68" fill="#151922" font-family="Georgia, serif" font-size="28" font-weight="800">♠</text>
-  <text x="159" y="210" fill="#151922" font-family="Georgia, serif" font-size="32" font-weight="800" text-anchor="middle" transform="rotate(180 159 210)">J</text>
-  <text x="157" y="184" fill="#151922" font-family="Georgia, serif" font-size="28" font-weight="800" text-anchor="middle" transform="rotate(180 157 184)">♠</text>
-  <defs>
-    <linearGradient id="paper" x1="22" y1="14" x2="158" y2="238" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fffdfa"/>
-      <stop offset="0.52" stop-color="#f5f1ea"/>
-      <stop offset="1" stop-color="#ffffff"/>
-    </linearGradient>
-  </defs>
+<svg width="360" height="504" viewBox="0 0 360 504" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="3" y="3" width="354" height="498" rx="28" fill="#FCFCFB" stroke="#D6DBDE" stroke-width="6"/>
+  <rect x="13" y="13" width="334" height="478" rx="21" stroke="#E9ECEC" stroke-width="2"/>
+  <g fill="#101820" font-family="Georgia, 'Times New Roman', serif">
+    <text x="31" y="67" font-size="54" font-weight="700">J</text>
+    <text x="78" y="67" font-size="42" font-weight="700">♠</text>
+    <text x="180" y="286" text-anchor="middle" class="face-suit">♠</text>
+  </g>
+  <g transform="rotate(180 180 252)" fill="#101820" font-family="Georgia, 'Times New Roman', serif">
+    <text x="31" y="67" font-size="54" font-weight="700">J</text>
+    <text x="78" y="67" font-size="42" font-weight="700">♠</text>
+  </g>
+  <style>.pip{font-size:54px;font-weight:700}.face-suit{font-size:142px;font-weight:700}</style>
 </svg>

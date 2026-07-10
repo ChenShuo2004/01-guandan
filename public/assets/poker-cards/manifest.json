@@ -1,380 +1,326 @@
 {
-  "generatedAt": "2026-07-08T13:45:33.533Z",
+  "source": "static-image-assets",
   "cards": [
     {
       "id": "spade-3",
-      "rank": 3,
       "label": "3",
       "suit": "spade",
       "path": "/assets/poker-cards/fronts/spade-3.svg"
     },
     {
       "id": "spade-4",
-      "rank": 4,
       "label": "4",
       "suit": "spade",
       "path": "/assets/poker-cards/fronts/spade-4.svg"
     },
     {
       "id": "spade-5",
-      "rank": 5,
       "label": "5",
       "suit": "spade",
       "path": "/assets/poker-cards/fronts/spade-5.svg"
     },
     {
       "id": "spade-6",
-      "rank": 6,
       "label": "6",
       "suit": "spade",
       "path": "/assets/poker-cards/fronts/spade-6.svg"
     },
     {
       "id": "spade-7",
-      "rank": 7,
       "label": "7",
       "suit": "spade",
       "path": "/assets/poker-cards/fronts/spade-7.svg"
     },
     {
       "id": "spade-8",
-      "rank": 8,
       "label": "8",
       "suit": "spade",
       "path": "/assets/poker-cards/fronts/spade-8.svg"
     },
     {
       "id": "spade-9",
-      "rank": 9,
       "label": "9",
       "suit": "spade",
       "path": "/assets/poker-cards/fronts/spade-9.svg"
     },
     {
       "id": "spade-10",
-      "rank": 10,
       "label": "10",
       "suit": "spade",
       "path": "/assets/poker-cards/fronts/spade-10.svg"
     },
     {
       "id": "spade-j",
-      "rank": 11,
       "label": "J",
       "suit": "spade",
       "path": "/assets/poker-cards/fronts/spade-j.svg"
     },
     {
       "id": "spade-q",
-      "rank": 12,
       "label": "Q",
       "suit": "spade",
       "path": "/assets/poker-cards/fronts/spade-q.svg"
     },
     {
       "id": "spade-k",
-      "rank": 13,
       "label": "K",
       "suit": "spade",
       "path": "/assets/poker-cards/fronts/spade-k.svg"
     },
     {
       "id": "spade-a",
-      "rank": 14,
       "label": "A",
       "suit": "spade",
       "path": "/assets/poker-cards/fronts/spade-a.svg"
     },
     {
       "id": "spade-2",
-      "rank": 15,
       "label": "2",
       "suit": "spade",
       "path": "/assets/poker-cards/fronts/spade-2.svg"
     },
     {
       "id": "heart-3",
-      "rank": 3,
       "label": "3",
       "suit": "heart",
       "path": "/assets/poker-cards/fronts/heart-3.svg"
     },
     {
       "id": "heart-4",
-      "rank": 4,
       "label": "4",
       "suit": "heart",
       "path": "/assets/poker-cards/fronts/heart-4.svg"
     },
     {
       "id": "heart-5",
-      "rank": 5,
       "label": "5",
       "suit": "heart",
       "path": "/assets/poker-cards/fronts/heart-5.svg"
     },
     {
       "id": "heart-6",
-      "rank": 6,
       "label": "6",
       "suit": "heart",
       "path": "/assets/poker-cards/fronts/heart-6.svg"
     },
     {
       "id": "heart-7",
-      "rank": 7,
       "label": "7",
       "suit": "heart",
       "path": "/assets/poker-cards/fronts/heart-7.svg"
     },
     {
       "id": "heart-8",
-      "rank": 8,
       "label": "8",
       "suit": "heart",
       "path": "/assets/poker-cards/fronts/heart-8.svg"
     },
     {
       "id": "heart-9",
-      "rank": 9,
       "label": "9",
       "suit": "heart",
       "path": "/assets/poker-cards/fronts/heart-9.svg"
     },
     {
       "id": "heart-10",
-      "rank": 10,
       "label": "10",
       "suit": "heart",
       "path": "/assets/poker-cards/fronts/heart-10.svg"
     },
     {
       "id": "heart-j",
-      "rank": 11,
       "label": "J",
       "suit": "heart",
       "path": "/assets/poker-cards/fronts/heart-j.svg"
     },
     {
       "id": "heart-q",
-      "rank": 12,
       "label": "Q",
       "suit": "heart",
       "path": "/assets/poker-cards/fronts/heart-q.svg"
     },
     {
       "id": "heart-k",
-      "rank": 13,
       "label": "K",
       "suit": "heart",
       "path": "/assets/poker-cards/fronts/heart-k.svg"
     },
     {
       "id": "heart-a",
-      "rank": 14,
       "label": "A",
       "suit": "heart",
       "path": "/assets/poker-cards/fronts/heart-a.svg"
     },
     {
       "id": "heart-2",
-      "rank": 15,
       "label": "2",
       "suit": "heart",
       "path": "/assets/poker-cards/fronts/heart-2.svg"
     },
     {
       "id": "club-3",
-      "rank": 3,
       "label": "3",
       "suit": "club",
       "path": "/assets/poker-cards/fronts/club-3.svg"
     },
     {
       "id": "club-4",
-      "rank": 4,
       "label": "4",
       "suit": "club",
       "path": "/assets/poker-cards/fronts/club-4.svg"
     },
     {
       "id": "club-5",
-      "rank": 5,
       "label": "5",
       "suit": "club",
       "path": "/assets/poker-cards/fronts/club-5.svg"
     },
     {
       "id": "club-6",
-      "rank": 6,
       "label": "6",
       "suit": "club",
       "path": "/assets/poker-cards/fronts/club-6.svg"
     },
     {
       "id": "club-7",
-      "rank": 7,
       "label": "7",
       "suit": "club",
       "path": "/assets/poker-cards/fronts/club-7.svg"
     },
     {
       "id": "club-8",
-      "rank": 8,
       "label": "8",
       "suit": "club",
       "path": "/assets/poker-cards/fronts/club-8.svg"
     },
     {
       "id": "club-9",
-      "rank": 9,
       "label": "9",
       "suit": "club",
       "path": "/assets/poker-cards/fronts/club-9.svg"
     },
     {
       "id": "club-10",
-      "rank": 10,
       "label": "10",
       "suit": "club",
       "path": "/assets/poker-cards/fronts/club-10.svg"
     },
     {
       "id": "club-j",
-      "rank": 11,
       "label": "J",
       "suit": "club",
       "path": "/assets/poker-cards/fronts/club-j.svg"
     },
     {
       "id": "club-q",
-      "rank": 12,
       "label": "Q",
       "suit": "club",
       "path": "/assets/poker-cards/fronts/club-q.svg"
     },
     {
       "id": "club-k",
-      "rank": 13,
       "label": "K",
       "suit": "club",
       "path": "/assets/poker-cards/fronts/club-k.svg"
     },
     {
       "id": "club-a",
-      "rank": 14,
       "label": "A",
       "suit": "club",
       "path": "/assets/poker-cards/fronts/club-a.svg"
     },
     {
       "id": "club-2",
-      "rank": 15,
       "label": "2",
       "suit": "club",
       "path": "/assets/poker-cards/fronts/club-2.svg"
     },
     {
       "id": "diamond-3",
-      "rank": 3,
       "label": "3",
       "suit": "diamond",
       "path": "/assets/poker-cards/fronts/diamond-3.svg"
     },
     {
       "id": "diamond-4",
-      "rank": 4,
       "label": "4",
       "suit": "diamond",
       "path": "/assets/poker-cards/fronts/diamond-4.svg"
     },
     {
       "id": "diamond-5",
-      "rank": 5,
       "label": "5",
       "suit": "diamond",
       "path": "/assets/poker-cards/fronts/diamond-5.svg"
     },
     {
       "id": "diamond-6",
-      "rank": 6,
       "label": "6",
       "suit": "diamond",
       "path": "/assets/poker-cards/fronts/diamond-6.svg"
     },
     {
       "id": "diamond-7",
-      "rank": 7,
       "label": "7",
       "suit": "diamond",
       "path": "/assets/poker-cards/fronts/diamond-7.svg"
     },
     {
       "id": "diamond-8",
-      "rank": 8,
       "label": "8",
       "suit": "diamond",
       "path": "/assets/poker-cards/fronts/diamond-8.svg"
     },
     {
       "id": "diamond-9",
-      "rank": 9,
       "label": "9",
       "suit": "diamond",
       "path": "/assets/poker-cards/fronts/diamond-9.svg"
     },
     {
       "id": "diamond-10",
-      "rank": 10,
       "label": "10",
       "suit": "diamond",
       "path": "/assets/poker-cards/fronts/diamond-10.svg"
     },
     {
       "id": "diamond-j",
-      "rank": 11,
       "label": "J",
       "suit": "diamond",
       "path": "/assets/poker-cards/fronts/diamond-j.svg"
     },
     {
       "id": "diamond-q",
-      "rank": 12,
       "label": "Q",
       "suit": "diamond",
       "path": "/assets/poker-cards/fronts/diamond-q.svg"
     },
     {
       "id": "diamond-k",
-      "rank": 13,
       "label": "K",
       "suit": "diamond",
       "path": "/assets/poker-cards/fronts/diamond-k.svg"
     },
     {
       "id": "diamond-a",
-      "rank": 14,
       "label": "A",
       "suit": "diamond",
       "path": "/assets/poker-cards/fronts/diamond-a.svg"
     },
     {
       "id": "diamond-2",
-      "rank": 15,
       "label": "2",
       "suit": "diamond",
       "path": "/assets/poker-cards/fronts/diamond-2.svg"
     },
     {
       "id": "joker-small",
-      "rank": 16,
       "label": "SJ",
       "suit": "joker",
       "path": "/assets/poker-cards/fronts/joker-small.svg"
     },
     {
       "id": "joker-big",
-      "rank": 17,
       "label": "BJ",
       "suit": "joker",
       "path": "/assets/poker-cards/fronts/joker-big.svg"

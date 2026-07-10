@@ -1,5 +1,6 @@
 import type { Card, CardSuit } from "@/lib/guandan/card";
 import { getCardLabel } from "@/lib/guandan/card";
+import type { PokerCardData } from "@/types/poker";
 
 export type CardVisualStatus = "normal" | "selected" | "disabled" | "invalid";
 
@@ -20,6 +21,14 @@ export function getPlayingCardAsset(card: Card) {
   const suit = suitAssetName[card.suit as CardSuit];
   const label = getCardLabel(card).toLowerCase();
   return `/assets/poker-cards/fronts/${suit}-${label}.svg`;
+}
+
+export function getPokerCardAsset(card: PokerCardData) {
+  if (card.rank === "SJ") return "/assets/poker-cards/fronts/joker-small.svg";
+  if (card.rank === "BJ") return "/assets/poker-cards/fronts/joker-big.svg";
+
+  const suit = card.suit ? suitAssetName[card.suit] : "spade";
+  return `/assets/poker-cards/fronts/${suit}-${card.rank.toLowerCase()}.svg`;
 }
 
 export function getCardVisualStatus({

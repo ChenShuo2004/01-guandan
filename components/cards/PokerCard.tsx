@@ -1,5 +1,6 @@
-import type { PokerCardData } from "@/types/poker";
-import type { CardSize, CardType, CardVariant } from "@/types/poker";
+import type { CardSize, CardType, CardVariant, PokerCardData } from "@/types/poker";
+import Image from "next/image";
+import { getPokerCardAsset } from "@/lib/cards/cardAssets";
 import { cn } from "@/lib/utils";
 
 interface PokerCardProps {
@@ -10,13 +11,6 @@ interface PokerCardProps {
   size?: CardSize;
   variant?: CardVariant;
 }
-
-const suitSymbol = {
-  spade: "♠",
-  heart: "♥",
-  club: "♣",
-  diamond: "♦"
-};
 
 const sizeClasses: Record<CardSize, string> = {
   sm: "h-[72px] w-[50px]",
@@ -40,103 +34,38 @@ export function PokerCard({
   size,
   variant = "hand"
 }: PokerCardProps) {
-  const isRed = card.suit === "heart" || card.suit === "diamond";
-  const isSmallJoker = card.rank === "SJ";
-  const isBigJoker = card.rank === "BJ";
-  const jokerLabel = isSmallJoker ? "SMALL" : isBigJoker ? "BIG" : null;
-  const isJoker = Boolean(jokerLabel);
+  const isJoker = card.rank === "SJ" || card.rank === "BJ";
   const isLevelCard = !isJoker && card.rank === levelRank;
   const cardType: CardType = isJoker ? "joker" : isLevelCard ? "levelCard" : "normal";
   const resolvedSize: CardSize = size ?? (isJoker ? "joker" : compact ? "sm" : "md");
-  const rankColor = isRed ? "text-[#c61922]" : "text-[#111827]";
   const cardSizeClass = variant === "played" ? playedSizeClasses[resolvedSize] : sizeClasses[resolvedSize];
 
   return (
     <div
       className={cn(
-        "relative flex shrink-0 select-none flex-col overflow-hidden rounded-[13px] border bg-white font-black shadow-[0_10px_18px_rgba(17,24,39,0.20)] transition",
+        "relative flex shrink-0 select-none overflow-hidden rounded-[13px] bg-white shadow-[0_10px_18px_rgba(17,24,39,0.20)] transition",
         cardSizeClass,
-        selected && "-translate-y-5 border-[#ffd700] shadow-[0_0_0_3px_rgba(255,215,0,0.78),0_18px_28px_rgba(17,24,39,0.30)]",
-        cardType === "normal" && "border-[#c8d0d8]",
-        cardType === "levelCard" &&
-          "border-[#f0b72f] shadow-[0_0_0_2px_rgba(255,215,0,0.72),0_0_24px_rgba(255,215,0,0.70),0_14px_26px_rgba(120,84,0,0.24)] ring-2 ring-[#ffd76a]/80",
-        isSmallJoker &&
-          "border-[#2b7cff] bg-[linear-gradient(180deg,#ffffff,#eaf4ff)] shadow-[0_12px_24px_rgba(18,103,216,0.28)]",
-        isBigJoker &&
-          "border-[#d62d2d] bg-[linear-gradient(180deg,#ffffff,#fff0f0)] shadow-[0_12px_24px_rgba(214,45,45,0.28)]"
+        selected && "-translate-y-5 shadow-[0_0_0_3px_rgba(255,215,0,0.78),0_18px_28px_rgba(17,24,39,0.30)]",
+        cardType === "levelCard" && "shadow-[0_0_0_2px_rgba(255,215,0,0.72),0_0_24px_rgba(255,215,0,0.70),0_14px_26px_rgba(120,84,0,0.24)] ring-2 ring-[#ffd76a]/80"
       )}
       data-card-type={cardType}
     >
-      {isLevelCard ? (
-        <span className="absolute right-1 top-1 z-10 inline-flex items-center gap-0.5 rounded-[6px] bg-[#ffd76a] px-1.5 py-0.5 text-[10px] font-black text-[#7a4a00] shadow">
-          <span className="text-[11px] leading-none">♛</span>
-          <span>级</span>
-        </span>
-      ) : null}
-      {isJoker ? (
-        <JokerFace big={isBigJoker} />
-      ) : (
-        <NormalFace rank={card.rank} rankColor={rankColor} suit={card.suit} />
-      )}
+      <Image
+        alt={`${card.rank}${card.suit ?? ""}`}
+        className="h-full w-full object-cover"
+        draggable={false}
+        fill
+        sizes="(max-width: 640px) 86px, 102px"
+        src={getPokerCardAsset(card)}
+      />
       {card.isWild ? (
         <span className="absolute bottom-9 right-1 rounded-[5px] border border-[#e3a900] bg-[#fff4b8] px-1 text-[10px] font-black leading-4 text-[#8c5d00]">
-          配
+          Wild
         </span>
       ) : null}
       {isLevelCard ? (
         <span className="pointer-events-none absolute inset-0 rounded-[12px] bg-[radial-gradient(circle_at_50%_10%,rgba(255,232,140,0.52),transparent_46%),linear-gradient(135deg,rgba(255,255,255,0.22),transparent_44%)]" />
       ) : null}
-    </div>
-  );
-}
-
-function NormalFace({
-  rank,
-  rankColor,
-  suit
-}: {
-  rank: string;
-  rankColor: string;
-  suit?: keyof typeof suitSymbol;
-}) {
-  const suitText = suit ? suitSymbol[suit] : "";
-
-  return (
-    <div className={cn("relative flex h-full flex-col justify-between p-2", rankColor)}>
-      <div className="flex flex-col items-start leading-none">
-        <span className="text-[28px] leading-[0.88] tracking-[-0.04em]">{rank}</span>
-        <span className="mt-1 text-[22px] leading-none">{suitText}</span>
-      </div>
-      <span className="self-center text-[54px] leading-none">{suitText}</span>
-      <div className="flex rotate-180 flex-col items-start self-end leading-none">
-        <span className="text-[28px] leading-[0.88] tracking-[-0.04em]">{rank}</span>
-        <span className="mt-1 text-[22px] leading-none">{suitText}</span>
-      </div>
-    </div>
-  );
-}
-
-function JokerFace({ big }: { big: boolean }) {
-  const color = big ? "text-[#d62d2d]" : "text-[#1267d8]";
-  const accent = big ? "bg-[#ffe1e1] text-[#b51717]" : "bg-[#e0efff] text-[#0f5fca]";
-
-  return (
-    <div className={cn("relative flex h-full flex-col items-center justify-between p-2", color)}>
-      <span className="self-start text-[16px] leading-none tracking-[-0.04em]">
-        {big ? "BJ" : "SJ"}
-      </span>
-      <div className="flex flex-1 flex-col items-center justify-center gap-1">
-        <span className={cn("rounded-full px-2 py-1 text-[10px] font-black shadow-sm", accent)}>
-          {big ? "BIG" : "SMALL"}
-        </span>
-        <span className="text-center text-[18px] font-black leading-none tracking-[0.08em]">
-          JOKER
-        </span>
-        <span className="text-[42px] leading-none">{big ? "★" : "◆"}</span>
-      </div>
-      <span className="rotate-180 self-end text-[16px] leading-none tracking-[-0.04em]">
-        {big ? "BJ" : "SJ"}
-      </span>
     </div>
   );
 }
