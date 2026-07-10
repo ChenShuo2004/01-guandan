@@ -58,11 +58,6 @@ export function MemoryCheckpointPanel({
         <h2 className="mt-4 text-[23px] font-black">
           需要记得牌出现了几张（包括手牌）
         </h2>
-        <div className="mt-4 flex items-center justify-center gap-2">
-          {targetRanks.map((rank) => (
-            <PokerCard card={cardRankToPokerCard(rank)} compact key={rank} size="sm" />
-          ))}
-        </div>
         <div className="mt-4 space-y-4">
           {targetRanks.map((rank) => (
             <RankSelector

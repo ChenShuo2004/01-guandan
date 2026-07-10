@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -58,19 +58,19 @@ export function PlayerInfo({ compact = false, player }: PlayerInfoProps) {
       <div className="min-w-[92px] rounded-[18px] border border-white/70 bg-white/76 px-3 py-2 text-left shadow-[0_8px_18px_rgba(36,125,185,0.12)] backdrop-blur-sm">
         <p className="line-clamp-1 text-sm font-black leading-5 text-[#12395a]">{player.name}</p>
         <p className="mt-0.5 text-xs font-black text-[#0f64a0]">{player.role}</p>
+        {player.cardCount <= 10 ? (
         <div
           className={cn(
             "mt-2 flex items-center justify-between gap-2 rounded-lg px-2 py-1 text-xs font-black",
             player.cardCount <= 5
               ? "bg-[#ffe2df] text-[#b8342d]"
-              : player.cardCount <= 10
-                ? "bg-[#fff0c7] text-[#a46500]"
-                : "bg-[#eaf7ff] text-[#42657c]"
+              : "bg-[#fff0c7] text-[#a46500]"
           )}
         >
           <span>剩余</span>
           <span className="text-sm">{player.cardCount} 张</span>
         </div>
+        ) : null}
         <div className="mt-1 flex items-center gap-1.5 text-xs font-black text-[#42657c]">
           <span className={cn("h-2 w-2 rounded-full", isActive ? "bg-[#21d071]" : "bg-[#8ddcff]")} />
           <span>{statusText}</span>
