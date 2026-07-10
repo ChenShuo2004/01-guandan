@@ -19,19 +19,9 @@
 - /practice/[practiceId]：记牌训练。
 - 记牌训练内部使用 GameArena observerMode；当前没有独立 /training 路由。
 
-## 规划或历史文档
+## 文档边界
 
-以下文档可能描述未来能力、设计方向或历史方案，不得当作当前已实现需求：
-
-- docs/AI_GUANDAN_PRODUCT_MASTER_SPEC.md
-- docs/CHARACTER_BIBLE.md
-- docs/coach/
-- docs/design/
-- docs/VISUAL_SYSTEM.md
-- docs/CONTENT_PIPELINE.md
-- docs/SKILL_ROUTING.md
-
-如果规划文档与当前需求真源冲突，以当前需求真源和实际路由为准。
+当前仓库只保留当前功能文档。未来规划、历史设计和视觉实验不再作为项目文档维护。
 
 ## 状态标记规则
 
