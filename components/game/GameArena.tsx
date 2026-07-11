@@ -486,7 +486,7 @@ export function GameArena({
     if (isPaused || isDealLocked || state.trainingPhase !== "playing") return;
 
     if (observerMode) {
-      if (!canSkipTurnWait) return;
+      if (!currentPlayer || state.gameStatus !== "playing") return;
 
       aiRemainingRef.current = null;
       aiPausedActionKeyRef.current = null;
