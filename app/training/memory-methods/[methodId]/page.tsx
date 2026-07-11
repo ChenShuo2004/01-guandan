@@ -6,8 +6,14 @@ export function generateStaticParams() {
   return memoryMethods.map((method) => ({ methodId: method.slug }));
 }
 
-export default function MemoryMethodDetailPage({ params }: { params: { methodId: string } }) {
+export default function MemoryMethodDetailPage({
+  params,
+  searchParams,
+}: {
+  params: { methodId: string };
+  searchParams?: { returnTo?: string };
+}) {
   const method = getMemoryMethodBySlug(params.methodId);
   if (!method) notFound();
-  return <MemoryMethodDetail method={method} />;
+  return <MemoryMethodDetail method={method} returnTo={searchParams?.returnTo ?? null} />;
 }

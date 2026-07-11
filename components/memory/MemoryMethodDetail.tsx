@@ -2,17 +2,31 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import type { ReactNode } from "react";
 import { memoryMethods, categoryLabels, difficultyLabels, type MemoryMethod } from "@/content/memory-methods";
 import { MethodMappingDemo, MethodPrincipleFlow, MethodScenarioDemo } from "@/components/memory/MemoryMethodVisuals";
 
-export function MemoryMethodDetail({ method }: { method: MemoryMethod }) {
+function buildMemoryMethodsHref(returnTo?: string | null) {
+  return returnTo ? `/training/memory-methods?returnTo=${encodeURIComponent(returnTo)}` : "/training/memory-methods";
+}
+
+function buildMethodDetailHref(slug: string, returnTo?: string | null) {
+  return returnTo
+    ? `/training/memory-methods/${slug}?returnTo=${encodeURIComponent(returnTo)}`
+    : `/training/memory-methods/${slug}`;
+}
+
+export function MemoryMethodDetail({ method, returnTo = null }: { method: MemoryMethod; returnTo?: string | null }) {
   const previous = memoryMethods.find((item) => item.number === String(Number(method.number) - 1).padStart(2, "0"));
   const next = memoryMethods.find((item) => item.number === String(Number(method.number) + 1).padStart(2, "0"));
 
   return (
     <main className="min-h-screen bg-[#eaf6ff] px-4 py-6 text-[#12395a] sm:px-6 lg:px-10">
       <div className="mx-auto max-w-7xl">
-        <Link className="inline-flex min-h-11 items-center rounded-xl border border-[#9fcbe5] bg-white px-4 text-sm font-black text-[#176192] transition hover:-translate-y-0.5" href="/training/memory-methods">
+        <Link
+          className="inline-flex min-h-11 items-center rounded-xl border border-[#9fcbe5] bg-white px-4 text-sm font-black text-[#176192] transition hover:-translate-y-0.5"
+          href={buildMemoryMethodsHref(returnTo)}
+        >
           ← 返回记牌方法库
         </Link>
 
@@ -52,12 +66,14 @@ export function MemoryMethodDetail({ method }: { method: MemoryMethod }) {
               <MethodMappingDemo method={method} />
             </Panel>
 
-            <Panel title="分步骤教学">
+            <Panel title="分步练习">
               <div className="grid gap-3">
                 {method.steps.map((step, index) => (
                   <article className="rounded-2xl border border-[#d6eafa] bg-[#f7fbff] p-4" key={step.id}>
                     <div className="flex gap-3">
-                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#12395a] text-sm font-black text-white">0{index + 1}</span>
+                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#12395a] text-sm font-black text-white">
+                        0{index + 1}
+                      </span>
                       <div>
                         <h3 className="font-black text-[#12395a]">{step.title}</h3>
                         <p className="mt-1 text-sm font-bold leading-6 text-[#48718b]">{step.description}</p>
@@ -69,22 +85,45 @@ export function MemoryMethodDetail({ method }: { method: MemoryMethod }) {
               </div>
             </Panel>
 
-            <Panel title="实战示例"><MethodScenarioDemo method={method} /></Panel>
+            <Panel title="实战示例">
+              <MethodScenarioDemo method={method} />
+            </Panel>
 
             <Panel title="常见错误">
               <div className="space-y-3">
                 {method.mistakes.map((mistake, index) => (
                   <div className="flex gap-3 rounded-xl bg-[#fff7e5] p-3" key={mistake.id}>
                     <span className="font-black text-[#d69312]">{index + 1}</span>
-                    <div><p className="font-black text-[#6f520f]">{mistake.title}</p><p className="mt-1 text-sm font-bold leading-6 text-[#826d43]">{mistake.description}</p></div>
+                    <div>
+                      <p className="font-black text-[#6f520f]">{mistake.title}</p>
+                      <p className="mt-1 text-sm font-bold leading-6 text-[#826d43]">{mistake.description}</p>
+                    </div>
                   </div>
                 ))}
               </div>
             </Panel>
 
             <nav className="flex justify-between gap-3 py-1">
-              {previous ? <Link className="min-h-11 rounded-xl border border-[#9fcbe5] bg-white px-4 py-2.5 text-sm font-black text-[#176192]" href={`/training/memory-methods/${previous.slug}`}>← 方法 {previous.number}</Link> : <span />}
-              {next ? <Link className="min-h-11 rounded-xl border border-[#9fcbe5] bg-white px-4 py-2.5 text-sm font-black text-[#176192]" href={`/training/memory-methods/${next.slug}`}>方法 {next.number} →</Link> : <span />}
+              {previous ? (
+                <Link
+                  className="min-h-11 rounded-xl border border-[#9fcbe5] bg-white px-4 py-2.5 text-sm font-black text-[#176192]"
+                  href={buildMethodDetailHref(previous.slug, returnTo)}
+                >
+                  ← 方法 {previous.number}
+                </Link>
+              ) : (
+                <span />
+              )}
+              {next ? (
+                <Link
+                  className="min-h-11 rounded-xl border border-[#9fcbe5] bg-white px-4 py-2.5 text-sm font-black text-[#176192]"
+                  href={buildMethodDetailHref(next.slug, returnTo)}
+                >
+                  方法 {next.number} →
+                </Link>
+              ) : (
+                <span />
+              )}
             </nav>
           </div>
         </div>
@@ -93,6 +132,11 @@ export function MemoryMethodDetail({ method }: { method: MemoryMethod }) {
   );
 }
 
-function Panel({ children, title }: { children: React.ReactNode; title: string }) {
-  return <section className="rounded-[24px] border border-white/80 bg-white p-5 shadow-[0_12px_30px_rgba(31,112,166,0.1)] sm:p-6"><h2 className="mb-4 text-xl font-black">{title}</h2>{children}</section>;
+function Panel({ children, title }: { children: ReactNode; title: string }) {
+  return (
+    <section className="rounded-[24px] border border-white/80 bg-white p-5 shadow-[0_12px_30px_rgba(31,112,166,0.1)] sm:p-6">
+      <h2 className="mb-4 text-xl font-black">{title}</h2>
+      {children}
+    </section>
+  );
 }
