@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { GameArena } from "@/components/game/GameArena";
 import type { GameEngineState } from "@/lib/guandan/gameState";
-import { getRankLabel } from "@/lib/guandan/card";
+import { getRankLabel, sortCards, sortCardsAscending, type Card } from "@/lib/guandan/card";
 import { MemoryTargetPanel, MemoryTargetOverlay } from "@/components/memory/MemoryTargetPanel";
 import { MemoryCheckpointPanel } from "@/components/memory/MemoryCheckpointPanel";
 import { MemoryFeedbackPanel } from "@/components/memory/MemoryFeedbackPanel";
@@ -43,6 +43,14 @@ import {
 
 const MEMORY_SESSION_STORAGE_KEY = "guandan-memory-training-session";
 
+interface TributeNotice {
+  tributeCard: Card | null;
+  returnCard: Card | null;
+  tributeFrom: string;
+  tributeTo: string;
+  resisted: boolean;
+}
+
 export function MemoryTrainingExperience() {
   const router = useRouter();
 
@@ -58,6 +66,7 @@ export function MemoryTrainingExperience() {
   const [showCheckpoint, setShowCheckpoint] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [showReport, setShowReport] = useState(false);
+  const [tributeNotice, setTributeNotice] = useState<TributeNotice | null>(null);
   const [arenaKey, setArenaKey] = useState(0);
 
   // ── Refs ──────────────────────────────────────────────────────────────────────
@@ -208,6 +217,33 @@ export function MemoryTrainingExperience() {
       return;
     }
 
+    const finishedState = gameStateRef.current;
+    const winner = finishedState?.players.find((player) => player.id === finishedState.winner);
+    const winningTeam = winner?.team;
+    const losingTeamPlayers = finishedState?.players.filter((player) => player.team !== winningTeam) ?? [];
+    const winningTeamPlayers = finishedState?.players.filter((player) => player.team === winningTeam) ?? [];
+    const tributeDonor = [...losingTeamPlayers].sort((a, b) => b.hand.length - a.hand.length)[0];
+    const returnDonor = [...winningTeamPlayers].sort((a, b) => b.hand.length - a.hand.length)[0];
+    const resisted = losingTeamPlayers
+      .flatMap((player) => player.hand)
+      .filter((card) => card.rank === 17).length >= 2;
+    const tributeCard = tributeDonor?.hand.length ? sortCards(tributeDonor.hand)[0] : null;
+    const returnCandidates = returnDonor?.hand.filter(
+      (card) => !card.isJoker && card.rank !== finishedState?.levelRank && card.rank <= 10,
+    ) ?? [];
+    const returnCard = returnCandidates.length > 0
+      ? sortCardsAscending(returnCandidates)[0]
+      : returnDonor?.hand.length
+        ? sortCardsAscending(returnDonor.hand.filter((card) => !card.isJoker))[0] ?? null
+        : null;
+
+    setTributeNotice(winner && tributeDonor ? {
+      tributeCard: resisted ? null : tributeCard,
+      returnCard: resisted ? null : returnCard,
+      tributeFrom: tributeDonor.name,
+      tributeTo: returnDonor?.name ?? winner.name,
+      resisted,
+    } : null);
     setTraining(prev => ({ ...prev, phase: "HAND_SETTLEMENT" }));
 
     handSettlementTimerRef.current = window.setTimeout(() => {
@@ -225,6 +261,7 @@ export function MemoryTrainingExperience() {
       setShowCheckpoint(false);
       setShowFeedback(false);
       setShowTargetOverlay(true);
+      setTributeNotice(null);
     }, 1500);
   }, []);
 
@@ -390,7 +427,7 @@ export function MemoryTrainingExperience() {
     if (handSettlementTimerRef.current) window.clearTimeout(handSettlementTimerRef.current);
     if (checkpointTransitionTimerRef.current) window.clearTimeout(checkpointTransitionTimerRef.current);
 
-    const newState = createInitialTrainingState({ debugMode: false, levelRank: trainingRef.current.levelRank });
+    const newState = createInitialTrainingState({ debugMode: false, levelRank: 15 });
     const targetRanks = createTargetRanks(newState.currentTargetCount, newState.levelRank);
 
     setTraining({ ...newState, phase: "SHOWING_TARGETS", targetRanks, handCount: 1 });
@@ -400,6 +437,7 @@ export function MemoryTrainingExperience() {
     setShowCheckpoint(false);
     setShowFeedback(false);
     setShowReport(false);
+    setTributeNotice(null);
 
     sessionTimerRef.current = window.setTimeout(() => {
       setTraining(prev => ({ ...prev, sessionTimeExpired: true }));
@@ -452,6 +490,8 @@ export function MemoryTrainingExperience() {
         visible={training.phase === "AI_PLAYING" || training.phase === "OBSERVING_INITIAL_HAND"}
       />
 
+      {tributeNotice ? <TributeNoticePanel notice={tributeNotice} /> : null}
+
       <MemoryAnswerHistoryPanel
         checkpoints={training.checkpoints}
         currentAnswers={training.currentAnswers}
@@ -500,4 +540,44 @@ export function MemoryTrainingExperience() {
 
     </div>
   );
+}
+
+function TributeNoticePanel({ notice }: { notice: TributeNotice }) {
+  return (
+    <div className="fixed inset-0 z-[210] grid place-items-center bg-[#071426]/45 px-5 backdrop-blur-[2px]">
+      <section className="w-full max-w-sm rounded-3xl border border-[#74dfff]/45 bg-[#0e2944]/95 p-6 text-white shadow-2xl">
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-[#74dfff]">HAND SETTLEMENT</p>
+        <h2 className="mt-3 text-2xl font-black">{notice.resisted ? "抗贡成功" : "自动进贡与还贡"}</h2>
+        {notice.resisted ? (
+          <p className="mt-3 text-sm font-bold leading-6 text-white/75">
+            {notice.tributeFrom} 一方拥有两张大王，本局不交换牌，直接进入下一局。
+          </p>
+        ) : (
+          <div className="mt-4 space-y-3 text-sm font-bold text-white/75">
+            <p>
+              上贡：{notice.tributeFrom} → {notice.tributeTo}
+              {notice.tributeCard ? `，${formatTributeCard(notice.tributeCard)}` : ""}
+            </p>
+            <p>
+              还贡：{notice.tributeTo} → {notice.tributeFrom}
+              {notice.returnCard ? `，${formatTributeCard(notice.returnCard)}` : ""}
+            </p>
+          </div>
+        )}
+        <p className="mt-5 text-center text-xs font-bold text-[#8de8ff]">交换完成，准备下一局</p>
+      </section>
+    </div>
+  );
+}
+
+function formatTributeCard(card: Card): string {
+  if (card.isJoker) return getRankLabel(card.rank);
+  const suitLabels: Record<Card["suit"], string> = {
+    spade: "♠",
+    heart: "♥",
+    club: "♣",
+    diamond: "♦",
+    joker: "",
+  };
+  return `${getRankLabel(card.rank)}${suitLabels[card.suit]}`;
 }
