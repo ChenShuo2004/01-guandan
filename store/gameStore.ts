@@ -3,7 +3,6 @@
 import { useCallback, useMemo, useReducer } from "react";
 import { getAIAction } from "@/lib/ai/AIPlayer";
 import { chooseNormalMove } from "@/lib/ai/strategy";
-import { sortCardsForHand } from "@/lib/cards/cardSort";
 import { analyzeCoachTip, analyzeHint } from "@/lib/coach/CoachAnalyzer";
 import type { CoachFeedback } from "@/lib/coach/coachTypes";
 import { detectMistakeAfterUserPlay } from "@/lib/coach/MistakeDetector";
@@ -19,6 +18,7 @@ import {
   type TurnActionState
 } from "@/lib/guandan/gameState";
 import type { PlayerId } from "@/lib/guandan/player";
+import { arrangeCards, restoreCards } from "@/utils/cardArrange";
 
 type GameAction =
   | { type: "restart" }
@@ -27,8 +27,8 @@ type GameAction =
   | { type: "toggle-card"; card: Card }
   | { type: "set-selection"; cards: Card[] }
   | { type: "clear-selection" }
-  | { type: "sort-hand" }
-  | { type: "restore-hand"; cards: Card[] }
+  | { type: "sort-hand"; levelRank: CardRank }
+  | { type: "restore-hand"; originalOrder: string[] }
   | { type: "play-selected" }
   | { type: "pass" }
   | { type: "tip" }
@@ -140,9 +140,9 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
         {
           ...state,
           players: state.players.map((player) =>
-            player.id === "player" ? { ...player, hand: sortCardsForHand(player.hand) } : player
+            player.id === "player" ? { ...player, hand: arrangeCards(player.hand, action.levelRank) } : player
           ),
-          selectedCards: sortCardsForHand(state.selectedCards),
+          selectedCards: arrangeCards(state.selectedCards, action.levelRank),
           invalidCardIds: [],
           tipMessage: null
         },
@@ -163,7 +163,7 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
         {
           ...state,
           players: state.players.map((player) =>
-            player.id === "player" ? { ...player, hand: action.cards } : player
+            player.id === "player" ? { ...player, hand: restoreCards(player.hand, action.originalOrder) } : player
           ),
           selectedCards: [],
           invalidCardIds: [],
@@ -395,11 +395,11 @@ export function useGameStore(observerMode = false, initialLevelRank: CardRank = 
   }, []);
 
   const sortHand = useCallback(() => {
-    dispatch({ type: "sort-hand" });
-  }, []);
+    dispatch({ type: "sort-hand", levelRank: state.levelRank });
+  }, [state.levelRank]);
 
-  const restoreHand = useCallback((cards: Card[]) => {
-    dispatch({ type: "restore-hand", cards });
+  const restoreHand = useCallback((originalOrder: string[]) => {
+    dispatch({ type: "restore-hand", originalOrder });
   }, []);
 
   const playSelectedCards = useCallback(() => {

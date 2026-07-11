@@ -5,7 +5,6 @@ import type { PointerEvent } from "react";
 import { motion } from "framer-motion";
 import { CardGroup } from "@/components/game/CardGroup";
 import type { CardHandGroup } from "@/lib/cards/cardSort";
-import { PlayingCard } from "@/components/cards/PlayingCard";
 import { groupCardsForHand, sortCardsForHand } from "@/lib/cards/cardSort";
 import type { Card } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
@@ -285,24 +284,27 @@ export function CardHand({
 }
 
 function groupCardsForArena(cards: Card[]): CardHandGroup[] {
-  const byRank = new Map<number, Card[]>();
+  const groups: Card[][] = [];
 
   for (const card of cards) {
-    byRank.set(card.rank, [...(byRank.get(card.rank) ?? []), card]);
+    const previous = groups[groups.length - 1];
+    if (previous?.[0]?.rank === card.rank) {
+      previous.push(card);
+    } else {
+      groups.push([card]);
+    }
   }
 
-  return [...byRank.entries()]
-    .sort(([rankA], [rankB]) => rankB - rankA)
-    .map(([rank, rankCards]) => {
-      const sortedCards = sortCardsForHand(rankCards);
-      const type = sortedCards.length >= 4 ? "bomb" : sortedCards.length === 3 ? "triple" : sortedCards.length === 2 ? "pair" : "single";
+  return groups.map((groupCards) => {
+    const type = groupCards.length >= 4 ? "bomb" : groupCards.length === 3 ? "triple" : groupCards.length === 2 ? "pair" : "single";
+    const power = Math.max(...groupCards.map((card) => card.rank));
 
-      return {
-        id: `arena-rank-${rank}`,
-        type,
-        label: String(rank),
-        power: rank,
-        cards: sortedCards
-      } satisfies CardHandGroup;
-    });
+    return {
+      id: `arena-${groupCards.map((card) => card.id).join("-")}`,
+      type,
+      label: String(power),
+      power,
+      cards: groupCards
+    } satisfies CardHandGroup;
+  });
 }

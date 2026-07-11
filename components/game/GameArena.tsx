@@ -66,10 +66,11 @@ export function GameArena({
   const [dealStage, setDealStage] = useState<DealStage>("dealing");
   const [dealRunId, setDealRunId] = useState(0);
   const [smartSortActive, setSmartSortActive] = useState(false);
+  const [isArranging, setIsArranging] = useState(false);
   const [observerCounterVisible, setObserverCounterVisible] = useState(true);
   const [sortPulseKey, setSortPulseKey] = useState(0);
   const [restoreEnabled, setRestoreEnabled] = useState(false);
-  const originalHandRef = useRef<Card[] | null>(null);
+  const originalHandOrderRef = useRef<string[] | null>(null);
   const [aiCountdown, setAiCountdown] = useState<number | null>(null);
   const aiActionKeyRef = useRef<string | null>(null);
   const aiTimerRef = useRef<number | null>(null);
@@ -145,8 +146,9 @@ export function GameArena({
   const restartDealAnimation = useCallback(() => {
     setDealStage("dealing");
     setSmartSortActive(false);
+    setIsArranging(false);
     setRestoreEnabled(false);
-    originalHandRef.current = null;
+    originalHandOrderRef.current = null;
     setSortPulseKey((current) => current + 1);
     setDealRunId((current) => current + 1);
   }, []);
@@ -181,27 +183,40 @@ export function GameArena({
   }, [isDealLocked]);
 
   const handleOrganizeHand = useCallback(() => {
-    if (isDealLocked) return;
+    if (isDealLocked || isArranging) return;
 
     const currentHand = userPlayer?.hand ?? [];
     if (currentHand.length === 0) return;
 
-    originalHandRef.current = [...currentHand];
+    setIsArranging(true);
+    originalHandOrderRef.current = displayedUserCards.map((card) => card.id);
     setRestoreEnabled(true);
     setSmartSortActive(false);
     sortHand();
     setSortPulseKey((current) => current + 1);
-  }, [isDealLocked, sortHand, userPlayer?.hand]);
+    window.setTimeout(() => setIsArranging(false), 340);
+  }, [displayedUserCards, isArranging, isDealLocked, sortHand, userPlayer?.hand]);
 
   const handleRestoreHand = useCallback(() => {
-    if (isDealLocked || !originalHandRef.current) return;
+    if (isDealLocked || isArranging || !originalHandOrderRef.current) return;
 
-    restoreHand(originalHandRef.current);
-    originalHandRef.current = null;
+    setIsArranging(true);
+    restoreHand(originalHandOrderRef.current);
+    originalHandOrderRef.current = null;
     setRestoreEnabled(false);
     setSmartSortActive(false);
     setSortPulseKey((current) => current + 1);
-  }, [isDealLocked, restoreHand]);
+    window.setTimeout(() => setIsArranging(false), 340);
+  }, [isArranging, isDealLocked, restoreHand]);
+
+  const handleArrangeToggle = useCallback(() => {
+    if (restoreEnabled) {
+      handleRestoreHand();
+      return;
+    }
+
+    handleOrganizeHand();
+  }, [handleOrganizeHand, handleRestoreHand, restoreEnabled]);
 
   const completeAIAction = useCallback(() => {
     if (aiTimerRef.current) {
@@ -763,12 +778,13 @@ export function GameArena({
                 onPlay={playSelectedCards}
               onRestart={restartTraining}
               onShowSolution={showSolution}
-              onSortHand={handleOrganizeHand}
+              onSortHand={handleArrangeToggle}
               onStart={startTraining}
               onTip={requestTip}
               onToggleCardCounter={toggleCardCounter}
               onUndo={clearSelectedCards}
               onSkipAIWait={skipAIWait}
+              isArranging={isArranging}
               onRestoreHand={handleRestoreHand}
               restoreEnabled={restoreEnabled}
                 phase={phase}
@@ -780,12 +796,11 @@ export function GameArena({
         {observerMode ? (
           <ObserverHandTools
             hasStraightFlush={hasStraightFlush(displayedUserCards)}
+            isArranging={isArranging}
             isAIThinking={canSkipTurnWait}
-            onOrganize={handleOrganizeHand}
+            onOrganize={handleArrangeToggle}
             onSkipAIWait={skipAIWait}
             organized={restoreEnabled}
-            onRestore={handleRestoreHand}
-            restoreEnabled={restoreEnabled}
             skipLabel="跳过 AI"
           />
         ) : null}
@@ -857,21 +872,19 @@ function ArenaBackground() {
 
 function ObserverHandTools({
   hasStraightFlush: straightFlush,
+  isArranging,
   isAIThinking,
   onOrganize,
   onSkipAIWait,
   organized,
-  onRestore,
-  restoreEnabled,
   skipLabel = "跳过 AI"
 }: {
   hasStraightFlush: boolean;
+  isArranging: boolean;
   isAIThinking: boolean;
   onOrganize: () => void;
   onSkipAIWait: () => void;
   organized: boolean;
-  onRestore: () => void;
-  restoreEnabled: boolean;
   skipLabel?: string;
 }) {
   return (
@@ -889,27 +902,15 @@ function ObserverHandTools({
         {straightFlush ? <span className="ml-1 text-[#8ff0c7]">已成</span> : null}
       </div>
       <button
-        aria-label={restoreEnabled ? "恢复理牌前手牌" : "先点击理牌后再恢复"}
-        className={cn(
-          "flex min-w-[128px] items-center justify-center gap-1.5 rounded-xl px-4 py-3 text-base font-black max-lg:min-w-0 max-lg:px-3 max-lg:py-2 max-lg:text-xs",
-          restoreEnabled
-            ? "bg-[#6676e8] text-white shadow-[0_6px_14px_rgba(69,77,190,0.3)] transition hover:-translate-y-0.5"
-            : "cursor-not-allowed bg-[#6676e8]/75 text-white/80"
-        )}
-        disabled={!restoreEnabled}
-        onClick={onRestore}
-        title={restoreEnabled ? "恢复理牌前手牌" : "先点击理牌后再恢复"}
-        type="button"
-      >
-        <span className="material-symbols-outlined text-[19px]">{restoreEnabled ? "undo" : "lock"}</span>
-        恢复
-      </button>
-      <button
-        className="min-w-[170px] rounded-xl bg-[#6676e8] px-6 py-3 text-base font-black shadow-[0_6px_14px_rgba(69,77,190,0.3)] transition hover:-translate-y-0.5 max-lg:min-w-0 max-lg:px-3 max-lg:py-2 max-lg:text-xs"
+        aria-label={organized ? "恢复理牌前手牌" : "理牌"}
+        className="flex min-w-[170px] items-center justify-center gap-1.5 rounded-xl bg-[#6676e8] px-6 py-3 text-base font-black shadow-[0_6px_14px_rgba(69,77,190,0.3)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70 disabled:hover:translate-y-0 max-lg:min-w-0 max-lg:px-3 max-lg:py-2 max-lg:text-xs"
+        disabled={isArranging}
         onClick={onOrganize}
+        title={organized ? "恢复理牌前手牌" : "理牌"}
         type="button"
       >
-        理牌
+        <span className="material-symbols-outlined text-[19px]">{organized ? "undo" : "sort"}</span>
+        {organized ? "恢复" : "理牌"}
       </button>
       {isAIThinking && (
         <button

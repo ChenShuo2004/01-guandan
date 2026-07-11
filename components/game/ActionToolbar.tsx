@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 interface ActionToolbarProps {
   canAct: boolean;
   cardCounterVisible: boolean;
+  isArranging: boolean;
   isAIThinking: boolean;
   phase: TrainingPhase;
   selectedCount: number;
@@ -29,6 +30,7 @@ interface ActionToolbarProps {
 export function ActionToolbar({
   canAct,
   cardCounterVisible,
+  isArranging,
   isAIThinking,
   phase,
   selectedCount,
@@ -66,8 +68,12 @@ export function ActionToolbar({
           <ToolbarButton disabled={!canAct} icon="block" label="不出" onClick={onPass} tone="quiet" />
           <ToolbarButton disabled={!canAct} icon="tips_and_updates" label="提示" onClick={onTip} tone="warning" />
           <ToolbarButton active={cardCounterVisible} icon="casino" label="记牌器" onClick={onToggleCardCounter} />
-          <ToolbarButton icon="sort" label="理牌" onClick={onSortHand} />
-          <ToolbarButton disabled={!restoreEnabled} icon="undo" label="恢复" onClick={onRestoreHand} />
+          <ToolbarButton
+            disabled={isArranging}
+            icon={restoreEnabled ? "undo" : "sort"}
+            label={restoreEnabled ? "恢复" : "理牌"}
+            onClick={restoreEnabled ? onRestoreHand : onSortHand}
+          />
           <ToolbarButton
             disabled={!canAct || selectedCount === 0}
             icon="send"
