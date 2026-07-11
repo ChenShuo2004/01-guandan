@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -1121,8 +1121,7 @@ function ArenaTopBar({
           {observerMode && onOpenReport ? <HudButton icon="▤" label="复盘报告" onClick={onOpenReport} /> : null}
           <HudButton icon="⚙" label="设置" onClick={onOpenSettings} />
           <HudButton icon={isPaused ? "▶" : "Ⅱ"} label={isPaused ? "继续" : "暂停"} onClick={onTogglePause} />
-          {!observerMode && (
-            <button
+                      <button
               aria-label={isFullscreen ? "退出全屏" : "进入全屏"}
               className="grid h-12 w-12 place-items-center rounded-full bg-white/42 text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5"
               onClick={onToggleFullscreen}
@@ -1132,7 +1131,6 @@ function ArenaTopBar({
                 {isFullscreen ? "fullscreen_exit" : "fullscreen"}
               </span>
             </button>
-          )}
           <button
             aria-label={observerMode ? "返回训练列表" : "退出房间"}
             className="flex h-12 items-center gap-1.5 rounded-full bg-[#0f64ff] px-6 text-base font-black text-white shadow-[0_14px_30px_rgba(15,100,255,0.28)] transition hover:-translate-y-0.5 max-lg:px-4"
@@ -1162,6 +1160,9 @@ function ArenaTopBar({
         </div>
         <button aria-label={isPaused ? "继续" : "暂停"} className="training-hud-icon" onClick={onTogglePause} type="button">
           <span className="material-symbols-outlined">{isPaused ? "play_arrow" : "pause"}</span>
+        </button>
+        <button aria-label={isFullscreen ? "退出全屏" : "进入全屏"} className="training-hud-icon" onClick={onToggleFullscreen} type="button">
+          <span className="material-symbols-outlined">{isFullscreen ? "fullscreen_exit" : "fullscreen"}</span>
         </button>
         <button aria-label="设置" className="training-hud-icon" onClick={onOpenSettings} type="button">
           <span className="material-symbols-outlined">settings</span>
