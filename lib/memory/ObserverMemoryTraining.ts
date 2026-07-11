@@ -368,6 +368,16 @@ export function resetForNextHand(
   };
 }
 
+export function normalizeTrainingStateForResume(
+  training: ObserverMemoryTrainingState,
+): ObserverMemoryTrainingState {
+  if (training.phase === "SESSION_FINISHED" || training.sessionTimeExpired) return training;
+
+  // GameArena state is intentionally ephemeral, so a restored session starts a
+  // fresh hand while keeping curriculum, multiplier, checkpoints and session time.
+  return resetForNextHand({ ...training, phase: "STARTING_NEXT_HAND" });
+}
+
 export interface MemorySessionSummary {
   durationMinutes: number;
   handsCompleted: number;

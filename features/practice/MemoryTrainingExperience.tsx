@@ -20,6 +20,7 @@ import {
   getErrorReplayEvents,
   resetForNextHand,
   buildSessionSummary,
+  normalizeTrainingStateForResume,
   OBSERVATION_TIMES_MS,
   TARGET_COUNT_STEPS,
   type ObserverMemoryTrainingState,
@@ -106,12 +107,12 @@ export function MemoryTrainingExperience() {
     const initial = createInitialTrainingState({ debugMode: false, levelRank: 15 });
     const stored = loadTrainingState<ObserverMemoryTrainingState>(window.localStorage, MEMORY_SESSION_STORAGE_KEY);
     const next = stored
-      ? {
+      ? normalizeTrainingStateForResume({
           ...initial,
           ...stored,
           sessionClock: { ...initial.sessionClock, ...stored.sessionClock },
           targetProgress: stored.targetProgress ?? initial.targetProgress,
-        }
+        })
       : { ...initial, phase: "SHOWING_TARGETS" as const, targetRanks: createTargetRanks(initial.currentTargetCount, initial.levelRank), handCount: 1 };
     setTraining(next);
     setShowTargetOverlay(next.phase === "SHOWING_TARGETS" || next.phase === "OBSERVING_INITIAL_HAND");
