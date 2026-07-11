@@ -622,7 +622,7 @@ export function GameArena({
           levelRank={levelRankLabel}
           players={arenaPlayers}
           roundActions={state.currentRoundActions}
-          showTurnStatus={!isDealLocked}
+          showTurnStatus={!isDealLocked && (!observerMode || !observerPaused)}
           turnAction={displayTurnAction}
         />
 
