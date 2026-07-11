@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import type { MemoryCheckpointResult, MemorySessionSummary } from "@/lib/memory/ObserverMemoryTraining";
+import { getRankDisplayName } from "@/lib/memory/ObserverMemoryTraining";
 
 interface MemoryReviewReportPanelProps {
   checkpoints: MemoryCheckpointResult[];
@@ -19,6 +21,8 @@ export function MemoryReviewReportPanel({
   onRestart,
   onExit,
 }: MemoryReviewReportPanelProps) {
+  const [expandedCheckpointId, setExpandedCheckpointId] = useState<string | null>(null);
+
   return (
     <div className="fixed inset-0 z-[220] grid place-items-center bg-[#071426]/88 px-5 backdrop-blur-md">
       <section className="max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-[28px] border border-[#74dfff]/45 bg-[#0e2944] p-6 text-white shadow-2xl">
@@ -47,17 +51,53 @@ export function MemoryReviewReportPanel({
         <div className="mt-6">
           <div className="flex items-center justify-between">
             <p className="text-sm font-black text-[#8de8ff]">逐局记录</p>
-            <span className="text-xs font-bold text-white/45">最近 {Math.min(8, checkpoints.length)} 局</span>
+            <span className="text-xs font-bold text-white/45">共 {checkpoints.length} 局</span>
           </div>
-          <div className="mt-3 space-y-2">
-            {checkpoints.length > 0 ? [...checkpoints].slice(-8).reverse().map((checkpoint, index) => (
-              <div className="flex items-center justify-between rounded-xl bg-white/[0.06] px-3 py-2.5" key={checkpoint.id ?? index}>
-                <span className="text-sm font-bold text-white/70">第 {checkpoints.length - index} 局</span>
-                <span className="text-sm font-black text-[#8ff0c7]">
-                  {checkpoint.correctCount}/{checkpoint.totalCount} 题 · {Math.round(checkpoint.accuracy * 100)}%
-                </span>
-              </div>
-            )) : <p className="text-sm text-white/45">还没有完成检查点。</p>}
+          <div className="mt-3 max-h-[min(420px,42vh)] space-y-2 overflow-y-auto pr-1">
+            {checkpoints.length > 0 ? [...checkpoints].reverse().map((checkpoint, index) => {
+              const checkpointId = checkpoint.id ?? `checkpoint-${checkpoints.length - index}`;
+              const expanded = expandedCheckpointId === checkpointId;
+              return (
+                <div className="overflow-hidden rounded-xl bg-white/[0.06]" key={checkpointId}>
+                  <button
+                    className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left"
+                    onClick={() => setExpandedCheckpointId(expanded ? null : checkpointId)}
+                    type="button"
+                  >
+                    <span className="text-sm font-bold text-white/70">第 {checkpoints.length - index} 局</span>
+                    <span className="flex items-center gap-2 text-sm font-black text-[#8ff0c7]">
+                      {checkpoint.correctCount}/{checkpoint.totalCount} 题 · {Math.round(checkpoint.accuracy * 100)}%
+                      <span aria-hidden>{expanded ? "⌃" : "⌄"}</span>
+                    </span>
+                  </button>
+                  {expanded ? (
+                    <div className="border-t border-white/10 px-3 pb-3 pt-2">
+                      <div className="space-y-1.5">
+                        {checkpoint.targetRanks.map((rank) => {
+                          const key = String(rank);
+                          const userAnswer = checkpoint.userAnswers[key] ?? 0;
+                          const correctAnswer = checkpoint.correctAnswers[key] ?? 0;
+                          const correct = userAnswer === correctAnswer;
+                          return (
+                            <div className="flex items-center justify-between gap-3 text-xs" key={key}>
+                              <span className="font-black text-white/75">{getRankDisplayName(rank)}</span>
+                              <span className={correct ? "text-emerald-300" : "text-red-300"}>
+                                你的回答 {userAnswer} · 实际 {correctAnswer} · {correct ? "正确" : "错误"}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                      {checkpoint.incorrectRanks.length > 0 ? (
+                        <p className="mt-2 text-[11px] font-bold text-red-300/85">
+                          漏记：{checkpoint.incorrectRanks.map(getRankDisplayName).join("、")}
+                        </p>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            }) : <p className="text-sm text-white/45">还没有完成检查点。</p>}
           </div>
         </div>
 
