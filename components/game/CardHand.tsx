@@ -8,6 +8,7 @@ import type { CardHandGroup } from "@/lib/cards/cardSort";
 import { groupCardsForHand, sortCardsForHand } from "@/lib/cards/cardSort";
 import type { Card, CardRank } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
+import { arrangeCardGroups, type CardGroup as ArrangedCardGroup } from "@/utils/cardArrange";
 
 interface CardHandProps {
   cards: Card[];
@@ -35,6 +36,8 @@ interface ArenaCardMetrics {
 
 export function CardHand({
   cards,
+  arrangementLevelRank,
+  arrangeGroups = false,
   selectedCardIds,
   invalidCardIds = [],
   invalidPulseKey = 0,
@@ -47,6 +50,10 @@ export function CardHand({
   variant = "default"
 }: CardHandProps) {
   const groups = useMemo(() => groupCardsForHand(cards), [cards]);
+  const arenaGroups = useMemo(
+    () => groupCardsForArena(cards, arrangeGroups ?? false, arrangementLevelRank),
+    [arrangeGroups, arrangementLevelRank, cards]
+  );
   const selectedSet = useMemo(() => new Set(selectedCardIds), [selectedCardIds]);
   const invalidSet = useMemo(() => new Set(invalidCardIds), [invalidCardIds]);
   const selectedIdsRef = useRef(selectedCardIds);
@@ -85,22 +92,26 @@ export function CardHand({
 
       const horizontalPadding = Math.max(24, Math.min(72, window.innerWidth * 0.055));
       const availableWidth = window.innerWidth - horizontalPadding;
+      const groupCount = Math.max(1, arenaGroups.length);
+      const maxGroupSize = Math.max(1, ...arenaGroups.map((group) => group.cards.length));
+      const preferredGap = cards.length <= 10 ? 8 : cards.length <= 15 ? 4 : 2;
       const heightRatio = cards.length <= 10 ? 0.26 : cards.length <= 15 ? 0.23 : 0.20;
       const heightLimit = Math.max(58, Math.min(cards.length <= 10 ? 100 : 88, window.innerHeight * heightRatio));
       const widthFromHeight = heightLimit * (89 / 124);
-      const cardOverlap = 20;
-      const widthFromAvailable = (availableWidth + cardOverlap * Math.max(0, cards.length - 1)) / Math.max(1, cards.length);
-      const scaleFactor = Math.min(1, widthFromAvailable / widthFromHeight);
-      const cardWidth = Math.max(38, Math.round(widthFromHeight * scaleFactor));
+      const widthFromAvailable = (availableWidth - preferredGap * (groupCount - 1)) / groupCount;
+      const cardWidth = Math.max(38, Math.min(widthFromHeight, widthFromAvailable));
       const cardHeight = cardWidth * (124 / 89);
-      const minHeight = cardHeight + Math.max(8, cardHeight * 0.12);
+      const remainingWidth = Math.max(0, availableWidth - cardWidth * groupCount);
+      const groupGap = groupCount > 1 ? Math.min(preferredGap, remainingWidth / (groupCount - 1)) : 0;
+      const stackStep = Math.max(32, Math.min(44, Math.round(cardHeight * 0.32)));
+      const minHeight = cardHeight + stackStep * (maxGroupSize - 1) + Math.max(12, cardHeight * 0.12);
 
       setArenaMetrics({
         cardHeight: Math.round(cardHeight),
         cardWidth: Math.round(cardWidth),
-        groupGap: 0,
+        groupGap: Number(groupGap.toFixed(1)),
         minHeight: Math.round(minHeight),
-        stackStep: 0
+        stackStep
       });
     }
 
@@ -113,7 +124,7 @@ export function CardHand({
       window.removeEventListener("orientationchange", syncArenaMetrics);
       window.visualViewport?.removeEventListener("resize", syncArenaMetrics);
     };
-  }, [cards.length, variant]);
+  }, [arenaGroups, cards.length, variant]);
 
   function commitSelection(nextIds: string[]) {
     const nextSet = new Set(nextIds);
@@ -193,14 +204,7 @@ export function CardHand({
 
   if (variant === "arena") {
     const arenaCardScale = cardScale;
-    const arenaMinHeight = arenaMetrics?.minHeight ?? Math.round(140 * arenaCardScale);
-    const arenaDisplayGroup: CardHandGroup = {
-      id: "arena-hand",
-      type: "single",
-      label: "",
-      power: 0,
-      cards
-    };
+    const arenaMinHeight = arenaMetrics?.minHeight ?? Math.round(178 * arenaCardScale);
 
     return (
       <div
@@ -212,31 +216,36 @@ export function CardHand({
       >
         <div
           className="arena-hand-row relative flex min-h-[var(--arena-card-min-height)] min-w-0 items-end justify-center overflow-visible px-1 pb-1 pt-4"
-          style={{ columnGap: 0 }}
+          style={{ columnGap: arenaMetrics?.groupGap ?? 4 }}
         >
-          <motion.div
-            animate={{ scale: sortPulseKey > 0 ? [1, 1.025, 1] : 1 }}
-            className="relative shrink-0"
-            layout
-            transition={{
-              layout: { duration: 0.3, ease: "easeOut" },
-              scale: { delay: 0.3, duration: 0.22, ease: "easeOut" }
-            }}
-          >
-            <CardGroup
-              cardDimensions={arenaMetrics ? { height: arenaMetrics.cardHeight, width: arenaMetrics.cardWidth } : undefined}
-              disabled={disabled}
-              group={arenaDisplayGroup}
-              invalidCardIds={invalidSet}
-              invalidPulseKey={invalidPulseKey}
-              layout="row"
-              levelRank={levelRank}
-              onPointerDownCard={handlePointerDown}
-              onPointerEnterCard={handlePointerEnter}
-              selectedCardIds={selectedSet}
-              sizeScale={arenaCardScale}
-            />
-          </motion.div>
+          {arenaGroups.map((group, index) => (
+            <motion.div
+              animate={{ scale: sortPulseKey > 0 ? [1, 1.025, 1] : 1 }}
+              className="relative shrink-0"
+              key={group.id}
+              layout
+              style={{ zIndex: index }}
+              transition={{
+                layout: { duration: 0.3, ease: "easeOut" },
+                scale: { delay: 0.3, duration: 0.22, ease: "easeOut" }
+              }}
+            >
+              <CardGroup
+                cardDimensions={arenaMetrics ? { height: arenaMetrics.cardHeight, width: arenaMetrics.cardWidth } : undefined}
+                disabled={disabled}
+                group={group}
+                invalidCardIds={invalidSet}
+                invalidPulseKey={invalidPulseKey}
+                layout="stack"
+                levelRank={levelRank}
+                onPointerDownCard={handlePointerDown}
+                onPointerEnterCard={handlePointerEnter}
+                selectedCardIds={selectedSet}
+                sizeScale={arenaCardScale}
+                stackStep={arenaMetrics?.stackStep}
+              />
+            </motion.div>
+          ))}
         </div>
       </div>
     );
@@ -274,6 +283,74 @@ export function CardHand({
       </div>
     </div>
   );
+}
+
+function groupCardsForArena(cards: Card[], arrangeGroups: boolean, levelRank?: CardRank): CardHandGroup[] {
+  if (arrangeGroups && levelRank) {
+    return arrangeCardGroups(cards, levelRank).map(toArenaGroup);
+  }
+
+  const groups: Card[][] = [];
+
+  for (const card of cards) {
+    const previous = groups[groups.length - 1];
+    if (previous?.[0]?.rank === card.rank) {
+      previous.push(card);
+    } else {
+      groups.push([card]);
+    }
+  }
+
+  return groups.map((groupCards) => {
+    const type = groupCards.length >= 4 ? "bomb" : groupCards.length === 3 ? "triple" : groupCards.length === 2 ? "pair" : "single";
+    const power = Math.max(...groupCards.map((card) => card.rank));
+
+    return {
+      id: `arena-${groupCards.map((card) => card.id).join("-")}`,
+      type,
+      label: String(power),
+      power,
+      cards: groupCards
+    } satisfies CardHandGroup;
+  });
+}
+
+function toArenaGroup(group: ArrangedCardGroup): CardHandGroup {
+  const type =
+    group.type === "bomb" || group.type === "fourJokers"
+      ? "bomb"
+      : group.type === "triple"
+        ? "triple"
+        : group.type === "pair"
+          ? "pair"
+          : group.type === "single"
+            ? "single"
+            : "straight";
+
+  return {
+    id: `arena-${group.type}-${group.cards.map((card) => card.id).join("-")}`,
+    type,
+    label: groupLabel(group),
+    power: group.power,
+    cards: group.cards
+  };
+}
+
+function groupLabel(group: ArrangedCardGroup) {
+  const labels: Record<ArrangedCardGroup["type"], string> = {
+    fourJokers: "天王炸",
+    straightFlush: "同花顺",
+    bomb: `${group.cards.length}炸`,
+    steel: "钢板",
+    plane: "飞机",
+    straight: "顺子",
+    tripleWithPair: "三带二",
+    triple: "三张",
+    pair: "对子",
+    single: "单牌"
+  };
+
+  return labels[group.type];
 }
 
 
