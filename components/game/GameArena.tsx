@@ -133,6 +133,11 @@ export function GameArena({
     restartDealAnimation();
   }, [restart, restartDealAnimation]);
 
+  useEffect(() => {
+    // Replace the deterministic hydration snapshot with a fresh deal after mount.
+    restartTraining();
+  }, [restartTraining]);
+
   const startTraining = useCallback(() => {
     continueTraining();
     restartDealAnimation();
