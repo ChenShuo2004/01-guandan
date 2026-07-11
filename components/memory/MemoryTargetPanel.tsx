@@ -74,7 +74,11 @@ export function MemoryTargetOverlay({
   if (!visible) return null;
 
   return (
-    <div className="memory-target-overlay fixed inset-0 z-[200] grid place-items-center bg-[#071426]/88 px-4 py-4 backdrop-blur-lg sm:px-8">
+    <div 
+      className="memory-target-overlay fixed inset-0 z-[200] grid cursor-pointer place-items-center bg-[#071426]/88 px-4 py-4 backdrop-blur-lg sm:px-8"
+      onClick={onObservationComplete}
+      onTouchEnd={onObservationComplete}
+    >
       <section
         className="memory-target-overlay-panel relative flex min-h-[min(720px,82dvh)] w-full max-w-5xl flex-col overflow-hidden rounded-[34px] border border-[#8fe9ff]/45 bg-[radial-gradient(circle_at_22%_52%,rgba(232,65,255,0.24),transparent_34%),radial-gradient(circle_at_72%_28%,rgba(20,101,255,0.24),transparent_38%),linear-gradient(135deg,#10243b_0%,#09192d_58%,#101d31_100%)] px-6 py-6 text-white shadow-[0_35px_100px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.12)] sm:px-10 sm:py-8"
       >
@@ -87,7 +91,7 @@ export function MemoryTargetOverlay({
             记住这 {currentTargetCount} 种牌
           </h2>
           <p className="mt-3 text-sm font-bold text-white/65 sm:text-base">
-            观察手牌中这些牌的数量
+            观察手牌中这些牌的数量 · 点击任意位置开始
           </p>
         </div>
         <div className="memory-target-cards relative z-10 flex flex-1 flex-wrap items-center justify-center gap-7 py-5 sm:gap-10">

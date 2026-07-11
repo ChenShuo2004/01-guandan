@@ -114,6 +114,9 @@ export function MemoryTrainingExperience() {
           ...stored,
           sessionClock: { ...initial.sessionClock, ...stored.sessionClock },
           targetProgress: stored.targetProgress ?? initial.targetProgress,
+          playersPlayedSinceCheckpoint: stored.playersPlayedSinceCheckpoint instanceof Set 
+            ? stored.playersPlayedSinceCheckpoint 
+            : new Set(),
         })
       : { ...initial, phase: "SHOWING_TARGETS" as const, targetRanks: createTargetRanks(initial.currentTargetCount, initial.levelRank), handCount: 1 };
     setTraining(next);
@@ -173,6 +176,7 @@ export function MemoryTrainingExperience() {
       allCardsById,
       observerHandCardIds: observerHand.map(c => c.id),
       relevantEvents: initialEvent ? [initialEvent] : [],
+      playersPlayedSinceCheckpoint: new Set(),
     }));
     setShowCheckpoint(true);
   }, []);
@@ -270,8 +274,11 @@ export function MemoryTrainingExperience() {
       .find((player) => player.id === "player")?.hand
       .map((card) => card.id) ?? t.observerHandCardIds;
 
+    const newPlayersPlayed = new Set(t.playersPlayedSinceCheckpoint);
+    
     for (const entry of newEntries) {
       if (entry.action === "play" && entry.cards.length > 0) {
+        newPlayersPlayed.add(entry.playerId);
         const targetCards = entry.cards.filter(c => isTargetCard(c, t.targetRanks));
         if (targetCards.length > 0) {
           for (const card of targetCards) {
@@ -301,6 +308,7 @@ export function MemoryTrainingExperience() {
       validPlayCountSinceCheckpoint: validPlays,
       lastProcessedHistoryLength: state.history.length,
       observerHandCardIds: currentObserverHandCardIds,
+      playersPlayedSinceCheckpoint: newPlayersPlayed,
     }));
 
     const updatedTraining = {
@@ -311,6 +319,7 @@ export function MemoryTrainingExperience() {
       validPlayCountSinceCheckpoint: validPlays,
       lastProcessedHistoryLength: state.history.length,
       observerHandCardIds: currentObserverHandCardIds,
+      playersPlayedSinceCheckpoint: newPlayersPlayed,
     };
 
     if (shouldTriggerMemoryCheckpoint(state, updatedTraining)) {
@@ -359,6 +368,7 @@ export function MemoryTrainingExperience() {
       pendingCheckpoint: checkpoint,
       checkpoints: [...prev.checkpoints, checkpoint],
       validPlayCountSinceCheckpoint: 0,
+      playersPlayedSinceCheckpoint: new Set(),
       stageAccuracy: checkpoint.accuracy,
       overallAccuracy: calculateOverallAccuracy([...prev.checkpoints, checkpoint]),
       consecutiveLowAccuracyCheckpoints: checkpoint.accuracy < 0.6

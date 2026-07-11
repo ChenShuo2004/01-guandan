@@ -77,6 +77,7 @@ export interface ObserverMemoryTrainingState {
   multiplierResults: boolean[];
   sessionClock: MemorySessionClock;
   targetProgress: MemoryTargetProgress;
+  playersPlayedSinceCheckpoint: Set<string>;
 }
 
 export const TARGET_COUNT_STEPS = [2, 3, 4, 5, 7, 10] as const;
@@ -233,6 +234,14 @@ export function shouldTriggerMemoryCheckpoint(
   if (training.phase !== "AI_PLAYING") return false;
   const interval = CHECKPOINT_INTERVALS[training.currentTargetCount];
   if (!interval) return false;
+  
+  const aiPlayers = ["enemyAI1", "partnerAI", "enemyAI2"];
+  const allAIsPlayed = aiPlayers.every(playerId => 
+    training.playersPlayedSinceCheckpoint.has(playerId)
+  );
+  
+  if (!allAIsPlayed) return false;
+  
   if (state.roundComplete && training.validPlayCountSinceCheckpoint >= interval.min) {
     return true;
   }
@@ -365,6 +374,7 @@ export function createInitialTrainingState(
       durationMs: (debug ? DEBUG_DURATION_MINUTES : DEFAULT_DURATION_MINUTES) * 60_000,
     },
     targetProgress: createInitialTargetProgress(levelRank),
+    playersPlayedSinceCheckpoint: new Set(),
   };
 }
 
@@ -385,13 +395,19 @@ export function resetForNextHand(
     pendingCheckpoint: null,
     lastProcessedHistoryLength: 0,
     observationTimerActive: false,
+    playersPlayedSinceCheckpoint: new Set(),
   };
 }
 
 export function normalizeTrainingStateForResume(
   training: ObserverMemoryTrainingState,
 ): ObserverMemoryTrainingState {
-  if (training.phase === "SESSION_FINISHED" || training.sessionTimeExpired) return training;
+  if (training.phase === "SESSION_FINISHED" || training.sessionTimeExpired) return {
+    ...training,
+    playersPlayedSinceCheckpoint: training.playersPlayedSinceCheckpoint instanceof Set 
+      ? training.playersPlayedSinceCheckpoint 
+      : new Set(),
+  };
 
   // GameArena state is intentionally ephemeral, so a restored session starts a
   // fresh hand while keeping curriculum, multiplier, checkpoints and session time.

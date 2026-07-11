@@ -218,14 +218,25 @@ export function isSessionExpired(clock: MemorySessionClock, now = Date.now()): b
 }
 
 export function saveTrainingState<T>(storage: Pick<Storage, "setItem">, key: string, value: T): void {
-  storage.setItem(key, JSON.stringify(value));
+  const serialized = JSON.stringify(value, (_, val) => {
+    if (val instanceof Set) {
+      return { __type: 'Set', value: Array.from(val) };
+    }
+    return val;
+  });
+  storage.setItem(key, serialized);
 }
 
 export function loadTrainingState<T>(storage: Pick<Storage, "getItem">, key: string): T | null {
   const raw = storage.getItem(key);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as T;
+    return JSON.parse(raw, (_, val) => {
+      if (val && typeof val === 'object' && val.__type === 'Set') {
+        return new Set(val.value);
+      }
+      return val;
+    }) as T;
   } catch {
     return null;
   }
