@@ -188,6 +188,7 @@ export function GameArena({
 
     originalHandRef.current = [...currentHand];
     setRestoreEnabled(true);
+    setSmartSortActive(false);
     sortHand();
     setSortPulseKey((current) => current + 1);
   }, [isDealLocked, sortHand, userPlayer?.hand]);
@@ -198,6 +199,7 @@ export function GameArena({
     restoreHand(originalHandRef.current);
     originalHandRef.current = null;
     setRestoreEnabled(false);
+    setSmartSortActive(false);
     setSortPulseKey((current) => current + 1);
   }, [isDealLocked, restoreHand]);
 
