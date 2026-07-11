@@ -55,7 +55,6 @@ export function MemoryTrainingExperience() {
   const [showFeedback, setShowFeedback] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const [arenaKey, setArenaKey] = useState(0);
-  const [fastForward, setFastForward] = useState(false);
 
   // ── Refs ──────────────────────────────────────────────────────────────────────
   const dealCompleteRef = useRef(false);
@@ -187,7 +186,6 @@ export function MemoryTrainingExperience() {
   const triggerCheckpoint = useCallback(() => {
     if (checkpointTriggeredRef.current) return;
     checkpointTriggeredRef.current = true;
-    setFastForward(false);
     setTraining(prev => ({ ...prev, phase: "PAUSING_FOR_CHECKPOINT" }));
     checkpointTransitionTimerRef.current = window.setTimeout(() => {
       setTraining(prev => ({ ...prev, phase: "ANSWERING" }));
@@ -390,7 +388,6 @@ export function MemoryTrainingExperience() {
         key={arenaKey}
         observerMode
         observerPaused={observerPaused}
-        fastForward={fastForward}
         onObserverStateChange={handleStateChange}
         onDealComplete={handleDealComplete}
         onObserverPauseChange={handleObserverPauseChange}
@@ -446,15 +443,6 @@ export function MemoryTrainingExperience() {
         />
       ) : null}
 
-      {training.phase === "AI_PLAYING" && !fastForward ? (
-        <button
-          className="memory-fast-forward fixed bottom-24 left-1/2 z-[160] -translate-x-1/2 rounded-2xl border border-white/40 bg-white/15 px-6 py-3 text-base font-black text-white backdrop-blur-xl transition hover:bg-white/25 active:scale-[0.97]"
-          onClick={() => setFastForward(true)}
-          type="button"
-        >
-          快速跳过 → 直达测试
-        </button>
-      ) : null}
     </div>
   );
 }
