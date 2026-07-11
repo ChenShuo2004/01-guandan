@@ -8,7 +8,7 @@ import { getRankLabel } from "@/lib/guandan/card";
 import { MemoryTargetPanel, MemoryTargetOverlay } from "@/components/memory/MemoryTargetPanel";
 import { MemoryCheckpointPanel } from "@/components/memory/MemoryCheckpointPanel";
 import { MemoryFeedbackPanel } from "@/components/memory/MemoryFeedbackPanel";
-import { MemorySessionSummaryPanel } from "@/components/memory/MemorySessionSummary";
+import { MemoryReviewReportPanel } from "@/components/memory/MemoryReviewReportPanel";
 import { MemoryAnswerHistoryPanel } from "@/components/memory/MemoryAnswerHistoryPanel";
 import {
   createInitialTrainingState,
@@ -55,7 +55,7 @@ export function MemoryTrainingExperience() {
   const [showTargetOverlay, setShowTargetOverlay] = useState(false);
   const [showCheckpoint, setShowCheckpoint] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
-  const [showSummary, setShowSummary] = useState(false);
+  const [showReport, setShowReport] = useState(false);
   const [arenaKey, setArenaKey] = useState(0);
 
   // ── Refs ──────────────────────────────────────────────────────────────────────
@@ -85,7 +85,7 @@ export function MemoryTrainingExperience() {
     const remaining = Math.max(0, training.sessionClock.durationMs - getSessionElapsedMs(training.sessionClock));
     sessionTimerRef.current = window.setTimeout(() => {
       setTraining((prev) => ({ ...prev, sessionTimeExpired: true, phase: "SESSION_FINISHED" }));
-      setShowSummary(true);
+      setShowReport(true);
     }, remaining);
 
     return () => {
@@ -119,7 +119,7 @@ export function MemoryTrainingExperience() {
     setShowTargetOverlay(next.phase === "SHOWING_TARGETS" || next.phase === "OBSERVING_INITIAL_HAND");
     setShowCheckpoint(next.phase === "ANSWERING");
     setShowFeedback(next.phase === "SHOWING_FEEDBACK" && Boolean(next.pendingCheckpoint));
-    setShowSummary(next.phase === "SESSION_FINISHED" || next.sessionTimeExpired);
+    setShowReport(next.phase === "SESSION_FINISHED" || next.sessionTimeExpired);
 
     return () => {
       if (observationTimerRef.current) window.clearTimeout(observationTimerRef.current);
@@ -202,7 +202,7 @@ export function MemoryTrainingExperience() {
 
     if (t.sessionTimeExpired) {
       setTraining(prev => ({ ...prev, phase: "SESSION_FINISHED" }));
-      setShowSummary(true);
+      setShowReport(true);
       return;
     }
 
@@ -342,7 +342,7 @@ export function MemoryTrainingExperience() {
 
     if (trainingRef.current.sessionTimeExpired) {
       setTraining(prev => ({ ...prev, phase: "SESSION_FINISHED" }));
-      setShowSummary(true);
+      setShowReport(true);
       return;
     }
 
@@ -370,7 +370,7 @@ export function MemoryTrainingExperience() {
     setShowTargetOverlay(true);
     setShowCheckpoint(false);
     setShowFeedback(false);
-    setShowSummary(false);
+    setShowReport(false);
 
     sessionTimerRef.current = window.setTimeout(() => {
       setTraining(prev => ({ ...prev, sessionTimeExpired: true }));
@@ -378,13 +378,26 @@ export function MemoryTrainingExperience() {
   }, []);
 
   // ── Exit ───────────────────────────────────────────────────────────────────────
-  const handleExit = useCallback(() => {
+  const exitToLobby = useCallback(() => {
     if (observationTimerRef.current) window.clearTimeout(observationTimerRef.current);
     if (sessionTimerRef.current) window.clearTimeout(sessionTimerRef.current);
     if (handSettlementTimerRef.current) window.clearTimeout(handSettlementTimerRef.current);
     if (checkpointTransitionTimerRef.current) window.clearTimeout(checkpointTransitionTimerRef.current);
     router.push("/practice");
   }, [router]);
+
+  const handleExit = useCallback(() => {
+    if (observationTimerRef.current) window.clearTimeout(observationTimerRef.current);
+    if (sessionTimerRef.current) window.clearTimeout(sessionTimerRef.current);
+    if (handSettlementTimerRef.current) window.clearTimeout(handSettlementTimerRef.current);
+    if (checkpointTransitionTimerRef.current) window.clearTimeout(checkpointTransitionTimerRef.current);
+    setTraining((prev) => ({ ...prev, phase: "SESSION_FINISHED" }));
+    setShowReport(true);
+  }, []);
+
+  const handleReportResume = useCallback(() => {
+    setShowReport(false);
+  }, []);
 
   // ── Computed ───────────────────────────────────────────────────────────────────
   const observerPaused = training.phase !== "AI_PLAYING";
@@ -400,6 +413,8 @@ export function MemoryTrainingExperience() {
         onObserverStateChange={handleStateChange}
         onDealComplete={handleDealComplete}
         onObserverPauseChange={handleObserverPauseChange}
+        onObserverExit={handleExit}
+        onObserverOpenReport={() => setShowReport(true)}
       />
 
       <MemoryTargetPanel
@@ -444,11 +459,14 @@ export function MemoryTrainingExperience() {
         />
       ) : null}
 
-      {showSummary ? (
-        <MemorySessionSummaryPanel
-          summary={buildSessionSummary(training)}
+      {showReport ? (
+        <MemoryReviewReportPanel
+          canResume={training.phase !== "SESSION_FINISHED" && !training.sessionTimeExpired}
+          checkpoints={training.checkpoints}
+          onExit={exitToLobby}
           onRestart={handleRestart}
-          onExit={handleExit}
+          onResume={handleReportResume}
+          summary={buildSessionSummary(training)}
         />
       ) : null}
 

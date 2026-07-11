@@ -38,6 +38,8 @@ interface GameArenaProps {
   onObserverStateChange?: (state: GameEngineState) => void;
   onDealComplete?: () => void;
   onObserverPauseChange?: (paused: boolean) => void;
+  onObserverExit?: () => void;
+  onObserverOpenReport?: () => void;
 }
 
 export function GameArena({
@@ -48,6 +50,8 @@ export function GameArena({
   onObserverStateChange,
   onDealComplete,
   onObserverPauseChange,
+  onObserverExit,
+  onObserverOpenReport,
 }: GameArenaProps) {
   const router = useRouter();
   const arenaRef = useRef<HTMLElement | null>(null);
@@ -453,7 +457,13 @@ export function GameArena({
       : isUserTurn
         ? "轮到你出牌"
         : `${currentPlayer?.role ?? "对家"}出牌中...`;
-  const goLobby = () => router.push("/practice");
+  const goLobby = () => {
+    if (observerMode && onObserverExit) {
+      onObserverExit();
+      return;
+    }
+    router.push("/practice");
+  };
   const coachMood = state.coachFeedback.type === "mistake" ? "warning" : isUserTurn ? "teaching" : "thinking";
 
   function updateSettings(nextSettings: Partial<ArenaSettings>) {
@@ -597,6 +607,7 @@ export function GameArena({
         onBackToLobby={goLobby}
         onOpenCoach={() => setActivePanel("coach")}
         onOpenRules={() => setActivePanel("rules")}
+        onOpenReport={onObserverOpenReport}
           onOpenSettings={() => setActivePanel("settings")}
           onToggleFullscreen={toggleFullscreen}
           onTogglePause={togglePause}
@@ -994,6 +1005,7 @@ function ArenaTopBar({
   onBackToLobby,
   onOpenCoach,
   onOpenRules,
+  onOpenReport,
   onOpenSettings,
   onToggleFullscreen,
   onTogglePause,
@@ -1006,6 +1018,7 @@ function ArenaTopBar({
   onBackToLobby: () => void;
   onOpenCoach: () => void;
   onOpenRules: () => void;
+  onOpenReport?: () => void;
   onOpenSettings: () => void;
   onToggleFullscreen: () => void;
   onTogglePause: () => void;
@@ -1033,6 +1046,7 @@ function ArenaTopBar({
         <nav className="flex min-w-0 items-center gap-3 max-lg:gap-2">
           {!observerMode && <HudButton icon="◉" label="AI Coach" onClick={onOpenCoach} />}
           {!observerMode && <HudButton icon="ⓘ" label="规则" onClick={onOpenRules} />}
+          {observerMode && onOpenReport ? <HudButton icon="▤" label="复盘报告" onClick={onOpenReport} /> : null}
           <HudButton icon="⚙" label="设置" onClick={onOpenSettings} />
           <HudButton icon={isPaused ? "▶" : "Ⅱ"} label={isPaused ? "继续" : "暂停"} onClick={onTogglePause} />
           {!observerMode && (
