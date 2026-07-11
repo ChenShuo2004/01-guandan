@@ -128,9 +128,8 @@ export function getTotalJokerDeckCount(): number {
 }
 
 export function createTargetRanks(targetCount: number, levelRank: CardRank): CardRank[] {
-  const candidates: CardRank[] = [
-    16, levelRank, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 15,
-  ];
+  const descendingRanks: CardRank[] = [14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 15];
+  const candidates: CardRank[] = [16, levelRank, ...descendingRanks];
   const unique: CardRank[] = [];
   const seen = new Set<CardRank>();
   for (const rank of candidates) {
@@ -396,7 +395,13 @@ export function normalizeTrainingStateForResume(
 
   // GameArena state is intentionally ephemeral, so a restored session starts a
   // fresh hand while keeping curriculum, multiplier, checkpoints and session time.
-  return resetForNextHand({ ...training, phase: "STARTING_NEXT_HAND" });
+  const currentTargetCount = training.targetProgress.activeTargets.length;
+  return resetForNextHand({
+    ...training,
+    phase: "STARTING_NEXT_HAND",
+    currentTargetCount,
+    targetCountStepIndex: Math.max(0, TARGET_COUNT_STEPS.findIndex((count) => count === currentTargetCount)),
+  });
 }
 
 export interface MemorySessionSummary {
