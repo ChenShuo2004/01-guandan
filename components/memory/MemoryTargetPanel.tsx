@@ -47,7 +47,7 @@ export function MemoryTargetPanel({
             <PokerCard
               card={cardRankToPokerCard(rank)}
               key={rank}
-              size={rank >= 16 ? "joker" : "md"}
+              size="md"
             />
           ))}
         </div>

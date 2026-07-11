@@ -150,12 +150,12 @@ function RankSelector({
         >
           <div
             className="absolute left-1/2 top-1/2"
-            style={{ transform: `translate(-50%, -50%) scale(${isJoker ? 0.34 : 0.58})` }}
+            style={{ transform: "translate(-50%, -50%) scale(0.58)" }}
           >
             <PokerCard
               card={card}
               levelRank={levelRank ? getRankLabel(levelRank) : undefined}
-              size={isJoker ? "joker" : "sm"}
+              size="sm"
             />
           </div>
         </div>

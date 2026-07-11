@@ -33,7 +33,7 @@ export function PlayingCard({
       onClick={() => onClick?.(card)}
       type="button"
     >
-      <PokerCard card={toPokerCardData(card, levelRank)} compact={compact} levelRank={levelRank} selected={selected} variant="played" />
+      <PokerCard card={toPokerCardData(card, levelRank)} compact={compact} levelRank={levelRank} selected={selected} size={compact ? "sm" : "md"} variant="played" />
     </button>
   );
 }

@@ -48,11 +48,9 @@ export function PlayingCard({
 }: PlayingCardProps) {
   const status = getCardVisualStatus({ disabled, invalid, selected });
   const label = getCardLabel(card);
-  const baseSize = card.isJoker
-    ? { height: 134, width: 96 }
-    : compact
-      ? { height: 78, width: 56 }
-      : { height: 124, width: 89 };
+  const baseSize = compact
+    ? { height: 78, width: 56 }
+    : { height: 124, width: 89 };
   const cardSize = dimensions ?? {
     height: Math.round(baseSize.height * sizeScale),
     width: Math.round(baseSize.width * sizeScale)
@@ -100,7 +98,7 @@ export function PlayingCard({
           dimensions={cardSize}
           levelRank={levelRank}
           selected={selected}
-          size={card.isJoker ? "joker" : compact ? "sm" : "md"}
+          size={compact ? "sm" : "md"}
         />
       </span>
       <span

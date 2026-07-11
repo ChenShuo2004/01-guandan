@@ -22,7 +22,7 @@ const sizeClasses: Record<CardSize, string> = {
   sm: "h-[72px] w-[51px]",
   md: "h-[124px] w-[89px]",
   lg: "h-[148px] w-[106px]",
-  joker: "h-[134px] w-[96px]",
+  joker: "h-[124px] w-[89px]",
   hero: "h-[clamp(148px,30vh,252px)] w-[clamp(106px,21.4vh,180px)]"
 };
 
@@ -30,7 +30,7 @@ const playedSizeClasses: Record<CardSize, string> = {
   sm: "h-[104px] w-[74px]",
   md: "h-[132px] w-[95px]",
   lg: "h-[148px] w-[106px]",
-  joker: "h-[136px] w-[97px]",
+  joker: "h-[132px] w-[95px]",
   hero: "h-[clamp(148px,30vh,252px)] w-[clamp(106px,21.4vh,180px)]"
 };
 
@@ -46,7 +46,7 @@ export function PokerCard({
   const isJoker = card.rank === "SJ" || card.rank === "BJ";
   const isLevelCard = !isJoker && card.rank === levelRank;
   const cardType: CardType = isJoker ? "joker" : isLevelCard ? "levelCard" : "normal";
-  const resolvedSize: CardSize = size ?? (isJoker ? "joker" : compact ? "sm" : "md");
+  const resolvedSize: CardSize = size ?? (compact ? "sm" : "md");
   const cardSizeClass = variant === "played" ? playedSizeClasses[resolvedSize] : sizeClasses[resolvedSize];
 
   return (
