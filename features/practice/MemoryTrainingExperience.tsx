@@ -19,15 +19,24 @@ import {
   evaluateCheckpointWithCards,
   getErrorReplayEvents,
   resetForNextHand,
-  checkShouldUpgrade,
-  getNextTargetCountStep,
-  handlePoorPerformance,
   buildSessionSummary,
   OBSERVATION_TIMES_MS,
   TARGET_COUNT_STEPS,
   type ObserverMemoryTrainingState,
   type MemoryRelevantEvent,
 } from "@/lib/memory/ObserverMemoryTraining";
+import {
+  applyCheckpointResult,
+  loadTrainingState,
+  maybeIncreaseMultiplier,
+  getSessionElapsedMs,
+  pauseSession,
+  resumeSession,
+  saveTrainingState,
+  updateMultiplier,
+} from "@/lib/memory/memoryTrainingSystem";
+
+const MEMORY_SESSION_STORAGE_KEY = "guandan-memory-training-session";
 
 export function MemoryTrainingExperience() {
   const router = useRouter();
@@ -62,6 +71,26 @@ export function MemoryTrainingExperience() {
   // Keep phaseRef in sync
   useEffect(() => { phaseRef.current = training.phase; }, [training.phase]);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") saveTrainingState(window.localStorage, MEMORY_SESSION_STORAGE_KEY, training);
+  }, [training]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (sessionTimerRef.current) window.clearTimeout(sessionTimerRef.current);
+    if (training.sessionClock.pausedAt !== null || training.sessionTimeExpired) return;
+
+    const remaining = Math.max(0, training.sessionClock.durationMs - getSessionElapsedMs(training.sessionClock));
+    sessionTimerRef.current = window.setTimeout(() => {
+      setTraining((prev) => ({ ...prev, sessionTimeExpired: true, phase: "SESSION_FINISHED" }));
+      setShowSummary(true);
+    }, remaining);
+
+    return () => {
+      if (sessionTimerRef.current) window.clearTimeout(sessionTimerRef.current);
+    };
+  }, [training.sessionClock, training.sessionTimeExpired]);
+
   // ── Helper: start hand observation timer ───────────────────────────────────────
   const startHandObservationTimer = useCallback(() => {
     const t = trainingRef.current;
@@ -74,13 +103,21 @@ export function MemoryTrainingExperience() {
 
   // ── Initialization (mount only) ────────────────────────────────────────────────
   useEffect(() => {
-    const targetRanks = createTargetRanks(training.currentTargetCount, training.levelRank);
-    setTraining(prev => ({ ...prev, phase: "SHOWING_TARGETS", targetRanks, handCount: 1 }));
-    setShowTargetOverlay(true);
-
-    sessionTimerRef.current = window.setTimeout(() => {
-      setTraining(prev => ({ ...prev, sessionTimeExpired: true }));
-    }, training.durationMinutes * 60_000);
+    const initial = createInitialTrainingState({ debugMode: false, levelRank: 15 });
+    const stored = loadTrainingState<ObserverMemoryTrainingState>(window.localStorage, MEMORY_SESSION_STORAGE_KEY);
+    const next = stored
+      ? {
+          ...initial,
+          ...stored,
+          sessionClock: { ...initial.sessionClock, ...stored.sessionClock },
+          targetProgress: stored.targetProgress ?? initial.targetProgress,
+        }
+      : { ...initial, phase: "SHOWING_TARGETS" as const, targetRanks: createTargetRanks(initial.currentTargetCount, initial.levelRank), handCount: 1 };
+    setTraining(next);
+    setShowTargetOverlay(next.phase === "SHOWING_TARGETS" || next.phase === "OBSERVING_INITIAL_HAND");
+    setShowCheckpoint(next.phase === "ANSWERING");
+    setShowFeedback(next.phase === "SHOWING_FEEDBACK" && Boolean(next.pendingCheckpoint));
+    setShowSummary(next.phase === "SESSION_FINISHED" || next.sessionTimeExpired);
 
     return () => {
       if (observationTimerRef.current) window.clearTimeout(observationTimerRef.current);
@@ -88,7 +125,13 @@ export function MemoryTrainingExperience() {
       if (checkpointTransitionTimerRef.current) window.clearTimeout(checkpointTransitionTimerRef.current);
       if (handSettlementTimerRef.current) window.clearTimeout(handSettlementTimerRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleObserverPauseChange = useCallback((paused: boolean) => {
+    setTraining((prev) => ({
+      ...prev,
+      sessionClock: paused ? pauseSession(prev.sessionClock) : resumeSession(prev.sessionClock),
+    }));
   }, []);
 
   // ── Handle target overlay completion ───────────────────────────────────────────
@@ -167,12 +210,6 @@ export function MemoryTrainingExperience() {
     handSettlementTimerRef.current = window.setTimeout(() => {
       let next = { ...trainingRef.current };
 
-      if (checkShouldUpgrade(next)) {
-        const newStepIndex = getNextTargetCountStep(next.targetCountStepIndex);
-        next = { ...next, targetCountStepIndex: newStepIndex, currentTargetCount: TARGET_COUNT_STEPS[newStepIndex] };
-      }
-
-      next = handlePoorPerformance(next);
       next = { ...next, bestTargetCount: Math.max(next.bestTargetCount, next.currentTargetCount) };
 
       const resetState = resetForNextHand(next);
@@ -257,6 +294,12 @@ export function MemoryTrainingExperience() {
     checkpointTriggeredRef.current = false;
     const withAnswers = { ...t, currentAnswers: answers };
     const checkpoint = evaluateCheckpointWithCards(withAnswers, t.allCardsById);
+    const allCorrect = checkpoint.incorrectRanks.length === 0;
+    const targetProgress = applyCheckpointResult(t.targetProgress, allCorrect);
+    const nextMultiplier = maybeIncreaseMultiplier(
+      updateMultiplier(t.multiplier, allCorrect),
+      [...t.multiplierResults, allCorrect],
+    );
 
     setTraining(prev => ({
       ...prev,
@@ -272,6 +315,14 @@ export function MemoryTrainingExperience() {
       consecutiveLowAccuracyCheckpoints: checkpoint.accuracy < 0.6
         ? prev.consecutiveLowAccuracyCheckpoints + 1
         : 0,
+      multiplier: nextMultiplier,
+      multiplierResults: [...prev.multiplierResults, allCorrect].slice(-2),
+      targetProgress,
+      currentTargetCount: targetProgress.activeTargets.length,
+      targetCountStepIndex: Math.min(
+        TARGET_COUNT_STEPS.length - 1,
+        Math.max(0, targetProgress.activeTargets.length - 2),
+      ),
     }));
 
     setShowCheckpoint(false);
@@ -303,7 +354,7 @@ export function MemoryTrainingExperience() {
     if (handSettlementTimerRef.current) window.clearTimeout(handSettlementTimerRef.current);
     if (checkpointTransitionTimerRef.current) window.clearTimeout(checkpointTransitionTimerRef.current);
 
-    const newState = createInitialTrainingState({ debugMode: false, levelRank: 15 });
+    const newState = createInitialTrainingState({ debugMode: false, levelRank: trainingRef.current.levelRank });
     const targetRanks = createTargetRanks(newState.currentTargetCount, newState.levelRank);
 
     setTraining({ ...newState, phase: "SHOWING_TARGETS", targetRanks, handCount: 1 });
@@ -341,6 +392,7 @@ export function MemoryTrainingExperience() {
         fastForward={fastForward}
         onObserverStateChange={handleStateChange}
         onDealComplete={handleDealComplete}
+        onObserverPauseChange={handleObserverPauseChange}
       />
 
       <MemoryTargetPanel

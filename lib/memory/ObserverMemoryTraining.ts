@@ -2,6 +2,8 @@ import type { Card, CardRank } from "../guandan/card.ts";
 import { getRankLabel } from "../guandan/card.ts";
 import type { GameEngineState } from "../guandan/gameState.ts";
 import type { PlayerSeat } from "../guandan/player.ts";
+import type { MemorySessionClock, MemoryTargetProgress, TrainingMultiplier } from "./memoryTrainingSystem";
+import { calculateRemainingTargetCounts, createInitialTargetProgress } from "./memoryTrainingSystem";
 
 export type MemoryTrainingPhase =
   | "INITIALIZING"
@@ -71,14 +73,19 @@ export interface ObserverMemoryTrainingState {
   lastProcessedHistoryLength: number;
   observationTimerActive: boolean;
   sessionTimeExpired: boolean;
+  multiplier: TrainingMultiplier;
+  multiplierResults: boolean[];
+  sessionClock: MemorySessionClock;
+  targetProgress: MemoryTargetProgress;
 }
 
-export const TARGET_COUNT_STEPS = [1, 2, 3, 5, 7, 10] as const;
+export const TARGET_COUNT_STEPS = [2, 3, 4, 5, 7, 10] as const;
 
 export const CHECKPOINT_INTERVALS: Record<number, { min: number; max: number }> = {
   1: { min: 3, max: 5 },
   2: { min: 4, max: 6 },
   3: { min: 5, max: 5 },
+  4: { min: 5, max: 6 },
   5: { min: 5, max: 7 },
   7: { min: 6, max: 8 },
   10: { min: 8, max: 10 },
@@ -99,8 +106,7 @@ export const DEFAULT_DURATION_MINUTES = 60;
 export const DEBUG_DURATION_MINUTES = 5;
 
 export function getRankDisplayName(rank: CardRank): string {
-  if (rank === 16) return "小王";
-  if (rank === 17) return "大王";
+  if (rank === 16 || rank === 17) return "JOKER";
   return getRankLabel(rank);
 }
 
@@ -123,7 +129,7 @@ export function getTotalJokerDeckCount(): number {
 
 export function createTargetRanks(targetCount: number, levelRank: CardRank): CardRank[] {
   const candidates: CardRank[] = [
-    17, 16, levelRank, 14, 15, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3,
+    16, levelRank, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 15,
   ];
   const unique: CardRank[] = [];
   const seen = new Set<CardRank>();
@@ -216,33 +222,8 @@ export function shouldTriggerMemoryCheckpoint(
 }
 
 export function checkShouldUpgrade(training: ObserverMemoryTrainingState): boolean {
-  const { checkpoints, currentTargetCount } = training;
-  switch (currentTargetCount) {
-    case 1:
-    case 2: {
-      const recent = checkpoints.slice(-3);
-      return recent.length >= 3 && recent.every((cp) => cp.accuracy === 1);
-    }
-    case 3: {
-      const recent = checkpoints.slice(-4);
-      if (recent.length < 4) return false;
-      return recent.reduce((s, cp) => s + cp.accuracy, 0) / 4 >= 0.8;
-    }
-    case 5: {
-      const recent = checkpoints.slice(-5);
-      if (recent.length < 5) return false;
-      return recent.reduce((s, cp) => s + cp.accuracy, 0) / 5 >= 0.8;
-    }
-    case 7: {
-      const recent = checkpoints.slice(-5);
-      if (recent.length < 5) return false;
-      return recent.reduce((s, cp) => s + cp.accuracy, 0) / 5 >= 0.75;
-    }
-    case 10:
-      return false;
-    default:
-      return training.targetCountStepIndex < TARGET_COUNT_STEPS.length - 1;
-  }
+  const recent = training.checkpoints.slice(-5);
+  return recent.length === 5 && recent.every((checkpoint) => checkpoint.accuracy === 1);
 }
 
 export function getNextTargetCountStep(currentIndex: number): number {
@@ -252,27 +233,15 @@ export function getNextTargetCountStep(currentIndex: number): number {
 export function handlePoorPerformance(
   training: ObserverMemoryTrainingState,
 ): ObserverMemoryTrainingState {
-  const recent = training.checkpoints.slice(-3);
-  if (recent.length < 3) return training;
-  const avg = recent.reduce((s, cp) => s + cp.accuracy, 0) / 3;
-  if (avg >= 0.6) return training;
-  const interval = CHECKPOINT_INTERVALS[training.currentTargetCount];
-  if (!interval) return training;
-  if (training.checkpointInterval > interval.min) {
-    return {
-      ...training,
-      checkpointInterval: Math.max(interval.min, training.checkpointInterval - 1),
-      consecutiveLowAccuracyCheckpoints: training.consecutiveLowAccuracyCheckpoints + 1,
-    };
-  }
-  const prevIndex = Math.max(0, training.targetCountStepIndex - 1);
-  if (prevIndex === training.targetCountStepIndex) return training;
-  const newCount = TARGET_COUNT_STEPS[prevIndex];
-  const newInterval = CHECKPOINT_INTERVALS[newCount];
+  const recent = training.checkpoints.slice(-5);
+  if (recent.length < 5 || recent.filter((checkpoint) => checkpoint.accuracy === 1).length >= 2 || training.currentTargetCount <= 1) return training;
+  const nextCount = training.currentTargetCount - 1;
+  const nextIndex = TARGET_COUNT_STEPS.findIndex((count) => count === nextCount);
+  const newInterval = CHECKPOINT_INTERVALS[nextCount];
   return {
     ...training,
-    targetCountStepIndex: prevIndex,
-    currentTargetCount: newCount,
+    targetCountStepIndex: nextIndex >= 0 ? nextIndex : training.targetCountStepIndex,
+    currentTargetCount: nextCount,
     checkpointInterval: newInterval?.max ?? 5,
     consecutiveLowAccuracyCheckpoints: 0,
   };
@@ -282,10 +251,20 @@ export function evaluateCheckpointWithCards(
   training: ObserverMemoryTrainingState,
   allCardsById: Record<string, Card>,
 ): MemoryCheckpointResult {
-  const correctAnswers = calculateCorrectAnswers(
-    training.visibleTargetCardIds,
-    allCardsById,
-    training.targetRanks,
+  const userHand = training.observerHandCardIds
+    .map((cardId) => allCardsById[cardId])
+    .filter((card): card is Card => Boolean(card));
+  const playedCards = training.relevantEvents
+    .filter((event) => event.type === "CARD_PLAYED")
+    .flatMap((event) => event.cardIds.map((cardId) => allCardsById[cardId]))
+    .filter((card): card is Card => Boolean(card));
+  const remaining = calculateRemainingTargetCounts(
+    training.targetRanks.map((rank) => rank === 16 || rank === 17 ? "JOKER" : rank),
+    userHand,
+    playedCards,
+  );
+  const correctAnswers = Object.fromEntries(
+    training.targetRanks.map((rank) => [String(rank), remaining[String(rank === 16 || rank === 17 ? "JOKER" : rank)] ?? 0]),
   );
   const correctRanks: CardRank[] = [];
   const incorrectRanks: CardRank[] = [];
@@ -357,6 +336,15 @@ export function createInitialTrainingState(
     lastProcessedHistoryLength: 0,
     observationTimerActive: false,
     sessionTimeExpired: false,
+    multiplier: 1,
+    multiplierResults: [],
+    sessionClock: {
+      startedAt: Date.now(),
+      elapsedMs: 0,
+      pausedAt: null,
+      durationMs: (debug ? DEBUG_DURATION_MINUTES : DEFAULT_DURATION_MINUTES) * 60_000,
+    },
+    targetProgress: createInitialTargetProgress(levelRank),
   };
 }
 

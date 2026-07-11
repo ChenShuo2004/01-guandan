@@ -35,6 +35,7 @@ interface GameArenaProps {
   fastForward?: boolean;
   onObserverStateChange?: (state: GameEngineState) => void;
   onDealComplete?: () => void;
+  onObserverPauseChange?: (paused: boolean) => void;
 }
 
 export function GameArena({
@@ -42,7 +43,8 @@ export function GameArena({
   observerPaused = false,
   fastForward = false,
   onObserverStateChange,
-  onDealComplete
+  onDealComplete,
+  onObserverPauseChange,
 }: GameArenaProps) {
   const router = useRouter();
   const arenaRef = useRef<HTMLElement | null>(null);
@@ -502,7 +504,11 @@ export function GameArena({
   }
 
   function togglePause() {
-    setIsPaused((paused) => !paused);
+    setIsPaused((paused) => {
+      const next = !paused;
+      onObserverPauseChange?.(next);
+      return next;
+    });
   }
 
   const toggleFullscreen = useCallback(async () => {

@@ -1,4 +1,4 @@
-import { type Card, NORMAL_RANKS, SUITS, sortCards } from "@/lib/guandan/card";
+import { type Card, NORMAL_RANKS, SUITS, sortCards } from "./card.ts";
 
 export function createDeck(): Card[] {
   const cards: Card[] = [];

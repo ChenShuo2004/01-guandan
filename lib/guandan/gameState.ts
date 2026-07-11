@@ -82,7 +82,7 @@ const initialCoachFeedback: CoachFeedback = {
   suggestion: "优先处理散牌，保留炸弹和关键对子。"
 };
 
-export function createInitialGameState(seed = 20260708): GameEngineState {
+export function createInitialGameState(seed = Date.now()): GameEngineState {
   const deck = shuffleDeck(createDeck(), seed);
   const hands = dealCards(deck, 4);
   const levelRank: CardRank = 15;
