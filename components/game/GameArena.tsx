@@ -756,6 +756,8 @@ export function GameArena({
           {!isDealLocked ? (
             <>
               <HandCards
+                arrangeGroups={restoreEnabled}
+                arrangementLevelRank={state.levelRank}
                 cards={displayedUserCards}
                 disabled={observerMode || !isUserTurn || isDealLocked}
                 invalidCardIds={state.invalidCardIds}

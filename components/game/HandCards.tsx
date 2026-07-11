@@ -1,7 +1,7 @@
 "use client";
 
 import { CardHand } from "@/components/game/CardHand";
-import type { Card } from "@/lib/guandan/card";
+import type { Card, CardRank } from "@/lib/guandan/card";
 
 interface HandCardsProps {
   cards: Card[];
@@ -9,6 +9,8 @@ interface HandCardsProps {
   invalidCardIds?: string[];
   invalidPulseKey?: number;
   levelRank?: string;
+  arrangementLevelRank?: CardRank;
+  arrangeGroups?: boolean;
   compact?: boolean;
   cardScale?: number;
   sortPulseKey?: number;
@@ -26,6 +28,8 @@ export function HandCards({
   invalidCardIds = [],
   invalidPulseKey = 0,
   levelRank = "10",
+  arrangementLevelRank,
+  arrangeGroups = false,
   compact = false,
   cardScale = 1,
   sortPulseKey = 0,
@@ -50,6 +54,8 @@ export function HandCards({
   return (
     <CardHand
       cards={cards}
+      arrangementLevelRank={arrangementLevelRank}
+      arrangeGroups={arrangeGroups}
       cardScale={cardScale}
       compact={compact}
       disabled={disabled}

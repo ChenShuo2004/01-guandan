@@ -70,13 +70,17 @@ const rightTypePower: Record<CardGroupType, number> = {
 };
 
 export function arrangeCards(cards: Card[], levelRank: CardRank): Card[] {
+  return arrangeCardGroups(cards, levelRank).flatMap((group) => group.cards);
+}
+
+export function arrangeCardGroups(cards: Card[], levelRank: CardRank): CardGroup[] {
   const groups = detectGroups(cards, levelRank);
 
   return [
     ...sortLeft(groups.filter((group) => group.zone === "left")),
     ...sortMiddle(groups.filter((group) => group.zone === "middle")),
     ...sortRight(groups.filter((group) => group.zone === "right"))
-  ].flatMap((group) => group.cards);
+  ];
 }
 
 export function restoreCards(cards: Card[], originalOrder: string[]): Card[] {
@@ -128,6 +132,8 @@ export function sortLeft(groups: CardGroup[]): CardGroup[] {
 
 export function sortMiddle(groups: CardGroup[]): CardGroup[] {
   return [...groups].sort((a, b) => {
+    const jokerDelta = Number(hasJoker(b.cards)) - Number(hasJoker(a.cards));
+    if (jokerDelta !== 0) return jokerDelta;
     const typeDelta = middleTypePower[b.type] - middleTypePower[a.type];
     if (typeDelta !== 0) return typeDelta;
     return b.power - a.power || maxSuitPower(b.cards) - maxSuitPower(a.cards);
@@ -355,6 +361,10 @@ function highRank(cards: Card[]) {
 
 function maxSuitPower(cards: Card[]) {
   return Math.max(...cards.map((card) => suitPower[card.suit]));
+}
+
+function hasJoker(cards: Card[]) {
+  return cards.some((card) => card.isJoker);
 }
 
 function isStraightRank(rank: CardRank): boolean {

@@ -6,11 +6,14 @@ import { motion } from "framer-motion";
 import { CardGroup } from "@/components/game/CardGroup";
 import type { CardHandGroup } from "@/lib/cards/cardSort";
 import { groupCardsForHand, sortCardsForHand } from "@/lib/cards/cardSort";
-import type { Card } from "@/lib/guandan/card";
+import type { Card, CardRank } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
+import { arrangeCardGroups, type CardGroup as ArrangedCardGroup } from "@/utils/cardArrange";
 
 interface CardHandProps {
   cards: Card[];
+  arrangementLevelRank?: CardRank;
+  arrangeGroups?: boolean;
   selectedCardIds: string[];
   invalidCardIds?: string[];
   invalidPulseKey?: number;
@@ -33,6 +36,8 @@ interface ArenaCardMetrics {
 
 export function CardHand({
   cards,
+  arrangementLevelRank,
+  arrangeGroups = false,
   selectedCardIds,
   invalidCardIds = [],
   invalidPulseKey = 0,
@@ -45,7 +50,10 @@ export function CardHand({
   variant = "default"
 }: CardHandProps) {
   const groups = useMemo(() => groupCardsForHand(cards), [cards]);
-  const arenaGroups = useMemo(() => groupCardsForArena(cards), [cards]);
+  const arenaGroups = useMemo(
+    () => groupCardsForArena(cards, arrangeGroups, arrangementLevelRank),
+    [arrangeGroups, arrangementLevelRank, cards]
+  );
   const selectedSet = useMemo(() => new Set(selectedCardIds), [selectedCardIds]);
   const invalidSet = useMemo(() => new Set(invalidCardIds), [invalidCardIds]);
   const selectedIdsRef = useRef(selectedCardIds);
@@ -283,7 +291,11 @@ export function CardHand({
   );
 }
 
-function groupCardsForArena(cards: Card[]): CardHandGroup[] {
+function groupCardsForArena(cards: Card[], arrangeGroups: boolean, levelRank?: CardRank): CardHandGroup[] {
+  if (arrangeGroups && levelRank) {
+    return arrangeCardGroups(cards, levelRank).map(toArenaGroup);
+  }
+
   const groups: Card[][] = [];
 
   for (const card of cards) {
@@ -307,4 +319,42 @@ function groupCardsForArena(cards: Card[]): CardHandGroup[] {
       cards: groupCards
     } satisfies CardHandGroup;
   });
+}
+
+function toArenaGroup(group: ArrangedCardGroup): CardHandGroup {
+  const type =
+    group.type === "bomb" || group.type === "fourJokers"
+      ? "bomb"
+      : group.type === "triple"
+        ? "triple"
+        : group.type === "pair"
+          ? "pair"
+          : group.type === "single"
+            ? "single"
+            : "straight";
+
+  return {
+    id: `arena-${group.type}-${group.cards.map((card) => card.id).join("-")}`,
+    type,
+    label: groupLabel(group),
+    power: group.power,
+    cards: group.cards
+  };
+}
+
+function groupLabel(group: ArrangedCardGroup) {
+  const labels: Record<ArrangedCardGroup["type"], string> = {
+    fourJokers: "天王炸",
+    straightFlush: "同花顺",
+    bomb: `${group.cards.length}炸`,
+    steel: "钢板",
+    plane: "飞机",
+    straight: "顺子",
+    tripleWithPair: "三带二",
+    triple: "三张",
+    pair: "对子",
+    single: "单张"
+  };
+
+  return labels[group.type];
 }
