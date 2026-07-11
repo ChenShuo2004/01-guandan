@@ -49,6 +49,7 @@ export function CardGroup({
     const cardWidth = cardDimensions?.width ?? Math.round(baseSize.width * sizeScale);
     const cardHeight = cardDimensions?.height ?? Math.round(baseSize.height * sizeScale);
     const stackStep = requestedStackStep ?? Math.max(24, Math.round(cardHeight * 0.34));
+
     return (
       <div
         className={cn(

@@ -7,7 +7,7 @@
     "dev:frontend": "node scripts/dev-frontend.mjs",
     "dev:backend": "node backend/server.mjs",
     "build": "next build",
-    "test": "node --test --experimental-strip-types lib/memory/*.test.ts",
+    "test": "node --test --experimental-strip-types lib/memory/*.test.ts utils/*.test.ts",
     "lint": "eslint . --max-warnings=0",
     "typecheck": "tsc --noEmit"
   },

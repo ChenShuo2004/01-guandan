@@ -173,7 +173,8 @@ export default function SplitText({
       style={{
         textAlign,
         overflow,
-        display: "inline-block",
+        display: "block",
+        width: "100%",
         whiteSpace: "normal",
         wordWrap: "break-word",
         willChange: "transform, opacity"

@@ -38,6 +38,8 @@ type GameAction =
   | { type: "clear-round-actions" }
   | { type: "ai-action" };
 
+const INITIAL_GAME_SEED = 20260711;
+
 function gameReducer(state: GameEngineState, action: GameAction): GameEngineState {
   switch (action.type) {
     case "restart":
@@ -362,7 +364,7 @@ export function useGameStore(observerMode = false, initialLevelRank: CardRank = 
   const [state, dispatch] = useReducer(
     gameReducer,
     initialLevelRank,
-    (levelRank) => createInitialGameState(Date.now(), levelRank),
+    (levelRank) => createInitialGameState(INITIAL_GAME_SEED, levelRank),
   );
   const currentPlayer = getCurrentPlayer(state);
   const userPlayer = state.players.find((player) => player.id === "player");

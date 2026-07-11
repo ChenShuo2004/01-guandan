@@ -1,4 +1,4 @@
-import type { Card, CardRank, CardSuit } from "@/lib/guandan/card";
+import type { Card, CardRank, CardSuit } from "../lib/guandan/card";
 
 export type CardGroupType =
   | "fourJokers"
@@ -70,7 +70,10 @@ const rightTypePower: Record<CardGroupType, number> = {
 };
 
 export function arrangeCards(cards: Card[], levelRank: CardRank): Card[] {
-  return arrangeCardGroups(cards, levelRank).flatMap((group) => group.cards);
+  const groups = arrangeCardGroups(cards, levelRank);
+  const arranged = groups.flatMap((group) => group.cards);
+  validateArrangement(cards, arranged, groups, levelRank);
+  return arranged;
 }
 
 export function arrangeCardGroups(cards: Card[], levelRank: CardRank): CardGroup[] {
@@ -85,6 +88,25 @@ export function arrangeCardGroups(cards: Card[], levelRank: CardRank): CardGroup
 
 export function restoreCards(cards: Card[], originalOrder: string[]): Card[] {
   const byId = new Map(cards.map((card) => [card.id, card]));
+  const currentIds = cards.map((card) => card.id);
+  const snapshotIds = [...originalOrder];
+  const currentSet = new Set(currentIds);
+  const snapshotSet = new Set(snapshotIds);
+
+  if (
+    currentIds.length !== snapshotIds.length ||
+    currentSet.size !== currentIds.length ||
+    snapshotSet.size !== snapshotIds.length ||
+    currentSet.size !== snapshotSet.size ||
+    [...currentSet].some((id) => !snapshotSet.has(id))
+  ) {
+    reportArrangeError("恢复快照与当前手牌实体集合不一致", {
+      currentIds,
+      originalOrder
+    });
+    return [...cards];
+  }
+
   const restoredIds = new Set<string>();
   const restored = originalOrder
     .map((id) => byId.get(id))
@@ -103,9 +125,9 @@ export function detectGroups(cards: Card[], _levelRank: CardRank): CardGroup[] {
   const groups: CardGroup[] = [];
 
   extractFourJokers(remaining, groups);
+  extractStraightFlushes(remaining, groups);
   extractBombsByMinimumSize(remaining, groups, 6);
   extractBombsByMinimumSize(remaining, groups, 5);
-  extractStraightFlushes(remaining, groups);
   extractBombsByMinimumSize(remaining, groups, 4);
   extractSteel(remaining, groups);
   extractPlane(remaining, groups);
@@ -126,17 +148,23 @@ export function sortLeft(groups: CardGroup[]): CardGroup[] {
     if (sizeDelta !== 0) return sizeDelta;
     const powerDelta = b.power - a.power;
     if (powerDelta !== 0) return powerDelta;
-    return maxSuitPower(b.cards) - maxSuitPower(a.cards);
+    return maxSuitPower(b.cards) - maxSuitPower(a.cards) || compareGroupsStable(a, b);
   });
 }
 
 export function sortMiddle(groups: CardGroup[]): CardGroup[] {
   return [...groups].sort((a, b) => {
-    const jokerDelta = Number(hasJoker(b.cards)) - Number(hasJoker(a.cards));
-    if (jokerDelta !== 0) return jokerDelta;
-    const typeDelta = middleTypePower[b.type] - middleTypePower[a.type];
-    if (typeDelta !== 0) return typeDelta;
-    return b.power - a.power || maxSuitPower(b.cards) - maxSuitPower(a.cards);
+    const aIsSimple = a.type === "pair" || a.type === "single";
+    const bIsSimple = b.type === "pair" || b.type === "single";
+
+    if (aIsSimple && bIsSimple) {
+      return compareGroupsByPower(a, b) || compareSimpleGroupType(a, b) || compareGroupsStable(a, b);
+    }
+
+    if (aIsSimple !== bIsSimple) return aIsSimple ? -1 : 1;
+
+    const typeDelta = (middleTypePower[b.type] ?? 0) - (middleTypePower[a.type] ?? 0);
+    return typeDelta || compareGroupsByPower(a, b) || compareGroupsStable(a, b);
   });
 }
 
@@ -144,7 +172,7 @@ export function sortRight(groups: CardGroup[]): CardGroup[] {
   return [...groups].sort((a, b) => {
     const typeDelta = rightTypePower[b.type] - rightTypePower[a.type];
     if (typeDelta !== 0) return typeDelta;
-    return b.power - a.power || b.cards.length - a.cards.length;
+    return b.power - a.power || b.cards.length - a.cards.length || compareGroupsStable(a, b);
   });
 }
 
@@ -257,7 +285,7 @@ function extractTripleWithPairs(remaining: Card[], groups: CardGroup[]) {
       ...sortByRankSuit(pair[1]).slice(0, 2)
     ];
     removeCards(remaining, cards);
-    groups.push({ type: "tripleWithPair", zone: "right", cards, power: triple[0] });
+    groups.push({ type: "tripleWithPair", zone: "middle", cards, power: triple[0] });
     found = true;
   }
 }
@@ -270,7 +298,8 @@ function extractTriples(remaining: Card[], groups: CardGroup[]) {
   for (const [rank, rankCards] of triples) {
     const cards = sortByRankSuit(rankCards).slice(0, 3);
     removeCards(remaining, cards);
-    groups.push({ type: "triple", zone: "middle", cards, power: rank });
+    groups.push({ type: "pair", zone: "middle", cards: cards.slice(0, 2), power: rank });
+    groups.push({ type: "single", zone: "middle", cards: cards.slice(2), power: rank });
   }
 }
 
@@ -338,11 +367,11 @@ function firstCardByRank(cards: Card[], rank: CardRank) {
 }
 
 function sortRunCards(cards: Card[]) {
-  return [...cards].sort((a, b) => b.rank - a.rank || suitPower[b.suit] - suitPower[a.suit] || a.deckIndex - b.deckIndex);
+  return [...cards].sort(compareCardsDesc);
 }
 
 function sortByRankSuit(cards: Card[]) {
-  return [...cards].sort((a, b) => b.rank - a.rank || suitPower[b.suit] - suitPower[a.suit] || a.deckIndex - b.deckIndex);
+  return [...cards].sort(compareCardsDesc);
 }
 
 function removeCards(remaining: Card[], cards: Card[]) {
@@ -363,14 +392,72 @@ function maxSuitPower(cards: Card[]) {
   return Math.max(...cards.map((card) => suitPower[card.suit]));
 }
 
-function hasJoker(cards: Card[]) {
-  return cards.some((card) => card.isJoker);
-}
-
 function isStraightRank(rank: CardRank): boolean {
   return rank < 15;
 }
 
 function isJokerRank(rank: CardRank): boolean {
   return rank >= 16;
+}
+
+function compareCardsDesc(a: Card, b: Card) {
+  return b.rank - a.rank || suitPower[b.suit] - suitPower[a.suit] || a.deckIndex - b.deckIndex || compareCardIds(a.id, b.id);
+}
+
+function compareCardIds(a: string, b: string) {
+  return a === b ? 0 : a < b ? -1 : 1;
+}
+
+function compareGroupsByPower(a: CardGroup, b: CardGroup) {
+  return b.power - a.power || maxSuitPower(b.cards) - maxSuitPower(a.cards);
+}
+
+function compareSimpleGroupType(a: CardGroup, b: CardGroup) {
+  if (a.type === b.type) return 0;
+  return a.type === "pair" ? -1 : 1;
+}
+
+function compareGroupsStable(a: CardGroup, b: CardGroup) {
+  const aId = a.cards.map((card) => card.id).sort(compareCardIds).join("|");
+  const bId = b.cards.map((card) => card.id).sort(compareCardIds).join("|");
+  return compareCardIds(aId, bId);
+}
+
+function validateArrangement(cards: Card[], arranged: Card[], groups: CardGroup[], levelRank: CardRank) {
+  const originalIds = cards.map((card) => card.id);
+  const arrangedIds = arranged.map((card) => card.id);
+  const originalSet = new Set(originalIds);
+  const arrangedSet = new Set(arrangedIds);
+  const duplicateIds = arrangedIds.filter((id, index) => arrangedIds.indexOf(id) !== index);
+  const missingIds = originalIds.filter((id) => !arrangedSet.has(id));
+  const unusedIds = arrangedIds.filter((id) => !originalSet.has(id));
+  const sameCardSet =
+    originalIds.length === arrangedIds.length &&
+    originalSet.size === originalIds.length &&
+    arrangedSet.size === arrangedIds.length &&
+    missingIds.length === 0 &&
+    unusedIds.length === 0;
+
+  if (!sameCardSet || duplicateIds.length > 0) {
+    reportArrangeError("理牌结果实体牌校验失败", {
+      originalCount: cards.length,
+      arrangedCount: arranged.length,
+      originalIds,
+      arrangedIds,
+      groups: groups.map((group) => ({
+        type: group.type,
+        cardIds: group.cards.map((card) => card.id)
+      })),
+      duplicateIds,
+      unusedIds,
+      missingIds,
+      levelRank
+    });
+  }
+}
+
+function reportArrangeError(message: string, details: Record<string, unknown>) {
+  if (process.env.NODE_ENV === "development") {
+    console.error(`[arrange-hand] ${message}`, details);
+  }
 }

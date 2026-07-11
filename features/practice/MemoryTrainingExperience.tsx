@@ -104,16 +104,6 @@ export function MemoryTrainingExperience() {
     };
   }, [training.sessionClock, training.sessionTimeExpired]);
 
-  // ── Helper: start hand observation timer ───────────────────────────────────────
-  const startHandObservationTimer = useCallback(() => {
-    const t = trainingRef.current;
-    const duration = OBSERVATION_TIMES_MS[t.currentTargetCount] ?? 3000;
-    if (observationTimerRef.current) window.clearTimeout(observationTimerRef.current);
-    observationTimerRef.current = window.setTimeout(() => {
-      setTraining(prev => ({ ...prev, phase: "AI_PLAYING" }));
-    }, duration);
-  }, []);
-
   // ── Initialization (mount only) ────────────────────────────────────────────────
   useEffect(() => {
     const initial = createInitialTrainingState({ debugMode: false, levelRank: 15 });
@@ -131,12 +121,16 @@ export function MemoryTrainingExperience() {
     setShowCheckpoint(next.phase === "ANSWERING");
     setShowFeedback(next.phase === "SHOWING_FEEDBACK" && Boolean(next.pendingCheckpoint));
     setShowReport(next.phase === "SESSION_FINISHED" || next.sessionTimeExpired);
+    const observationTimer = observationTimerRef.current;
+    const sessionTimer = sessionTimerRef.current;
+    const checkpointTransitionTimer = checkpointTransitionTimerRef.current;
+    const handSettlementTimer = handSettlementTimerRef.current;
 
     return () => {
-      if (observationTimerRef.current) window.clearTimeout(observationTimerRef.current);
-      if (sessionTimerRef.current) window.clearTimeout(sessionTimerRef.current);
-      if (checkpointTransitionTimerRef.current) window.clearTimeout(checkpointTransitionTimerRef.current);
-      if (handSettlementTimerRef.current) window.clearTimeout(handSettlementTimerRef.current);
+      if (observationTimer) window.clearTimeout(observationTimer);
+      if (sessionTimer) window.clearTimeout(sessionTimer);
+      if (checkpointTransitionTimer) window.clearTimeout(checkpointTransitionTimer);
+      if (handSettlementTimer) window.clearTimeout(handSettlementTimer);
     };
   }, []);
 
@@ -174,26 +168,20 @@ export function MemoryTrainingExperience() {
 
     setTraining(prev => ({
       ...prev,
-      phase: "OBSERVING_INITIAL_HAND",
+      phase: "ANSWERING",
       visibleTargetCardIds: visibleIds,
       allCardsById,
       observerHandCardIds: observerHand.map(c => c.id),
       relevantEvents: initialEvent ? [initialEvent] : [],
     }));
-
-    // DealAnimation has its own lock. The memory phase must advance independently;
-    // otherwise a slow or interrupted deal callback can leave AI_PLAYING unreachable.
-    startHandObservationTimer();
-  }, [startHandObservationTimer]);
+    setShowCheckpoint(true);
+  }, []);
 
   // ── Handle deal completion ─────────────────────────────────────────────────────
   const handleDealComplete = useCallback(() => {
     if (dealCompleteRef.current) return;
     dealCompleteRef.current = true;
-    if (phaseRef.current === "OBSERVING_INITIAL_HAND") {
-      startHandObservationTimer();
-    }
-  }, [startHandObservationTimer]);
+  }, []);
 
   // ── Checkpoint trigger ─────────────────────────────────────────────────────────
   const triggerCheckpoint = useCallback(() => {

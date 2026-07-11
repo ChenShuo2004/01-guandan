@@ -9,6 +9,7 @@ import { buildCounterHint, CardCounter } from "@/components/game/CardCounter";
 import { DealAnimation } from "@/components/game/DealAnimation";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
+import { MemoryMethodsLibrary } from "@/components/memory/MemoryMethodsLibrary";
 import { useGameStore } from "@/store/gameStore";
 import { getRankLabel, sortCards, type Card, type CardRank } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
@@ -137,6 +138,27 @@ export function GameArena({
   }, [onObserverStateChange, state]);
 
   useEffect(() => {
+    if (!restoreEnabled || !originalHandOrderRef.current || !userPlayer) return;
+
+    const currentIds = userPlayer.hand.map((card) => card.id);
+    const snapshotIds = originalHandOrderRef.current;
+    const currentSet = new Set(currentIds);
+    const snapshotSet = new Set(snapshotIds);
+    const snapshotStillMatches =
+      currentIds.length === snapshotIds.length &&
+      currentSet.size === currentIds.length &&
+      snapshotSet.size === snapshotIds.length &&
+      currentSet.size === snapshotSet.size &&
+      [...currentSet].every((id) => snapshotSet.has(id));
+
+    if (!snapshotStillMatches) {
+      originalHandOrderRef.current = null;
+      setRestoreEnabled(false);
+      setSmartSortActive(false);
+    }
+  }, [restoreEnabled, userPlayer]);
+
+  useEffect(() => {
     if (state.history.length <= soundHistoryLengthRef.current) return;
     const latest = state.history[state.history.length - 1];
     soundHistoryLengthRef.current = state.history.length;
@@ -187,6 +209,7 @@ export function GameArena({
 
     const currentHand = userPlayer?.hand ?? [];
     if (currentHand.length === 0) return;
+    if (originalHandOrderRef.current) return;
 
     setIsArranging(true);
     originalHandOrderRef.current = displayedUserCards.map((card) => card.id);
@@ -663,6 +686,16 @@ export function GameArena({
           phase={phase}
       />
 
+      <button
+        aria-label="打开训练帮助"
+        className="training-help-button absolute left-5 top-1/2 z-[92] grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-white/70 bg-[#12395a]/78 text-white shadow-[0_12px_28px_rgba(8,53,87,0.28)] backdrop-blur-md transition hover:scale-105 hover:bg-[#12395a] active:scale-95 max-lg:left-3 max-lg:h-10 max-lg:w-10"
+        onClick={() => setActivePanel("rules")}
+        title="训练帮助"
+        type="button"
+      >
+        <span className="text-2xl font-black leading-none max-lg:text-xl">?</span>
+      </button>
+
       {observerMode ? (
         <button
           aria-label="返回训练列表"
@@ -750,8 +783,8 @@ export function GameArena({
         </div> : null}
 
         <section className={cn(
-          "training-hand-dock absolute left-3 right-3 z-[70] min-w-0 lg:left-[120px] lg:right-[120px] 2xl:left-[150px] 2xl:right-[150px]",
-          observerMode ? "bottom-[8%]" : "bottom-3"
+          "training-hand-dock absolute left-3 right-3 z-[70] min-w-0 lg:left-[100px] lg:right-[100px] 2xl:left-[120px] 2xl:right-[120px]",
+          observerMode ? "bottom-[6%]" : "bottom-2"
         )}>
           {!isDealLocked ? (
             <>
@@ -826,6 +859,7 @@ export function GameArena({
 
       <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "rules"} title="训练规则">
         <div className="space-y-4 text-base font-bold leading-7 text-[#24557a]">
+          <MemoryMethodsLibrary compact />
           <RuleBlock title="掼蛋基础规则" items={["四人两两组队，目标是尽快出完手牌。", "轮到你时必须出同牌型且更大的牌，炸弹可压普通牌型。", "一圈都不出时，牌权回到上一位出牌者。"]} />
           <RuleBlock title="牌型说明" items={["单牌、对子、三张、三带二、顺子是基础牌型。", "四张及以上同点数为炸弹，四王炸最大。", "顺子不包含 2 和大小王。"]} />
           <RuleBlock title="级牌说明" items={["本局级牌会在牌桌顶部显示。", "手牌中的级牌使用金色边框和“级”标签标出。", "做判断时先确认级牌能否改变牌权。"]} />
