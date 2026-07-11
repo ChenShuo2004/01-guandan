@@ -457,7 +457,6 @@ export function MemoryTrainingExperience() {
         currentAnswers={training.currentAnswers}
         currentPhase={training.phase}
         currentTargetRanks={training.targetRanks}
-        overallAccuracy={Math.round(training.overallAccuracy * 100)}
         visible
       />
 

@@ -32,7 +32,6 @@ interface MemoryAnswerHistoryPanelProps {
   currentPhase: string;
   currentTargetRanks: CardRank[];
   currentAnswers: Record<string, number>;
-  overallAccuracy: number;
   visible: boolean;
 }
 
@@ -41,7 +40,6 @@ export function MemoryAnswerHistoryPanel({
   currentPhase,
   currentTargetRanks,
   currentAnswers,
-  overallAccuracy,
   visible,
 }: MemoryAnswerHistoryPanelProps) {
   const [expanded, setExpanded] = useState(true);
@@ -94,10 +92,6 @@ export function MemoryAnswerHistoryPanel({
 
           {!isAnswering && checkpoints.length > 0 ? (
             <div className="mt-3 space-y-2">
-              <div className="flex items-center justify-between text-xs text-white/60">
-                <span>总体胜率</span>
-                <span className="font-black text-[#8ff0c7]">{overallAccuracy}%</span>
-              </div>
               {[...checkpoints].reverse().map((cp, idx) => (
                 <div
                   className={cn(
