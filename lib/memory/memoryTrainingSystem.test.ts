@@ -3,6 +3,7 @@ import test from "node:test";
 import { createDeck } from "../guandan/deck.ts";
 import {
   applyCheckpointResult,
+  advanceLevelRank,
   calculateRemainingTargetCounts,
   createInitialTargetProgress,
   createSessionClock,
@@ -71,6 +72,11 @@ test("multiplier halves on mistakes and remains bounded", () => {
   assert.equal(updateMultiplier(16, false), 8);
   assert.equal(updateMultiplier(1, false), 1);
   assert.equal(updateMultiplier(4, true), 4);
+});
+
+test("level rank advances from 2 through A and wraps back to 3", () => {
+  assert.equal(advanceLevelRank(15), 3);
+  assert.equal(advanceLevelRank(14), 15);
 });
 
 test("tribute can be resisted and otherwise returns the winner rank", () => {

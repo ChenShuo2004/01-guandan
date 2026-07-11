@@ -27,6 +27,7 @@ import {
   type MemoryRelevantEvent,
 } from "@/lib/memory/ObserverMemoryTraining";
 import {
+  advanceLevelRank,
   applyCheckpointResult,
   loadTrainingState,
   maybeIncreaseMultiplier,
@@ -207,7 +208,10 @@ export function MemoryTrainingExperience() {
     setTraining(prev => ({ ...prev, phase: "HAND_SETTLEMENT" }));
 
     handSettlementTimerRef.current = window.setTimeout(() => {
-      let next = { ...trainingRef.current };
+      let next = {
+        ...trainingRef.current,
+        levelRank: advanceLevelRank(trainingRef.current.levelRank),
+      };
 
       next = { ...next, bestTargetCount: Math.max(next.bestTargetCount, next.currentTargetCount) };
 
@@ -387,6 +391,7 @@ export function MemoryTrainingExperience() {
       <GameArena
         key={arenaKey}
         observerMode
+        initialLevelRank={training.levelRank}
         observerPaused={observerPaused}
         onObserverStateChange={handleStateChange}
         onDealComplete={handleDealComplete}

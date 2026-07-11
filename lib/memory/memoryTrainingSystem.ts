@@ -163,7 +163,7 @@ export function maybeIncreaseMultiplier(
 }
 
 export function advanceLevelRank(levelRank: CardRank): CardRank {
-  return levelRank >= 14 ? 3 : (levelRank + 1) as CardRank;
+  return levelRank >= 15 ? 3 : (levelRank + 1) as CardRank;
 }
 
 export function consumeCards(progress: MemoryGameProgress, count: number): MemoryGameProgress {

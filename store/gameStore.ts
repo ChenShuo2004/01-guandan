@@ -7,7 +7,7 @@ import { sortCardsForHand } from "@/lib/cards/cardSort";
 import { analyzeCoachTip, analyzeHint } from "@/lib/coach/CoachAnalyzer";
 import type { CoachFeedback } from "@/lib/coach/coachTypes";
 import { detectMistakeAfterUserPlay } from "@/lib/coach/MistakeDetector";
-import type { Card } from "@/lib/guandan/card";
+import type { Card, CardRank } from "@/lib/guandan/card";
 import { sortCards } from "@/lib/guandan/card";
 import { clearSelection, playCards, passTurn, toggleSelectedCard } from "@/lib/guandan/gameEngine";
 import {
@@ -41,7 +41,7 @@ type GameAction =
 function gameReducer(state: GameEngineState, action: GameAction): GameEngineState {
   switch (action.type) {
     case "restart":
-      return createInitialGameState(Date.now());
+      return createInitialGameState(Date.now(), state.levelRank);
 
     case "start-training": {
       const turnAction: TurnActionState = {
@@ -358,8 +358,12 @@ function applyCoachFeedback(state: GameEngineState, feedback: CoachFeedback): Ga
   };
 }
 
-export function useGameStore(observerMode = false) {
-  const [state, dispatch] = useReducer(gameReducer, undefined, createInitialGameState);
+export function useGameStore(observerMode = false, initialLevelRank: CardRank = 15) {
+  const [state, dispatch] = useReducer(
+    gameReducer,
+    initialLevelRank,
+    (levelRank) => createInitialGameState(Date.now(), levelRank),
+  );
   const currentPlayer = getCurrentPlayer(state);
   const userPlayer = state.players.find((player) => player.id === "player");
   const selectedCardIds = useMemo(

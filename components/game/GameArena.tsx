@@ -10,7 +10,7 @@ import { DealAnimation } from "@/components/game/DealAnimation";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
 import { useGameStore } from "@/store/gameStore";
-import { getRankLabel, sortCardsAscending, type Card } from "@/lib/guandan/card";
+import { getRankLabel, sortCardsAscending, type Card, type CardRank } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
 import type { GameEngineState, TrainingPhase } from "@/lib/guandan/gameState";
 import type { ArenaPlayer } from "@/types/game";
@@ -31,6 +31,7 @@ const defaultSettings: ArenaSettings = {
 
 interface GameArenaProps {
   observerMode?: boolean;
+  initialLevelRank?: CardRank;
   observerPaused?: boolean;
   fastForward?: boolean;
   onObserverStateChange?: (state: GameEngineState) => void;
@@ -40,6 +41,7 @@ interface GameArenaProps {
 
 export function GameArena({
   observerMode = false,
+  initialLevelRank = 15,
   observerPaused = false,
   fastForward = false,
   onObserverStateChange,
@@ -91,7 +93,7 @@ export function GameArena({
     restart,
     sortHand,
     restoreHand
-  } = useGameStore(observerMode);
+  } = useGameStore(observerMode, initialLevelRank);
 
   const levelRankLabel = getRankLabel(state.levelRank);
   const cardCounterHint = useMemo(
