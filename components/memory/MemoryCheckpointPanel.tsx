@@ -66,10 +66,10 @@ export function MemoryCheckpointPanel({
   }
 
   return (
-    <div ref={overlayRef} className="memory-checkpoint-overlay fixed inset-0 z-[180] grid place-items-center bg-[#030318]/80 px-4 backdrop-blur-[10px] sm:px-6">
+    <div ref={overlayRef} className="memory-checkpoint-overlay fixed inset-0 z-[180] grid place-items-center overflow-hidden bg-[#030318]/80 px-4 backdrop-blur-[10px] sm:px-6">
       <section
         ref={panelRef}
-        className="memory-checkpoint-panel relative isolate w-full max-w-[520px] max-h-[86vh] overflow-y-auto rounded-[30px] border border-[#765cff]/55 p-6 text-white shadow-[0_0_0_1px_rgba(130,102,255,0.12),0_28px_80px_rgba(0,0,0,0.58),0_0_48px_rgba(74,36,255,0.28),inset_0_1px_0_rgba(255,255,255,0.12)] sm:p-8"
+        className="memory-checkpoint-panel relative isolate min-w-0 w-full max-w-[520px] max-h-[86vh] overflow-x-hidden overflow-y-auto rounded-[30px] border border-[#765cff]/55 p-6 text-white shadow-[0_0_0_1px_rgba(130,102,255,0.12),0_28px_80px_rgba(0,0,0,0.58),0_0_48px_rgba(74,36,255,0.28),inset_0_1px_0_rgba(255,255,255,0.12)] sm:p-8"
         style={{
           background:
             "radial-gradient(circle at 50% 0%, rgba(75, 40, 214, 0.34), transparent 38%), linear-gradient(145deg, rgba(21, 14, 74, 0.96), rgba(5, 8, 43, 0.94) 58%, rgba(19, 13, 71, 0.96))",
