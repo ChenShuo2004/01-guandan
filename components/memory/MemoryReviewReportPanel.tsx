@@ -25,7 +25,7 @@ export function MemoryReviewReportPanel({
 
   return (
     <div className="fixed inset-0 z-[220] grid place-items-center bg-[#071426]/88 px-5 backdrop-blur-md">
-      <section className="max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-[28px] border border-[#74dfff]/45 bg-[#0e2944] p-6 text-white shadow-2xl">
+      <section className="memory-review-report-scroll max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-[28px] border border-[#74dfff]/45 bg-[#0e2944] p-6 text-white shadow-2xl">
         <p className="text-xs font-black uppercase tracking-[0.18em] text-[#74dfff]">REVIEW REPORT</p>
         <h2 className="mt-3 text-2xl font-black">记牌训练复盘报告</h2>
         <p className="mt-2 text-sm font-bold text-white/60">本报告按答对题数 ÷ 总题数计算胜率。</p>
@@ -53,7 +53,7 @@ export function MemoryReviewReportPanel({
             <p className="text-sm font-black text-[#8de8ff]">逐局记录</p>
             <span className="text-xs font-bold text-white/45">共 {checkpoints.length} 局</span>
           </div>
-          <div className="mt-3 max-h-[min(420px,42vh)] space-y-2 overflow-y-auto pr-1">
+          <div className="memory-review-report-scroll mt-3 max-h-[min(420px,42vh)] space-y-2 overflow-y-auto pr-1">
             {checkpoints.length > 0 ? [...checkpoints].reverse().map((checkpoint, index) => {
               const checkpointId = checkpoint.id ?? `checkpoint-${checkpoints.length - index}`;
               const expanded = expandedCheckpointId === checkpointId;

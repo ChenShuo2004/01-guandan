@@ -289,6 +289,17 @@ select {
   display: none;
 }
 
+.memory-review-report-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.memory-review-report-scroll::-webkit-scrollbar {
+  display: none;
+}
+
 @media (min-width: 768px) {
   .magic-bento-section {
     grid-template-columns: repeat(2, minmax(0, 1fr));
