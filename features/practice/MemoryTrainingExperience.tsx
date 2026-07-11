@@ -301,8 +301,20 @@ export function MemoryTrainingExperience() {
 
     const t = trainingRef.current;
     checkpointTriggeredRef.current = false;
-    const withAnswers = { ...t, currentAnswers: answers };
-    const checkpoint = evaluateCheckpointWithCards(withAnswers, t.allCardsById);
+    const currentState = gameStateRef.current;
+    const currentObserverHandCardIds = currentState?.players
+      .find((player) => player.id === "player")?.hand
+      .map((card) => card.id) ?? t.observerHandCardIds;
+    const currentAllCardsById = currentState
+      ? { ...t.allCardsById, ...buildAllCardsById(currentState) }
+      : t.allCardsById;
+    const withAnswers = {
+      ...t,
+      currentAnswers: answers,
+      observerHandCardIds: currentObserverHandCardIds,
+      allCardsById: currentAllCardsById,
+    };
+    const checkpoint = evaluateCheckpointWithCards(withAnswers, currentAllCardsById);
     const allCorrect = checkpoint.incorrectRanks.length === 0;
     const targetProgress = applyCheckpointResult(t.targetProgress, allCorrect);
     const nextMultiplier = maybeIncreaseMultiplier(
