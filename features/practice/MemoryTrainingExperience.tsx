@@ -20,6 +20,7 @@ import {
   getErrorReplayEvents,
   resetForNextHand,
   buildSessionSummary,
+  calculateOverallAccuracy,
   normalizeTrainingStateForResume,
   OBSERVATION_TIMES_MS,
   TARGET_COUNT_STEPS,
@@ -317,9 +318,7 @@ export function MemoryTrainingExperience() {
       checkpoints: [...prev.checkpoints, checkpoint],
       validPlayCountSinceCheckpoint: 0,
       stageAccuracy: checkpoint.accuracy,
-      overallAccuracy: prev.checkpoints.length > 0
-        ? (prev.checkpoints.reduce((s, cp) => s + cp.accuracy, 0) + checkpoint.accuracy) / (prev.checkpoints.length + 1)
-        : checkpoint.accuracy,
+      overallAccuracy: calculateOverallAccuracy([...prev.checkpoints, checkpoint]),
       consecutiveLowAccuracyCheckpoints: checkpoint.accuracy < 0.6
         ? prev.consecutiveLowAccuracyCheckpoints + 1
         : 0,

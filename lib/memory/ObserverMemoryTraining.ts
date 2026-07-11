@@ -389,13 +389,17 @@ export interface MemorySessionSummary {
   mostMissedRank: string | null;
 }
 
+export function calculateOverallAccuracy(checkpoints: MemoryCheckpointResult[]): number {
+  const totalCorrect = checkpoints.reduce((sum, checkpoint) => sum + checkpoint.correctCount, 0);
+  const totalQuestions = checkpoints.reduce((sum, checkpoint) => sum + checkpoint.totalCount, 0);
+  return totalQuestions > 0 ? totalCorrect / totalQuestions : 0;
+}
+
 export function buildSessionSummary(
   training: ObserverMemoryTrainingState,
 ): MemorySessionSummary {
   const { checkpoints } = training;
-  const overall = checkpoints.length > 0
-    ? checkpoints.reduce((s, cp) => s + cp.accuracy, 0) / checkpoints.length
-    : 0;
+  const overall = calculateOverallAccuracy(checkpoints);
   const missCounts: Record<string, number> = {};
   for (const cp of checkpoints) {
     for (const rank of cp.incorrectRanks) {

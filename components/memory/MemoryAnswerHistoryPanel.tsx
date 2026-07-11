@@ -95,7 +95,7 @@ export function MemoryAnswerHistoryPanel({
           {!isAnswering && checkpoints.length > 0 ? (
             <div className="mt-3 space-y-2">
               <div className="flex items-center justify-between text-xs text-white/60">
-                <span>总体准确率</span>
+                <span>总体胜率</span>
                 <span className="font-black text-[#8ff0c7]">{overallAccuracy}%</span>
               </div>
               {[...checkpoints].reverse().map((cp, idx) => (
@@ -112,7 +112,7 @@ export function MemoryAnswerHistoryPanel({
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-white/60">
-                      {cp.correctCount}/{cp.totalCount} 正确
+                      本局 {cp.correctCount}/{cp.totalCount} 题
                     </span>
                     <span
                       className={cn(

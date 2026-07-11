@@ -26,7 +26,7 @@ export function MemorySessionSummaryPanel({
           <StatCard label="完成检查" value={`${summary.checkpointsCompleted} 次`} />
           <StatCard label="开始目标" value={`${summary.startTargetCount} 种牌`} />
           <StatCard label="最高目标" value={`${summary.bestTargetCount} 种牌`} />
-          <StatCard label="总体准确率" value={`${summary.overallAccuracy}%`} />
+          <StatCard label="总体胜率" value={`${summary.overallAccuracy}%`} />
           {summary.bestTenRankResult > 0 ? (
             <StatCard label="10 种牌最好成绩" value={`${summary.bestTenRankResult}/10`} />
           ) : null}

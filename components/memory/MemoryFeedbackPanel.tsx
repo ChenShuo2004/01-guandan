@@ -29,7 +29,7 @@ export function MemoryFeedbackPanel({
         <h2 className="mt-4 text-xl font-black">
           {allCorrect
             ? "全部记对。"
-            : `你记对了 ${checkpoint.correctCount}/${checkpoint.totalCount} 种牌。`}
+            : `本局答对 ${checkpoint.correctCount}/${checkpoint.totalCount} 题。`}
         </h2>
         <div className="mt-5 space-y-3">
           {checkpoint.targetRanks.map((rank) => (
