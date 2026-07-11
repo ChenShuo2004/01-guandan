@@ -103,8 +103,12 @@ export function CardHand({
       const cardHeight = cardWidth * (124 / 89);
       const remainingWidth = Math.max(0, availableWidth - cardWidth * groupCount);
       const groupGap = groupCount > 1 ? Math.min(preferredGap, remainingWidth / (groupCount - 1)) : 0;
-      const stackStep = Math.max(32, Math.min(44, Math.round(cardHeight * 0.32)));
-      const minHeight = cardHeight + stackStep * (maxGroupSize - 1) + Math.max(12, cardHeight * 0.12);
+      const maxStackExtra = Math.max(16, Math.min(42, window.innerHeight * 0.075));
+      const stackStep =
+        maxGroupSize > 1
+          ? Math.max(8, Math.min(18, Math.floor(maxStackExtra / (maxGroupSize - 1))))
+          : 0;
+      const minHeight = cardHeight + stackStep * (maxGroupSize - 1) + Math.max(8, cardHeight * 0.08);
 
       setArenaMetrics({
         cardHeight: Math.round(cardHeight),
@@ -352,5 +356,4 @@ function groupLabel(group: ArrangedCardGroup) {
 
   return labels[group.type];
 }
-
 

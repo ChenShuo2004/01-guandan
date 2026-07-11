@@ -1,9 +1,9 @@
-import { MemoryTrainingExperience } from "@/features/practice/MemoryTrainingExperience";
+import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "记牌方法训练 | 掼蛋记牌训练"
+  title: "记牌训练 | 掼蛋训练"
 };
 
-export default function MethodTrainingPage() {
-  return <MemoryTrainingExperience />;
+export default function MemoryTrainingRedirectPage() {
+  redirect("/practice/practice-when-to-bomb-001");
 }
