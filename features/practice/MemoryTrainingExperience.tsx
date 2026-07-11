@@ -14,6 +14,8 @@ import {
   createInitialTrainingState,
   createTargetRanks,
   initializeVisibleTargetCards,
+  getPlayedTargetCardIds,
+  isTargetCard,
   buildAllCardsById,
   shouldTriggerMemoryCheckpoint,
   evaluateCheckpointWithCards,
@@ -155,7 +157,7 @@ export function MemoryTrainingExperience() {
           seat: "bottom",
           cardIds: visibleIds,
           matchedTargetRanks: t.targetRanks.filter(rank =>
-            observerHand.some(card => card.rank === rank && visibleIds.includes(card.id))
+            observerHand.some(card => isTargetCard(card, [rank]) && visibleIds.includes(card.id))
           ),
           label: `初始手牌包含 ${visibleIds.length} 张目标牌`,
         }
@@ -245,7 +247,7 @@ export function MemoryTrainingExperience() {
 
     for (const entry of newEntries) {
       if (entry.action === "play" && entry.cards.length > 0) {
-        const targetCards = entry.cards.filter(c => t.targetRanks.includes(c.rank));
+        const targetCards = entry.cards.filter(c => isTargetCard(c, t.targetRanks));
         if (targetCards.length > 0) {
           for (const card of targetCards) {
             if (!newVisibleIds.includes(card.id)) newVisibleIds.push(card.id);
@@ -314,7 +316,10 @@ export function MemoryTrainingExperience() {
       observerHandCardIds: currentObserverHandCardIds,
       allCardsById: currentAllCardsById,
     };
-    const checkpoint = evaluateCheckpointWithCards(withAnswers, currentAllCardsById);
+    const playedTargetCardIds = currentState
+      ? getPlayedTargetCardIds(currentState, t.targetRanks)
+      : undefined;
+    const checkpoint = evaluateCheckpointWithCards(withAnswers, currentAllCardsById, playedTargetCardIds);
     const allCorrect = checkpoint.incorrectRanks.length === 0;
     const targetProgress = applyCheckpointResult(t.targetProgress, allCorrect);
     const nextMultiplier = maybeIncreaseMultiplier(

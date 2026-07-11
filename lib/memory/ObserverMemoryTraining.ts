@@ -147,7 +147,7 @@ export function initializeVisibleTargetCards(
   targetRanks: CardRank[],
 ): string[] {
   return observerHand
-    .filter((card) => targetRanks.includes(card.rank))
+    .filter((card) => isTargetCard(card, targetRanks))
     .map((card) => card.id);
 }
 
@@ -158,11 +158,30 @@ export function collectVisibleTargetCards(
 ): string[] {
   const nextIds = new Set(currentVisibleIds);
   for (const card of playedCards) {
-    if (targetRanks.includes(card.rank)) {
+    if (isTargetCard(card, targetRanks)) {
       nextIds.add(card.id);
     }
   }
   return [...nextIds];
+}
+
+export function isTargetCard(card: Card, targetRanks: CardRank[]): boolean {
+  return targetRanks.some((rank) =>
+    rank === 16 || rank === 17
+      ? card.rank === 16 || card.rank === 17
+      : card.rank === rank,
+  );
+}
+
+export function getPlayedTargetCardIds(
+  state: GameEngineState,
+  targetRanks: CardRank[],
+): string[] {
+  return state.history
+    .filter((entry) => entry.action === "play")
+    .flatMap((entry) => entry.cards)
+    .filter((card) => isTargetCard(card, targetRanks))
+    .map((card) => card.id);
 }
 
 export function calculateCorrectAnswers(
@@ -250,13 +269,15 @@ export function handlePoorPerformance(
 export function evaluateCheckpointWithCards(
   training: ObserverMemoryTrainingState,
   allCardsById: Record<string, Card>,
+  playedCardIds?: string[],
 ): MemoryCheckpointResult {
   const userHand = training.observerHandCardIds
     .map((cardId) => allCardsById[cardId])
     .filter((card): card is Card => Boolean(card));
-  const playedCards = training.relevantEvents
+  const playedCards = (playedCardIds ?? training.relevantEvents
     .filter((event) => event.type === "CARD_PLAYED")
-    .flatMap((event) => event.cardIds.map((cardId) => allCardsById[cardId]))
+    .flatMap((event) => event.cardIds))
+    .map((cardId) => allCardsById[cardId])
     .filter((card): card is Card => Boolean(card));
   const remaining = calculateRemainingTargetCounts(
     training.targetRanks.map((rank) => rank === 16 || rank === 17 ? "JOKER" : rank),
