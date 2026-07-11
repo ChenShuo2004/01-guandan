@@ -61,7 +61,7 @@ export function GameArena({
   const [sortPulseKey, setSortPulseKey] = useState(0);
   const [restoreEnabled, setRestoreEnabled] = useState(false);
   const originalHandRef = useRef<Card[] | null>(null);
-  const [, setAiCountdown] = useState<number | null>(null);
+  const [aiCountdown, setAiCountdown] = useState<number | null>(null);
   const aiActionKeyRef = useRef<string | null>(null);
   const aiTimerRef = useRef<number | null>(null);
   const aiRemainingRef = useRef<number | null>(null);
@@ -107,6 +107,18 @@ export function GameArena({
     const hand = userPlayer?.hand ?? [];
     return smartSortActive ? sortCardsAscending(hand) : hand;
   }, [smartSortActive, userPlayer?.hand]);
+
+  const displayTurnAction = useMemo(() => {
+    if (
+      observerMode &&
+      aiCountdown !== null &&
+      state.turnAction.playerId === currentPlayer?.id &&
+      (state.turnAction.status === "thinking" || state.turnAction.status === "waiting")
+    ) {
+      return { ...state.turnAction, remainingSeconds: aiCountdown };
+    }
+    return state.turnAction;
+  }, [aiCountdown, currentPlayer?.id, observerMode, state.turnAction]);
 
   useEffect(() => {
     onObserverStateChange?.(state);
@@ -409,8 +421,8 @@ export function GameArena({
           countdown:
             actionState?.playerId === player.id
               ? actionState.remainingSeconds
-              : state.turnAction.playerId === player.id
-                ? state.turnAction.remainingSeconds
+              : displayTurnAction.playerId === player.id
+                ? displayTurnAction.remainingSeconds
                 : null
         };
       }),
@@ -419,8 +431,7 @@ export function GameArena({
       state.gameStatus,
       state.playerActionState,
       state.players,
-      state.turnAction.playerId,
-      state.turnAction.remainingSeconds
+      displayTurnAction
     ]
   );
 
@@ -443,7 +454,6 @@ export function GameArena({
 
   const isObserverAutoWait =
     observerMode &&
-    currentPlayer?.kind === "ai" &&
     Boolean(currentPlayer?.id) &&
     state.turnAction.playerId === currentPlayer.id &&
     typeof state.turnAction.remainingSeconds === "number" &&
@@ -489,7 +499,6 @@ export function GameArena({
     if (observerMode) {
       if (
         !currentPlayer ||
-        currentPlayer.kind !== "ai" ||
         state.gameStatus !== "playing" ||
         state.turnAction.playerId !== currentPlayer.id ||
         (state.turnAction.status !== "thinking" && state.turnAction.status !== "waiting")
@@ -614,7 +623,7 @@ export function GameArena({
           players={arenaPlayers}
           roundActions={state.currentRoundActions}
           showTurnStatus={!isDealLocked}
-          turnAction={state.turnAction}
+          turnAction={displayTurnAction}
         />
 
         <CardCounter
@@ -721,7 +730,7 @@ export function GameArena({
             organized={restoreEnabled}
             onRestore={handleRestoreHand}
             restoreEnabled={restoreEnabled}
-            skipLabel={currentPlayer?.id === "player" ? "跳过等待" : "跳过 AI"}
+            skipLabel="跳过 AI"
           />
         ) : null}
         <DealAnimation
