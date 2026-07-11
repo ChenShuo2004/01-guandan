@@ -238,6 +238,9 @@ export function MemoryTrainingExperience() {
     const newEvents = [...t.relevantEvents];
     let validPlays = t.validPlayCountSinceCheckpoint;
     const allCardsById = { ...t.allCardsById, ...buildAllCardsById(state) };
+    const currentObserverHandCardIds = state.players
+      .find((player) => player.id === "player")?.hand
+      .map((card) => card.id) ?? t.observerHandCardIds;
 
     for (const entry of newEntries) {
       if (entry.action === "play" && entry.cards.length > 0) {
@@ -269,6 +272,7 @@ export function MemoryTrainingExperience() {
       relevantEvents: newEvents,
       validPlayCountSinceCheckpoint: validPlays,
       lastProcessedHistoryLength: state.history.length,
+      observerHandCardIds: currentObserverHandCardIds,
     }));
 
     const updatedTraining = {
@@ -278,6 +282,7 @@ export function MemoryTrainingExperience() {
       relevantEvents: newEvents,
       validPlayCountSinceCheckpoint: validPlays,
       lastProcessedHistoryLength: state.history.length,
+      observerHandCardIds: currentObserverHandCardIds,
     };
 
     if (shouldTriggerMemoryCheckpoint(state, updatedTraining)) {
