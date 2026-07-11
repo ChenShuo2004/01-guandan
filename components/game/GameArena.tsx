@@ -12,6 +12,7 @@ import { HandCards } from "@/components/game/HandCards";
 import { useGameStore } from "@/store/gameStore";
 import { getRankLabel, sortCardsAscending, type Card, type CardRank } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
+import { playArenaSound } from "@/lib/audio/arenaAudio";
 import type { GameEngineState, TrainingPhase } from "@/lib/guandan/gameState";
 import type { ArenaPlayer } from "@/types/game";
 
@@ -68,6 +69,7 @@ export function GameArena({
   const aiTimerRef = useRef<number | null>(null);
   const aiRemainingRef = useRef<number | null>(null);
   const aiPausedActionKeyRef = useRef<string | null>(null);
+  const soundHistoryLengthRef = useRef(0);
   const previousThinkSecondsRef = useRef(defaultSettings.aiThinkSeconds);
   const settingsHydratedRef = useRef(false);
   const userActionKeyRef = useRef<string | null>(null);
@@ -125,6 +127,13 @@ export function GameArena({
   useEffect(() => {
     onObserverStateChange?.(state);
   }, [onObserverStateChange, state]);
+
+  useEffect(() => {
+    if (state.history.length <= soundHistoryLengthRef.current) return;
+    const latest = state.history[state.history.length - 1];
+    soundHistoryLengthRef.current = state.history.length;
+    playArenaSound(latest.action === "pass" ? "pass" : "play", settings.sound);
+  }, [settings.sound, state.history]);
 
   const restartDealAnimation = useCallback(() => {
     setDealStage("dealing");
@@ -1175,7 +1184,7 @@ function SettingToggle({
   onChange: (checked: boolean) => void;
 }) {
   return (
-    <label className="flex items-center justify-between rounded-2xl bg-[#f3f9ff] p-5 text-lg font-black">
+    <div className="flex items-center justify-between rounded-2xl bg-[#f3f9ff] p-5 text-lg font-black">
       {label}
       <button
         aria-pressed={checked}
@@ -1193,7 +1202,7 @@ function SettingToggle({
           )}
         />
       </button>
-    </label>
+    </div>
   );
 }
 
