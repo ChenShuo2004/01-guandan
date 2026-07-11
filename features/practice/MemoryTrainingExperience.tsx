@@ -171,14 +171,13 @@ export function MemoryTrainingExperience() {
 
     setTraining(prev => ({
       ...prev,
-      phase: "ANSWERING",
+      phase: "AI_PLAYING",
       visibleTargetCardIds: visibleIds,
       allCardsById,
       observerHandCardIds: observerHand.map(c => c.id),
       relevantEvents: initialEvent ? [initialEvent] : [],
       playersPlayedSinceCheckpoint: new Set(),
     }));
-    setShowCheckpoint(true);
   }, []);
 
   // ── Handle deal completion ─────────────────────────────────────────────────────
