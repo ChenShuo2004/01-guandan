@@ -20,12 +20,14 @@ type DealStage = "dealing" | "sorting" | "ready";
 
 interface ArenaSettings {
   sound: boolean;
+  music: boolean;
   aiTips: boolean;
   aiThinkSeconds: number;
 }
 
 const defaultSettings: ArenaSettings = {
   sound: true,
+  music: true,
   aiTips: true,
   aiThinkSeconds: 5
 };
@@ -74,6 +76,7 @@ export function GameArena({
   const aiRemainingRef = useRef<number | null>(null);
   const aiPausedActionKeyRef = useRef<string | null>(null);
   const soundHistoryLengthRef = useRef(0);
+  const musicRef = useRef<HTMLAudioElement | null>(null);
   const previousThinkSecondsRef = useRef(defaultSettings.aiThinkSeconds);
   const settingsHydratedRef = useRef(false);
   const userActionKeyRef = useRef<string | null>(null);
@@ -360,6 +363,20 @@ export function GameArena({
   }, [settings]);
 
   useEffect(() => {
+    const music = musicRef.current;
+    if (!music) return;
+
+    if (settings.music) {
+      music.volume = 0.18;
+      void music.play().catch(() => undefined);
+      return;
+    }
+
+    music.pause();
+    music.currentTime = 0;
+  }, [settings.music]);
+
+  useEffect(() => {
     function syncFullscreenState() {
       setIsFullscreen(Boolean(document.fullscreenElement));
       window.dispatchEvent(new Event("resize"));
@@ -553,6 +570,20 @@ export function GameArena({
     });
   }
 
+  function updateMusic(music: boolean) {
+    updateSettings({ music });
+    const audio = musicRef.current;
+    if (!audio) return;
+
+    if (music) {
+      audio.volume = 0.18;
+      void audio.play().catch(() => undefined);
+    } else {
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  }
+
   const toggleFullscreen = useCallback(async () => {
     try {
       if (document.fullscreenElement) {
@@ -598,6 +629,7 @@ export function GameArena({
       data-observer-mode={observerMode ? "true" : "false"}
       ref={arenaRef}
     >
+      <audio loop preload="auto" ref={musicRef} src="/assets/audio/training-camp-circuit-smiles.mp3" />
       <ArenaBackground />
       <ArenaTopBar
           isFullscreen={isFullscreen}
@@ -786,6 +818,7 @@ export function GameArena({
       <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "settings"} title="设置">
         <div className="space-y-4 text-[#12395a]">
           <SettingToggle checked={settings.sound} label="音效" onChange={(sound) => updateSettings({ sound })} />
+          <SettingToggle checked={settings.music} label="音乐" onChange={updateMusic} />
           {!observerMode ? <SettingToggle checked={settings.aiTips} label="AI 提示" onChange={(aiTips) => updateSettings({ aiTips })} /> : null}
           <SettingRange
             label="AI 思考时间"
