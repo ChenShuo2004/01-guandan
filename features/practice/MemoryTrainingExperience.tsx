@@ -368,6 +368,18 @@ export function MemoryTrainingExperience() {
       return;
     }
 
+    const current = trainingRef.current;
+    if (current.targetRanks.length !== current.currentTargetCount) {
+      const nextHand = resetForNextHand({ ...current, phase: "STARTING_NEXT_HAND" });
+      setTraining(nextHand);
+      setArenaKey((currentKey) => currentKey + 1);
+      dealCompleteRef.current = false;
+      setShowCheckpoint(false);
+      setShowFeedback(false);
+      setShowTargetOverlay(true);
+      return;
+    }
+
     setTraining(prev => ({ ...prev, phase: "AI_PLAYING", pendingCheckpoint: null }));
   }, [handleGameFinished]);
 
