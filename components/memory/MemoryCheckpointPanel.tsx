@@ -88,7 +88,7 @@ export function MemoryCheckpointPanel({
           MEMORY CHECKPOINT
         </p>
         <h2 className="mt-4 text-[22px] font-black leading-snug tracking-tight sm:text-[26px]">
-          需要记得牌出现了几张（包括手牌）
+          场上还有几张牌？（除去手牌）
         </h2>
         <div className="mt-5 space-y-4">
           {targetRanks.map((rank) => (
