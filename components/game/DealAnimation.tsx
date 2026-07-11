@@ -107,14 +107,7 @@ export function DealAnimation({
         );
       })}
 
-      <motion.div
-        animate={{ opacity: [0, 1, 1, 0], y: [12, 0, 0, -8] }}
-        className="absolute left-1/2 top-[58%] z-30 -translate-x-1/2 rounded-full border border-white/50 bg-white/86 px-6 py-3 text-base font-black text-[#0f64ff] shadow-[0_18px_38px_rgba(15,100,255,0.22)]"
-        initial={{ opacity: 0 }}
-        transition={{ delay: 0.4, duration: 2.6, ease: "easeOut" }}
-      >
-        正在发牌
-      </motion.div>
+
     </div>
   );
 }
