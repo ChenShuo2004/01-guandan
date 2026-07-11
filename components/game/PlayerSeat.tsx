@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import type { ArenaPlayer } from "@/types/game";
 
 const positionClass = {
-  top: "left-1/2 top-[5%] -translate-x-1/2",
+  top: "left-1/2 top-[11%] -translate-x-1/2",
   left: "left-[3.5%] top-[45%] -translate-y-1/2",
   right: "right-[3.5%] top-[45%] -translate-y-1/2",
   bottom: "left-1/2 bottom-[6%] -translate-x-1/2"
@@ -14,9 +14,10 @@ const positionClass = {
 
 interface PlayerSeatProps {
   player: ArenaPlayer;
+  settlementFocus?: "primary" | "muted";
 }
 
-export function PlayerSeat({ player }: PlayerSeatProps) {
+export function PlayerSeat({ player, settlementFocus }: PlayerSeatProps) {
   const isSide = player.position === "left" || player.position === "right";
   const isBottom = player.position === "bottom";
 
@@ -27,14 +28,16 @@ export function PlayerSeat({ player }: PlayerSeatProps) {
     >
       <motion.div
         animate={{ opacity: 1, y: 0 }}
-        className={cn("training-seat-content flex items-center gap-3", isBottom || player.position === "top" ? "flex-col" : "flex-row")}
+        className="training-seat-content flex items-center gap-3"
         initial={{ opacity: 0, y: 12 }}
         transition={{ duration: 0.45, delay: player.position === "top" ? 0.16 : 0.26 }}
       >
-        {isSide ? <CardBackStack side={player.position === "left" ? "left" : "right"} /> : <CardBackFan />}
+        <div className="order-1">
+          <PlayerInfo compact={isSide} focus={settlementFocus} player={player} />
+        </div>
 
-        <div className={cn(isSide && player.position === "right" && "order-2")}>
-          <PlayerInfo compact={isSide} player={player} />
+        <div className="order-2 shrink-0">
+          {isSide ? <CardBackStack side={player.position === "left" ? "left" : "right"} /> : <CardBackFan />}
         </div>
       </motion.div>
     </div>
@@ -57,7 +60,7 @@ function CardBackFan() {
 
 function CardBackStack({ side }: { side: "left" | "right" }) {
   return (
-    <div className={cn("training-card-backs flex w-[50px] flex-col items-center", side === "right" && "order-1")}>
+    <div className={cn("training-card-backs flex w-[50px] flex-col items-center", side === "right" && "mr-1")}>
       {Array.from({ length: 6 }).map((_, index) => (
         <div
           className="-mt-7 h-[52px] w-[36px] rounded-lg border border-white/55 bg-[linear-gradient(145deg,#5a93df,#204f9a)] shadow-[0_6px_12px_rgba(24,79,159,0.18)] first:mt-0"

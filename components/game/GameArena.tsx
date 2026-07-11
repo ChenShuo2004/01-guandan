@@ -9,15 +9,21 @@ import { buildCounterHint, CardCounter } from "@/components/game/CardCounter";
 import { DealAnimation } from "@/components/game/DealAnimation";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
-import { MemoryMethodsLibrary } from "@/components/memory/MemoryMethodsLibrary";
+import { MemoryMethodCardGrid } from "@/components/memory/MemoryMethodsLibrary";
+import { DualEntryTrainingCard } from "@/components/practice/DualEntryTrainingCard";
 import { useGameStore } from "@/store/gameStore";
-import { getRankLabel, sortCards, type Card, type CardRank } from "@/lib/guandan/card";
+import { getRankLabel, sortCards, type Card, type CardRank, type CardSuit } from "@/lib/guandan/card";
+import { analyzeStraightFlushSuits, type StraightFlushSuitStatus } from "@/lib/guandan/straightFlush";
 import { cn } from "@/lib/utils";
-import { playArenaSound } from "@/lib/audio/arenaAudio";
+import { setTrainingCampMusicPaused } from "@/components/audio/TrainingCampMusic";
+import { playGameAudio, playTurnAudio } from "@/lib/audio/arenaAudio";
 import type { GameEngineState, TrainingPhase } from "@/lib/guandan/gameState";
 import type { ArenaPlayer } from "@/types/game";
+import type { TrainingMultiplier } from "@/lib/memory/memoryTrainingSystem";
 
 type DealStage = "dealing" | "sorting" | "ready";
+type ArenaPanel = "coach" | "rules" | "settings" | "multiplier";
+type RulesHelpView = "hub" | "guandan" | "memory";
 
 interface ArenaSettings {
   sound: boolean;
@@ -32,10 +38,12 @@ const defaultSettings: ArenaSettings = {
   aiTips: true,
   aiThinkSeconds: 5
 };
+const MUSIC_SETTING_EVENT = "guandan-training-camp-music-setting";
 
 interface GameArenaProps {
   observerMode?: boolean;
   initialLevelRank?: CardRank;
+  observerMultiplier?: TrainingMultiplier;
   observerPaused?: boolean;
   fastForward?: boolean;
   onObserverStateChange?: (state: GameEngineState) => void;
@@ -43,11 +51,16 @@ interface GameArenaProps {
   onObserverPauseChange?: (paused: boolean) => void;
   onObserverExit?: () => void;
   onObserverOpenReport?: () => void;
+  settlementFocus?: {
+    donorId: string;
+    receiverId: string;
+  };
 }
 
 export function GameArena({
   observerMode = false,
   initialLevelRank = 15,
+  observerMultiplier = 1,
   observerPaused = false,
   fastForward = false,
   onObserverStateChange,
@@ -55,10 +68,12 @@ export function GameArena({
   onObserverPauseChange,
   onObserverExit,
   onObserverOpenReport,
+  settlementFocus,
 }: GameArenaProps) {
   const router = useRouter();
   const arenaRef = useRef<HTMLElement | null>(null);
-  const [activePanel, setActivePanel] = useState<"coach" | "rules" | "settings" | null>(null);
+  const [activePanel, setActivePanel] = useState<ArenaPanel | null>(null);
+  const [rulesHelpView, setRulesHelpView] = useState<RulesHelpView>("hub");
   const [settings, setSettings] = useState<ArenaSettings>(defaultSettings);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -75,10 +90,12 @@ export function GameArena({
   const [aiCountdown, setAiCountdown] = useState<number | null>(null);
   const aiActionKeyRef = useRef<string | null>(null);
   const aiTimerRef = useRef<number | null>(null);
+  const aiActionTimeoutRef = useRef<number | null>(null);
   const aiRemainingRef = useRef<number | null>(null);
   const aiPausedActionKeyRef = useRef<string | null>(null);
   const soundHistoryLengthRef = useRef(0);
-  const musicRef = useRef<HTMLAudioElement | null>(null);
+  const soundEnabledRef = useRef(defaultSettings.sound);
+  const rulesPauseRef = useRef<{ resumeOnClose: boolean } | null>(null);
   const previousThinkSecondsRef = useRef(defaultSettings.aiThinkSeconds);
   const settingsHydratedRef = useRef(false);
   const userActionKeyRef = useRef<string | null>(null);
@@ -159,13 +176,18 @@ export function GameArena({
   }, [restoreEnabled, userPlayer]);
 
   useEffect(() => {
+    soundEnabledRef.current = settings.sound;
+  }, [settings.sound]);
+
+  useEffect(() => {
     if (state.history.length <= soundHistoryLengthRef.current) return;
     const latest = state.history[state.history.length - 1];
     soundHistoryLengthRef.current = state.history.length;
-    playArenaSound(latest.action === "pass" ? "pass" : "play", settings.sound);
+    playTurnAudio(latest, settings.sound);
   }, [settings.sound, state.history]);
 
   const restartDealAnimation = useCallback(() => {
+    playGameAudio("table.deal", soundEnabledRef.current, { cooldownMs: 600 });
     setDealStage("dealing");
     setSmartSortActive(false);
     setIsArranging(false);
@@ -211,6 +233,7 @@ export function GameArena({
     if (currentHand.length === 0) return;
     if (originalHandOrderRef.current) return;
 
+    playGameAudio("ui.sortCards", settings.sound);
     setIsArranging(true);
     originalHandOrderRef.current = displayedUserCards.map((card) => card.id);
     setRestoreEnabled(true);
@@ -218,11 +241,12 @@ export function GameArena({
     sortHand();
     setSortPulseKey((current) => current + 1);
     window.setTimeout(() => setIsArranging(false), 340);
-  }, [displayedUserCards, isArranging, isDealLocked, sortHand, userPlayer?.hand]);
+  }, [displayedUserCards, isArranging, isDealLocked, settings.sound, sortHand, userPlayer?.hand]);
 
   const handleRestoreHand = useCallback(() => {
     if (isDealLocked || isArranging || !originalHandOrderRef.current) return;
 
+    playGameAudio("ui.sortCards", settings.sound);
     setIsArranging(true);
     restoreHand(originalHandOrderRef.current);
     originalHandOrderRef.current = null;
@@ -230,7 +254,7 @@ export function GameArena({
     setSmartSortActive(false);
     setSortPulseKey((current) => current + 1);
     window.setTimeout(() => setIsArranging(false), 340);
-  }, [isArranging, isDealLocked, restoreHand]);
+  }, [isArranging, isDealLocked, restoreHand, settings.sound]);
 
   const handleArrangeToggle = useCallback(() => {
     if (restoreEnabled) {
@@ -241,10 +265,27 @@ export function GameArena({
     handleOrganizeHand();
   }, [handleOrganizeHand, handleRestoreHand, restoreEnabled]);
 
+  const handleSelectionChange = useCallback(
+    (cards: Card[]) => {
+      const nextIds = cards.map((card) => card.id).sort().join("|");
+      const currentIds = [...selectedCardIds].sort().join("|");
+      if (nextIds !== currentIds) {
+        playGameAudio("ui.click", settings.sound, { cooldownMs: 45, volume: 0.42 });
+      }
+
+      setSelectedCards(cards);
+    },
+    [selectedCardIds, setSelectedCards, settings.sound]
+  );
+
   const completeAIAction = useCallback(() => {
     if (aiTimerRef.current) {
       window.clearInterval(aiTimerRef.current);
       aiTimerRef.current = null;
+    }
+    if (aiActionTimeoutRef.current) {
+      window.clearTimeout(aiActionTimeoutRef.current);
+      aiActionTimeoutRef.current = null;
     }
 
     aiRemainingRef.current = null;
@@ -273,17 +314,28 @@ export function GameArena({
         window.clearInterval(aiTimerRef.current);
         aiTimerRef.current = null;
       }
+      if (aiActionTimeoutRef.current) {
+        window.clearTimeout(aiActionTimeoutRef.current);
+        aiActionTimeoutRef.current = null;
+      }
       aiActionKeyRef.current = null;
       aiRemainingRef.current = null;
       aiPausedActionKeyRef.current = null;
     }
 
-    if (aiActionKeyRef.current === actionKey) return;
+    if (
+      aiActionKeyRef.current === actionKey &&
+      aiTimerRef.current !== null &&
+      aiActionTimeoutRef.current !== null
+    ) {
+      return;
+    }
 
+    const isSameAction = aiActionKeyRef.current === actionKey;
     aiActionKeyRef.current = actionKey;
 
     const shouldResume =
-      aiPausedActionKeyRef.current === actionKey &&
+      (aiPausedActionKeyRef.current === actionKey || isSameAction) &&
       aiRemainingRef.current !== null &&
       aiRemainingRef.current > 0;
     const seconds = fastForward ? 0 : shouldResume ? aiRemainingRef.current! : settings.aiThinkSeconds;
@@ -303,23 +355,32 @@ export function GameArena({
     aiTimerRef.current = window.setInterval(() => {
       remaining -= 1;
       setAiCountdown(remaining);
-      setTurnAction({
-        playerId: currentPlayer.id,
-        status: remaining > 0 ? "thinking" : "playing",
-        label: remaining > 0 ? `AI ${currentPlayer.role} 思考中` : `${currentPlayer.role} 准备出牌`,
-        remainingSeconds: Math.max(remaining, 0)
-      });
+      if (!observerMode) {
+        setTurnAction({
+          playerId: currentPlayer.id,
+          status: remaining > 0 ? "thinking" : "playing",
+          label: remaining > 0 ? `AI ${currentPlayer.role} 思考中` : `${currentPlayer.role} 准备出牌`,
+          remainingSeconds: Math.max(remaining, 0)
+        });
+      }
 
       if (remaining <= 0) {
         completeAIAction();
       }
     }, 1000);
+    aiActionTimeoutRef.current = window.setTimeout(() => {
+      completeAIAction();
+    }, Math.max(250, (seconds + 0.25) * 1000));
 
     return () => {
       if (aiTimerRef.current) {
         window.clearInterval(aiTimerRef.current);
         aiTimerRef.current = null;
         aiRemainingRef.current = remaining;
+      }
+      if (aiActionTimeoutRef.current) {
+        window.clearTimeout(aiActionTimeoutRef.current);
+        aiActionTimeoutRef.current = null;
       }
     };
   }, [completeAIAction, currentPlayer?.id, currentPlayer?.kind, currentPlayer?.role, fastForward, isDealLocked, isPaused, observerMode, observerPaused, settings.aiThinkSeconds, setTurnAction, state.gameStatus, state.trainingPhase, state.turnNumber]);
@@ -378,6 +439,12 @@ export function GameArena({
   }, [clearRoundActions, state.roundClearKey, state.roundComplete]);
 
   useEffect(() => {
+    return () => {
+      setTrainingCampMusicPaused(false);
+    };
+  }, []);
+
+  useEffect(() => {
     const raw = window.localStorage.getItem("guandan-training-arena-settings");
     if (raw) {
       try {
@@ -401,20 +468,6 @@ export function GameArena({
     if (!settingsHydratedRef.current) return;
     window.localStorage.setItem("guandan-training-arena-settings", JSON.stringify(settings));
   }, [settings]);
-
-  useEffect(() => {
-    const music = musicRef.current;
-    if (!music) return;
-
-    if (settings.music) {
-      music.volume = 0.18;
-      void music.play().catch(() => undefined);
-      return;
-    }
-
-    music.pause();
-    music.currentTime = 0;
-  }, [settings.music]);
 
   useEffect(() => {
     function syncFullscreenState() {
@@ -528,6 +581,14 @@ export function GameArena({
       ...current,
       ...nextSettings
     }));
+
+    if (typeof nextSettings.music === "boolean") {
+      window.dispatchEvent(
+        new CustomEvent(MUSIC_SETTING_EVENT, {
+          detail: { enabled: nextSettings.music }
+        })
+      );
+    }
   }
 
   const isObserverAutoWait =
@@ -582,6 +643,7 @@ export function GameArena({
         (state.turnAction.status !== "thinking" && state.turnAction.status !== "waiting")
       ) return;
 
+      playGameAudio("ui.skipAi", settings.sound);
       aiRemainingRef.current = null;
       aiPausedActionKeyRef.current = null;
       aiActionKeyRef.current = null;
@@ -590,12 +652,14 @@ export function GameArena({
     }
 
     if (currentPlayer?.id === "player" && state.turnAction.status === "waiting") {
+      playGameAudio("ui.skipAi", settings.sound);
       skipUserWait();
       return;
     }
 
     if (currentPlayer?.kind !== "ai" || state.turnAction.status !== "thinking") return;
 
+    playGameAudio("ui.skipAi", settings.sound);
     aiRemainingRef.current = null;
     aiPausedActionKeyRef.current = null;
     aiActionKeyRef.current = null;
@@ -606,23 +670,43 @@ export function GameArena({
     setIsPaused((paused) => {
       const next = !paused;
       onObserverPauseChange?.(next);
+      setTrainingCampMusicPaused(next);
       return next;
     });
   }
 
-  function updateMusic(music: boolean) {
-    updateSettings({ music });
-    const audio = musicRef.current;
-    if (!audio) return;
+  const openPanel = useCallback((panel: ArenaPanel) => {
+    setActivePanel(panel);
+  }, []);
 
-    if (music) {
-      audio.volume = 0.18;
-      void audio.play().catch(() => undefined);
-    } else {
-      audio.pause();
-      audio.currentTime = 0;
+  const openRulesPanel = useCallback(() => {
+    if (!rulesPauseRef.current) {
+      const alreadyPaused = isPaused || observerPaused;
+      rulesPauseRef.current = { resumeOnClose: !alreadyPaused };
+
+      if (!alreadyPaused) {
+        setIsPaused(true);
+        onObserverPauseChange?.(true);
+        setTrainingCampMusicPaused(true);
+      }
     }
-  }
+
+    setRulesHelpView("hub");
+    setActivePanel("rules");
+  }, [isPaused, observerPaused, onObserverPauseChange]);
+
+  const closeActivePanel = useCallback(() => {
+    const rulesPause = rulesPauseRef.current;
+    rulesPauseRef.current = null;
+    setRulesHelpView("hub");
+    setActivePanel(null);
+
+    if (activePanel === "rules" && rulesPause?.resumeOnClose) {
+      setIsPaused(false);
+      onObserverPauseChange?.(false);
+      setTrainingCampMusicPaused(false);
+    }
+  }, [activePanel, onObserverPauseChange]);
 
   const toggleFullscreen = useCallback(async () => {
     try {
@@ -669,7 +753,6 @@ export function GameArena({
       data-observer-mode={observerMode ? "true" : "false"}
       ref={arenaRef}
     >
-      <audio loop preload="auto" ref={musicRef} src="/assets/audio/training-camp-circuit-smiles.mp3" />
       <ArenaBackground />
       <ArenaTopBar
           isFullscreen={isFullscreen}
@@ -677,10 +760,10 @@ export function GameArena({
           levelRank={levelRankLabel}
           observerMode={observerMode}
         onBackToLobby={goLobby}
-        onOpenCoach={() => setActivePanel("coach")}
-        onOpenRules={() => setActivePanel("rules")}
+        onOpenCoach={() => openPanel("coach")}
+        onOpenRules={openRulesPanel}
         onOpenReport={onObserverOpenReport}
-          onOpenSettings={() => setActivePanel("settings")}
+          onOpenSettings={() => openPanel("settings")}
           onToggleFullscreen={toggleFullscreen}
           onTogglePause={togglePause}
           phase={phase}
@@ -689,7 +772,7 @@ export function GameArena({
       <button
         aria-label="打开训练帮助"
         className="training-help-button absolute left-5 top-1/2 z-[92] grid h-12 w-12 -translate-y-1/2 place-items-center rounded-full border border-white/70 bg-[#12395a]/78 text-white shadow-[0_12px_28px_rgba(8,53,87,0.28)] backdrop-blur-md transition hover:scale-105 hover:bg-[#12395a] active:scale-95 max-lg:left-3 max-lg:h-10 max-lg:w-10"
-        onClick={() => setActivePanel("rules")}
+        onClick={openRulesPanel}
         title="训练帮助"
         type="button"
       >
@@ -714,9 +797,9 @@ export function GameArena({
             cardCounterVisible={state.cardCounterVisible}
             isFullscreen={isFullscreen}
             observerMode={observerMode}
-            onOpenCoach={() => setActivePanel("coach")}
-            onOpenRules={() => setActivePanel("rules")}
-            onOpenSettings={() => setActivePanel("settings")}
+            onOpenCoach={() => openPanel("coach")}
+            onOpenRules={openRulesPanel}
+            onOpenSettings={() => openPanel("settings")}
             onToggleCardCounter={toggleCardCounter}
             onToggleFullscreen={toggleFullscreen}
             tipsEnabled={settings.aiTips}
@@ -726,6 +809,7 @@ export function GameArena({
           levelRank={levelRankLabel}
           players={arenaPlayers}
           roundActions={state.currentRoundActions}
+          settlementFocus={settlementFocus}
           showTurnStatus={!isDealLocked && (!observerMode || !observerPaused)}
           turnAction={displayTurnAction}
         />
@@ -796,7 +880,7 @@ export function GameArena({
                 invalidCardIds={state.invalidCardIds}
                 invalidPulseKey={state.invalidPulseKey}
                 levelRank={levelRankLabel}
-                onSelectionChange={setSelectedCards}
+                onSelectionChange={handleSelectionChange}
                 onSelectCard={selectCard}
                 selectedCardIds={selectedCardIds}
                 cardScale={arenaCardScale}
@@ -822,6 +906,7 @@ export function GameArena({
               isArranging={isArranging}
               onRestoreHand={handleRestoreHand}
               restoreEnabled={restoreEnabled}
+                soundEnabled={settings.sound}
                 phase={phase}
                 selectedCount={state.selectedCards.length}
               /> : null}
@@ -830,9 +915,11 @@ export function GameArena({
         </section>
         {observerMode ? (
           <ObserverHandTools
-            hasStraightFlush={hasStraightFlush(displayedUserCards)}
+            multiplier={observerMultiplier}
+            straightFlushStatuses={analyzeStraightFlushSuits(displayedUserCards)}
             isArranging={isArranging}
             isAIThinking={canSkipTurnWait}
+            onMultiplierClick={() => openPanel("multiplier")}
             onOrganize={handleArrangeToggle}
             onSkipAIWait={skipAIWait}
             organized={restoreEnabled}
@@ -848,7 +935,7 @@ export function GameArena({
         />
       </section>
 
-      <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "coach"} title={observerMode ? "记牌训练说明" : "AI Coach"}>
+      <ArenaModal onClose={closeActivePanel} open={activePanel === "coach"} title={observerMode ? "记牌训练说明" : "AI Coach"}>
         <CoachTeachingContent
           message={state.coachFeedback.message}
           reason={state.coachFeedback.reason}
@@ -857,21 +944,44 @@ export function GameArena({
         />
       </ArenaModal>
 
-      <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "rules"} title="训练规则">
-        <div className="space-y-4 text-base font-bold leading-7 text-[#24557a]">
-          <MemoryMethodsLibrary compact />
-          <RuleBlock title="掼蛋基础规则" items={["四人两两组队，目标是尽快出完手牌。", "轮到你时必须出同牌型且更大的牌，炸弹可压普通牌型。", "一圈都不出时，牌权回到上一位出牌者。"]} />
-          <RuleBlock title="牌型说明" items={["单牌、对子、三张、三带二、顺子是基础牌型。", "四张及以上同点数为炸弹，四王炸最大。", "顺子不包含 2 和大小王。"]} />
-          <RuleBlock title="级牌说明" items={["本局级牌会在牌桌顶部显示。", "手牌中的级牌使用金色边框和“级”标签标出。", "做判断时先确认级牌能否改变牌权。"]} />
-          <RuleBlock title="大小王说明" items={["小王使用蓝色主题，牌面显示 SMALL JOKER。", "大王使用红色主题，牌面显示 BIG JOKER。", "大小王尺寸略大于普通牌，便于第一眼识别。"]} />
-          <RuleBlock title="训练规则" items={["选择等级后会生成一局训练牌局。", "先操作，再看 Ace Coach 的分析和推荐思路。", "每轮完成 学习 → 判断 → 反馈 → 成长。"]} />
+      <ArenaModal
+        onClose={closeActivePanel}
+        open={activePanel === "rules"}
+        variant={rulesHelpView === "hub" ? "dual-entry" : "dual-entry-detail"}
+      >
+        {rulesHelpView === "hub" ? (
+          <DualEntryTrainingCard
+            onMemoryClick={() => setRulesHelpView("memory")}
+            onRulesClick={() => setRulesHelpView("guandan")}
+          />
+        ) : rulesHelpView === "memory" ? (
+          <div className="p-3 pt-12 sm:p-4 sm:pt-12">
+            <MemoryMethodCardGrid />
+          </div>
+        ) : (
+          <RulesHelpDetail onBack={() => setRulesHelpView("hub")} title="掼蛋规则">
+            <div className="space-y-3">
+              <RuleBlock variant="help-card" title="基础规则" items={["四人两两组队，目标是尽快出完手牌。", "轮到你时必须出同牌型且更大的牌，炸弹可压普通牌型。", "一圈都不出时，牌权回到上一位出牌者。"]} />
+              <RuleBlock variant="help-card" title="牌型说明" items={["单牌、对子、三张、三带二、顺子是基础牌型。", "四张及以上同点数为炸弹，四王炸最大。", "顺子不包含 2 和大小王。"]} />
+              <RuleBlock variant="help-card" title="出牌流程" items={["首家出牌后，其他玩家按顺序跟牌或过牌。", "一圈无人跟牌时，最后出牌者获得新一轮牌权。", "做判断时先确认级牌或王能否改变牌权。"]} />
+              <RuleBlock variant="help-card" title="进贡还贡" items={["下游向上游进贡最大牌（红桃级牌除外）。", "上游向下游还贡一张 10 以下牌。", "抗贡条件满足时可免除进贡。"]} />
+              <RuleBlock variant="help-card" title="升级规则" items={["先出完手牌的一方升级，双下升三级，单下升两级。", "级牌会随升级变化，影响牌力判断。", "打到 A 并成功过庄后获胜。"]} />
+              <RuleBlock variant="help-card" title="级牌与大小王" items={["本局级牌会在牌桌顶部显示，手牌中用金色边框和“级”标签标出。", "小王使用蓝色主题，大王使用红色主题。", "炸弹之间按张数与点数比较大小。"]} />
+            </div>
+          </RulesHelpDetail>
+        )}
+      </ArenaModal>
+      <ArenaModal onClose={closeActivePanel} open={activePanel === "multiplier"} title="倍率规则">
+        <div className="space-y-3 text-base font-bold leading-7 text-[#24557a]">
+          <p>当前记牌训练倍率为 <strong className="text-[#e57d10]">×{observerMultiplier}</strong>。</p>
+          <RuleBlock title="倍率如何变化" items={["连续两次检查全部答对，倍率提升一档，最高 ×16。", "检查中有任意一项答错，倍率减半，最低 ×1。", "倍率只在记牌测试提交后变化，观察牌局时不会手动改变。"]} />
         </div>
       </ArenaModal>
 
-      <ArenaModal onClose={() => setActivePanel(null)} open={activePanel === "settings"} title="设置">
+      <ArenaModal onClose={closeActivePanel} open={activePanel === "settings"} title="设置">
         <div className="space-y-4 text-[#12395a]">
           <SettingToggle checked={settings.sound} label="音效" onChange={(sound) => updateSettings({ sound })} />
-          <SettingToggle checked={settings.music} label="音乐" onChange={updateMusic} />
+          <SettingToggle checked={settings.music} label="音乐" onChange={(music) => updateSettings({ music })} />
           {!observerMode ? <SettingToggle checked={settings.aiTips} label="AI 提示" onChange={(aiTips) => updateSettings({ aiTips })} /> : null}
           <SettingRange
             label="AI 思考时间"
@@ -907,35 +1017,67 @@ function ArenaBackground() {
 }
 
 function ObserverHandTools({
-  hasStraightFlush: straightFlush,
+  multiplier,
+  straightFlushStatuses,
   isArranging,
   isAIThinking,
+  onMultiplierClick,
   onOrganize,
   onSkipAIWait,
   organized,
   skipLabel = "跳过 AI"
 }: {
-  hasStraightFlush: boolean;
+  multiplier: TrainingMultiplier;
+  straightFlushStatuses: StraightFlushSuitStatus[];
   isArranging: boolean;
   isAIThinking: boolean;
+  onMultiplierClick: () => void;
   onOrganize: () => void;
   onSkipAIWait: () => void;
   organized: boolean;
   skipLabel?: string;
 }) {
+  const suitItems: Array<{ suit: CardSuit; symbol: string; label: string }> = [
+    { suit: "spade", symbol: "♠", label: "黑桃" },
+    { suit: "heart", symbol: "♥", label: "红心" },
+    { suit: "club", symbol: "♣", label: "梅花" },
+    { suit: "diamond", symbol: "♦", label: "方块" },
+  ];
+
   return (
-    <div className="training-observer-tools absolute bottom-[1.8%] left-1/2 z-[115] flex w-[min(1080px,calc(100vw-2rem))] -translate-x-1/2 items-center justify-between gap-3 rounded-2xl border border-white/45 bg-[#083b42]/90 px-5 py-3 text-white shadow-[0_12px_30px_rgba(4,48,62,0.3)] backdrop-blur-xl max-lg:gap-2 max-lg:px-3 max-lg:py-2">
-      <div className="flex min-w-[110px] items-center gap-3 border-r border-white/20 pr-5 max-lg:min-w-0 max-lg:gap-1.5 max-lg:pr-2">
-        <span className="grid h-10 w-10 place-items-center rounded-full bg-[#ff9d22] text-lg font-black text-white max-lg:h-8 max-lg:w-8 max-lg:text-sm">倍</span>
-        <span className="text-2xl font-black max-lg:text-lg">1</span>
-      </div>
-      <div className="flex min-w-[300px] flex-1 items-center justify-center gap-3 border-r border-white/20 pr-5 text-base font-black max-lg:min-w-0 max-lg:gap-1 max-lg:pr-2 max-lg:text-xs">
+    <div className="training-observer-tools absolute bottom-[1.8%] left-1/2 z-[115] flex w-[min(1080px,calc(100vw-2rem))] -translate-x-1/2 items-center justify-between gap-3 rounded-2xl border border-white/45 bg-[#083b42]/90 px-5 py-3 text-white shadow-[0_12px_30px_rgba(4,48,62,0.3)] max-lg:gap-2 max-lg:px-3 max-lg:py-2">
+      <button
+        aria-label={`当前倍率为 ${multiplier} 倍，查看倍率规则`}
+        className="training-observer-multiplier flex min-w-[110px] items-center gap-3 border-r border-white/20 pr-5 text-left transition hover:opacity-90 max-lg:min-w-0 max-lg:gap-1.5 max-lg:pr-2"
+        onClick={onMultiplierClick}
+        title="查看倍率规则"
+        type="button"
+      >
+        <span className="grid h-10 w-10 place-items-center rounded-full bg-[#ff9d22] text-sm font-black text-white max-lg:h-8 max-lg:w-8 max-lg:text-xs">倍率</span>
+        <span className="text-2xl font-black max-lg:text-lg">×{multiplier}</span>
+        <span className="sr-only">查看倍率规则</span>
+      </button>
+      <div className="training-observer-suits flex min-w-[300px] flex-1 items-center justify-center gap-2 border-r border-white/20 pr-5 text-base font-black max-lg:min-w-0 max-lg:gap-1 max-lg:pr-2 max-lg:text-xs">
         <span>同花顺</span>
-        <span className="text-2xl text-white/85 max-lg:text-lg">♠</span>
-        <span className="text-2xl text-[#ff7f8e] max-lg:text-lg">♥</span>
-        <span className="text-2xl text-white/85 max-lg:text-lg">♣</span>
-        <span className="text-2xl text-[#ff7f8e] max-lg:text-lg">♦</span>
-        {straightFlush ? <span className="ml-1 text-[#8ff0c7]">已成</span> : null}
+        {suitItems.map(({ suit, symbol, label }) => {
+          const status = straightFlushStatuses.find((item) => item.suit === suit);
+          const matched = status?.matched ?? false;
+          return (
+            <span
+              aria-label={`${label}${matched ? "已成同花顺" : "未成同花顺"}`}
+              className={cn(
+                "grid h-9 min-w-9 place-items-center rounded-full px-1 text-2xl transition-all duration-200 max-lg:h-8 max-lg:min-w-8 max-lg:text-lg",
+                matched
+                  ? "scale-110 bg-[#ff7f8e]/20 text-[#ff7f8e] shadow-[0_0_14px_rgba(255,127,142,0.9)] ring-2 ring-[#ff9aa7]/75"
+                  : "text-[#9ab0b5]/45",
+              )}
+              key={suit}
+              title={`${label}${matched ? "已成同花顺" : "未成同花顺"}`}
+            >
+              {symbol}
+            </span>
+          );
+        })}
       </div>
       <button
         aria-label={organized ? "恢复理牌前手牌" : "理牌"}
@@ -948,38 +1090,18 @@ function ObserverHandTools({
         <span className="material-symbols-outlined text-[19px]">{organized ? "undo" : "sort"}</span>
         {organized ? "恢复" : "理牌"}
       </button>
-      {isAIThinking && (
-        <button
-          className="min-w-[120px] rounded-xl border border-white/40 bg-white/15 px-5 py-3 text-base font-black text-white transition hover:bg-white/24 max-lg:min-w-0 max-lg:px-3 max-lg:py-2 max-lg:text-xs"
-          onClick={onSkipAIWait}
-          type="button"
-        >
-          {skipLabel}
-        </button>
-      )}
+      <button
+        aria-hidden={!isAIThinking}
+        className="min-w-[120px] rounded-xl border border-white/40 bg-white/15 px-5 py-3 text-base font-black text-white transition hover:bg-white/24 disabled:pointer-events-none disabled:opacity-0 max-lg:min-w-0 max-lg:px-3 max-lg:py-2 max-lg:text-xs"
+        disabled={!isAIThinking}
+        onClick={onSkipAIWait}
+        tabIndex={isAIThinking ? 0 : -1}
+        type="button"
+      >
+        {skipLabel}
+      </button>
     </div>
   );
-}
-
-function hasStraightFlush(cards: Card[]) {
-  const suitRanks = new Map<string, number[]>();
-
-  for (const card of cards) {
-    if (card.isJoker) continue;
-    const ranks = suitRanks.get(card.suit) ?? [];
-    if (!ranks.includes(card.rank)) ranks.push(card.rank);
-    suitRanks.set(card.suit, ranks);
-  }
-
-  return [...suitRanks.values()].some((ranks) => {
-    const sorted = ranks.sort((a, b) => a - b);
-    let run = 1;
-    for (let index = 1; index < sorted.length; index += 1) {
-      run = sorted[index] === sorted[index - 1] + 1 ? run + 1 : 1;
-      if (run >= 5) return true;
-    }
-    return false;
-  });
 }
 
 function FloatingArenaControls({
@@ -1121,16 +1243,16 @@ function ArenaTopBar({
           {observerMode && onOpenReport ? <HudButton icon="▤" label="复盘报告" onClick={onOpenReport} /> : null}
           <HudButton icon="⚙" label="设置" onClick={onOpenSettings} />
           <HudButton icon={isPaused ? "▶" : "Ⅱ"} label={isPaused ? "继续" : "暂停"} onClick={onTogglePause} />
-                      <button
-              aria-label={isFullscreen ? "退出全屏" : "进入全屏"}
-              className="grid h-12 w-12 place-items-center rounded-full bg-white/42 text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5"
-              onClick={onToggleFullscreen}
-              type="button"
-            >
-              <span className="material-symbols-outlined text-[22px]">
-                {isFullscreen ? "fullscreen_exit" : "fullscreen"}
-              </span>
-            </button>
+          <button
+            aria-label={isFullscreen ? "退出全屏" : "进入全屏"}
+            className="grid h-12 w-12 place-items-center rounded-full bg-white/42 text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl transition hover:-translate-y-0.5"
+            onClick={onToggleFullscreen}
+            type="button"
+          >
+            <span className="material-symbols-outlined text-[22px]">
+              {isFullscreen ? "fullscreen_exit" : "fullscreen"}
+            </span>
+          </button>
           <button
             aria-label={observerMode ? "返回训练列表" : "退出房间"}
             className="flex h-12 items-center gap-1.5 rounded-full bg-[#0f64ff] px-6 text-base font-black text-white shadow-[0_14px_30px_rgba(15,100,255,0.28)] transition hover:-translate-y-0.5 max-lg:px-4"
@@ -1220,39 +1342,113 @@ function ArenaModal({
   children,
   onClose,
   open,
-  title
+  title,
+  variant = "default"
 }: {
   children: ReactNode;
   onClose: () => void;
   open: boolean;
-  title: string;
+  title?: string;
+  variant?: "default" | "dual-entry" | "dual-entry-detail";
 }) {
   if (!open) return null;
 
+  const isDualEntry = variant === "dual-entry" || variant === "dual-entry-detail";
+  const isDualEntryDetail = variant === "dual-entry-detail";
+
   return (
     <div className="training-arena-modal fixed inset-0 z-[120] grid place-items-center bg-[#08233d]/34 p-5 backdrop-blur-sm">
-      <section className="training-arena-modal-panel max-h-[86vh] w-[min(640px,92vw)] overflow-y-auto rounded-2xl bg-white p-6 shadow-[0_24px_70px_rgba(8,35,61,0.30)]">
-        <div className="mb-5 flex items-center justify-between">
-          <h2 className="text-2xl font-black text-[#12395a]">{title}</h2>
+      <section
+        className={
+          isDualEntryDetail
+            ? "training-arena-modal-panel training-arena-modal-panel--dual-entry-detail relative max-h-[90vh] w-[min(900px,94vw)] rounded-2xl sm:rounded-2xl"
+            : isDualEntry
+              ? "training-arena-modal-panel training-arena-modal-panel--dual-entry relative max-h-[90vh] w-[min(900px,94vw)] rounded-2xl border border-white/8 shadow-[0_20px_60px_rgba(0,0,0,0.35)]"
+              : "training-arena-modal-panel max-h-[86vh] w-[min(640px,92vw)] overflow-y-auto rounded-2xl bg-white p-6 shadow-[0_24px_70px_rgba(8,35,61,0.30)]"
+        }
+      >
+        {isDualEntry ? (
           <button
-            className="grid h-11 w-11 place-items-center rounded-full bg-[#eaf5ff] text-xl font-black text-[#12395a]"
+            aria-label="关闭训练帮助"
+            className={
+              isDualEntryDetail
+                ? "absolute right-3 top-3 z-20 grid h-10 w-10 place-items-center rounded-full border border-white/35 bg-white/18 text-xl font-black text-white transition hover:bg-white/28"
+                : "absolute right-3 top-3 z-20 grid h-10 w-10 place-items-center rounded-full border border-white/14 bg-[#0a1628]/72 text-xl font-black text-white/88 backdrop-blur-md transition hover:bg-[#12395a]/88"
+            }
             onClick={onClose}
             type="button"
           >
             ×
           </button>
-        </div>
-        {children}
+        ) : (
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="text-2xl font-black text-[#12395a]">{title}</h2>
+            <button
+              className="grid h-11 w-11 place-items-center rounded-full bg-[#eaf5ff] text-xl font-black text-[#12395a]"
+              onClick={onClose}
+              type="button"
+            >
+              ×
+            </button>
+          </div>
+        )}
+        {isDualEntry ? (
+          <div className={`training-arena-modal-scroll${isDualEntryDetail ? "" : " p-3 sm:p-4"}`}>{children}</div>
+        ) : (
+          children
+        )}
       </section>
     </div>
   );
 }
 
-function RuleBlock({ items, title }: { items: string[]; title: string }) {
+function RulesHelpDetail({
+  children,
+  onBack,
+  title
+}: {
+  children: ReactNode;
+  onBack: () => void;
+  title: string;
+}) {
   return (
-    <section className="rounded-2xl bg-[#f3f9ff] p-5">
-      <h3 className="text-lg font-black text-[#12395a]">{title}</h3>
-      <ul className="mt-3 space-y-2 text-base leading-7">
+    <div className="training-help-card p-4 pt-12 sm:p-5 sm:pt-12">
+      <div className="mb-4 flex items-center gap-3">
+        <button
+          className="grid h-10 w-10 place-items-center rounded-full border border-white/35 bg-white/16 text-white transition hover:bg-white/26"
+          onClick={onBack}
+          type="button"
+        >
+          <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+        </button>
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/72">Training help</p>
+          <h2 className="text-xl font-black text-white">{title}</h2>
+        </div>
+      </div>
+      <div className="space-y-3 text-sm font-bold leading-6 text-white/92">{children}</div>
+    </div>
+  );
+}
+
+function RuleBlock({ items, title, variant = "light" }: { items: string[]; title: string; variant?: "dark" | "light" | "help-card" }) {
+  if (variant === "help-card") {
+    return (
+      <section className="training-help-card__section">
+        <h3 className="training-help-card__section-title">{title}</h3>
+        <ul className="training-help-card__section-list">
+          {items.map((item) => (
+            <li key={item}>• {item}</li>
+          ))}
+        </ul>
+      </section>
+    );
+  }
+
+  return (
+    <section className={variant === "dark" ? "rounded-2xl border border-white/10 bg-white/6 p-4" : "rounded-2xl bg-[#f3f9ff] p-5"}>
+      <h3 className={variant === "dark" ? "text-base font-black text-[#93c5fd]" : "text-lg font-black text-[#12395a]"}>{title}</h3>
+      <ul className={variant === "dark" ? "mt-2 space-y-1.5 text-sm leading-6 text-white/76" : "mt-3 space-y-2 text-base leading-7"}>
         {items.map((item) => (
           <li key={item}>• {item}</li>
         ))}

@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { arrangeCardGroups, arrangeCards, restoreCards } from "./cardArrange.ts";
 import type { Card, CardRank, CardSuit } from "../lib/guandan/card.ts";
+import { analyzeStraightFlushSuits, detectStraightFlushSuits } from "../lib/guandan/straightFlush.ts";
 
 function card(
   id: string,
@@ -15,6 +16,37 @@ function card(
 function ids(cards: Card[]) {
   return cards.map((item) => item.id);
 }
+
+test("detects straight flushes by suit without mixing suits", () => {
+  const hand = [
+    card("s3", 3, "spade"),
+    card("s4", 4, "spade"),
+    card("s5", 5, "spade"),
+    card("s6", 6, "spade"),
+    card("s7", 7, "spade"),
+    card("h3", 3, "heart"),
+    card("h4", 4, "heart"),
+    card("h5", 5, "heart"),
+    card("h6", 6, "heart"),
+  ];
+
+  assert.deepEqual(detectStraightFlushSuits(hand), ["spade"]);
+  assert.equal(analyzeStraightFlushSuits(hand).find((status) => status.suit === "heart")?.longestRun, 4);
+});
+
+test("does not treat twos, jokers, or duplicate copies as a straight flush run", () => {
+  const hand = [
+    card("s10", 10),
+    card("sj", 11),
+    card("sq", 12),
+    card("sk", 13),
+    card("s2", 15),
+    { ...card("sjoker", 16), suit: "joker" as const, isJoker: true },
+    card("s10-copy", 10, "spade", 2),
+  ];
+
+  assert.deepEqual(detectStraightFlushSuits(hand), []);
+});
 
 test("mixes singles and pairs by rank, not by group size", () => {
   const hand = [
@@ -64,6 +96,18 @@ test("protects bombs and straight flushes before ordinary groups", () => {
   assert.equal(groups[0]?.type, "straightFlush");
   assert.equal(groups[1]?.type, "bomb");
   assert.equal(new Set(groups.flatMap((group) => ids(group.cards))).size, 9);
+});
+
+test("caps ordinary straights at exactly five cards", () => {
+  const suits: CardSuit[] = ["spade", "heart", "club", "diamond"];
+  const longRun = [3, 4, 5, 6, 7, 8, 9, 10].map((rank, index) =>
+    card(`s-${rank}`, rank as CardRank, suits[index % suits.length])
+  );
+  const groups = arrangeCardGroups(longRun, 15);
+  const straight = groups.find((group) => group.type === "straight");
+
+  assert.equal(straight?.cards.length, 5);
+  assert.deepEqual(straight?.cards.map((item) => item.rank).sort((a, b) => a - b), [6, 7, 8, 9, 10]);
 });
 
 test("restores the first entity-id order and rejects a stale snapshot", () => {

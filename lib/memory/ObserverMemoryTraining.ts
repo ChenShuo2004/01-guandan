@@ -1,7 +1,7 @@
 import type { Card, CardRank } from "../guandan/card.ts";
 import { getRankLabel } from "../guandan/card.ts";
 import type { GameEngineState } from "../guandan/gameState.ts";
-import type { PlayerSeat } from "../guandan/player.ts";
+import type { PlayerId, PlayerSeat } from "../guandan/player.ts";
 import type { MemorySessionClock, MemoryTargetProgress, TrainingMultiplier } from "./memoryTrainingSystem";
 import { calculateRemainingTargetCounts, createInitialTargetProgress } from "./memoryTrainingSystem";
 
@@ -43,13 +43,23 @@ export interface MemoryCheckpointResult {
   createdAt: number;
 }
 
+export interface MemoryHandResult {
+  handId: string;
+  placements: Array<{
+    playerId: PlayerId;
+    playerName: string;
+    role: string;
+    seat: PlayerSeat;
+  }>;
+  createdAt: number;
+}
+
 export interface ObserverMemoryTrainingState {
   sessionId: string;
   startedAt: number;
   durationMinutes: number;
   observerSeat: PlayerSeat;
   phase: MemoryTrainingPhase;
-  targetCountStepIndex: number;
   currentTargetCount: number;
   targetRanks: CardRank[];
   currentHandId: string;
@@ -57,11 +67,10 @@ export interface ObserverMemoryTrainingState {
   visibleTargetCardIds: string[];
   relevantEvents: MemoryRelevantEvent[];
   validPlayCountSinceCheckpoint: number;
-  checkpointInterval: number;
-  consecutiveLowAccuracyCheckpoints: number;
   currentAnswers: Record<string, number>;
   pendingCheckpoint: MemoryCheckpointResult | null;
   checkpoints: MemoryCheckpointResult[];
+  handResults: MemoryHandResult[];
   stageAccuracy: number;
   overallAccuracy: number;
   bestTargetCount: number;
@@ -71,7 +80,6 @@ export interface ObserverMemoryTrainingState {
   observerHandCardIds: string[];
   allCardsById: Record<string, Card>;
   lastProcessedHistoryLength: number;
-  observationTimerActive: boolean;
   sessionTimeExpired: boolean;
   multiplier: TrainingMultiplier;
   multiplierResults: boolean[];
@@ -248,32 +256,6 @@ export function shouldTriggerMemoryCheckpoint(
   return training.validPlayCountSinceCheckpoint >= interval.max;
 }
 
-export function checkShouldUpgrade(training: ObserverMemoryTrainingState): boolean {
-  const recent = training.checkpoints.slice(-5);
-  return recent.length === 5 && recent.every((checkpoint) => checkpoint.accuracy === 1);
-}
-
-export function getNextTargetCountStep(currentIndex: number): number {
-  return Math.min(currentIndex + 1, TARGET_COUNT_STEPS.length - 1);
-}
-
-export function handlePoorPerformance(
-  training: ObserverMemoryTrainingState,
-): ObserverMemoryTrainingState {
-  const recent = training.checkpoints.slice(-5);
-  if (recent.length < 5 || recent.filter((checkpoint) => checkpoint.accuracy === 1).length >= 2 || training.currentTargetCount <= 1) return training;
-  const nextCount = training.currentTargetCount - 1;
-  const nextIndex = TARGET_COUNT_STEPS.findIndex((count) => count === nextCount);
-  const newInterval = CHECKPOINT_INTERVALS[nextCount];
-  return {
-    ...training,
-    targetCountStepIndex: nextIndex >= 0 ? nextIndex : training.targetCountStepIndex,
-    currentTargetCount: nextCount,
-    checkpointInterval: newInterval?.max ?? 5,
-    consecutiveLowAccuracyCheckpoints: 0,
-  };
-}
-
 export function evaluateCheckpointWithCards(
   training: ObserverMemoryTrainingState,
   allCardsById: Record<string, Card>,
@@ -340,20 +322,18 @@ export function createInitialTrainingState(
     startedAt: Date.now(),
     durationMinutes: debug ? DEBUG_DURATION_MINUTES : DEFAULT_DURATION_MINUTES,
     observerSeat: "bottom",
-    phase: "INITIALIZING",
-    targetCountStepIndex: 0,
+    phase: "SHOWING_TARGETS",
     currentTargetCount: TARGET_COUNT_STEPS[0],
-    targetRanks: [],
+    targetRanks: createTargetRanks(TARGET_COUNT_STEPS[0], levelRank),
     currentHandId: `hand-${Date.now()}`,
-    handCount: 0,
+    handCount: 1,
     visibleTargetCardIds: [],
     relevantEvents: [],
     validPlayCountSinceCheckpoint: 0,
-    checkpointInterval: CHECKPOINT_INTERVALS[TARGET_COUNT_STEPS[0]]?.max ?? 5,
-    consecutiveLowAccuracyCheckpoints: 0,
     currentAnswers: {},
     pendingCheckpoint: null,
     checkpoints: [],
+    handResults: [],
     stageAccuracy: 0,
     overallAccuracy: 0,
     bestTargetCount: 0,
@@ -363,7 +343,6 @@ export function createInitialTrainingState(
     observerHandCardIds: [],
     allCardsById: {},
     lastProcessedHistoryLength: 0,
-    observationTimerActive: false,
     sessionTimeExpired: false,
     multiplier: 1,
     multiplierResults: [],
@@ -394,7 +373,6 @@ export function resetForNextHand(
     currentAnswers: {},
     pendingCheckpoint: null,
     lastProcessedHistoryLength: 0,
-    observationTimerActive: false,
     playersPlayedSinceCheckpoint: new Set(),
   };
 }
@@ -402,8 +380,13 @@ export function resetForNextHand(
 export function normalizeTrainingStateForResume(
   training: ObserverMemoryTrainingState,
 ): ObserverMemoryTrainingState {
-  if (training.phase === "SESSION_FINISHED" || training.sessionTimeExpired) return {
+  const normalized = {
     ...training,
+    handResults: training.handResults ?? [],
+  };
+
+  if (training.phase === "SESSION_FINISHED" || training.sessionTimeExpired) return {
+    ...normalized,
     playersPlayedSinceCheckpoint: training.playersPlayedSinceCheckpoint instanceof Set 
       ? training.playersPlayedSinceCheckpoint 
       : new Set(),
@@ -411,12 +394,11 @@ export function normalizeTrainingStateForResume(
 
   // GameArena state is intentionally ephemeral, so a restored session starts a
   // fresh hand while keeping curriculum, multiplier, checkpoints and session time.
-  const currentTargetCount = training.targetProgress.activeTargets.length;
+  const currentTargetCount = normalized.targetProgress.activeTargets.length;
   return resetForNextHand({
-    ...training,
+    ...normalized,
     phase: "STARTING_NEXT_HAND",
     currentTargetCount,
-    targetCountStepIndex: Math.max(0, TARGET_COUNT_STEPS.findIndex((count) => count === currentTargetCount)),
   });
 }
 

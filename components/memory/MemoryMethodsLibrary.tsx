@@ -5,22 +5,40 @@ import { usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { categoryLabels, difficultyLabels, memoryMethods } from "@/content/memory-methods";
 
-function buildMemoryMethodsHref(returnTo?: string | null) {
-  return returnTo ? `/training/memory-methods?returnTo=${encodeURIComponent(returnTo)}` : "/training/memory-methods";
-}
-
 function buildMethodDetailHref(slug: string, returnTo?: string | null) {
   return returnTo
     ? `/training/memory-methods/${slug}?returnTo=${encodeURIComponent(returnTo)}`
     : `/training/memory-methods/${slug}`;
 }
 
-export function MemoryMethodsLibrary({ compact = false, returnTo = null }: { compact?: boolean; returnTo?: string | null }) {
-  const router = useRouter();
+export function MemoryMethodCardGrid({ returnTo = null }: { returnTo?: string | null }) {
+  const pathname = usePathname();
+  const resolvedReturnTo = returnTo ?? (pathname?.startsWith("/") ? pathname : "/practice");
 
-  if (compact) {
-    return <CompactMethodList />;
-  }
+  return (
+    <div className="grid gap-2 sm:grid-cols-2">
+      {memoryMethods.map((method) => (
+        <Link
+          className={`rounded-xl bg-white p-3 ring-1 transition hover:-translate-y-0.5 hover:shadow-[0_8px_20px_rgba(31,112,166,0.14)] ${method.featured ? "ring-[#f2c66c]" : "ring-[#dcecf7]"}`}
+          href={buildMethodDetailHref(method.slug, resolvedReturnTo)}
+          key={method.id}
+        >
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs font-black text-[#0f64ff]">方法 {method.number}</p>
+            {method.recommended ? <span className="text-[10px] font-black text-[#b47a0c]">核心推荐</span> : null}
+          </div>
+          <p className="mt-1 text-sm font-black text-[#12395a]">{method.shortTitle}</p>
+          <p className="mt-1 text-xs font-bold text-[#64849a]">
+            {categoryLabels[method.category]} · {difficultyLabels[method.difficulty]}
+          </p>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
+export function MemoryMethodsLibrary({ returnTo = null }: { returnTo?: string | null }) {
+  const router = useRouter();
 
   const handleBack = () => {
     if (returnTo?.startsWith("/")) {
@@ -56,43 +74,6 @@ export function MemoryMethodsLibrary({ compact = false, returnTo = null }: { com
         </div>
       </div>
     </main>
-  );
-}
-
-function CompactMethodList() {
-  const pathname = usePathname();
-  const returnTo = pathname?.startsWith("/") ? pathname : "/practice";
-
-  return (
-    <section className="rounded-2xl border border-[#cfe3f5] bg-[#f5fbff] p-4">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-[#0f64ff]">记牌方法</p>
-          <p className="mt-1 text-lg font-black text-[#12395a]">找到适合自己的记忆动作</p>
-        </div>
-        <Link className="rounded-full bg-[#0f64ff] px-3 py-2 text-xs font-black text-white" href={buildMemoryMethodsHref(returnTo)}>
-          查看方法库
-        </Link>
-      </div>
-      <div className="mt-3 grid gap-2 sm:grid-cols-2">
-        {memoryMethods.map((method) => (
-          <Link
-            className={`rounded-xl bg-white p-3 ring-1 ${method.featured ? "ring-[#f2c66c]" : "ring-[#dcecf7]"}`}
-            href={buildMethodDetailHref(method.slug, returnTo)}
-            key={method.id}
-          >
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-xs font-black text-[#0f64ff]">方法 {method.number}</p>
-              {method.recommended ? <span className="text-[10px] font-black text-[#b47a0c]">核心推荐</span> : null}
-            </div>
-            <p className="mt-1 text-sm font-black text-[#12395a]">{method.shortTitle}</p>
-            <p className="mt-1 text-xs font-bold text-[#64849a]">
-              {categoryLabels[method.category]} · {difficultyLabels[method.difficulty]}
-            </p>
-          </Link>
-        ))}
-      </div>
-    </section>
   );
 }
 

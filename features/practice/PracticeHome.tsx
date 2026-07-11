@@ -23,7 +23,7 @@ export function PracticeHome() {
           transition={{ delay: 0.15, duration: 0.7, ease: "easeOut" }}
         >
           <TiltedCard
-            containerHeight="540px"
+            containerHeight="460px"
             displayOverlayContent
             hideImage
             imageHeight="100%"

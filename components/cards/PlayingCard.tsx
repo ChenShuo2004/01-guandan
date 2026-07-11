@@ -75,7 +75,7 @@ export function PlayingCard({
       aria-label={label}
       className={cn(
         "relative shrink-0 touch-manipulation select-none rounded-[14px] p-0 outline-none transition-colors",
-        disabled ? "cursor-default opacity-80" : "cursor-pointer",
+        disabled ? "cursor-default opacity-100" : "cursor-pointer",
         status === "invalid" &&
           "shadow-[0_0_0_3px_rgba(255,92,106,0.72),0_0_18px_rgba(255,92,106,0.64),0_22px_36px_rgba(6,20,34,0.34)]"
       )}

@@ -1,22 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { PokerCard } from "@/components/cards/PokerCard";
-import type { PokerCardData } from "@/types/poker";
 import "./MemoryLabFeatureCard.css";
 
 const FEATURES = [
-  { label: "自动推进牌局", accent: true },
-  { label: "追踪关键牌", accent: true },
-  { label: "即时记牌测试", accent: false }
+  {
+    icon: "play_arrow",
+    label: "自动推进牌局",
+    lines: ["AI 自动出完整局", "专注观察记牌"],
+    titleTone: "play" as const
+  },
+  {
+    icon: "my_location",
+    label: "追踪关键牌",
+    lines: ["关键牌实时标记", "随时查看剩余"],
+    titleTone: "track" as const
+  },
+  {
+    icon: "bolt",
+    label: "即时记牌测试",
+    lines: ["牌局结束即测", "检验记忆成果"],
+    titleTone: "test" as const
+  }
 ] as const;
-
-const FLOATING_CARDS: Array<{ card: PokerCardData; className: string }> = [
-  { card: { id: "hero-a", rank: "A", suit: "spade" }, className: "memory-lab-card__floating-card--a" },
-  { card: { id: "hero-b", rank: "4", suit: "heart" }, className: "memory-lab-card__floating-card--b" },
-  { card: { id: "hero-c", rank: "2", suit: "spade" }, className: "memory-lab-card__floating-card--c" },
-  { card: { id: "hero-d", rank: "K", suit: "spade" }, className: "memory-lab-card__floating-card--d" }
-];
 
 interface MemoryLabFeatureCardProps {
   href: string;
@@ -26,44 +32,33 @@ export function MemoryLabFeatureCard({ href }: MemoryLabFeatureCardProps) {
   return (
     <div className="memory-lab-card flex h-full flex-col p-5 sm:p-7">
       <div className="memory-lab-card__content flex h-full flex-col">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <div className="memory-lab-card__menu">
-              <span>Menu</span>
-              <span className="memory-lab-card__tag">关键牌追踪-记牌训练</span>
-            </div>
-            <h2 className="mt-4 text-[clamp(1.85rem,5vw,2.5rem)] font-black leading-tight text-white">关键牌追踪</h2>
-          </div>
+        <div className="flex items-start justify-end">
           <div aria-hidden="true" className="memory-lab-card__spade">
             ♠
           </div>
         </div>
 
-        <ul className="mt-5 grid gap-2 sm:grid-cols-3 sm:gap-3">
+        <ul className="memory-lab-card__features mt-2 grid flex-1 gap-3 sm:grid-cols-3 sm:gap-4">
           {FEATURES.map((feature) => (
-            <li
-              key={feature.label}
-              className={`memory-lab-card__pill ${feature.accent ? "memory-lab-card__pill--accent" : ""}`}
-            >
-              {feature.label}
+            <li key={feature.label} className="memory-lab-card__feature">
+              <span aria-hidden="true" className="memory-lab-card__feature-icon">
+                <span className="material-symbols-outlined">{feature.icon}</span>
+              </span>
+              <h3 className={`memory-lab-card__feature-title memory-lab-card__feature-title--${feature.titleTone}`}>
+                {feature.label}
+              </h3>
+              <div className="memory-lab-card__feature-copy">
+                {feature.lines.map((line) => (
+                  <p key={line}>{line}</p>
+                ))}
+              </div>
             </li>
           ))}
         </ul>
 
-        <div aria-hidden="true" className="memory-lab-card__stage flex-1">
-          <div className="memory-lab-card__table">
-            <div className="memory-lab-card__table-glow" />
-            <div className="memory-lab-card__table-surface" />
-          </div>
-          {FLOATING_CARDS.map(({ card, className }) => (
-            <div key={card.id} className={`memory-lab-card__floating-card ${className}`}>
-              <PokerCard card={card} compact size="sm" />
-            </div>
-          ))}
-        </div>
-
         <Link className="memory-lab-card__cta mt-5" href={href}>
           开始训练
+          <span aria-hidden="true">›</span>
         </Link>
       </div>
     </div>

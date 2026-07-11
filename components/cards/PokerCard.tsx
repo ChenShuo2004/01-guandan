@@ -52,7 +52,7 @@ export function PokerCard({
   return (
     <div
       className={cn(
-        "relative flex shrink-0 select-none overflow-hidden rounded-[13px] bg-white shadow-[0_10px_18px_rgba(17,24,39,0.20)] transition",
+        "relative flex shrink-0 select-none overflow-hidden rounded-[13px] border border-white/95 bg-[#ffffff] shadow-[0_12px_22px_rgba(17,24,39,0.30)] ring-1 ring-[#9aa7b0]/70 transition",
         dimensions ? null : cardSizeClass,
         variant === "played" && "shadow-[0_12px_22px_rgba(17,24,39,0.28)] ring-1 ring-white/70",
         cardType === "levelCard" &&

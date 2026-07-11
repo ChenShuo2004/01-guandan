@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import type { TrainingPhase } from "@/lib/guandan/gameState";
+import { playGameAudio } from "@/lib/audio/arenaAudio";
 import { cn } from "@/lib/utils";
 
 interface ActionToolbarProps {
@@ -25,6 +26,7 @@ interface ActionToolbarProps {
   onSkipAIWait: () => void;
   onRestoreHand: () => void;
   restoreEnabled: boolean;
+  soundEnabled?: boolean;
 }
 
 export function ActionToolbar({
@@ -47,7 +49,8 @@ export function ActionToolbar({
   onUndo,
   onSkipAIWait,
   onRestoreHand,
-  restoreEnabled
+  restoreEnabled,
+  soundEnabled = true
 }: ActionToolbarProps) {
   return (
     <motion.div
@@ -58,31 +61,33 @@ export function ActionToolbar({
     >
       {phase === "idle" ? (
         <>
-          <ToolbarButton icon="play_arrow" label="开始训练" onClick={onStart} tone="primary" />
-          <ToolbarButton icon="home" label="返回大厅" onClick={onBackToLobby} />
+          <ToolbarButton icon="play_arrow" label="开始训练" onClick={onStart} soundEnabled={soundEnabled} tone="primary" />
+          <ToolbarButton icon="home" label="返回大厅" onClick={onBackToLobby} soundEnabled={soundEnabled} />
         </>
       ) : null}
 
       {phase === "playing" ? (
         <>
-          <ToolbarButton disabled={!canAct} icon="block" label="不出" onClick={onPass} tone="quiet" />
-          <ToolbarButton disabled={!canAct} icon="tips_and_updates" label="提示" onClick={onTip} tone="warning" />
-          <ToolbarButton active={cardCounterVisible} icon="casino" label="记牌器" onClick={onToggleCardCounter} />
+          <ToolbarButton disabled={!canAct} icon="block" label="不出" onClick={onPass} soundEnabled={soundEnabled} tone="quiet" />
+          <ToolbarButton disabled={!canAct} icon="tips_and_updates" label="提示" onClick={onTip} soundEnabled={soundEnabled} tone="warning" />
+          <ToolbarButton active={cardCounterVisible} icon="casino" label="记牌器" onClick={onToggleCardCounter} soundEnabled={soundEnabled} />
           <ToolbarButton
             disabled={isArranging}
             icon={restoreEnabled ? "undo" : "sort"}
             label={restoreEnabled ? "恢复" : "理牌"}
             onClick={restoreEnabled ? onRestoreHand : onSortHand}
+            soundEnabled={soundEnabled}
           />
           <ToolbarButton
             disabled={!canAct || selectedCount === 0}
             icon="send"
             label={selectedCount > 0 ? `出牌 ${selectedCount}` : "出牌"}
             onClick={onPlay}
+            soundEnabled={soundEnabled}
             tone="primary"
           />
           {isAIThinking ? (
-            <ToolbarButton icon="skip_next" label="跳过" onClick={onSkipAIWait} tone="quiet" />
+            <ToolbarButton icon="skip_next" label="跳过" onClick={onSkipAIWait} soundEnabled={soundEnabled} tone="quiet" />
           ) : null}
           {selectedCount > 0 ? (
             <button className="sr-only" onClick={onUndo} type="button">
@@ -94,16 +99,16 @@ export function ActionToolbar({
 
       {phase === "analysis" ? (
         <>
-          <ToolbarButton icon="psychology" label="推荐方案" onClick={onShowSolution} tone="warning" />
-          <ToolbarButton icon="play_arrow" label="继续训练" onClick={onContinue} tone="primary" />
-          <ToolbarButton icon="refresh" label="重新训练" onClick={onRestart} />
+          <ToolbarButton icon="psychology" label="推荐方案" onClick={onShowSolution} soundEnabled={soundEnabled} tone="warning" />
+          <ToolbarButton icon="play_arrow" label="继续训练" onClick={onContinue} soundEnabled={soundEnabled} tone="primary" />
+          <ToolbarButton icon="refresh" label="重新训练" onClick={onRestart} soundEnabled={soundEnabled} />
         </>
       ) : null}
 
       {phase === "completed" ? (
         <>
-          <ToolbarButton icon="refresh" label="重新训练" onClick={onRestart} tone="primary" />
-          <ToolbarButton icon="home" label="返回大厅" onClick={onBackToLobby} />
+          <ToolbarButton icon="refresh" label="重新训练" onClick={onRestart} soundEnabled={soundEnabled} tone="primary" />
+          <ToolbarButton icon="home" label="返回大厅" onClick={onBackToLobby} soundEnabled={soundEnabled} />
         </>
       ) : null}
     </motion.div>
@@ -116,6 +121,7 @@ function ToolbarButton({
   icon,
   label,
   onClick,
+  soundEnabled = true,
   tone = "default"
 }: {
   active?: boolean;
@@ -123,8 +129,14 @@ function ToolbarButton({
   icon: string;
   label: string;
   onClick?: () => void;
+  soundEnabled?: boolean;
   tone?: "default" | "primary" | "quiet" | "warning";
 }) {
+  function handleClick() {
+    playGameAudio("ui.click", soundEnabled, { cooldownMs: 45, volume: 0.45 });
+    onClick?.();
+  }
+
   return (
     <button
       className={cn(
@@ -136,7 +148,7 @@ function ToolbarButton({
         active && "border-[#0f64ff] bg-[#e8f2ff] text-[#0f64ff] ring-2 ring-[#0f64ff]/18"
       )}
       disabled={disabled}
-      onClick={onClick}
+      onClick={handleClick}
       type="button"
     >
       <span className="material-symbols-outlined text-[19px] max-lg:text-[17px]">{icon}</span>

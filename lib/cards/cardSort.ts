@@ -144,7 +144,7 @@ function extractStraightGroups(cards: Card[]) {
 function pushStraight(run: Card[], groups: CardHandGroup[]) {
   if (run.length < 5) return;
 
-  const cards = sortByRankAndSuit(run);
+  const cards = sortByRankAndSuit(run.slice(-5));
   const highRank = Math.max(...cards.map((card) => card.rank));
 
   groups.push({

@@ -58,6 +58,7 @@ export interface GameEngineState {
   trainingPhase: TrainingPhase;
   gameStatus: GameStatus;
   winner: PlayerId | null;
+  finishOrder: PlayerId[];
   passCount: number;
   turnNumber: number;
   history: GameHistoryEntry[];
@@ -109,6 +110,7 @@ export function createInitialGameState(seed = 20260711, levelRank: CardRank = 15
     trainingPhase: "playing",
     gameStatus: "playing",
     winner: null,
+    finishOrder: [],
     passCount: 0,
     turnNumber: 1,
     history: [],

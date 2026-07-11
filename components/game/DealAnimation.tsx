@@ -73,6 +73,7 @@ export function DealAnimation({
     <div className="pointer-events-auto absolute inset-0 z-[95] overflow-hidden">
       <div className="absolute inset-0 bg-[#1a78bb]/10 backdrop-blur-[1px]" />
 
+      <div className="absolute inset-0 -translate-y-[8dvh]">
       <motion.div
         animate={{ y: [0, -8, 0], scale: [1, 1.03, 1] }}
         className="absolute left-1/2 top-1/2 z-20 grid h-[clamp(108px,34dvh,192px)] w-[clamp(72px,22.7dvh,128px)] -translate-x-1/2 -translate-y-1/2 place-items-center rounded-3xl border border-white/50 bg-[#17489d] shadow-[0_0_46px_rgba(100,168,254,0.82),0_28px_58px_rgba(19,57,90,0.35)]"
@@ -107,7 +108,7 @@ export function DealAnimation({
         );
       })}
 
-
+      </div>
     </div>
   );
 }

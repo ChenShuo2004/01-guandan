@@ -77,7 +77,7 @@ function extractStraightFlushes(remaining: Card[], groups: SmartGroup[]) {
 
     for (const run of runs) {
       if (run.length < 5) continue;
-      const cards = takeLongestRunCards(run, suited);
+      const cards = takeBestFiveRunCards(run, suited);
       removeCards(remaining, cards);
       groups.push({
         cards,
@@ -157,7 +157,7 @@ function extractStraights(remaining: Card[], groups: SmartGroup[]) {
 
   for (const run of runs) {
     if (run.length < 5) continue;
-    const cards = takeLongestRunCards(run, remaining);
+    const cards = takeBestFiveRunCards(run, remaining);
     removeCards(remaining, cards);
     groups.push({
       cards,
@@ -216,8 +216,9 @@ function findRunsByRank(cards: Card[]) {
   return runs.sort((a, b) => b[b.length - 1] - a[a.length - 1]);
 }
 
-function takeLongestRunCards(ranks: CardRank[], cards: Card[]) {
+function takeBestFiveRunCards(ranks: CardRank[], cards: Card[]) {
   return ranks
+    .slice(-5)
     .map((rank) => sortByRankSuit(cards.filter((card) => card.rank === rank))[0])
     .filter((card): card is Card => Boolean(card));
 }

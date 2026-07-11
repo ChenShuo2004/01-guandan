@@ -9,6 +9,7 @@ import { detectMistakeAfterUserPlay } from "@/lib/coach/MistakeDetector";
 import type { Card, CardRank } from "@/lib/guandan/card";
 import { sortCards } from "@/lib/guandan/card";
 import { clearSelection, playCards, passTurn, toggleSelectedCard } from "@/lib/guandan/gameEngine";
+import { stabilizeGameState } from "@/lib/guandan/gameStateGuard";
 import {
   createInitialGameState,
   getCurrentPlayer,
@@ -41,6 +42,8 @@ type GameAction =
 const INITIAL_GAME_SEED = 20260711;
 
 function gameReducer(state: GameEngineState, action: GameAction): GameEngineState {
+  state = stabilizeGameState(state);
+
   switch (action.type) {
     case "restart":
       return createInitialGameState(Date.now(), state.levelRank);

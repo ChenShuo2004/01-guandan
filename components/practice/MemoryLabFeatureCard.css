@@ -52,150 +52,96 @@
   z-index: 1;
 }
 
-.memory-lab-card__menu {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 10px;
-  font-weight: 900;
-  letter-spacing: 0.34em;
-  text-transform: uppercase;
-}
-
-.memory-lab-card__tag {
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.94);
-  padding: 6px 12px;
-  color: #102033;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  text-transform: none;
-}
-
 .memory-lab-card__spade {
   display: grid;
-  height: 56px;
-  width: 56px;
+  height: 48px;
+  width: 48px;
   flex-shrink: 0;
   place-items: center;
-  border-radius: 18px;
+  border-radius: 14px;
   background: linear-gradient(180deg, #ffd978 0%, #f6c65b 100%);
   box-shadow:
     0 10px 24px rgba(246, 198, 91, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.45);
   color: #171101;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
 }
 
-.memory-lab-card__pill {
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(7, 20, 38, 0.55);
-  padding: 8px 12px;
-  color: rgba(232, 246, 255, 0.92);
-  font-size: 12px;
-  font-weight: 800;
-  text-align: center;
-  white-space: nowrap;
+.memory-lab-card__features {
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.memory-lab-card__pill--accent {
-  border-color: rgba(214, 132, 255, 0.82);
-  background: rgba(48, 18, 72, 0.42);
-  box-shadow:
-    0 0 16px rgba(186, 104, 255, 0.34),
-    inset 0 0 12px rgba(186, 104, 255, 0.12);
-}
-
-.memory-lab-card__stage {
-  position: relative;
-  margin-top: 10px;
-  min-height: 168px;
-}
-
-.memory-lab-card__table {
-  position: absolute;
-  left: 50%;
-  top: 58%;
-  width: min(78%, 360px);
-  aspect-ratio: 2.2 / 1;
-  transform: translate(-50%, -50%) perspective(900px) rotateX(58deg);
-  transform-style: preserve-3d;
-}
-
-.memory-lab-card__table-surface {
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 2px solid rgba(104, 216, 255, 0.72);
+.memory-lab-card__feature {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 22px;
+  border: 1px solid rgba(186, 104, 255, 0.28);
   background:
-    radial-gradient(circle at 50% 38%, rgba(72, 196, 255, 0.28), transparent 58%),
-    linear-gradient(180deg, rgba(8, 34, 62, 0.92) 0%, rgba(4, 16, 34, 0.98) 100%);
+    radial-gradient(circle at 50% 0%, rgba(186, 104, 255, 0.14), transparent 52%),
+    linear-gradient(180deg, rgba(18, 10, 38, 0.72) 0%, rgba(10, 8, 28, 0.82) 100%);
   box-shadow:
-    0 0 28px rgba(72, 196, 255, 0.42),
-    0 18px 40px rgba(0, 0, 0, 0.42),
-    inset 0 0 24px rgba(104, 216, 255, 0.16);
+    0 0 20px rgba(140, 72, 255, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  padding: 18px 14px 16px;
+  text-align: center;
 }
 
-.memory-lab-card__table-surface::before {
-  content: "";
-  position: absolute;
-  inset: 12% 18%;
-  border-radius: 50%;
-  border: 1px solid rgba(104, 216, 255, 0.28);
-  box-shadow: inset 0 0 18px rgba(104, 216, 255, 0.18);
+.memory-lab-card__feature-icon {
+  display: grid;
+  height: 52px;
+  width: 52px;
+  place-items: center;
+  border-radius: 999px;
+  background: radial-gradient(circle at 50% 30%, rgba(214, 132, 255, 0.95) 0%, rgba(132, 58, 220, 0.92) 100%);
+  box-shadow:
+    0 0 22px rgba(186, 104, 255, 0.55),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  color: #fff;
 }
 
-.memory-lab-card__table-glow {
-  position: absolute;
-  inset: -18% -8%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(72, 196, 255, 0.24), transparent 68%);
-  filter: blur(10px);
-  pointer-events: none;
+.memory-lab-card__feature-icon .material-symbols-outlined {
+  font-size: 24px;
 }
 
-.memory-lab-card__floating-card {
-  position: absolute;
-  z-index: 2;
-  filter: drop-shadow(0 0 14px rgba(104, 216, 255, 0.55));
-  transform-origin: center bottom;
+.memory-lab-card__feature-title {
+  margin-top: 14px;
+  font-size: clamp(0.95rem, 2.8vw, 1.05rem);
+  font-weight: 900;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
 }
 
-.memory-lab-card__floating-card::after {
-  content: "";
-  position: absolute;
-  inset: -8%;
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(104, 216, 255, 0.22), transparent 58%);
-  pointer-events: none;
+.memory-lab-card__feature-title--play {
+  color: #ff8fd8;
+  text-shadow: 0 0 18px rgba(255, 143, 216, 0.42);
 }
 
-.memory-lab-card__floating-card--a {
-  left: 50%;
-  top: 2%;
-  transform: translateX(-50%) rotate(-4deg) scale(0.92);
+.memory-lab-card__feature-title--track {
+  color: #7edfff;
+  text-shadow: 0 0 18px rgba(126, 223, 255, 0.42);
 }
 
-.memory-lab-card__floating-card--b {
-  left: 18%;
-  top: 18%;
-  transform: rotate(-14deg) scale(0.78);
+.memory-lab-card__feature-title--test {
+  color: #ffd978;
+  text-shadow: 0 0 18px rgba(255, 217, 120, 0.42);
 }
 
-.memory-lab-card__floating-card--c {
-  right: 16%;
-  top: 14%;
-  transform: rotate(12deg) scale(0.8);
+.memory-lab-card__feature-copy {
+  margin-top: 10px;
+  display: grid;
+  gap: 4px;
+  color: rgba(232, 246, 255, 0.72);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.45;
 }
 
-.memory-lab-card__floating-card--d {
-  left: 34%;
-  top: 0;
-  transform: rotate(-18deg) scale(0.7);
-  opacity: 0.88;
+.memory-lab-card__feature-copy p {
+  margin: 0;
 }
 
 .memory-lab-card__cta {
@@ -203,10 +149,12 @@
   min-height: 56px;
   align-items: center;
   justify-content: center;
-  border-radius: 18px;
-  background: linear-gradient(180deg, #2a7dff 0%, #0f64ff 100%);
+  gap: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #9b4dff 0%, #6b2dff 52%, #4a18ff 100%);
   box-shadow:
-    0 16px 34px rgba(15, 100, 255, 0.34),
+    0 16px 34px rgba(107, 45, 255, 0.38),
+    0 0 28px rgba(155, 77, 255, 0.28),
     inset 0 1px 0 rgba(255, 255, 255, 0.18);
   color: #fff;
   font-size: 1rem;
@@ -217,100 +165,41 @@
     background 0.2s ease;
 }
 
+.memory-lab-card__cta span {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
 .memory-lab-card__cta:hover {
   transform: translateY(-1px);
-  background: linear-gradient(180deg, #3d8aff 0%, #2b7aff 100%);
+  background: linear-gradient(90deg, #ab63ff 0%, #7a3dff 52%, #5a28ff 100%);
   box-shadow:
-    0 20px 40px rgba(15, 100, 255, 0.42),
+    0 20px 40px rgba(107, 45, 255, 0.48),
+    0 0 32px rgba(155, 77, 255, 0.34),
     inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .memory-lab-card__floating-card--a {
-    animation: memory-lab-float-a 4.8s ease-in-out infinite;
-  }
-
-  .memory-lab-card__floating-card--b {
-    animation: memory-lab-float-b 5.4s ease-in-out infinite;
-  }
-
-  .memory-lab-card__floating-card--c {
-    animation: memory-lab-float-c 5.1s ease-in-out infinite;
-  }
-
-  .memory-lab-card__floating-card--d {
-    animation: memory-lab-float-d 6s ease-in-out infinite;
-  }
-}
-
-@keyframes memory-lab-float-a {
-  0%,
-  100% {
-    transform: translateX(-50%) translateY(0) rotate(-4deg) scale(0.92);
-  }
-
-  50% {
-    transform: translateX(-50%) translateY(-10px) rotate(-2deg) scale(0.94);
-  }
-}
-
-@keyframes memory-lab-float-b {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-14deg) scale(0.78);
-  }
-
-  50% {
-    transform: translateY(-8px) rotate(-10deg) scale(0.8);
-  }
-}
-
-@keyframes memory-lab-float-c {
-  0%,
-  100% {
-    transform: translateY(0) rotate(12deg) scale(0.8);
-  }
-
-  50% {
-    transform: translateY(-9px) rotate(8deg) scale(0.82);
-  }
-}
-
-@keyframes memory-lab-float-d {
-  0%,
-  100% {
-    transform: translateY(0) rotate(-18deg) scale(0.7);
-  }
-
-  50% {
-    transform: translateY(-6px) rotate(-14deg) scale(0.72);
-  }
-}
-
 @media (max-width: 640px) {
-  .memory-lab-card__menu {
-    letter-spacing: 0.22em;
+  .memory-lab-card__feature {
+    padding: 16px 12px 14px;
   }
 
-  .memory-lab-card__tag {
+  .memory-lab-card__feature-icon {
+    height: 46px;
+    width: 46px;
+  }
+
+  .memory-lab-card__feature-icon .material-symbols-outlined {
+    font-size: 22px;
+  }
+
+  .memory-lab-card__feature-copy {
     font-size: 10px;
-    padding: 5px 10px;
-  }
-
-  .memory-lab-card__pill {
-    font-size: 11px;
-    padding: 7px 10px;
-    white-space: normal;
-  }
-
-  .memory-lab-card__stage {
-    min-height: 150px;
   }
 
   .memory-lab-card__spade {
-    height: 48px;
-    width: 48px;
-    border-radius: 14px;
-    font-size: 1.5rem;
+    height: 42px;
+    width: 42px;
+    font-size: 1.35rem;
   }
 }

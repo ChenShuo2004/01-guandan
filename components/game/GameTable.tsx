@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { PlayedCards } from "@/components/game/PlayedCards";
 import { PlayerSeat } from "@/components/game/PlayerSeat";
 import type { PlayerRoundAction, TurnActionState } from "@/lib/guandan/gameState";
@@ -11,6 +11,10 @@ interface GameTableProps {
   levelRank: string;
   players: ArenaPlayer[];
   roundActions: Partial<Record<PlayerId, PlayerRoundAction>>;
+  settlementFocus?: {
+    donorId: string;
+    receiverId: string;
+  };
   showTurnStatus?: boolean;
   turnAction: TurnActionState;
 }
@@ -19,6 +23,7 @@ export function GameTable({
   levelRank,
   players,
   roundActions,
+  settlementFocus,
   showTurnStatus = true,
   turnAction
 }: GameTableProps) {
@@ -34,7 +39,7 @@ export function GameTable({
         <div className="relative h-full rounded-[50%] border border-white/76 bg-[radial-gradient(circle_at_50%_35%,rgba(235,250,255,0.82),rgba(75,184,255,0.46)_38%,rgba(59,168,235,0.62)_100%)] shadow-[inset_0_0_95px_rgba(255,255,255,0.45),inset_0_-38px_70px_rgba(33,112,184,0.18),0_0_56px_rgba(75,184,255,0.48)]">
           <div className="absolute inset-[8%] rounded-[50%] border border-white/30" />
           <div className="absolute inset-[15%] rounded-[50%] border border-dashed border-white/30" />
-          {showTurnStatus ? <TurnStatusLabel turnAction={turnAction} /> : null}
+          {showTurnStatus ? <TurnStatusLabel players={players} turnAction={turnAction} /> : null}
           <div className="absolute inset-0 rounded-[50%] bg-[linear-gradient(105deg,transparent_0%,rgba(255,255,255,0.22)_46%,transparent_54%)] opacity-70" />
         </div>
       </motion.div>
@@ -42,24 +47,58 @@ export function GameTable({
       <RoundActionZone action={roundActions.enemyAI2} className="left-[24%] top-[42%]" levelRank={levelRank} position="left" />
       <RoundActionZone action={roundActions.partnerAI} className="left-1/2 top-[24%] -translate-x-1/2" levelRank={levelRank} position="top" />
       <RoundActionZone action={roundActions.enemyAI1} className="right-[21%] top-[42%]" levelRank={levelRank} position="right" />
-      <RoundActionZone action={roundActions.player} className="left-1/2 bottom-[31%] -translate-x-1/2" compact={false} levelRank={levelRank} position="bottom" />
+      <RoundActionZone action={roundActions.player} className="left-[44%] bottom-[39%] -translate-x-1/2 max-lg:left-[42%] max-lg:bottom-[36%]" compact={false} levelRank={levelRank} position="bottom" />
 
       {players.map((player) => (
-        <PlayerSeat key={player.id} player={player} />
+        <PlayerSeat
+          key={player.id}
+          player={player}
+          settlementFocus={
+            settlementFocus
+              ? player.id === settlementFocus.donorId || player.id === settlementFocus.receiverId
+                ? "primary"
+                : "muted"
+              : undefined
+          }
+        />
       ))}
     </div>
   );
 }
 
-function TurnStatusLabel({ turnAction }: { turnAction: TurnActionState }) {
+function TurnStatusLabel({ players, turnAction }: { players: ArenaPlayer[]; turnAction: TurnActionState }) {
+  const activePlayer = players.find((player) => player.id === turnAction.playerId);
+  const arrowByPosition = {
+    bottom: "↓",
+    left: "←",
+    right: "→",
+    top: "↑"
+  } as const;
+  const direction = activePlayer ? arrowByPosition[activePlayer.position] : "→";
+
   return (
-    <div className="training-turn-status absolute left-1/2 top-[30%] z-[50] -translate-x-1/2 rounded-full border border-white/70 bg-white/90 px-5 py-2 text-center text-[#12395a] shadow-[0_12px_28px_rgba(43,127,191,0.16)] backdrop-blur">
-      <p className="text-xs font-black uppercase tracking-[0.12em] text-[#34749c]">当前行动</p>
-      <p className="text-base font-black">{turnAction.label}</p>
-      {typeof turnAction.remainingSeconds === "number" ? (
-        <p className="text-sm font-black text-[#d27b00]">{turnAction.remainingSeconds} 秒</p>
-      ) : null}
-    </div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        className="training-turn-status absolute left-1/2 top-[30%] z-[50] -translate-x-1/2 rounded-[22px] border border-white/75 bg-white/92 px-6 py-3 text-center text-[#12395a] shadow-[0_16px_34px_rgba(43,127,191,0.2)] backdrop-blur"
+        exit={{ opacity: 0, scale: 0.94, y: -8 }}
+        initial={{ opacity: 0, scale: 0.86, y: 10 }}
+        key={`${turnAction.playerId}-${turnAction.status}`}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <motion.span
+          animate={{ x: direction === "←" ? [-2, -8, -2] : direction === "→" ? [2, 8, 2] : 0, y: direction === "↑" ? [-2, -8, -2] : direction === "↓" ? [2, 8, 2] : 0, opacity: [0.45, 1, 0.45] }}
+          aria-hidden
+          className="inline-block text-3xl font-black leading-none text-[#f0b72e]"
+          transition={{ duration: 0.9, repeat: Infinity }}
+        >
+          {direction}
+        </motion.span>
+        {typeof turnAction.remainingSeconds === "number" ? (
+          <span className="ml-1 text-lg font-black text-[#d27b00]">{turnAction.remainingSeconds} 秒</span>
+        ) : null}
+      </motion.div>
+    </AnimatePresence>
   );
 }
 

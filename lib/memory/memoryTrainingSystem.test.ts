@@ -25,24 +25,19 @@ test("creates a unique 108-card two-deck deal", () => {
   assert.equal(createDeck().filter((card) => card.isJoker).length, 4);
 });
 
-test("target progression starts with joker and level, then unlocks cumulatively", () => {
+test("target progression starts with joker and level", () => {
   const progress = createInitialTargetProgress(15);
   assert.deepEqual(progress.activeTargets, ["JOKER", 15]);
-  const unlocked = Array.from({ length: 5 }).reduce<MemoryTargetProgress>(
-    (current) => applyCheckpointResult(current, true),
-    progress,
-  );
-  assert.equal(unlocked.activeTargets.length, 3);
-  assert.equal(unlocked.activeTargets[0], "JOKER");
 });
 
-test("regression removes the newest non-joker target after five poor checkpoints", () => {
-  const progress = createInitialTargetProgress(15);
-  const regressed = Array.from({ length: 5 }).reduce<MemoryTargetProgress>(
-    (current) => applyCheckpointResult(current, false),
-    progress,
-  );
-  assert.deepEqual(regressed.activeTargets, ["JOKER"]);
+test("target progression uses 75% promotion and 50% demotion thresholds", () => {
+  const progress = {
+    ...createInitialTargetProgress(15),
+    activeTargets: ["JOKER", 15, 14, 13],
+  } as MemoryTargetProgress;
+  assert.equal(applyCheckpointResult(progress, 0.75).activeTargets.length, 5);
+  assert.equal(applyCheckpointResult(progress, 0.5).activeTargets.length, 4);
+  assert.equal(applyCheckpointResult(progress, 0.49).activeTargets.length, 3);
 });
 
 test("remaining count uses total minus hand minus played cards", () => {

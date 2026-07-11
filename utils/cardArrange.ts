@@ -359,7 +359,8 @@ function findBestRankRun(cards: Card[], minLength: number) {
     .filter(isStraightRank)
     .sort((a, b) => a - b);
   const runs = getConsecutiveRuns(ranks).filter((run) => run.length >= minLength);
-  return runs.sort((a, b) => b.length - a.length || b[b.length - 1] - a[a.length - 1])[0] ?? [];
+  const run = runs.sort((a, b) => b.length - a.length || b[b.length - 1] - a[a.length - 1])[0] ?? [];
+  return run.slice(-minLength);
 }
 
 function firstCardByRank(cards: Card[], rank: CardRank) {

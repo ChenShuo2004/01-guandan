@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { audioAssets } from "@/lib/assets/audio-assets";
 
@@ -8,7 +8,21 @@ const TARGET_VOLUME = 0.3;
 const FADE_IN_MS = 1600;
 const FADE_OUT_MS = 1200;
 const FADE_STEP_MS = 50;
-const TRAINING_ROUTE_PREFIXES = ["/practice"];
+const TRAINING_ROUTE_PREFIXES = ["/practice", "/training/memory"];
+const MUSIC_SETTING_EVENT = "guandan-training-camp-music-setting";
+export const TRAINING_CAMP_MUSIC_PAUSE_EVENT = "guandan-training-camp-music-pause";
+
+export function setTrainingCampMusicPaused(paused: boolean) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.dispatchEvent(
+    new CustomEvent(TRAINING_CAMP_MUSIC_PAUSE_EVENT, {
+      detail: { paused }
+    })
+  );
+}
 
 let audio: HTMLAudioElement | null = null;
 let fadeTimer: number | null = null;
@@ -99,6 +113,31 @@ function stopTrainingCampMusic() {
   });
 }
 
+function pauseTrainingCampMusic() {
+  clearFadeTimer();
+  clearInteractionFallback();
+
+  if (!audio) {
+    return;
+  }
+
+  audio.pause();
+}
+
+function resumeTrainingCampMusic() {
+  const player = getTrainingCampAudio();
+
+  if (!player.paused) {
+    return;
+  }
+
+  player.volume = TARGET_VOLUME;
+
+  void player.play().catch(() => {
+    waitForFirstInteraction();
+  });
+}
+
 function waitForFirstInteraction() {
   if (interactionCleanup) {
     return;
@@ -122,16 +161,51 @@ function waitForFirstInteraction() {
 
 export function TrainingCampMusic() {
   const pathname = usePathname();
-  const shouldPlay = isTrainingCampRoute(pathname);
+  const [musicEnabled, setMusicEnabled] = useState(true);
+  const [gamePaused, setGamePaused] = useState(false);
+  const shouldPlay = musicEnabled && isTrainingCampRoute(pathname);
 
   useEffect(() => {
-    if (shouldPlay) {
-      void startTrainingCampMusic();
+    function handleMusicSetting(event: Event) {
+      const enabled = (event as CustomEvent<{ enabled: boolean }>).detail?.enabled;
+      if (typeof enabled === "boolean") {
+        setMusicEnabled(enabled);
+      }
+    }
+
+    function handleMusicPause(event: Event) {
+      const paused = (event as CustomEvent<{ paused: boolean }>).detail?.paused;
+      if (typeof paused === "boolean") {
+        setGamePaused(paused);
+      }
+    }
+
+    window.addEventListener(MUSIC_SETTING_EVENT, handleMusicSetting);
+    window.addEventListener(TRAINING_CAMP_MUSIC_PAUSE_EVENT, handleMusicPause);
+    return () => {
+      window.removeEventListener(MUSIC_SETTING_EVENT, handleMusicSetting);
+      window.removeEventListener(TRAINING_CAMP_MUSIC_PAUSE_EVENT, handleMusicPause);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!shouldPlay) {
+      stopTrainingCampMusic();
       return;
     }
 
-    stopTrainingCampMusic();
-  }, [shouldPlay]);
+    if (gamePaused) {
+      pauseTrainingCampMusic();
+      return;
+    }
+
+    if (audio?.paused) {
+      resumeTrainingCampMusic();
+      return;
+    }
+
+    void startTrainingCampMusic();
+  }, [shouldPlay, gamePaused]);
 
   useEffect(() => {
     return () => {

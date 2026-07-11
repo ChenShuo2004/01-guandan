@@ -39,15 +39,15 @@ export function MemoryTargetPanel({
   if (!visible || targetRanks.length === 0) return null;
 
   return (
-    <div className="memory-target-panel pointer-events-none fixed left-4 top-[104px] z-[100] max-lg:left-3 max-lg:top-[90px]">
-      <div className="memory-target-panel-card rounded-2xl border border-[#74dfff]/40 bg-[#0e2944]/95 px-4 py-3 text-white shadow-2xl backdrop-blur-xl">
-        <p className="text-base font-black text-[#74dfff] max-lg:text-sm">当前需要记牌</p>
-        <div className="mt-3 flex flex-wrap gap-2.5">
+    <div className="memory-target-panel pointer-events-none fixed left-4 top-[104px] z-[100] max-w-[calc(100vw-2rem)] max-lg:left-3 max-lg:top-[90px]">
+      <div className="memory-target-panel-card rounded-2xl border border-[#74dfff]/40 bg-[#0e2944]/95 px-3 py-2.5 text-white shadow-2xl backdrop-blur-xl">
+        <p className="text-sm font-black text-[#74dfff] max-lg:text-xs">当前需要记牌 · {currentTargetCount} 类</p>
+        <div className="mt-2 flex max-w-[calc(100vw-3.5rem)] gap-2 overflow-x-auto pb-0.5">
           {targetRanks.map((rank) => (
             <PokerCard
               card={cardRankToPokerCard(rank)}
               key={rank}
-              size="md"
+              size={currentTargetCount >= 5 ? "sm" : "md"}
             />
           ))}
         </div>

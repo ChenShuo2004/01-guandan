@@ -7,7 +7,6 @@ import { getRankDisplayName } from "@/lib/memory/ObserverMemoryTraining";
 interface MemoryReviewReportPanelProps {
   checkpoints: MemoryCheckpointResult[];
   summary: MemorySessionSummary;
-  canResume: boolean;
   onResume: () => void;
   onRestart: () => void;
   onExit: () => void;
@@ -16,7 +15,6 @@ interface MemoryReviewReportPanelProps {
 export function MemoryReviewReportPanel({
   checkpoints,
   summary,
-  canResume,
   onResume,
   onRestart,
   onExit,
@@ -102,13 +100,11 @@ export function MemoryReviewReportPanel({
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3">
-          {canResume ? (
-            <button className="min-h-12 flex-1 rounded-2xl bg-white/10 px-4 text-sm font-black" onClick={onResume} type="button">
-              返回训练
-            </button>
-          ) : null}
           <button className="min-h-12 flex-1 rounded-2xl bg-white/10 px-4 text-sm font-black" onClick={onExit} type="button">
             退出训练
+          </button>
+          <button className="min-h-12 flex-1 rounded-2xl bg-[#16c9bd] px-4 text-sm font-black text-white shadow-lg" onClick={onResume} type="button">
+            继续训练
           </button>
           <button className="min-h-12 flex-1 rounded-2xl bg-[#0f64ff] px-4 text-sm font-black shadow-lg" onClick={onRestart} type="button">
             重新开始

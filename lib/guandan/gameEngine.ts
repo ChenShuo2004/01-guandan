@@ -8,7 +8,12 @@ import {
   type GameEngineState
 } from "@/lib/guandan/gameState";
 import type { PlayerId } from "@/lib/guandan/player";
-import { getNextActiveTurn } from "@/lib/guandan/turnManager";
+import {
+  getNextActiveTurn,
+  getRequiredPassCountForTrickReset,
+  getTurnAfterTrickReset
+} from "@/lib/guandan/turnManager";
+import { stabilizeGameState } from "@/lib/guandan/gameStateGuard";
 
 export interface PlayCardsResult {
   state: GameEngineState;
@@ -77,8 +82,18 @@ export function playCards(state: GameEngineState, playerId: PlayerId, cards: Car
         }
   );
   const updatedPlayer = nextPlayers.find((player) => player.id === playerId);
-  const winner = updatedPlayer && updatedPlayer.hand.length === 0 ? playerId : null;
+  const finishOrder =
+    updatedPlayer && updatedPlayer.hand.length === 0 && !state.finishOrder.includes(playerId)
+      ? [...state.finishOrder, playerId]
+      : state.finishOrder;
+  const winner = finishOrder[0] ?? null;
+  const gameFinished = finishOrder.length === nextPlayers.length;
   const pattern = detectCardPattern(cards);
+  const turnState = {
+    ...state,
+    players: nextPlayers,
+    finishOrder
+  };
   const roundAction = {
     turn: state.turnNumber,
     playerId,
@@ -93,13 +108,14 @@ export function playCards(state: GameEngineState, playerId: PlayerId, cards: Car
   const nextState: GameEngineState = {
     ...state,
     players: nextPlayers,
-    currentTurn: getNextActiveTurn(state),
+    currentTurn: getNextActiveTurn(turnState),
     lastPlayedCards: sortCards(cards),
     lastPlayerId: playerId,
     selectedCards: [],
     invalidCardIds: [],
-    gameStatus: winner ? "finished" : "playing",
+    gameStatus: gameFinished ? "finished" : "playing",
     winner,
+    finishOrder,
     passCount: 0,
     turnNumber: state.turnNumber + 1,
     currentRoundActions: {
@@ -141,7 +157,7 @@ export function playCards(state: GameEngineState, playerId: PlayerId, cards: Car
   };
 
   return {
-    state: nextState,
+    state: stabilizeGameState(nextState),
     ok: true,
     message: compare.reason
   };
@@ -171,16 +187,14 @@ export function passTurn(state: GameEngineState, playerId: PlayerId): PlayCardsR
   }
 
   const passCount = state.passCount + 1;
-  const trickResets = passCount >= state.players.length - 1;
+  const trickResets = passCount >= getRequiredPassCountForTrickReset(state);
   const nextTurn =
-    trickResets && state.lastPlayerId
-      ? state.players.findIndex((player) => player.id === state.lastPlayerId)
-      : getNextActiveTurn(state);
+    trickResets ? getTurnAfterTrickReset(state) : getNextActiveTurn(state);
 
   const nextState: GameEngineState = {
     ...state,
     players: state.players.map((player) =>
-      player.id === playerId ? { ...player, passed: true } : player
+      trickResets ? { ...player, passed: false } : player.id === playerId ? { ...player, passed: true } : player
     ),
     currentTurn: nextTurn >= 0 ? nextTurn : getNextActiveTurn(state),
     lastPlayedCards: trickResets ? [] : state.lastPlayedCards,
@@ -238,7 +252,7 @@ export function passTurn(state: GameEngineState, playerId: PlayerId): PlayCardsR
   };
 
   return {
-    state: nextState,
+    state: stabilizeGameState(nextState),
     ok: true,
     message: "不出"
   };

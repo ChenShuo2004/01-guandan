@@ -71,9 +71,9 @@ export function CardGroup({
               className="absolute left-0"
               key={card.id}
               style={{
-                bottom: index * stackStep,
+                top: index * stackStep,
                 pointerEvents: "auto",
-                zIndex: selected || invalid ? 100 + index : index
+                zIndex: selected || invalid ? 100 + index : index + 1
               }}
             >
               <PlayingCard

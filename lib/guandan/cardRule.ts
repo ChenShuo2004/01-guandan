@@ -1,4 +1,4 @@
-import { type Card, type CardRank, getRankCounts, sortCardsAscending } from "@/lib/guandan/card";
+import { type Card, type CardRank, getRankCounts, sortCardsAscending } from "./card.ts";
 
 export type CardPatternType =
   | "single"
@@ -54,7 +54,7 @@ export function detectCardPattern(cards: Card[]): CardPattern {
     return valid("tripleWithPair", tripleRank, sortedCards);
   }
 
-  if (cards.length >= 5 && isStraightRanks(ranks) && rankCounts.size === cards.length) {
+  if (cards.length === 5 && isStraightRanks(ranks) && rankCounts.size === cards.length) {
     return valid("straight", highestRank, sortedCards);
   }
 
@@ -66,7 +66,7 @@ function isFourJokers(cards: Card[]) {
 }
 
 function isStraightRanks(ranks: CardRank[]) {
-  if (ranks.length < 5) return false;
+  if (ranks.length !== 5) return false;
   if (ranks.some((rank) => rank >= 15)) return false;
 
   return ranks.every((rank, index) => index === 0 || rank === ranks[index - 1] + 1);

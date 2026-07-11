@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 
 interface PlayerInfoProps {
   compact?: boolean;
+  focus?: "primary" | "muted";
   player: ArenaPlayer;
 }
 
@@ -18,7 +19,7 @@ const statusLabel = {
   passed: "不出"
 };
 
-export function PlayerInfo({ compact = false, player }: PlayerInfoProps) {
+export function PlayerInfo({ compact = false, focus, player }: PlayerInfoProps) {
   const isActive = player.status === "active" || player.status === "thinking";
   const statusText =
     typeof player.countdown === "number" && (player.status === "active" || player.status === "thinking")
@@ -26,10 +27,26 @@ export function PlayerInfo({ compact = false, player }: PlayerInfoProps) {
       : statusLabel[player.status];
 
   return (
-    <div className={cn("training-player-info flex items-center gap-3", compact ? "gap-2" : "gap-3")}>
+    <div
+      className={cn(
+        "training-player-info flex items-center gap-3 transition-all duration-300",
+        compact ? "gap-2" : "gap-3",
+        focus === "muted" && "opacity-40 grayscale",
+        focus === "primary" && "scale-[1.05]"
+      )}
+    >
       <motion.div
         animate={
-          isActive
+          focus === "primary"
+            ? {
+                scale: [1, 1.08, 1],
+                boxShadow: [
+                  "0 0 0 0 rgba(255,194,58,0.22)",
+                  "0 0 0 15px rgba(255,194,58,0.12)",
+                  "0 0 0 0 rgba(255,194,58,0.22)"
+                ]
+              }
+            : isActive
             ? {
                 boxShadow: [
                   "0 0 0 0 rgba(75,184,255,0.28)",
@@ -44,7 +61,7 @@ export function PlayerInfo({ compact = false, player }: PlayerInfoProps) {
           isActive ? "border-[#21d071] shadow-[0_0_0_3px_rgba(33,208,113,0.35),0_8px_18px_rgba(36,125,185,0.16)]" : "border-white/75",
           compact ? "h-[76px] w-[76px]" : "h-[90px] w-[90px]"
         )}
-        transition={{ duration: 1.8, repeat: Infinity }}
+        transition={{ duration: focus === "primary" ? 1.1 : 1.8, repeat: Infinity }}
       >
         <Image
           alt={`${player.name}头像`}
@@ -56,8 +73,8 @@ export function PlayerInfo({ compact = false, player }: PlayerInfoProps) {
       </motion.div>
 
       <div className="training-player-details min-w-[92px] rounded-[18px] border border-white/70 bg-white/76 px-3 py-2 text-left shadow-[0_8px_18px_rgba(36,125,185,0.12)] backdrop-blur-sm">
-        <p className="line-clamp-1 text-sm font-black leading-5 text-[#12395a]">{player.name}</p>
-        <p className="mt-0.5 text-xs font-black text-[#0f64a0]">{player.role}</p>
+        <p className="line-clamp-1 text-sm font-black leading-5 text-[#12395a]">{player.role}</p>
+        <p className="mt-0.5 text-xs font-black text-[#0f64a0]">{player.isUser ? "我方玩家" : "AI玩家"}</p>
         {player.cardCount <= 10 ? (
         <div
           className={cn(
