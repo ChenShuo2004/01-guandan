@@ -443,6 +443,7 @@ export function GameArena({
 
   const isObserverAutoWait =
     observerMode &&
+    currentPlayer?.kind === "ai" &&
     Boolean(currentPlayer?.id) &&
     state.turnAction.playerId === currentPlayer.id &&
     typeof state.turnAction.remainingSeconds === "number" &&
@@ -486,7 +487,13 @@ export function GameArena({
     if (isPaused || isDealLocked || state.trainingPhase !== "playing") return;
 
     if (observerMode) {
-      if (!currentPlayer || state.gameStatus !== "playing") return;
+      if (
+        !currentPlayer ||
+        currentPlayer.kind !== "ai" ||
+        state.gameStatus !== "playing" ||
+        state.turnAction.playerId !== currentPlayer.id ||
+        (state.turnAction.status !== "thinking" && state.turnAction.status !== "waiting")
+      ) return;
 
       aiRemainingRef.current = null;
       aiPausedActionKeyRef.current = null;
