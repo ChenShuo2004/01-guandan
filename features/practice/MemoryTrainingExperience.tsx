@@ -168,9 +168,9 @@ export function MemoryTrainingExperience() {
       relevantEvents: initialEvent ? [initialEvent] : [],
     }));
 
-    if (dealCompleteRef.current) {
-      startHandObservationTimer();
-    }
+    // DealAnimation has its own lock. The memory phase must advance independently;
+    // otherwise a slow or interrupted deal callback can leave AI_PLAYING unreachable.
+    startHandObservationTimer();
   }, [startHandObservationTimer]);
 
   // ── Handle deal completion ─────────────────────────────────────────────────────
