@@ -1,28 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import Image from "next/image";
 import { memoryMethods, categoryLabels, difficultyLabels, type MemoryMethod } from "@/content/memory-methods";
 import { MethodMappingDemo, MethodPrincipleFlow, MethodScenarioDemo } from "@/components/memory/MemoryMethodVisuals";
 
-const progressKey = "guandan-memory-method-progress";
-
 export function MemoryMethodDetail({ method }: { method: MemoryMethod }) {
-  const [demoViewed, setDemoViewed] = useState(false);
-
-  useEffect(() => {
-    try {
-      const raw = window.localStorage.getItem(progressKey);
-      const progress = raw ? JSON.parse(raw) as Record<string, { proficiency?: number; status?: string; demoViewed?: boolean }> : {};
-      const current = progress[method.id] ?? { proficiency: 0, status: "learning", demoViewed: false };
-      progress[method.id] = { ...current, status: current.status === "not_started" ? "learning" : current.status, demoViewed: true, proficiency: Math.max(current.proficiency ?? 0, 10) };
-      window.localStorage.setItem(progressKey, JSON.stringify(progress));
-      setDemoViewed(true);
-    } catch {
-      setDemoViewed(false);
-    }
-  }, [method.id]);
-
   const previous = memoryMethods.find((item) => item.number === String(Number(method.number) - 1).padStart(2, "0"));
   const next = memoryMethods.find((item) => item.number === String(Number(method.number) + 1).padStart(2, "0"));
 
@@ -40,19 +23,23 @@ export function MemoryMethodDetail({ method }: { method: MemoryMethod }) {
             {method.recommended ? <span className="rounded-full bg-[#fff0c9] px-3 py-1 text-[#8c5b06]">核心推荐</span> : null}
           </div>
           <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div>
+            <div className="max-w-3xl">
               <h1 className="text-3xl font-black tracking-tight sm:text-4xl">{method.title}</h1>
               <p className="mt-3 text-lg font-black text-[#176192]">{method.summary}</p>
               <p className="mt-2 text-sm font-bold text-[#64849a]">{method.suitableFor.join(" · ")}</p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Link className="min-h-11 rounded-xl bg-[#12395a] px-4 py-2.5 text-sm font-black text-white transition hover:-translate-y-0.5 active:scale-95" href={`/training/memory?method=${method.slug}`}>
-                基础练习
-              </Link>
-              <span className="rounded-xl bg-[#eef8ff] px-4 py-2.5 text-sm font-black text-[#176192]">{demoViewed ? "演示已看过" : "演示未完成"}</span>
-            </div>
           </div>
         </header>
+
+        <section className="mt-5 overflow-hidden rounded-[28px] border border-white/80 bg-white p-2 shadow-[0_18px_46px_rgba(31,112,166,0.14)]">
+          <Image
+            alt={`${method.title}图解`}
+            className="h-auto w-full rounded-[22px]"
+            height={1536}
+            src={method.infographic}
+            width={1024}
+          />
+        </section>
 
         <section className="mt-5 grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
           <Panel title="核心原理">
@@ -95,19 +82,6 @@ export function MemoryMethodDetail({ method }: { method: MemoryMethod }) {
               ))}
             </div>
           </Panel>
-        </section>
-
-        <section className="mt-5 rounded-[24px] border border-[#b9dcf5] bg-[#eef8ff] p-5 sm:p-6">
-          <h2 className="text-xl font-black">训练入口</h2>
-          <p className="mt-2 text-sm font-bold leading-6 text-[#48718b]">从映射理解开始，再练数量更新，最后进入连续牌局实战。</p>
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
-            {["观看演示", "基础练习", "实战模拟"].map((label, index) => (
-              <Link className="rounded-xl bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-md" href={`/training/memory?method=${method.slug}&stage=${index === 0 ? "demo" : index === 1 ? "basic" : "practical"}`} key={label}>
-                <p className="text-sm font-black text-[#12395a]">{label}</p>
-                <p className="mt-1 text-xs font-bold text-[#64849a]">{index === 0 ? "重复查看映射和动作" : index === 1 ? "理解关系并更新数量" : "在连续出牌中保持记录"}</p>
-              </Link>
-            ))}
-          </div>
         </section>
 
         <nav className="flex justify-between gap-3 py-6">

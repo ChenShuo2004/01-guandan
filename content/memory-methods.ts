@@ -33,6 +33,7 @@ export interface MemoryMethod {
   shortTitle: string;
   summary: string;
   slogan: string;
+  infographic: string;
   category: MemoryMethodCategory;
   difficulty: MemoryMethodDifficulty;
   recommended: boolean;
@@ -75,6 +76,7 @@ export const memoryMethods: MemoryMethod[] = [
     shortTitle: "脚步定位",
     summary: "左脚负责牌种，右脚负责数量。",
     slogan: "左脚选牌，右脚记数，看到就减，减完归位。",
+    infographic: "/assets/memory-methods/foot-position.png",
     category: "body",
     difficulty: "beginner",
     recommended: true,
@@ -112,6 +114,7 @@ export const memoryMethods: MemoryMethod[] = [
     shortTitle: "脑内分区",
     summary: "一牌一区，只改数字，不换位置。",
     slogan: "固定区域，快速更新，扫描确认。",
+    infographic: "/assets/memory-methods/mental-zones.png",
     category: "spatial",
     difficulty: "intermediate",
     recommended: false,
@@ -149,6 +152,7 @@ export const memoryMethods: MemoryMethod[] = [
     shortTitle: "数字口令",
     summary: "固定牌种顺序，只更新对应数字。",
     slogan: "顺序不变，只改数字。",
+    infographic: "/assets/memory-methods/number-sequence.png",
     category: "number",
     difficulty: "intermediate",
     recommended: false,
@@ -186,6 +190,7 @@ export const memoryMethods: MemoryMethod[] = [
     shortTitle: "画面快照",
     summary: "不追每张牌，只记关键节点的牌桌画面。",
     slogan: "不追每张牌，只记关键画面。",
+    infographic: "/assets/memory-methods/visual-snapshot.png",
     category: "visual",
     difficulty: "intermediate",
     recommended: false,
@@ -222,6 +227,7 @@ export const memoryMethods: MemoryMethod[] = [
     shortTitle: "玩家归属",
     summary: "不只记出了什么，还记住是谁打出的。",
     slogan: "不只记牌，还要记是谁出的。",
+    infographic: "/assets/memory-methods/player-association.png",
     category: "player",
     difficulty: "advanced",
     recommended: false,
@@ -258,6 +264,7 @@ export const memoryMethods: MemoryMethod[] = [
     shortTitle: "混合组合",
     summary: "让不同方法各自负责一种信息，互不重复。",
     slogan: "一种方法管一类信息，不重复，不冲突。",
+    infographic: "/assets/memory-methods/hybrid-system.png",
     category: "hybrid",
     difficulty: "advanced",
     recommended: false,

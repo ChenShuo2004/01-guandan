@@ -164,5 +164,47 @@
     "type": "placeholder",
     "alt": "炸弹局面占位图",
     "aspectRatio": "4:5"
+  },
+  "memory-method-foot-position": {
+    "id": "memory-method-foot-position",
+    "type": "png",
+    "src": "/assets/memory-methods/foot-position.png",
+    "alt": "脚步定位记牌法图解信息图",
+    "aspectRatio": "2:3"
+  },
+  "memory-method-mental-zones": {
+    "id": "memory-method-mental-zones",
+    "type": "png",
+    "src": "/assets/memory-methods/mental-zones.png",
+    "alt": "脑内分区记牌法图解信息图",
+    "aspectRatio": "2:3"
+  },
+  "memory-method-number-sequence": {
+    "id": "memory-method-number-sequence",
+    "type": "png",
+    "src": "/assets/memory-methods/number-sequence.png",
+    "alt": "数字口令记牌法图解信息图",
+    "aspectRatio": "2:3"
+  },
+  "memory-method-visual-snapshot": {
+    "id": "memory-method-visual-snapshot",
+    "type": "png",
+    "src": "/assets/memory-methods/visual-snapshot.png",
+    "alt": "画面快照记牌法图解信息图",
+    "aspectRatio": "2:3"
+  },
+  "memory-method-player-association": {
+    "id": "memory-method-player-association",
+    "type": "png",
+    "src": "/assets/memory-methods/player-association.png",
+    "alt": "玩家归属记牌法图解信息图",
+    "aspectRatio": "2:3"
+  },
+  "memory-method-hybrid-system": {
+    "id": "memory-method-hybrid-system",
+    "type": "png",
+    "src": "/assets/memory-methods/hybrid-system.png",
+    "alt": "混合组合记牌法图解信息图",
+    "aspectRatio": "2:3"
   }
 }
