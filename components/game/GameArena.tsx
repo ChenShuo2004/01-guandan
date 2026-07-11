@@ -10,7 +10,7 @@ import { DealAnimation } from "@/components/game/DealAnimation";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
 import { useGameStore } from "@/store/gameStore";
-import { getRankLabel, sortCardsAscending, type Card, type CardRank } from "@/lib/guandan/card";
+import { getRankLabel, sortCards, type Card, type CardRank } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
 import { playArenaSound } from "@/lib/audio/arenaAudio";
 import type { GameEngineState, TrainingPhase } from "@/lib/guandan/gameState";
@@ -117,7 +117,7 @@ export function GameArena({
   );
   const displayedUserCards = useMemo(() => {
     const hand = userPlayer?.hand ?? [];
-    return smartSortActive ? sortCardsAscending(hand) : hand;
+    return smartSortActive ? sortCards(hand) : hand;
   }, [smartSortActive, userPlayer?.hand]);
 
   const displayTurnAction = useMemo(() => {
