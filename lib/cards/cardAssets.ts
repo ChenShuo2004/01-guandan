@@ -14,8 +14,8 @@ const suitAssetName: Record<CardSuit, string> = {
 export function getPlayingCardAsset(card: Card) {
   if (card.isJoker) {
     return card.rank === 17
-      ? "/assets/poker-cards/card-deck/card_joker_big.png"
-      : "/assets/poker-cards/card-deck/card_joker_small.png";
+      ? "/assets/poker-cards/fronts/joker-big.png"
+      : "/assets/poker-cards/fronts/joker-small.png";
   }
 
   const suit = suitAssetName[card.suit as CardSuit];
@@ -24,8 +24,8 @@ export function getPlayingCardAsset(card: Card) {
 }
 
 export function getPokerCardAsset(card: PokerCardData) {
-  if (card.rank === "SJ") return "/assets/poker-cards/card-deck/card_joker_small.png";
-  if (card.rank === "BJ") return "/assets/poker-cards/card-deck/card_joker_big.png";
+  if (card.rank === "SJ") return "/assets/poker-cards/fronts/joker-small.png";
+  if (card.rank === "BJ") return "/assets/poker-cards/fronts/joker-big.png";
 
   const suit = card.suit ? suitAssetName[card.suit] : "S";
   return `/assets/poker-cards/card-deck/card_${card.rank.toUpperCase()}${suit}.png`;

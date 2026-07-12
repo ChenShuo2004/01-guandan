@@ -317,13 +317,13 @@
                       "id":  "joker-small",
                       "label":  "SJ",
                       "suit":  "joker",
-                      "path":  "/assets/poker-cards/card-deck/card_joker_small.png"
+                      "path":  "/assets/poker-cards/fronts/joker-small.png"
                   },
                   {
                       "id":  "joker-big",
                       "label":  "BJ",
                       "suit":  "joker",
-                      "path":  "/assets/poker-cards/card-deck/card_joker_big.png"
+                      "path":  "/assets/poker-cards/fronts/joker-big.png"
                   }
               ]
 }
