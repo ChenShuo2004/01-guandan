@@ -87,10 +87,8 @@ function TurnStatusLabel({ players, turnAction }: { players: ArenaPlayer[]; turn
           data-direction={direction}
           transition={{ duration: 0.9, repeat: Infinity }}
         >
-          <span className="training-turn-pointer__shadow" />
-          <span className="training-turn-pointer__tail" />
-          <span className="training-turn-pointer__wing" />
-          <span className="training-turn-pointer__nose" />
+          <span className="training-turn-pointer__left" />
+          <span className="training-turn-pointer__right" />
         </motion.span>
         {typeof turnAction.remainingSeconds === "number" ? (
           <span className="training-turn-count">{turnAction.remainingSeconds} 秒</span>

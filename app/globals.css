@@ -316,10 +316,10 @@ select {
 .training-turn-pointer {
   position: relative;
   display: inline-block;
-  width: 48px;
-  height: 36px;
+  width: 52px;
+  height: 38px;
   flex: 0 0 auto;
-  filter: drop-shadow(0 8px 10px rgba(84, 12, 12, 0.32));
+  filter: drop-shadow(0 6px 7px rgba(0, 0, 0, 0.28));
   transform-origin: 50% 50%;
 }
 
@@ -339,61 +339,27 @@ select {
   transform: rotate(90deg);
 }
 
-.training-turn-pointer__shadow,
-.training-turn-pointer__tail,
-.training-turn-pointer__wing,
-.training-turn-pointer__nose {
+.training-turn-pointer__left,
+.training-turn-pointer__right {
   position: absolute;
   display: block;
+  background: #050505;
 }
 
-.training-turn-pointer__shadow {
-  left: 7px;
-  top: 19px;
-  width: 30px;
-  height: 12px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.24);
-  filter: blur(5px);
-}
-
-.training-turn-pointer__tail {
-  left: 4px;
-  top: 15px;
-  width: 23px;
-  height: 15px;
-  clip-path: polygon(0 100%, 100% 0, 76% 100%);
-  background: linear-gradient(135deg, #1f2937 0%, #eef2f7 56%, #9ca3af 100%);
-}
-
-.training-turn-pointer__wing {
-  left: 11px;
+.training-turn-pointer__left {
+  left: 0;
   top: 12px;
-  width: 27px;
-  height: 17px;
-  clip-path: polygon(0 100%, 100% 0, 76% 100%);
-  background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 54%, #111827 100%);
-}
-
-.training-turn-pointer__nose {
-  left: 14px;
-  top: 3px;
-  width: 35px;
-  height: 26px;
-  clip-path: polygon(0 50%, 100% 0, 77% 100%);
-  background: linear-gradient(135deg, #ff3434 0%, #ef1111 56%, #7f0e16 100%);
-}
-
-.training-turn-pointer__nose::after {
-  content: "";
-  position: absolute;
-  left: 9px;
-  top: 4px;
   width: 22px;
-  height: 3px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.62);
-  transform: rotate(-26deg);
+  height: 16px;
+  clip-path: polygon(0 50%, 100% 0, 80% 50%, 100% 100%);
+}
+
+.training-turn-pointer__right {
+  left: 20px;
+  top: 0;
+  width: 32px;
+  height: 38px;
+  clip-path: polygon(0 0, 100% 50%, 0 100%, 22% 50%);
 }
 
 .training-arena-modal-scroll {
