@@ -197,9 +197,10 @@
 
 .dual-entry-card__title {
   margin-top: 0.85rem;
-  font-size: clamp(1.15rem, 2.4vw, 1.35rem);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(2rem, 5.45vw, 3.75rem);
   font-weight: 900;
-  line-height: 1.2;
+  line-height: 1.05;
   color: #f8fafc;
 }
 
@@ -259,15 +260,16 @@
 .dual-entry-card__cta {
   display: inline-flex;
   margin-top: 0.9rem;
-  min-height: 42px;
+  min-height: 56px;
   width: fit-content;
   align-items: center;
   justify-content: center;
   gap: 0.35rem;
   border-radius: 14px;
-  padding: 0 1rem;
-  font-size: 0.82rem;
+  padding: 0 1.2rem;
+  font-size: clamp(1rem, 2.3vw, 1.5625rem);
   font-weight: 900;
+  line-height: 1;
   color: #fff;
   transition:
     transform 0.24s ease,
@@ -444,6 +446,7 @@
   }
 
   .dual-entry-card__cta {
+    min-height: 48px;
     width: 100%;
   }
 }
