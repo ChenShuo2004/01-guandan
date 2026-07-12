@@ -30,14 +30,29 @@ test("target progression starts with joker and level", () => {
   assert.deepEqual(progress.activeTargets, ["JOKER", 15]);
 });
 
-test("target progression uses 75% promotion and 50% demotion thresholds", () => {
+test("target progression promotes after five perfect checkpoints", () => {
   const progress = {
     ...createInitialTargetProgress(15),
     activeTargets: ["JOKER", 15, 14, 13],
   } as MemoryTargetProgress;
-  assert.equal(applyCheckpointResult(progress, 0.75).activeTargets.length, 5);
-  assert.equal(applyCheckpointResult(progress, 0.5).activeTargets.length, 4);
-  assert.equal(applyCheckpointResult(progress, 0.49).activeTargets.length, 3);
+  let next = progress;
+  for (let index = 0; index < 4; index += 1) {
+    next = applyCheckpointResult(next, 1);
+  }
+  assert.equal(next.activeTargets.length, 4);
+  assert.equal(applyCheckpointResult(next, 1).activeTargets.length, 5);
+});
+
+test("target progression demotes after fewer than two perfect results in five checkpoints", () => {
+  const progress = {
+    ...createInitialTargetProgress(15),
+    activeTargets: ["JOKER", 15, 14, 13],
+  } as MemoryTargetProgress;
+  let next = progress;
+  for (let index = 0; index < 4; index += 1) {
+    next = applyCheckpointResult(next, index === 0 ? 1 : 0);
+  }
+  assert.equal(applyCheckpointResult(next, 0).activeTargets.length, 3);
 });
 
 test("remaining count uses total minus hand minus played cards", () => {

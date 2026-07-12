@@ -168,13 +168,14 @@ export function MemoryTrainingExperience() {
 
     setTraining(prev => ({
       ...prev,
-      phase: "AI_PLAYING",
+      phase: "ANSWERING",
       visibleTargetCardIds: visibleIds,
       allCardsById,
       observerHandCardIds: observerHand.map(c => c.id),
       relevantEvents: initialEvent ? [initialEvent] : [],
       playersPlayedSinceCheckpoint: new Set(),
     }));
+    setShowCheckpoint(true);
   }, []);
 
   // ── Handle deal completion ─────────────────────────────────────────────────────
@@ -421,6 +422,18 @@ export function MemoryTrainingExperience() {
 
     if (gameStateRef.current?.gameStatus === "finished") {
       handleGameFinished();
+      return;
+    }
+
+    const current = trainingRef.current;
+    if (current.targetRanks.length !== current.currentTargetCount) {
+      const nextHand = resetForNextHand({ ...current, phase: "STARTING_NEXT_HAND" });
+      setTraining(nextHand);
+      setArenaKey((currentKey) => currentKey + 1);
+      dealCompleteRef.current = false;
+      setShowCheckpoint(false);
+      setShowFeedback(false);
+      setShowTargetOverlay(true);
       return;
     }
 

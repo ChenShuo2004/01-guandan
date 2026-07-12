@@ -117,24 +117,33 @@ export function applyCheckpointResult(
   const accuracy = typeof result === "number" ? result : result ? 1 : 0;
   const allCorrect = accuracy >= 1;
   const checkpointSuccesses = [...progress.checkpointSuccesses, allCorrect].slice(-5);
-  const correctStreak = accuracy >= 0.75 ? progress.correctStreak + 1 : 0;
-  const recoveryStreak = accuracy >= 0.75 ? progress.recoveryStreak + 1 : 0;
+  const correctStreak = allCorrect ? progress.correctStreak + 1 : 0;
+  const recoveryStreak = allCorrect ? progress.recoveryStreak + 1 : 0;
   let activeTargets = [...progress.activeTargets];
 
-  if (accuracy >= 0.75) {
+  if (correctStreak >= 5) {
     const next = MEMORY_TARGET_ORDER.find((target) => !activeTargets.includes(target));
     if (next !== undefined) activeTargets.push(next);
-  } else if (accuracy < 0.5 && activeTargets.length > 2) {
+  }
+
+  const recentSuccesses = checkpointSuccesses.filter(Boolean).length;
+  if (checkpointSuccesses.length === 5 && recentSuccesses < 2 && activeTargets.length > 1) {
     activeTargets = activeTargets.slice(0, -1);
     return { activeTargets, correctStreak: 0, recoveryStreak: 0, checkpointSuccesses: [], inRecovery: true };
   }
 
+  if (progress.inRecovery && recoveryStreak >= 3 && activeTargets.length < MEMORY_TARGET_ORDER.length) {
+    const next = MEMORY_TARGET_ORDER.find((target) => !activeTargets.includes(target));
+    if (next !== undefined) activeTargets.push(next);
+    return { activeTargets, correctStreak, recoveryStreak: 0, checkpointSuccesses, inRecovery: false };
+  }
+
   return {
     activeTargets,
-    correctStreak,
+    correctStreak: correctStreak >= 5 ? 0 : correctStreak,
     recoveryStreak,
     checkpointSuccesses,
-    inRecovery: accuracy < 0.5 ? true : accuracy >= 0.75 ? false : progress.inRecovery,
+    inRecovery: progress.inRecovery,
   };
 }
 
