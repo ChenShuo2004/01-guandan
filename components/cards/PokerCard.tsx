@@ -2,7 +2,6 @@ import type { CSSProperties } from "react";
 import type { CardSize, CardType, CardVariant, PokerCardData } from "@/types/poker";
 import Image from "next/image";
 import { getPokerCardAsset } from "@/lib/cards/cardAssets";
-import { PokerCardCornerIndex } from "@/components/cards/PokerCardCornerIndex";
 import { cn } from "@/lib/utils";
 
 interface PokerCardProps {
@@ -74,12 +73,6 @@ export function PokerCard({
         fill
         sizes={dimensions ? `${Math.ceil(dimensions.width)}px` : "(max-width: 640px) 89px, 106px"}
         src={getPokerCardAsset(card)}
-      />
-      <PokerCardCornerIndex
-        card={card}
-        isLevelCard={isLevelCard}
-        size={resolvedSize}
-        variant={variant}
       />
       {isLevelCard ? (
         <>

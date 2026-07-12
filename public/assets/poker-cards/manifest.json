@@ -1,329 +1,329 @@
 {
-  "source": "static-image-assets",
-  "cards": [
-    {
-      "id": "spade-3",
-      "label": "3",
-      "suit": "spade",
-      "path": "/assets/poker-cards/fronts/spade-3.png"
-    },
-    {
-      "id": "spade-4",
-      "label": "4",
-      "suit": "spade",
-      "path": "/assets/poker-cards/fronts/spade-4.png"
-    },
-    {
-      "id": "spade-5",
-      "label": "5",
-      "suit": "spade",
-      "path": "/assets/poker-cards/fronts/spade-5.png"
-    },
-    {
-      "id": "spade-6",
-      "label": "6",
-      "suit": "spade",
-      "path": "/assets/poker-cards/fronts/spade-6.png"
-    },
-    {
-      "id": "spade-7",
-      "label": "7",
-      "suit": "spade",
-      "path": "/assets/poker-cards/fronts/spade-7.png"
-    },
-    {
-      "id": "spade-8",
-      "label": "8",
-      "suit": "spade",
-      "path": "/assets/poker-cards/fronts/spade-8.png"
-    },
-    {
-      "id": "spade-9",
-      "label": "9",
-      "suit": "spade",
-      "path": "/assets/poker-cards/fronts/spade-9.png"
-    },
-    {
-      "id": "spade-10",
-      "label": "10",
-      "suit": "spade",
-      "path": "/assets/poker-cards/fronts/spade-10.png"
-    },
-    {
-      "id": "spade-j",
-      "label": "J",
-      "suit": "spade",
-      "path": "/assets/poker-cards/fronts/spade-j.png"
-    },
-    {
-      "id": "spade-q",
-      "label": "Q",
-      "suit": "spade",
-      "path": "/assets/poker-cards/fronts/spade-q.png"
-    },
-    {
-      "id": "spade-k",
-      "label": "K",
-      "suit": "spade",
-      "path": "/assets/poker-cards/fronts/spade-k.png"
-    },
-    {
-      "id": "spade-a",
-      "label": "A",
-      "suit": "spade",
-      "path": "/assets/poker-cards/fronts/spade-a.png"
-    },
-    {
-      "id": "spade-2",
-      "label": "2",
-      "suit": "spade",
-      "path": "/assets/poker-cards/fronts/spade-2.png"
-    },
-    {
-      "id": "heart-3",
-      "label": "3",
-      "suit": "heart",
-      "path": "/assets/poker-cards/fronts/heart-3.png"
-    },
-    {
-      "id": "heart-4",
-      "label": "4",
-      "suit": "heart",
-      "path": "/assets/poker-cards/fronts/heart-4.png"
-    },
-    {
-      "id": "heart-5",
-      "label": "5",
-      "suit": "heart",
-      "path": "/assets/poker-cards/fronts/heart-5.png"
-    },
-    {
-      "id": "heart-6",
-      "label": "6",
-      "suit": "heart",
-      "path": "/assets/poker-cards/fronts/heart-6.png"
-    },
-    {
-      "id": "heart-7",
-      "label": "7",
-      "suit": "heart",
-      "path": "/assets/poker-cards/fronts/heart-7.png"
-    },
-    {
-      "id": "heart-8",
-      "label": "8",
-      "suit": "heart",
-      "path": "/assets/poker-cards/fronts/heart-8.png"
-    },
-    {
-      "id": "heart-9",
-      "label": "9",
-      "suit": "heart",
-      "path": "/assets/poker-cards/fronts/heart-9.png"
-    },
-    {
-      "id": "heart-10",
-      "label": "10",
-      "suit": "heart",
-      "path": "/assets/poker-cards/fronts/heart-10.png"
-    },
-    {
-      "id": "heart-j",
-      "label": "J",
-      "suit": "heart",
-      "path": "/assets/poker-cards/fronts/heart-j.png"
-    },
-    {
-      "id": "heart-q",
-      "label": "Q",
-      "suit": "heart",
-      "path": "/assets/poker-cards/fronts/heart-q.png"
-    },
-    {
-      "id": "heart-k",
-      "label": "K",
-      "suit": "heart",
-      "path": "/assets/poker-cards/fronts/heart-k.png"
-    },
-    {
-      "id": "heart-a",
-      "label": "A",
-      "suit": "heart",
-      "path": "/assets/poker-cards/fronts/heart-a.png"
-    },
-    {
-      "id": "heart-2",
-      "label": "2",
-      "suit": "heart",
-      "path": "/assets/poker-cards/fronts/heart-2.png"
-    },
-    {
-      "id": "club-3",
-      "label": "3",
-      "suit": "club",
-      "path": "/assets/poker-cards/fronts/club-3.png"
-    },
-    {
-      "id": "club-4",
-      "label": "4",
-      "suit": "club",
-      "path": "/assets/poker-cards/fronts/club-4.png"
-    },
-    {
-      "id": "club-5",
-      "label": "5",
-      "suit": "club",
-      "path": "/assets/poker-cards/fronts/club-5.png"
-    },
-    {
-      "id": "club-6",
-      "label": "6",
-      "suit": "club",
-      "path": "/assets/poker-cards/fronts/club-6.png"
-    },
-    {
-      "id": "club-7",
-      "label": "7",
-      "suit": "club",
-      "path": "/assets/poker-cards/fronts/club-7.png"
-    },
-    {
-      "id": "club-8",
-      "label": "8",
-      "suit": "club",
-      "path": "/assets/poker-cards/fronts/club-8.png"
-    },
-    {
-      "id": "club-9",
-      "label": "9",
-      "suit": "club",
-      "path": "/assets/poker-cards/fronts/club-9.png"
-    },
-    {
-      "id": "club-10",
-      "label": "10",
-      "suit": "club",
-      "path": "/assets/poker-cards/fronts/club-10.png"
-    },
-    {
-      "id": "club-j",
-      "label": "J",
-      "suit": "club",
-      "path": "/assets/poker-cards/fronts/club-j.png"
-    },
-    {
-      "id": "club-q",
-      "label": "Q",
-      "suit": "club",
-      "path": "/assets/poker-cards/fronts/club-q.png"
-    },
-    {
-      "id": "club-k",
-      "label": "K",
-      "suit": "club",
-      "path": "/assets/poker-cards/fronts/club-k.png"
-    },
-    {
-      "id": "club-a",
-      "label": "A",
-      "suit": "club",
-      "path": "/assets/poker-cards/fronts/club-a.png"
-    },
-    {
-      "id": "club-2",
-      "label": "2",
-      "suit": "club",
-      "path": "/assets/poker-cards/fronts/club-2.png"
-    },
-    {
-      "id": "diamond-3",
-      "label": "3",
-      "suit": "diamond",
-      "path": "/assets/poker-cards/fronts/diamond-3.png"
-    },
-    {
-      "id": "diamond-4",
-      "label": "4",
-      "suit": "diamond",
-      "path": "/assets/poker-cards/fronts/diamond-4.png"
-    },
-    {
-      "id": "diamond-5",
-      "label": "5",
-      "suit": "diamond",
-      "path": "/assets/poker-cards/fronts/diamond-5.png"
-    },
-    {
-      "id": "diamond-6",
-      "label": "6",
-      "suit": "diamond",
-      "path": "/assets/poker-cards/fronts/diamond-6.png"
-    },
-    {
-      "id": "diamond-7",
-      "label": "7",
-      "suit": "diamond",
-      "path": "/assets/poker-cards/fronts/diamond-7.png"
-    },
-    {
-      "id": "diamond-8",
-      "label": "8",
-      "suit": "diamond",
-      "path": "/assets/poker-cards/fronts/diamond-8.png"
-    },
-    {
-      "id": "diamond-9",
-      "label": "9",
-      "suit": "diamond",
-      "path": "/assets/poker-cards/fronts/diamond-9.png"
-    },
-    {
-      "id": "diamond-10",
-      "label": "10",
-      "suit": "diamond",
-      "path": "/assets/poker-cards/fronts/diamond-10.png"
-    },
-    {
-      "id": "diamond-j",
-      "label": "J",
-      "suit": "diamond",
-      "path": "/assets/poker-cards/fronts/diamond-j.png"
-    },
-    {
-      "id": "diamond-q",
-      "label": "Q",
-      "suit": "diamond",
-      "path": "/assets/poker-cards/fronts/diamond-q.png"
-    },
-    {
-      "id": "diamond-k",
-      "label": "K",
-      "suit": "diamond",
-      "path": "/assets/poker-cards/fronts/diamond-k.png"
-    },
-    {
-      "id": "diamond-a",
-      "label": "A",
-      "suit": "diamond",
-      "path": "/assets/poker-cards/fronts/diamond-a.png"
-    },
-    {
-      "id": "diamond-2",
-      "label": "2",
-      "suit": "diamond",
-      "path": "/assets/poker-cards/fronts/diamond-2.png"
-    },
-    {
-      "id": "joker-small",
-      "label": "SJ",
-      "suit": "joker",
-      "path": "/assets/poker-cards/fronts/joker-small.png"
-    },
-    {
-      "id": "joker-big",
-      "label": "BJ",
-      "suit": "joker",
-      "path": "/assets/poker-cards/fronts/joker-big.png"
-    }
-  ]
+    "source":  "card_deck",
+    "cards":  [
+                  {
+                      "id":  "spade-3",
+                      "label":  "3",
+                      "suit":  "spade",
+                      "path":  "/assets/poker-cards/card-deck/card_3S.png"
+                  },
+                  {
+                      "id":  "spade-4",
+                      "label":  "4",
+                      "suit":  "spade",
+                      "path":  "/assets/poker-cards/card-deck/card_4S.png"
+                  },
+                  {
+                      "id":  "spade-5",
+                      "label":  "5",
+                      "suit":  "spade",
+                      "path":  "/assets/poker-cards/card-deck/card_5S.png"
+                  },
+                  {
+                      "id":  "spade-6",
+                      "label":  "6",
+                      "suit":  "spade",
+                      "path":  "/assets/poker-cards/card-deck/card_6S.png"
+                  },
+                  {
+                      "id":  "spade-7",
+                      "label":  "7",
+                      "suit":  "spade",
+                      "path":  "/assets/poker-cards/card-deck/card_7S.png"
+                  },
+                  {
+                      "id":  "spade-8",
+                      "label":  "8",
+                      "suit":  "spade",
+                      "path":  "/assets/poker-cards/card-deck/card_8S.png"
+                  },
+                  {
+                      "id":  "spade-9",
+                      "label":  "9",
+                      "suit":  "spade",
+                      "path":  "/assets/poker-cards/card-deck/card_9S.png"
+                  },
+                  {
+                      "id":  "spade-10",
+                      "label":  "10",
+                      "suit":  "spade",
+                      "path":  "/assets/poker-cards/card-deck/card_10S.png"
+                  },
+                  {
+                      "id":  "spade-j",
+                      "label":  "J",
+                      "suit":  "spade",
+                      "path":  "/assets/poker-cards/card-deck/card_JS.png"
+                  },
+                  {
+                      "id":  "spade-q",
+                      "label":  "Q",
+                      "suit":  "spade",
+                      "path":  "/assets/poker-cards/card-deck/card_QS.png"
+                  },
+                  {
+                      "id":  "spade-k",
+                      "label":  "K",
+                      "suit":  "spade",
+                      "path":  "/assets/poker-cards/card-deck/card_KS.png"
+                  },
+                  {
+                      "id":  "spade-a",
+                      "label":  "A",
+                      "suit":  "spade",
+                      "path":  "/assets/poker-cards/card-deck/card_AS.png"
+                  },
+                  {
+                      "id":  "spade-2",
+                      "label":  "2",
+                      "suit":  "spade",
+                      "path":  "/assets/poker-cards/card-deck/card_2S.png"
+                  },
+                  {
+                      "id":  "heart-3",
+                      "label":  "3",
+                      "suit":  "heart",
+                      "path":  "/assets/poker-cards/card-deck/card_3H.png"
+                  },
+                  {
+                      "id":  "heart-4",
+                      "label":  "4",
+                      "suit":  "heart",
+                      "path":  "/assets/poker-cards/card-deck/card_4H.png"
+                  },
+                  {
+                      "id":  "heart-5",
+                      "label":  "5",
+                      "suit":  "heart",
+                      "path":  "/assets/poker-cards/card-deck/card_5H.png"
+                  },
+                  {
+                      "id":  "heart-6",
+                      "label":  "6",
+                      "suit":  "heart",
+                      "path":  "/assets/poker-cards/card-deck/card_6H.png"
+                  },
+                  {
+                      "id":  "heart-7",
+                      "label":  "7",
+                      "suit":  "heart",
+                      "path":  "/assets/poker-cards/card-deck/card_7H.png"
+                  },
+                  {
+                      "id":  "heart-8",
+                      "label":  "8",
+                      "suit":  "heart",
+                      "path":  "/assets/poker-cards/card-deck/card_8H.png"
+                  },
+                  {
+                      "id":  "heart-9",
+                      "label":  "9",
+                      "suit":  "heart",
+                      "path":  "/assets/poker-cards/card-deck/card_9H.png"
+                  },
+                  {
+                      "id":  "heart-10",
+                      "label":  "10",
+                      "suit":  "heart",
+                      "path":  "/assets/poker-cards/card-deck/card_10H.png"
+                  },
+                  {
+                      "id":  "heart-j",
+                      "label":  "J",
+                      "suit":  "heart",
+                      "path":  "/assets/poker-cards/card-deck/card_JH.png"
+                  },
+                  {
+                      "id":  "heart-q",
+                      "label":  "Q",
+                      "suit":  "heart",
+                      "path":  "/assets/poker-cards/card-deck/card_QH.png"
+                  },
+                  {
+                      "id":  "heart-k",
+                      "label":  "K",
+                      "suit":  "heart",
+                      "path":  "/assets/poker-cards/card-deck/card_KH.png"
+                  },
+                  {
+                      "id":  "heart-a",
+                      "label":  "A",
+                      "suit":  "heart",
+                      "path":  "/assets/poker-cards/card-deck/card_AH.png"
+                  },
+                  {
+                      "id":  "heart-2",
+                      "label":  "2",
+                      "suit":  "heart",
+                      "path":  "/assets/poker-cards/card-deck/card_2H.png"
+                  },
+                  {
+                      "id":  "club-3",
+                      "label":  "3",
+                      "suit":  "club",
+                      "path":  "/assets/poker-cards/card-deck/card_3C.png"
+                  },
+                  {
+                      "id":  "club-4",
+                      "label":  "4",
+                      "suit":  "club",
+                      "path":  "/assets/poker-cards/card-deck/card_4C.png"
+                  },
+                  {
+                      "id":  "club-5",
+                      "label":  "5",
+                      "suit":  "club",
+                      "path":  "/assets/poker-cards/card-deck/card_5C.png"
+                  },
+                  {
+                      "id":  "club-6",
+                      "label":  "6",
+                      "suit":  "club",
+                      "path":  "/assets/poker-cards/card-deck/card_6C.png"
+                  },
+                  {
+                      "id":  "club-7",
+                      "label":  "7",
+                      "suit":  "club",
+                      "path":  "/assets/poker-cards/card-deck/card_7C.png"
+                  },
+                  {
+                      "id":  "club-8",
+                      "label":  "8",
+                      "suit":  "club",
+                      "path":  "/assets/poker-cards/card-deck/card_8C.png"
+                  },
+                  {
+                      "id":  "club-9",
+                      "label":  "9",
+                      "suit":  "club",
+                      "path":  "/assets/poker-cards/card-deck/card_9C.png"
+                  },
+                  {
+                      "id":  "club-10",
+                      "label":  "10",
+                      "suit":  "club",
+                      "path":  "/assets/poker-cards/card-deck/card_10C.png"
+                  },
+                  {
+                      "id":  "club-j",
+                      "label":  "J",
+                      "suit":  "club",
+                      "path":  "/assets/poker-cards/card-deck/card_JC.png"
+                  },
+                  {
+                      "id":  "club-q",
+                      "label":  "Q",
+                      "suit":  "club",
+                      "path":  "/assets/poker-cards/card-deck/card_QC.png"
+                  },
+                  {
+                      "id":  "club-k",
+                      "label":  "K",
+                      "suit":  "club",
+                      "path":  "/assets/poker-cards/card-deck/card_KC.png"
+                  },
+                  {
+                      "id":  "club-a",
+                      "label":  "A",
+                      "suit":  "club",
+                      "path":  "/assets/poker-cards/card-deck/card_AC.png"
+                  },
+                  {
+                      "id":  "club-2",
+                      "label":  "2",
+                      "suit":  "club",
+                      "path":  "/assets/poker-cards/card-deck/card_2C.png"
+                  },
+                  {
+                      "id":  "diamond-3",
+                      "label":  "3",
+                      "suit":  "diamond",
+                      "path":  "/assets/poker-cards/card-deck/card_3D.png"
+                  },
+                  {
+                      "id":  "diamond-4",
+                      "label":  "4",
+                      "suit":  "diamond",
+                      "path":  "/assets/poker-cards/card-deck/card_4D.png"
+                  },
+                  {
+                      "id":  "diamond-5",
+                      "label":  "5",
+                      "suit":  "diamond",
+                      "path":  "/assets/poker-cards/card-deck/card_5D.png"
+                  },
+                  {
+                      "id":  "diamond-6",
+                      "label":  "6",
+                      "suit":  "diamond",
+                      "path":  "/assets/poker-cards/card-deck/card_6D.png"
+                  },
+                  {
+                      "id":  "diamond-7",
+                      "label":  "7",
+                      "suit":  "diamond",
+                      "path":  "/assets/poker-cards/card-deck/card_7D.png"
+                  },
+                  {
+                      "id":  "diamond-8",
+                      "label":  "8",
+                      "suit":  "diamond",
+                      "path":  "/assets/poker-cards/card-deck/card_8D.png"
+                  },
+                  {
+                      "id":  "diamond-9",
+                      "label":  "9",
+                      "suit":  "diamond",
+                      "path":  "/assets/poker-cards/card-deck/card_9D.png"
+                  },
+                  {
+                      "id":  "diamond-10",
+                      "label":  "10",
+                      "suit":  "diamond",
+                      "path":  "/assets/poker-cards/card-deck/card_10D.png"
+                  },
+                  {
+                      "id":  "diamond-j",
+                      "label":  "J",
+                      "suit":  "diamond",
+                      "path":  "/assets/poker-cards/card-deck/card_JD.png"
+                  },
+                  {
+                      "id":  "diamond-q",
+                      "label":  "Q",
+                      "suit":  "diamond",
+                      "path":  "/assets/poker-cards/card-deck/card_QD.png"
+                  },
+                  {
+                      "id":  "diamond-k",
+                      "label":  "K",
+                      "suit":  "diamond",
+                      "path":  "/assets/poker-cards/card-deck/card_KD.png"
+                  },
+                  {
+                      "id":  "diamond-a",
+                      "label":  "A",
+                      "suit":  "diamond",
+                      "path":  "/assets/poker-cards/card-deck/card_AD.png"
+                  },
+                  {
+                      "id":  "diamond-2",
+                      "label":  "2",
+                      "suit":  "diamond",
+                      "path":  "/assets/poker-cards/card-deck/card_2D.png"
+                  },
+                  {
+                      "id":  "joker-small",
+                      "label":  "SJ",
+                      "suit":  "joker",
+                      "path":  "/assets/poker-cards/card-deck/card_joker_small.png"
+                  },
+                  {
+                      "id":  "joker-big",
+                      "label":  "BJ",
+                      "suit":  "joker",
+                      "path":  "/assets/poker-cards/card-deck/card_joker_big.png"
+                  }
+              ]
 }

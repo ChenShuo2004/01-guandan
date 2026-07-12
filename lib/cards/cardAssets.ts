@@ -5,30 +5,30 @@ import type { PokerCardData } from "@/types/poker";
 export type CardVisualStatus = "normal" | "selected" | "disabled" | "invalid";
 
 const suitAssetName: Record<CardSuit, string> = {
-  spade: "spade",
-  heart: "heart",
-  club: "club",
-  diamond: "diamond"
+  spade: "S",
+  heart: "H",
+  club: "C",
+  diamond: "D"
 };
 
 export function getPlayingCardAsset(card: Card) {
   if (card.isJoker) {
     return card.rank === 17
-      ? "/assets/poker-cards/fronts/joker-big.png"
-      : "/assets/poker-cards/fronts/joker-small.png";
+      ? "/assets/poker-cards/card-deck/card_joker_big.png"
+      : "/assets/poker-cards/card-deck/card_joker_small.png";
   }
 
   const suit = suitAssetName[card.suit as CardSuit];
-  const label = getCardLabel(card).toLowerCase();
-  return `/assets/poker-cards/fronts/${suit}-${label}.png`;
+  const label = getCardLabel(card).toUpperCase();
+  return `/assets/poker-cards/card-deck/card_${label}${suit}.png`;
 }
 
 export function getPokerCardAsset(card: PokerCardData) {
-  if (card.rank === "SJ") return "/assets/poker-cards/fronts/joker-small.png";
-  if (card.rank === "BJ") return "/assets/poker-cards/fronts/joker-big.png";
+  if (card.rank === "SJ") return "/assets/poker-cards/card-deck/card_joker_small.png";
+  if (card.rank === "BJ") return "/assets/poker-cards/card-deck/card_joker_big.png";
 
-  const suit = card.suit ? suitAssetName[card.suit] : "spade";
-  return `/assets/poker-cards/fronts/${suit}-${card.rank.toLowerCase()}.png`;
+  const suit = card.suit ? suitAssetName[card.suit] : "S";
+  return `/assets/poker-cards/card-deck/card_${card.rank.toUpperCase()}${suit}.png`;
 }
 
 export function getCardVisualStatus({
