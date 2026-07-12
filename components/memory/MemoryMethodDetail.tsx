@@ -3,31 +3,22 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { ReactNode } from "react";
-import { memoryMethods, categoryLabels, difficultyLabels, type MemoryMethod } from "@/content/memory-methods";
+import { categoryLabels, difficultyLabels, type MemoryMethod } from "@/content/memory-methods";
 import { MethodMappingDemo, MethodPrincipleFlow, MethodScenarioDemo } from "@/components/memory/MemoryMethodVisuals";
 
-function buildMemoryMethodsHref(returnTo?: string | null) {
-  return returnTo ? `/training/memory-methods?returnTo=${encodeURIComponent(returnTo)}` : "/training/memory-methods";
-}
-
-function buildMethodDetailHref(slug: string, returnTo?: string | null) {
-  return returnTo
-    ? `/training/memory-methods/${slug}?returnTo=${encodeURIComponent(returnTo)}`
-    : `/training/memory-methods/${slug}`;
+function buildContinueTrainingHref(returnTo?: string | null) {
+  return returnTo?.startsWith("/") ? returnTo : "/practice";
 }
 
 export function MemoryMethodDetail({ method, returnTo = null }: { method: MemoryMethod; returnTo?: string | null }) {
-  const previous = memoryMethods.find((item) => item.number === String(Number(method.number) - 1).padStart(2, "0"));
-  const next = memoryMethods.find((item) => item.number === String(Number(method.number) + 1).padStart(2, "0"));
-
   return (
     <main className="min-h-screen bg-[#eaf6ff] px-4 py-6 text-[#12395a] sm:px-6 lg:px-10">
       <div className="mx-auto max-w-7xl">
         <Link
           className="inline-flex min-h-11 items-center rounded-xl border border-[#9fcbe5] bg-white px-4 text-sm font-black text-[#176192] transition hover:-translate-y-0.5"
-          href={buildMemoryMethodsHref(returnTo)}
+          href={buildContinueTrainingHref(returnTo)}
         >
-          ← 返回记牌方法库
+          ← 返回继续训练
         </Link>
 
         <div className="mt-4 grid gap-5 lg:grid-cols-[minmax(340px,0.92fr)_minmax(0,1.08fr)] lg:items-start">
@@ -102,29 +93,6 @@ export function MemoryMethodDetail({ method, returnTo = null }: { method: Memory
                 ))}
               </div>
             </Panel>
-
-            <nav className="flex justify-between gap-3 py-1">
-              {previous ? (
-                <Link
-                  className="min-h-11 rounded-xl border border-[#9fcbe5] bg-white px-4 py-2.5 text-sm font-black text-[#176192]"
-                  href={buildMethodDetailHref(previous.slug, returnTo)}
-                >
-                  ← 方法 {previous.number}
-                </Link>
-              ) : (
-                <span />
-              )}
-              {next ? (
-                <Link
-                  className="min-h-11 rounded-xl border border-[#9fcbe5] bg-white px-4 py-2.5 text-sm font-black text-[#176192]"
-                  href={buildMethodDetailHref(next.slug, returnTo)}
-                >
-                  方法 {next.number} →
-                </Link>
-              ) : (
-                <span />
-              )}
-            </nav>
           </div>
         </div>
       </div>

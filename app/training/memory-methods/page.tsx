@@ -1,10 +1,15 @@
-import { MemoryMethodsLibrary } from "@/components/memory/MemoryMethodsLibrary";
+import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "记牌方法库 | 掼蛋方法学习",
-  description: "查看适合自己的记牌方法。",
+  title: "脚步定位记牌法 | 掼蛋方法学习",
+  description: "直接学习脚步定位记牌法。",
 };
 
 export default function MemoryMethodsPage({ searchParams }: { searchParams?: { returnTo?: string } }) {
-  return <MemoryMethodsLibrary returnTo={searchParams?.returnTo ?? null} />;
+  const returnTo = searchParams?.returnTo;
+  const target = returnTo
+    ? `/training/memory-methods/foot-position?returnTo=${encodeURIComponent(returnTo)}`
+    : "/training/memory-methods/foot-position";
+
+  redirect(target);
 }
