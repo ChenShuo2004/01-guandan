@@ -74,7 +74,7 @@ function TurnStatusLabel({ players, turnAction }: { players: ArenaPlayer[]; turn
     <AnimatePresence mode="wait">
       <motion.div
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="training-turn-status absolute left-1/2 top-[30%] z-[50] flex -translate-x-1/2 items-center gap-2 text-center text-[#12395a]"
+        className="training-turn-status absolute left-1/2 top-[30%] z-[50] flex -translate-x-1/2 flex-col items-center gap-1 text-center text-[#12395a]"
         exit={{ opacity: 0, scale: 0.94, y: -8 }}
         initial={{ opacity: 0, scale: 0.86, y: 10 }}
         key={`${turnAction.playerId}-${turnAction.status}`}
