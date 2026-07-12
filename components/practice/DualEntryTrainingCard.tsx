@@ -5,24 +5,6 @@ import { motion, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
 import "./DualEntryTrainingCard.css";
 
-const RULES_TOPICS = [
-  "基础规则",
-  "牌型介绍",
-  "出牌流程",
-  "进贡还贡",
-  "升级规则",
-  "特殊情况讲解"
-] as const;
-
-const MEMORY_TOPICS = [
-  "记鬼牌",
-  "记级牌",
-  "A/K/Q 关键牌",
-  "剩余牌推算",
-  "局势分析",
-  "实战记牌训练"
-] as const;
-
 interface DualEntryTrainingCardProps {
   memoryHref?: string;
   onMemoryClick?: () => void;
@@ -102,12 +84,6 @@ export function DualEntryTrainingCard({
               <span className="material-symbols-outlined text-[24px]">menu_book</span>
             </span>
             <h2 className="dual-entry-card__title">掼蛋规则</h2>
-            <p className="dual-entry-card__subtitle">从零快速掌握所有规则</p>
-            <ul className="dual-entry-card__list">
-              {RULES_TOPICS.map((topic) => (
-                <li key={topic}>{topic}</li>
-              ))}
-            </ul>
             <span className="dual-entry-card__cta dual-entry-card__cta--rules">
               开始学习
               <span aria-hidden="true">→</span>
@@ -140,12 +116,6 @@ export function DualEntryTrainingCard({
               <span className="material-symbols-outlined text-[24px]">neurology</span>
             </span>
             <h2 className="dual-entry-card__title">记牌方法论</h2>
-            <p className="dual-entry-card__subtitle">建立完整记牌体系</p>
-            <ul className="dual-entry-card__list">
-              {MEMORY_TOPICS.map((topic) => (
-                <li key={topic}>{topic}</li>
-              ))}
-            </ul>
             <span className="dual-entry-card__cta dual-entry-card__cta--memory">
               开始训练
               <span aria-hidden="true">→</span>
