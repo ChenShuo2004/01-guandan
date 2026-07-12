@@ -55,6 +55,8 @@ export interface MemoryHandResult {
   createdAt: number;
 }
 
+export type MemoryMethodGuideReason = "opening" | "wrong_streak";
+
 export interface ObserverMemoryTrainingState {
   sessionId: string;
   startedAt: number;
@@ -92,6 +94,9 @@ export interface ObserverMemoryTrainingState {
   sessionClock: MemorySessionClock;
   targetProgress: MemoryTargetProgress;
   playersPlayedSinceCheckpoint: Set<string>;
+  consecutiveWrongCheckpoints: number;
+  hasSeenOpeningMethodGuide: boolean;
+  lastMethodGuideReason?: MemoryMethodGuideReason;
 }
 
 export const TARGET_COUNT_STEPS = [2, 3, 4, 5, 7, 10] as const;
@@ -366,6 +371,9 @@ export function createInitialTrainingState(
     },
     targetProgress: createInitialTargetProgress(levelRank),
     playersPlayedSinceCheckpoint: new Set(),
+    consecutiveWrongCheckpoints: 0,
+    hasSeenOpeningMethodGuide: false,
+    lastMethodGuideReason: undefined,
   };
 }
 
@@ -403,6 +411,9 @@ export function normalizeTrainingStateForResume(
     levelRank: training.levelRank ?? training.currentLevelRank ?? teamLevels[leadingTeam],
     handsCompleted: training.handsCompleted ?? training.handResults?.length ?? 0,
     matchWinner: training.matchWinner ?? null,
+    consecutiveWrongCheckpoints: training.consecutiveWrongCheckpoints ?? 0,
+    hasSeenOpeningMethodGuide: training.hasSeenOpeningMethodGuide ?? false,
+    lastMethodGuideReason: training.lastMethodGuideReason,
   };
 
   if (training.phase === "SESSION_FINISHED" || training.sessionTimeExpired) return {

@@ -11,6 +11,7 @@ import { MemoryCheckpointPanel } from "@/components/memory/MemoryCheckpointPanel
 import { MemoryFeedbackPanel } from "@/components/memory/MemoryFeedbackPanel";
 import { MemoryReviewReportPanel } from "@/components/memory/MemoryReviewReportPanel";
 import { MemoryAnswerHistoryPanel } from "@/components/memory/MemoryAnswerHistoryPanel";
+import { MemoryMethodGuideModal } from "@/components/memory/MemoryMethodGuideModal";
 import {
   createInitialTrainingState,
   createTargetRanks,
@@ -26,6 +27,7 @@ import {
   calculateOverallAccuracy,
   normalizeTrainingStateForResume,
   OBSERVATION_TIMES_MS,
+  type MemoryMethodGuideReason,
   type ObserverMemoryTrainingState,
   type MemoryRelevantEvent,
 } from "@/lib/memory/ObserverMemoryTraining";
@@ -45,6 +47,7 @@ import {
 } from "@/lib/memory/memoryTrainingSystem";
 
 const MEMORY_SESSION_STORAGE_KEY = "guandan-memory-training-session";
+const WRONG_CHECKPOINT_METHOD_GUIDE_THRESHOLD = 5;
 
 interface TributeNotice {
   tributeCard: Card | null;
@@ -72,6 +75,7 @@ export function MemoryTrainingExperience() {
   const [showCheckpoint, setShowCheckpoint] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [showReport, setShowReport] = useState(false);
+  const [methodGuideReason, setMethodGuideReason] = useState<MemoryMethodGuideReason | null>(null);
   const [tributeNotice, setTributeNotice] = useState<TributeNotice | null>(null);
   const [arenaKey, setArenaKey] = useState(0);
 
@@ -84,10 +88,24 @@ export function MemoryTrainingExperience() {
   // ── Game store (observer mode) ─────────────────────────────────────────────────
   const checkpointTriggeredRef = useRef(false);
   const gameStateRef = useRef<GameEngineState | null>(null);
+  const methodGuidePausedSessionRef = useRef(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") saveTrainingState(window.localStorage, MEMORY_SESSION_STORAGE_KEY, training);
   }, [training]);
+
+  useEffect(() => {
+    if (methodGuideReason && trainingRef.current.sessionClock.pausedAt === null) {
+      methodGuidePausedSessionRef.current = true;
+      setTraining((prev) => ({ ...prev, sessionClock: pauseSession(prev.sessionClock) }));
+      return;
+    }
+
+    if (!methodGuideReason && methodGuidePausedSessionRef.current) {
+      methodGuidePausedSessionRef.current = false;
+      setTraining((prev) => ({ ...prev, sessionClock: resumeSession(prev.sessionClock) }));
+    }
+  }, [methodGuideReason]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -120,11 +138,13 @@ export function MemoryTrainingExperience() {
             : new Set(),
         })
       : initial;
+    const shouldShowOpeningGuide = !next.hasSeenOpeningMethodGuide;
     setTraining(next);
     setShowTargetOverlay(next.phase === "SHOWING_TARGETS" || next.phase === "OBSERVING_INITIAL_HAND");
     setShowCheckpoint(next.phase === "ANSWERING");
     setShowFeedback(next.phase === "SHOWING_FEEDBACK" && Boolean(next.pendingCheckpoint));
     setShowReport(next.phase === "SESSION_FINISHED" || next.sessionTimeExpired);
+    setMethodGuideReason(shouldShowOpeningGuide ? "opening" : null);
     const sessionTimer = sessionTimerRef.current;
     const checkpointTransitionTimer = checkpointTransitionTimerRef.current;
     const handSettlementTimer = handSettlementTimerRef.current;
@@ -414,6 +434,8 @@ export function MemoryTrainingExperience() {
       : undefined;
     const checkpoint = evaluateCheckpointWithCards(withAnswers, currentAllCardsById, playedTargetCardIds);
     const allCorrect = checkpoint.incorrectRanks.length === 0;
+    const wrongCheckpointCount = allCorrect ? 0 : t.consecutiveWrongCheckpoints + 1;
+    const shouldQueueMethodGuide = wrongCheckpointCount >= WRONG_CHECKPOINT_METHOD_GUIDE_THRESHOLD;
     const nextMultiplier = maybeIncreaseMultiplier(
       updateMultiplier(t.multiplier, allCorrect),
       [...t.multiplierResults, allCorrect],
@@ -431,6 +453,8 @@ export function MemoryTrainingExperience() {
       overallAccuracy: calculateOverallAccuracy([...prev.checkpoints, checkpoint]),
       multiplier: nextMultiplier,
       multiplierResults: [...prev.multiplierResults, allCorrect].slice(-2),
+      consecutiveWrongCheckpoints: shouldQueueMethodGuide ? 0 : wrongCheckpointCount,
+      lastMethodGuideReason: shouldQueueMethodGuide ? "wrong_streak" : prev.lastMethodGuideReason,
     }));
 
     setShowCheckpoint(false);
@@ -440,6 +464,17 @@ export function MemoryTrainingExperience() {
   // ── Feedback continue ──────────────────────────────────────────────────────────
   const handleFeedbackContinue = useCallback(() => {
     setShowFeedback(false);
+
+    if (trainingRef.current.lastMethodGuideReason === "wrong_streak") {
+      setTraining(prev => ({
+        ...prev,
+        lastMethodGuideReason: undefined,
+        pendingCheckpoint: null,
+        phase: "AI_PLAYING",
+      }));
+      setMethodGuideReason("wrong_streak");
+      return;
+    }
 
     if (trainingRef.current.sessionTimeExpired) {
       setTraining(prev => ({ ...prev, phase: "SESSION_FINISHED" }));
@@ -471,6 +506,7 @@ export function MemoryTrainingExperience() {
     setShowCheckpoint(false);
     setShowFeedback(false);
     setShowReport(false);
+    setMethodGuideReason("opening");
     setTributeNotice(null);
 
     sessionTimerRef.current = window.setTimeout(() => {
@@ -515,7 +551,27 @@ export function MemoryTrainingExperience() {
   }, []);
 
   // ── Computed ───────────────────────────────────────────────────────────────────
-  const observerPaused = training.phase !== "AI_PLAYING";
+  const handleMethodGuideContinue = useCallback(() => {
+    const reason = methodGuideReason;
+    setMethodGuideReason(null);
+    setTraining((prev) => ({
+      ...prev,
+      hasSeenOpeningMethodGuide: reason === "opening" ? true : prev.hasSeenOpeningMethodGuide,
+      lastMethodGuideReason: prev.lastMethodGuideReason === reason ? undefined : prev.lastMethodGuideReason,
+    }));
+
+    if (reason === "wrong_streak" && trainingRef.current.sessionTimeExpired) {
+      setTraining(prev => ({ ...prev, phase: "SESSION_FINISHED" }));
+      setShowReport(true);
+      return;
+    }
+
+    if (reason === "wrong_streak" && gameStateRef.current?.gameStatus === "finished") {
+      window.setTimeout(() => handleGameFinished(), 0);
+    }
+  }, [handleGameFinished, methodGuideReason]);
+
+  const observerPaused = methodGuideReason !== null || training.phase !== "AI_PLAYING";
 
   // ── Render ─────────────────────────────────────────────────────────────────────
   return (
@@ -548,7 +604,7 @@ export function MemoryTrainingExperience() {
       <MemoryTargetPanel
         targetRanks={training.targetRanks}
         currentTargetCount={training.currentTargetCount}
-        visible={training.phase === "AI_PLAYING" || training.phase === "OBSERVING_INITIAL_HAND"}
+        visible={methodGuideReason === null && (training.phase === "AI_PLAYING" || training.phase === "OBSERVING_INITIAL_HAND")}
       />
 
       {tributeNotice ? (
@@ -575,7 +631,7 @@ export function MemoryTrainingExperience() {
         visible
       />
 
-      {showTargetOverlay ? (
+      {showTargetOverlay && methodGuideReason === null ? (
         <MemoryTargetOverlay
           targetRanks={training.targetRanks}
           currentTargetCount={training.currentTargetCount}
@@ -602,13 +658,20 @@ export function MemoryTrainingExperience() {
         />
       ) : null}
 
-      {showReport ? (
+      {showReport && methodGuideReason === null ? (
         <MemoryReviewReportPanel
           checkpoints={training.checkpoints}
           onExit={exitToLobby}
           onRestart={handleRestart}
           onResume={handleReportResume}
           summary={buildSessionSummary(training)}
+        />
+      ) : null}
+
+      {methodGuideReason ? (
+        <MemoryMethodGuideModal
+          onContinue={handleMethodGuideContinue}
+          reason={methodGuideReason}
         />
       ) : null}
 
