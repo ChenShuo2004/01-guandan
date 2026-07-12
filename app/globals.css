@@ -289,6 +289,113 @@ select {
   display: none;
 }
 
+.training-turn-status {
+  pointer-events: none;
+}
+
+.training-turn-count {
+  display: inline-flex;
+  min-height: 38px;
+  min-width: 70px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  background: rgba(255, 255, 255, 0.94);
+  padding: 0 1rem;
+  color: #c76b00;
+  font-size: 1.15rem;
+  font-weight: 1000;
+  line-height: 1;
+  box-shadow:
+    0 14px 28px rgba(43, 127, 191, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+}
+
+.training-turn-pointer {
+  position: relative;
+  display: inline-block;
+  width: 48px;
+  height: 36px;
+  flex: 0 0 auto;
+  filter: drop-shadow(0 8px 10px rgba(84, 12, 12, 0.32));
+  transform-origin: 50% 50%;
+}
+
+.training-turn-pointer[data-direction="right"] {
+  transform: rotate(0deg);
+}
+
+.training-turn-pointer[data-direction="left"] {
+  transform: rotate(180deg);
+}
+
+.training-turn-pointer[data-direction="top"] {
+  transform: rotate(-90deg);
+}
+
+.training-turn-pointer[data-direction="bottom"] {
+  transform: rotate(90deg);
+}
+
+.training-turn-pointer__shadow,
+.training-turn-pointer__tail,
+.training-turn-pointer__wing,
+.training-turn-pointer__nose {
+  position: absolute;
+  display: block;
+}
+
+.training-turn-pointer__shadow {
+  left: 7px;
+  top: 19px;
+  width: 30px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.24);
+  filter: blur(5px);
+}
+
+.training-turn-pointer__tail {
+  left: 4px;
+  top: 15px;
+  width: 23px;
+  height: 15px;
+  clip-path: polygon(0 100%, 100% 0, 76% 100%);
+  background: linear-gradient(135deg, #1f2937 0%, #eef2f7 56%, #9ca3af 100%);
+}
+
+.training-turn-pointer__wing {
+  left: 11px;
+  top: 12px;
+  width: 27px;
+  height: 17px;
+  clip-path: polygon(0 100%, 100% 0, 76% 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #cbd5e1 54%, #111827 100%);
+}
+
+.training-turn-pointer__nose {
+  left: 14px;
+  top: 3px;
+  width: 35px;
+  height: 26px;
+  clip-path: polygon(0 50%, 100% 0, 77% 100%);
+  background: linear-gradient(135deg, #ff3434 0%, #ef1111 56%, #7f0e16 100%);
+}
+
+.training-turn-pointer__nose::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 4px;
+  width: 22px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  transform: rotate(-26deg);
+}
+
 .training-arena-modal-scroll {
   min-height: 0;
   flex: 1 1 auto;

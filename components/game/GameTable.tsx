@@ -68,40 +68,37 @@ export function GameTable({
 
 function TurnStatusLabel({ players, turnAction }: { players: ArenaPlayer[]; turnAction: TurnActionState }) {
   const activePlayer = players.find((player) => player.id === turnAction.playerId);
-  const arrowByPosition = {
-    bottom: "↓",
-    left: "←",
-    right: "→",
-    top: "↑"
-  } as const;
-  const direction = activePlayer ? arrowByPosition[activePlayer.position] : "→";
+  const direction = activePlayer?.position ?? "right";
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
         animate={{ opacity: 1, scale: 1, y: 0 }}
-        className="training-turn-status absolute left-1/2 top-[30%] z-[50] -translate-x-1/2 rounded-[22px] border border-white/75 bg-white/92 px-6 py-3 text-center text-[#12395a] shadow-[0_16px_34px_rgba(43,127,191,0.2)] backdrop-blur"
+        className="training-turn-status absolute left-1/2 top-[30%] z-[50] flex -translate-x-1/2 items-center gap-2 text-center text-[#12395a]"
         exit={{ opacity: 0, scale: 0.94, y: -8 }}
         initial={{ opacity: 0, scale: 0.86, y: 10 }}
         key={`${turnAction.playerId}-${turnAction.status}`}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
         <motion.span
-          animate={{ x: direction === "←" ? [-2, -8, -2] : direction === "→" ? [2, 8, 2] : 0, y: direction === "↑" ? [-2, -8, -2] : direction === "↓" ? [2, 8, 2] : 0, opacity: [0.45, 1, 0.45] }}
+          animate={{ opacity: [0.86, 1, 0.86] }}
           aria-hidden
-          className="inline-block text-3xl font-black leading-none text-[#f0b72e]"
+          className="training-turn-pointer"
+          data-direction={direction}
           transition={{ duration: 0.9, repeat: Infinity }}
         >
-          {direction}
+          <span className="training-turn-pointer__shadow" />
+          <span className="training-turn-pointer__tail" />
+          <span className="training-turn-pointer__wing" />
+          <span className="training-turn-pointer__nose" />
         </motion.span>
         {typeof turnAction.remainingSeconds === "number" ? (
-          <span className="ml-1 text-lg font-black text-[#d27b00]">{turnAction.remainingSeconds} 秒</span>
+          <span className="training-turn-count">{turnAction.remainingSeconds} 秒</span>
         ) : null}
       </motion.div>
     </AnimatePresence>
   );
 }
-
 function RoundActionZone({
   action,
   className,
