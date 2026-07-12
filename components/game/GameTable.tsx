@@ -90,9 +90,7 @@ function TurnStatusLabel({ players, turnAction }: { players: ArenaPlayer[]; turn
           <span className="training-turn-pointer__left" />
           <span className="training-turn-pointer__right" />
         </motion.span>
-        {turnAction.status === "thinking" ? (
-          <span className="training-turn-count">{"\u601d\u8003\u4e2d"}</span>
-        ) : typeof turnAction.remainingSeconds === "number" ? (
+        {typeof turnAction.remainingSeconds === "number" ? (
           <span className="training-turn-count">{turnAction.remainingSeconds} 秒</span>
         ) : null}
       </motion.div>
