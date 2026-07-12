@@ -1425,11 +1425,11 @@ function RulesHelpDetail({
           <span className="material-symbols-outlined text-[20px]">arrow_back</span>
         </button>
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/72">Training help</p>
-          <h2 className="text-xl font-black text-white">{title}</h2>
+          <p className="text-xs font-black uppercase tracking-[0.22em] text-white/78">Training help</p>
+          <h2 className="text-2xl font-black text-white">{title}</h2>
         </div>
       </div>
-      <div className="space-y-3 text-sm font-bold leading-6 text-white/92">{children}</div>
+      <div className="space-y-3 text-base font-bold leading-7 text-white">{children}</div>
     </div>
   );
 }
