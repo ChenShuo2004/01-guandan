@@ -1224,7 +1224,7 @@ function ArenaTopBar({
   return (
     <header className="training-arena-topbar absolute inset-x-0 top-0 z-[80] h-[84px] border-b border-white/20 bg-[#d7f3ff]/28 shadow-[0_10px_32px_rgba(34,122,187,0.10)] backdrop-blur-md">
       <div className="training-desktop-hud flex h-full items-center justify-between gap-3 px-4 lg:px-7">
-        <div className="relative flex h-[82px] w-[360px] shrink-0 items-center rounded-br-[28px] bg-white/76 pl-7 shadow-[0_10px_24px_rgba(37,126,191,0.14)] max-lg:w-[220px] max-lg:pl-4">
+        <div className="relative flex h-[82px] w-[470px] shrink-0 items-center gap-4 rounded-br-[28px] bg-white/76 pl-7 pr-4 shadow-[0_10px_24px_rgba(37,126,191,0.14)] max-lg:w-[320px] max-lg:gap-3 max-lg:pl-4 max-lg:pr-3">
           <div>
             <p className="whitespace-nowrap text-[24px] font-black leading-7 text-[#f6b42d] max-lg:text-[18px]">
               Ace <span className="text-[#12395a]">掼蛋记牌训练空间</span>
@@ -1233,11 +1233,11 @@ function ArenaTopBar({
               AI Coach 陪你完成每一轮牌局决策。
             </p>
           </div>
+          <LevelCardBadge levelRank={levelRank} />
         </div>
 
         <div className="hidden shrink-0 items-center gap-2 rounded-full bg-white/34 px-3 py-2 text-base font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl md:flex max-lg:gap-1 max-lg:px-2">
-          <LevelCardBadge levelRank={levelRank} />
-          <span className="ml-2 rounded-full bg-[#12395a]/88 px-3 py-1 text-xs text-white max-lg:hidden">{observerMode ? "观察模式 · AI 自动行动" : phaseText[phase]}</span>
+          <span className="rounded-full bg-[#12395a]/88 px-3 py-1 text-xs text-white max-lg:hidden">{observerMode ? "观察模式 · AI 自动行动" : phaseText[phase]}</span>
         </div>
 
         <nav className="flex min-w-0 items-center gap-3 max-lg:gap-2">
@@ -1299,12 +1299,22 @@ function ArenaTopBar({
 
 function LevelCardBadge({ levelRank }: { levelRank: string }) {
   return (
-    <section className="mr-1 flex items-center gap-2 rounded-xl border-2 border-[#f2c24c]/90 bg-white/95 px-2.5 py-2 text-[#12395a] shadow-[0_10px_24px_rgba(164,105,0,0.22)] backdrop-blur">
-      {[["我方", levelRank], ["对方", levelRank]].map(([label, rank]) => (
-        <div className="flex items-center gap-1.5" key={label}>
-          <p className="whitespace-nowrap text-xs font-black text-[#9a6800]">{label}</p>
-          <div className="relative grid h-11 w-11 place-items-center rounded-lg border-2 border-[#f2c24c] bg-white text-2xl font-black text-[#0f172a] shadow-[0_5px_12px_rgba(164,105,0,0.16)]">
-            {rank}
+    <section aria-label={"\u5f53\u524d\u7ea7\u724c"} className="hidden shrink-0 overflow-hidden rounded-[6px] border border-[#254248]/70 bg-[#254248] shadow-[0_10px_22px_rgba(20,70,94,0.22)] md:flex">
+      {[
+        ["\u6211\u65b9", levelRank, "ally"],
+        ["\u5bf9\u65b9", levelRank, "opponent"]
+      ].map(([label, rank, side]) => (
+        <div className="w-[45px] border-r border-[#254248]/80 last:border-r-0" key={side}>
+          <div
+            className={cn(
+              "grid h-[22px] place-items-center text-[13px] font-black leading-none text-white",
+              side === "opponent" ? "bg-[#a72b24]" : "bg-[#5b7074]"
+            )}
+          >
+            {label}
+          </div>
+          <div className="grid h-[43px] place-items-center bg-[#f8fbfb] text-[30px] font-black leading-none shadow-[inset_0_0_0_1px_rgba(15,23,42,0.08)]">
+            <span className={side === "opponent" ? "text-[#b51f1f]" : "text-[#111827]"}>{rank}</span>
           </div>
         </div>
       ))}
