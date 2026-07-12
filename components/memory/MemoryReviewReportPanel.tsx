@@ -20,20 +20,33 @@ export function MemoryReviewReportPanel({
   onExit,
 }: MemoryReviewReportPanelProps) {
   const [expandedCheckpointId, setExpandedCheckpointId] = useState<string | null>(null);
+  const matchWinnerLabel = summary.matchWinner === "blue" ? "我方" : summary.matchWinner === "red" ? "对方" : null;
 
   return (
     <div className="fixed inset-0 z-[220] grid place-items-center bg-[#071426]/88 px-5 backdrop-blur-md">
       <section className="memory-review-report-scroll max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-[28px] border border-[#74dfff]/45 bg-[#0e2944] p-6 text-white shadow-2xl">
         <p className="text-xs font-black uppercase tracking-[0.18em] text-[#74dfff]">REVIEW REPORT</p>
         <h2 className="mt-3 text-2xl font-black">记牌训练复盘报告</h2>
-        <p className="mt-2 text-sm font-bold text-white/60">本报告按答对题数 ÷ 总题数计算胜率。</p>
+        <p className="mt-2 text-sm font-bold text-white/60">本报告按答对题数除以总题数计算胜率。</p>
 
         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <ReportStat label="可记录牌种" value={`${summary.bestTargetCount} 种`} />
           <ReportStat label="总体胜率" value={`${summary.overallAccuracy}%`} />
-          <ReportStat label="答题局数" value={`${summary.checkpointsCompleted} 局`} />
+          <ReportStat label="完成手数" value={`${summary.handsCompleted} 手`} />
           <ReportStat label="训练时长" value={`${summary.durationMinutes} 分钟`} />
         </div>
+
+        <div className="mt-4 grid grid-cols-2 gap-3">
+          <ReportStat label="我方级牌" value={getRankDisplayName(summary.teamLevels.blue)} />
+          <ReportStat label="对方级牌" value={getRankDisplayName(summary.teamLevels.red)} />
+        </div>
+
+        {matchWinnerLabel ? (
+          <div className="mt-4 rounded-2xl border border-[#8ff0c7]/45 bg-[#8ff0c7]/12 p-4 text-center">
+            <p className="text-sm font-black text-[#8ff0c7]">{matchWinnerLabel}已打过 A</p>
+            <p className="mt-1 text-xs font-bold text-white/62">本轮连续升级赛结束，可以重新开始下一轮。</p>
+          </div>
+        ) : null}
 
         <div className="mt-6 rounded-2xl bg-white/[0.06] p-4">
           <p className="text-sm font-black text-[#8de8ff]">当前能力判断</p>
@@ -65,7 +78,7 @@ export function MemoryReviewReportPanel({
                     <span className="text-sm font-bold text-white/70">第 {checkpoints.length - index} 局</span>
                     <span className="flex items-center gap-2 text-sm font-black text-[#8ff0c7]">
                       {checkpoint.correctCount}/{checkpoint.totalCount} 题 · {Math.round(checkpoint.accuracy * 100)}%
-                      <span aria-hidden>{expanded ? "⌃" : "⌄"}</span>
+                      <span aria-hidden>{expanded ? "收起" : "展开"}</span>
                     </span>
                   </button>
                   {expanded ? (
@@ -103,9 +116,11 @@ export function MemoryReviewReportPanel({
           <button className="min-h-12 flex-1 rounded-2xl bg-white/10 px-4 text-sm font-black" onClick={onExit} type="button">
             退出训练
           </button>
-          <button className="min-h-12 flex-1 rounded-2xl bg-[#16c9bd] px-4 text-sm font-black text-white shadow-lg" onClick={onResume} type="button">
-            继续训练
-          </button>
+          {!summary.matchWinner ? (
+            <button className="min-h-12 flex-1 rounded-2xl bg-[#16c9bd] px-4 text-sm font-black text-white shadow-lg" onClick={onResume} type="button">
+              继续训练
+            </button>
+          ) : null}
           <button className="min-h-12 flex-1 rounded-2xl bg-[#0f64ff] px-4 text-sm font-black shadow-lg" onClick={onRestart} type="button">
             重新开始
           </button>

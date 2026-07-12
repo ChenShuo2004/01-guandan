@@ -3,11 +3,15 @@ import test from "node:test";
 import { createDeck } from "../guandan/deck.ts";
 import {
   applyCheckpointResult,
+  applyGuandanHandUpgrade,
   advanceLevelRank,
+  advanceTeamLevel,
   calculateRemainingTargetCounts,
   createInitialTargetProgress,
+  createInitialTeamLevels,
   createSessionClock,
   createTrainingDeck,
+  getGuandanUpgradeStep,
   getTargetTotal,
   isSessionExpired,
   nextCheckpointTricks,
@@ -30,29 +34,14 @@ test("target progression starts with joker and level", () => {
   assert.deepEqual(progress.activeTargets, ["JOKER", 15]);
 });
 
-test("target progression promotes after five perfect checkpoints", () => {
+test("target progression uses 75% promotion and 50% demotion thresholds", () => {
   const progress = {
     ...createInitialTargetProgress(15),
     activeTargets: ["JOKER", 15, 14, 13],
   } as MemoryTargetProgress;
-  let next = progress;
-  for (let index = 0; index < 4; index += 1) {
-    next = applyCheckpointResult(next, 1);
-  }
-  assert.equal(next.activeTargets.length, 4);
-  assert.equal(applyCheckpointResult(next, 1).activeTargets.length, 5);
-});
-
-test("target progression demotes after fewer than two perfect results in five checkpoints", () => {
-  const progress = {
-    ...createInitialTargetProgress(15),
-    activeTargets: ["JOKER", 15, 14, 13],
-  } as MemoryTargetProgress;
-  let next = progress;
-  for (let index = 0; index < 4; index += 1) {
-    next = applyCheckpointResult(next, index === 0 ? 1 : 0);
-  }
-  assert.equal(applyCheckpointResult(next, 0).activeTargets.length, 3);
+  assert.equal(applyCheckpointResult(progress, 0.75).activeTargets.length, 5);
+  assert.equal(applyCheckpointResult(progress, 0.5).activeTargets.length, 4);
+  assert.equal(applyCheckpointResult(progress, 0.49).activeTargets.length, 3);
 });
 
 test("remaining count uses total minus hand minus played cards", () => {
@@ -87,6 +76,56 @@ test("multiplier halves on mistakes and remains bounded", () => {
 test("level rank advances from 2 through A and wraps back to 3", () => {
   assert.equal(advanceLevelRank(15), 3);
   assert.equal(advanceLevelRank(14), 15);
+});
+
+test("team level advances from 2 to 3 and caps at A", () => {
+  assert.equal(advanceTeamLevel(15, 1), 3);
+  assert.equal(advanceTeamLevel(13, 2), 14);
+  assert.equal(advanceTeamLevel(14, 3), 14);
+});
+
+test("guandan upgrade step follows teammate placement", () => {
+  assert.equal(getGuandanUpgradeStep([
+    { playerId: "player", team: "blue" },
+    { playerId: "partnerAI", team: "blue" },
+    { playerId: "enemyAI1", team: "red" },
+    { playerId: "enemyAI2", team: "red" },
+  ]), 3);
+  assert.equal(getGuandanUpgradeStep([
+    { playerId: "player", team: "blue" },
+    { playerId: "enemyAI1", team: "red" },
+    { playerId: "partnerAI", team: "blue" },
+    { playerId: "enemyAI2", team: "red" },
+  ]), 2);
+  assert.equal(getGuandanUpgradeStep([
+    { playerId: "player", team: "blue" },
+    { playerId: "enemyAI1", team: "red" },
+    { playerId: "enemyAI2", team: "red" },
+    { playerId: "partnerAI", team: "blue" },
+  ]), 1);
+});
+
+test("guandan hand upgrade only advances the winning team", () => {
+  const result = applyGuandanHandUpgrade(createInitialTeamLevels(), [
+    { playerId: "enemyAI1", team: "red" },
+    { playerId: "enemyAI2", team: "red" },
+    { playerId: "player", team: "blue" },
+    { playerId: "partnerAI", team: "blue" },
+  ]);
+  assert.deepEqual(result?.teamLevels, { blue: 15, red: 5 });
+  assert.equal(result?.currentLevelRank, 5);
+  assert.equal(result?.matchWinner, null);
+});
+
+test("guandan match finishes only after a team wins on A", () => {
+  const result = applyGuandanHandUpgrade({ blue: 14, red: 13 }, [
+    { playerId: "player", team: "blue" },
+    { playerId: "partnerAI", team: "blue" },
+    { playerId: "enemyAI1", team: "red" },
+    { playerId: "enemyAI2", team: "red" },
+  ]);
+  assert.deepEqual(result?.teamLevels, { blue: 14, red: 13 });
+  assert.equal(result?.matchWinner, "blue");
 });
 
 test("tribute can be resisted and otherwise returns the winner rank", () => {

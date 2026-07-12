@@ -2,8 +2,8 @@ import type { Card, CardRank } from "../guandan/card.ts";
 import { getRankLabel } from "../guandan/card.ts";
 import type { GameEngineState } from "../guandan/gameState.ts";
 import type { PlayerId, PlayerSeat } from "../guandan/player.ts";
-import type { MemorySessionClock, MemoryTargetProgress, TrainingMultiplier } from "./memoryTrainingSystem";
-import { calculateRemainingTargetCounts, createInitialTargetProgress } from "./memoryTrainingSystem";
+import type { GuandanTeam, MemorySessionClock, MemoryTargetProgress, TeamLevels, TrainingMultiplier } from "./memoryTrainingSystem";
+import { calculateRemainingTargetCounts, createInitialTargetProgress, createInitialTeamLevels } from "./memoryTrainingSystem";
 
 export type MemoryTrainingPhase =
   | "INITIALIZING"
@@ -50,6 +50,7 @@ export interface MemoryHandResult {
     playerName: string;
     role: string;
     seat: PlayerSeat;
+    team: GuandanTeam;
   }>;
   createdAt: number;
 }
@@ -77,6 +78,11 @@ export interface ObserverMemoryTrainingState {
   bestTenRankResult: number;
   debugMode: boolean;
   levelRank: CardRank;
+  currentLevelRank: CardRank;
+  teamLevels: TeamLevels;
+  leadingTeam: GuandanTeam;
+  handsCompleted: number;
+  matchWinner: GuandanTeam | null;
   observerHandCardIds: string[];
   allCardsById: Record<string, Card>;
   lastProcessedHistoryLength: number;
@@ -316,7 +322,8 @@ export function createInitialTrainingState(
   options: { debugMode?: boolean; levelRank?: CardRank } = {},
 ): ObserverMemoryTrainingState {
   const debug = options.debugMode ?? false;
-  const levelRank = options.levelRank ?? 14;
+  const levelRank = options.levelRank ?? 15;
+  const teamLevels = createInitialTeamLevels();
   return {
     sessionId: `session-${Date.now()}`,
     startedAt: Date.now(),
@@ -340,6 +347,11 @@ export function createInitialTrainingState(
     bestTenRankResult: 0,
     debugMode: debug,
     levelRank,
+    currentLevelRank: levelRank,
+    teamLevels,
+    leadingTeam: "blue",
+    handsCompleted: 0,
+    matchWinner: null,
     observerHandCardIds: [],
     allCardsById: {},
     lastProcessedHistoryLength: 0,
@@ -380,9 +392,17 @@ export function resetForNextHand(
 export function normalizeTrainingStateForResume(
   training: ObserverMemoryTrainingState,
 ): ObserverMemoryTrainingState {
+  const teamLevels = training.teamLevels ?? createInitialTeamLevels();
+  const leadingTeam = training.leadingTeam ?? "blue";
   const normalized = {
     ...training,
     handResults: training.handResults ?? [],
+    teamLevels,
+    leadingTeam,
+    currentLevelRank: training.currentLevelRank ?? training.levelRank ?? teamLevels[leadingTeam],
+    levelRank: training.levelRank ?? training.currentLevelRank ?? teamLevels[leadingTeam],
+    handsCompleted: training.handsCompleted ?? training.handResults?.length ?? 0,
+    matchWinner: training.matchWinner ?? null,
   };
 
   if (training.phase === "SESSION_FINISHED" || training.sessionTimeExpired) return {
@@ -411,6 +431,8 @@ export interface MemorySessionSummary {
   overallAccuracy: number;
   bestTenRankResult: number;
   mostMissedRank: string | null;
+  teamLevels: TeamLevels;
+  matchWinner: GuandanTeam | null;
 }
 
 export function calculateOverallAccuracy(checkpoints: MemoryCheckpointResult[]): number {
@@ -439,12 +461,14 @@ export function buildSessionSummary(
   const elapsed = (Date.now() - training.startedAt) / 60_000;
   return {
     durationMinutes: Math.round(elapsed),
-    handsCompleted: training.handCount,
+    handsCompleted: training.handsCompleted,
     checkpointsCompleted: checkpoints.length,
     startTargetCount: TARGET_COUNT_STEPS[0],
     bestTargetCount: training.bestTargetCount,
     overallAccuracy: Math.round(overall * 100),
     bestTenRankResult: bestTen,
     mostMissedRank: mostMissed ? getRankDisplayName(Number(mostMissed[0]) as CardRank) : null,
+    teamLevels: training.teamLevels,
+    matchWinner: training.matchWinner,
   };
 }

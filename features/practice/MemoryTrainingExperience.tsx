@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { GameArena } from "@/components/game/GameArena";
 import { SettlementSequenceOverlay } from "@/components/game/SettlementSequenceOverlay";
 import type { GameEngineState } from "@/lib/guandan/gameState";
-import { getRankLabel, sortCards, sortCardsAscending, type Card } from "@/lib/guandan/card";
+import { getRankLabel, sortCards, sortCardsAscending, type Card, type CardRank } from "@/lib/guandan/card";
 import { MemoryTargetPanel, MemoryTargetOverlay } from "@/components/memory/MemoryTargetPanel";
 import { MemoryCheckpointPanel } from "@/components/memory/MemoryCheckpointPanel";
 import { MemoryFeedbackPanel } from "@/components/memory/MemoryFeedbackPanel";
@@ -21,16 +21,16 @@ import {
   shouldTriggerMemoryCheckpoint,
   evaluateCheckpointWithCards,
   getErrorReplayEvents,
-    resetForNextHand,
-    buildSessionSummary,
-    calculateOverallAccuracy,
-    normalizeTrainingStateForResume,
+  resetForNextHand,
+  buildSessionSummary,
+  calculateOverallAccuracy,
+  normalizeTrainingStateForResume,
   OBSERVATION_TIMES_MS,
   type ObserverMemoryTrainingState,
   type MemoryRelevantEvent,
 } from "@/lib/memory/ObserverMemoryTraining";
 import {
-  advanceLevelRank,
+  applyGuandanHandUpgrade,
   applyCheckpointResult,
   createSessionClock,
   loadTrainingState,
@@ -40,6 +40,8 @@ import {
   resumeSession,
   saveTrainingState,
   updateMultiplier,
+  type GuandanHandPlacement,
+  type GuandanTeam,
 } from "@/lib/memory/memoryTrainingSystem";
 
 const MEMORY_SESSION_STORAGE_KEY = "guandan-memory-training-session";
@@ -168,14 +170,13 @@ export function MemoryTrainingExperience() {
 
     setTraining(prev => ({
       ...prev,
-      phase: "ANSWERING",
+      phase: "AI_PLAYING",
       visibleTargetCardIds: visibleIds,
       allCardsById,
       observerHandCardIds: observerHand.map(c => c.id),
       relevantEvents: initialEvent ? [initialEvent] : [],
       playersPlayedSinceCheckpoint: new Set(),
     }));
-    setShowCheckpoint(true);
   }, []);
 
   // ── Handle deal completion ─────────────────────────────────────────────────────
@@ -193,17 +194,42 @@ export function MemoryTrainingExperience() {
     const targetProgress = handCheckpoints.length > 0
       ? applyCheckpointResult(current.targetProgress, handAccuracy)
       : current.targetProgress;
+    const finishedState = gameStateRef.current;
+    const placements: GuandanHandPlacement[] = finishedState
+      ? finishedState.finishOrder.reduce<GuandanHandPlacement[]>((items, playerId) => {
+          const player = finishedState.players.find((item) => item.id === playerId);
+          return player ? [...items, { playerId, team: player.team }] : items;
+        }, [])
+      : [];
+    const upgrade = applyGuandanHandUpgrade(current.teamLevels, placements);
+    const nextLevelRank = upgrade?.currentLevelRank ?? current.levelRank;
     let next = {
       ...current,
-      levelRank: advanceLevelRank(current.levelRank),
+      levelRank: nextLevelRank,
+      currentLevelRank: nextLevelRank,
+      teamLevels: upgrade?.teamLevels ?? current.teamLevels,
+      leadingTeam: upgrade?.winningTeam ?? current.leadingTeam,
+      handsCompleted: current.handsCompleted + 1,
+      matchWinner: upgrade?.matchWinner ?? null,
       targetProgress,
       currentTargetCount: targetProgress.activeTargets.length,
     };
 
     next = { ...next, bestTargetCount: Math.max(next.bestTargetCount, next.currentTargetCount) };
 
+    if (next.matchWinner) {
+      setTraining({ ...next, phase: "SESSION_FINISHED", pendingCheckpoint: null });
+      setShowCheckpoint(false);
+      setShowFeedback(false);
+      setShowTargetOverlay(false);
+      setShowReport(true);
+      setTributeNotice(null);
+      return;
+    }
+
     setTraining(resetForNextHand(next));
     setArenaKey((current) => current + 1);
+    gameStateRef.current = null;
     dealCompleteRef.current = false;
     setShowCheckpoint(false);
     setShowFeedback(false);
@@ -245,6 +271,7 @@ export function MemoryTrainingExperience() {
               playerName: player?.name ?? playerId,
               role: player?.role ?? "",
               seat: player?.seat ?? "bottom",
+              team: player?.team ?? "blue",
             };
           }),
           createdAt: Date.now(),
@@ -425,18 +452,6 @@ export function MemoryTrainingExperience() {
       return;
     }
 
-    const current = trainingRef.current;
-    if (current.targetRanks.length !== current.currentTargetCount) {
-      const nextHand = resetForNextHand({ ...current, phase: "STARTING_NEXT_HAND" });
-      setTraining(nextHand);
-      setArenaKey((currentKey) => currentKey + 1);
-      dealCompleteRef.current = false;
-      setShowCheckpoint(false);
-      setShowFeedback(false);
-      setShowTargetOverlay(true);
-      return;
-    }
-
     setTraining(prev => ({ ...prev, phase: "AI_PLAYING", pendingCheckpoint: null }));
   }, [handleGameFinished]);
 
@@ -523,6 +538,13 @@ export function MemoryTrainingExperience() {
         onObserverOpenReport={() => setShowReport(true)}
       />
 
+      <ContinuousMatchStatus
+        currentLevelRank={training.levelRank}
+        handNumber={training.handsCompleted + 1}
+        matchWinner={training.matchWinner}
+        teamLevels={training.teamLevels}
+      />
+
       <MemoryTargetPanel
         targetRanks={training.targetRanks}
         currentTargetCount={training.currentTargetCount}
@@ -590,6 +612,40 @@ export function MemoryTrainingExperience() {
         />
       ) : null}
 
+    </div>
+  );
+}
+
+function ContinuousMatchStatus({
+  currentLevelRank,
+  handNumber,
+  matchWinner,
+  teamLevels,
+}: {
+  currentLevelRank: CardRank;
+  handNumber: number;
+  matchWinner: GuandanTeam | null;
+  teamLevels: Record<GuandanTeam, CardRank>;
+}) {
+  return (
+    <div className="pointer-events-none absolute left-1/2 top-4 z-[95] w-[min(92vw,520px)] -translate-x-1/2 rounded-2xl border border-white/70 bg-white/86 px-4 py-3 text-[#12395a] shadow-[0_14px_34px_rgba(31,112,166,0.16)] backdrop-blur-md">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#0f64a0]">连续升级赛</p>
+          <p className="mt-0.5 text-sm font-black">
+            第 {handNumber} 手 · 当前打 {getRankLabel(currentLevelRank)}
+          </p>
+        </div>
+        <div className="grid grid-cols-2 gap-2 text-center text-xs font-black">
+          <span className="rounded-xl bg-[#e8f6ff] px-3 py-1.5">我方 {getRankLabel(teamLevels.blue)}</span>
+          <span className="rounded-xl bg-[#fff2e3] px-3 py-1.5">对方 {getRankLabel(teamLevels.red)}</span>
+        </div>
+      </div>
+      {matchWinner ? (
+        <p className="mt-2 rounded-xl bg-[#12395a] px-3 py-2 text-center text-xs font-black text-white">
+          {matchWinner === "blue" ? "我方" : "对方"}已打过 A，本轮结束
+        </p>
+      ) : null}
     </div>
   );
 }

@@ -3,6 +3,21 @@ import { createDeck } from "../guandan/deck.ts";
 
 export type MemoryTarget = CardRank | "JOKER";
 export type TrainingMultiplier = 1 | 2 | 4 | 8 | 16;
+export type GuandanTeam = "blue" | "red";
+export type TeamLevels = Record<GuandanTeam, CardRank>;
+
+export interface GuandanHandPlacement {
+  playerId: string;
+  team: GuandanTeam;
+}
+
+export interface GuandanHandUpgradeResult {
+  winningTeam: GuandanTeam;
+  upgradeStep: 1 | 2 | 3;
+  teamLevels: TeamLevels;
+  currentLevelRank: CardRank;
+  matchWinner: GuandanTeam | null;
+}
 
 export const MEMORY_TARGET_ORDER: MemoryTarget[] = [
   "JOKER",
@@ -117,33 +132,24 @@ export function applyCheckpointResult(
   const accuracy = typeof result === "number" ? result : result ? 1 : 0;
   const allCorrect = accuracy >= 1;
   const checkpointSuccesses = [...progress.checkpointSuccesses, allCorrect].slice(-5);
-  const correctStreak = allCorrect ? progress.correctStreak + 1 : 0;
-  const recoveryStreak = allCorrect ? progress.recoveryStreak + 1 : 0;
+  const correctStreak = accuracy >= 0.75 ? progress.correctStreak + 1 : 0;
+  const recoveryStreak = accuracy >= 0.75 ? progress.recoveryStreak + 1 : 0;
   let activeTargets = [...progress.activeTargets];
 
-  if (correctStreak >= 5) {
+  if (accuracy >= 0.75) {
     const next = MEMORY_TARGET_ORDER.find((target) => !activeTargets.includes(target));
     if (next !== undefined) activeTargets.push(next);
-  }
-
-  const recentSuccesses = checkpointSuccesses.filter(Boolean).length;
-  if (checkpointSuccesses.length === 5 && recentSuccesses < 2 && activeTargets.length > 1) {
+  } else if (accuracy < 0.5 && activeTargets.length > 2) {
     activeTargets = activeTargets.slice(0, -1);
     return { activeTargets, correctStreak: 0, recoveryStreak: 0, checkpointSuccesses: [], inRecovery: true };
   }
 
-  if (progress.inRecovery && recoveryStreak >= 3 && activeTargets.length < MEMORY_TARGET_ORDER.length) {
-    const next = MEMORY_TARGET_ORDER.find((target) => !activeTargets.includes(target));
-    if (next !== undefined) activeTargets.push(next);
-    return { activeTargets, correctStreak, recoveryStreak: 0, checkpointSuccesses, inRecovery: false };
-  }
-
   return {
     activeTargets,
-    correctStreak: correctStreak >= 5 ? 0 : correctStreak,
+    correctStreak,
     recoveryStreak,
     checkpointSuccesses,
-    inRecovery: progress.inRecovery,
+    inRecovery: accuracy < 0.5 ? true : accuracy >= 0.75 ? false : progress.inRecovery,
   };
 }
 
@@ -166,6 +172,59 @@ export function maybeIncreaseMultiplier(
 
 export function advanceLevelRank(levelRank: CardRank): CardRank {
   return levelRank >= 15 ? 3 : (levelRank + 1) as CardRank;
+}
+
+export function createInitialTeamLevels(): TeamLevels {
+  return { blue: 15, red: 15 };
+}
+
+export function advanceTeamLevel(levelRank: CardRank, steps: number): CardRank {
+  let next = levelRank;
+  for (let index = 0; index < steps; index += 1) {
+    if (next === 14) return 14;
+    next = advanceLevelRank(next);
+  }
+  return next;
+}
+
+export function getGuandanUpgradeStep(placements: GuandanHandPlacement[]): 1 | 2 | 3 {
+  const winner = placements[0];
+  if (!winner) return 1;
+
+  const teammateIndex = placements.findIndex(
+    (placement, index) => index > 0 && placement.team === winner.team,
+  );
+
+  if (teammateIndex === 1) return 3;
+  if (teammateIndex === 2) return 2;
+  return 1;
+}
+
+export function applyGuandanHandUpgrade(
+  teamLevels: TeamLevels,
+  placements: GuandanHandPlacement[],
+): GuandanHandUpgradeResult | null {
+  const winner = placements[0];
+  if (!winner) return null;
+
+  const winningTeam = winner.team;
+  const upgradeStep = getGuandanUpgradeStep(placements);
+  const currentLevel = teamLevels[winningTeam];
+  const matchWinner = currentLevel === 14 ? winningTeam : null;
+  const nextTeamLevels = matchWinner
+    ? { ...teamLevels }
+    : {
+        ...teamLevels,
+        [winningTeam]: advanceTeamLevel(currentLevel, upgradeStep),
+      };
+
+  return {
+    winningTeam,
+    upgradeStep,
+    teamLevels: nextTeamLevels,
+    currentLevelRank: nextTeamLevels[winningTeam],
+    matchWinner,
+  };
 }
 
 export function consumeCards(progress: MemoryGameProgress, count: number): MemoryGameProgress {
