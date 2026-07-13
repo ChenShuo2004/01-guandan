@@ -62,7 +62,7 @@ export function MemoryLabFeatureCard({ href }: MemoryLabFeatureCardProps) {
         </Link>
 
         <Link
-          className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full border border-white/14 bg-white/8 px-4 text-sm font-black text-white/82 transition hover:bg-white/14"
+          className="mt-3 inline-flex min-h-14 items-center justify-center rounded-full border border-[#7edfff]/60 bg-white/10 px-5 py-2 text-center font-serif text-[clamp(1.45rem,4.4vw,2.5rem)] font-black leading-none text-white shadow-[0_0_22px_rgba(126,223,255,0.18)] transition hover:bg-white/16"
           href="/training/memory-methods?returnTo=/practice"
         >
           先看档位法手册
