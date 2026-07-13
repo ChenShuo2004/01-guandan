@@ -24,10 +24,10 @@ export function MemoryMethodGuideModal({ onContinue }: MemoryMethodGuideModalPro
   };
 
   return (
-    <div className="fixed inset-0 z-[260] overflow-y-auto bg-[#071426]/88 px-4 py-3 text-white backdrop-blur-xl sm:px-6">
-      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] w-full max-w-[560px] content-center">
-        <div className="rounded-[30px] border border-white/14 bg-[#080808] p-3 shadow-[0_30px_90px_rgba(0,0,0,0.42)] sm:p-4">
-          <div className="relative mx-auto w-full max-w-[430px]">
+    <div className="fixed inset-0 z-[260] overflow-y-auto bg-[#071426]/88 px-3 py-2 text-white backdrop-blur-xl sm:px-6">
+      <section className="mx-auto grid min-h-[calc(100dvh-1rem)] w-full max-w-[760px] content-center">
+        <div className="rounded-[30px] border border-white/14 bg-[#080808] p-2 shadow-[0_30px_90px_rgba(0,0,0,0.42)] sm:p-4">
+          <div className="relative mx-auto w-full max-w-[620px]">
             <span className="absolute right-3 top-3 z-20 rounded-full border border-[#ff7900]/35 bg-black/45 px-3 py-1 text-xs font-black text-[#ff8a18] backdrop-blur">
               {activeIndex + 1} / {memoryManual.pages.length}
             </span>
@@ -44,14 +44,14 @@ export function MemoryMethodGuideModal({ onContinue }: MemoryMethodGuideModalPro
 
             <div
               className="relative aspect-[9/16] overflow-hidden rounded-[24px] bg-black shadow-[0_18px_46px_rgba(0,0,0,0.42)]"
-              style={{ width: "min(88vw, calc((100dvh - 150px) * 9 / 16), 430px)" }}
+              style={{ width: "min(94vw, calc((100dvh - 122px) * 9 / 16), 620px)" }}
             >
               <Image
                 alt={activePage.alt}
                 className="object-contain"
                 fill
                 priority
-                sizes="(max-width: 640px) 88vw, 430px"
+                sizes="(max-width: 640px) 94vw, 620px"
                 src={activePage.src}
               />
             </div>
