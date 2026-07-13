@@ -56,16 +56,16 @@ export function MemoryLabFeatureCard({ href }: MemoryLabFeatureCardProps) {
           ))}
         </ul>
 
-        <Link className="memory-lab-card__cta mt-5" href={href}>
-          开始记牌训练
-          <span aria-hidden="true">→</span>
-        </Link>
-
         <Link
-          className="mt-3 inline-flex min-h-14 items-center justify-center rounded-full border border-[#7edfff]/60 bg-white/10 px-5 py-2 text-center font-serif text-[clamp(1.45rem,4.4vw,2.5rem)] font-black leading-none text-white shadow-[0_0_22px_rgba(126,223,255,0.18)] transition hover:bg-white/16"
+          className="memory-lab-card__manual-cta mt-5"
           href="/training/memory-methods?returnTo=/practice"
         >
           先看档位法手册
+        </Link>
+
+        <Link className="memory-lab-card__cta mt-3" href={href}>
+          开始记牌训练
+          <span aria-hidden="true">→</span>
         </Link>
       </div>
     </div>
