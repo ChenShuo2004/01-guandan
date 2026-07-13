@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import type { CardRank } from "@/lib/guandan/card";
 import { getRankLabel } from "@/lib/guandan/card";
 import { cn } from "@/lib/utils";
@@ -34,8 +34,6 @@ export function MemoryCheckpointPanel({
   levelRank,
   onSubmit,
 }: MemoryCheckpointPanelProps) {
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const panelRef = useRef<HTMLElement>(null);
   const [answers, setAnswers] = useState<Record<string, number>>(() => {
     const initial: Record<string, number> = {};
     for (const rank of targetRanks) {
@@ -43,19 +41,6 @@ export function MemoryCheckpointPanel({
     }
     return initial;
   });
-
-  useEffect(() => {
-    const overlay = overlayRef.current;
-    const panel = panelRef.current;
-    if (!overlay || !panel) return;
-
-    const panelRect = panel.getBoundingClientRect();
-    const panelStyle = window.getComputedStyle(panel);
-    const overlayStyle = window.getComputedStyle(overlay);
-    // #region agent log
-    fetch('http://127.0.0.1:7723/ingest/1134cde9-f750-4170-90cd-b7b4dd6584f0',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1218cb'},body:JSON.stringify({sessionId:'1218cb',runId:'pre-fix',hypothesisId:'H1-H4',location:'components/memory/MemoryCheckpointPanel.tsx:initial-render',message:'checkpoint visual metrics',data:{viewport:{width:window.innerWidth,height:window.innerHeight},panel:{width:Math.round(panelRect.width),height:Math.round(panelRect.height),clientHeight:panel.clientHeight,scrollHeight:panel.scrollHeight,backgroundColor:panelStyle.backgroundColor,borderColor:panelStyle.borderColor,borderRadius:panelStyle.borderRadius,boxShadow:panelStyle.boxShadow},overlay:{backgroundColor:overlayStyle.backgroundColor,backdropFilter:overlayStyle.backdropFilter},targetRankCount:targetRanks.length,optionCounts:targetRanks.map((rank)=>getAnswerOptions(getMaxPossibleCount(rank)).length),currentTargetCount},timestamp:Date.now()})}).catch(()=>{});
-    // #endregion
-  }, [currentTargetCount, targetRanks]);
 
   function setAnswer(rank: CardRank, value: number) {
     setAnswers((prev) => ({ ...prev, [String(rank)]: value }));
@@ -66,9 +51,8 @@ export function MemoryCheckpointPanel({
   }
 
   return (
-    <div ref={overlayRef} className="memory-checkpoint-overlay fixed inset-0 z-[180] grid place-items-center overflow-hidden bg-[#030318]/80 px-4 backdrop-blur-[10px] sm:px-6">
+    <div className="memory-checkpoint-overlay fixed inset-0 z-[180] grid place-items-center overflow-hidden bg-[#030318]/80 px-4 backdrop-blur-[10px] sm:px-6">
       <section
-        ref={panelRef}
         className="memory-checkpoint-panel relative isolate min-w-0 w-full max-w-[520px] max-h-[86vh] overflow-x-hidden overflow-y-auto rounded-[30px] border border-[#765cff]/55 p-6 text-white shadow-[0_0_0_1px_rgba(130,102,255,0.12),0_28px_80px_rgba(0,0,0,0.58),0_0_48px_rgba(74,36,255,0.28),inset_0_1px_0_rgba(255,255,255,0.12)] sm:p-8"
         style={{
           background:

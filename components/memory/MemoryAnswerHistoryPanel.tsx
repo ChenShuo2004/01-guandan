@@ -48,7 +48,10 @@ export function MemoryAnswerHistoryPanel({
   currentAnswers,
   visible,
 }: MemoryAnswerHistoryPanelProps) {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return !window.matchMedia("(max-width: 767px)").matches;
+  });
 
   if (!visible) return null;
 
@@ -73,7 +76,7 @@ export function MemoryAnswerHistoryPanel({
   const latestHandResult = handResults[handResults.length - 1] ?? null;
 
   return (
-    <div className="memory-answer-history pointer-events-auto fixed right-4 top-[104px] z-[100] w-[min(280px,26vw)] max-lg:right-3 max-lg:top-[90px] max-lg:w-[220px]">
+    <div className="memory-answer-history pointer-events-auto fixed right-3 top-[152px] z-[100] w-[min(280px,26vw)] max-lg:w-[220px] sm:right-4 sm:top-[104px]">
       <button
         aria-label={expanded ? "隐藏回答记录" : "显示回答记录"}
         className="mb-2 flex h-10 w-10 items-center justify-center rounded-xl border border-white/75 bg-white/88 text-[#12395a] shadow-[0_12px_26px_rgba(28,109,172,0.18)] backdrop-blur-xl transition active:scale-[0.97]"

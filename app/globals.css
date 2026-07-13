@@ -1295,6 +1295,283 @@ select {
   }
 }
 
+@media (orientation: portrait) and (max-width: 767px) {
+  :root {
+    --arena-portrait-header: 58px;
+    --arena-safe-top: max(env(safe-area-inset-top), 0px);
+    --arena-safe-bottom: max(env(safe-area-inset-bottom), 8px);
+  }
+
+  .training-arena {
+    min-height: 100dvh !important;
+    touch-action: manipulation;
+  }
+
+  .training-arena-topbar {
+    height: calc(var(--arena-portrait-header) + var(--arena-safe-top)) !important;
+    padding-top: var(--arena-safe-top);
+    background: rgb(7 43 68 / 88%);
+    color: white;
+  }
+
+  .training-desktop-hud,
+  .training-floating-controls,
+  .training-help-button,
+  .training-observer-back {
+    display: none !important;
+  }
+
+  .training-landscape-hud {
+    display: flex !important;
+    height: var(--arena-portrait-header);
+    padding: 0 0.5rem;
+  }
+
+  .training-hud-icon {
+    display: grid;
+    height: 40px;
+    width: 40px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 0.75rem;
+    background: rgb(255 255 255 / 14%);
+    color: white;
+  }
+
+  .training-hud-icon .material-symbols-outlined {
+    font-size: 20px;
+  }
+
+  .training-hud-stat,
+  .training-hud-status {
+    display: flex;
+    min-height: 40px;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid rgb(255 255 255 / 14%);
+    border-radius: 0.75rem;
+    background: rgb(255 255 255 / 10%);
+    padding: 0 0.5rem;
+    font-size: 0.68rem;
+  }
+
+  .training-hud-stat:nth-of-type(2) {
+    display: none;
+  }
+
+  .training-hud-stat strong {
+    font-size: 0.9rem;
+  }
+
+  .training-hud-status {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .training-arena-stage {
+    padding: calc(var(--arena-portrait-header) + var(--arena-safe-top)) 0.5rem
+      var(--arena-safe-bottom) !important;
+  }
+
+  .training-table-surface {
+    inset: 18% 3% 41% !important;
+    padding: 8px !important;
+  }
+
+  .training-player-seat[data-position="top"] {
+    top: calc(var(--arena-portrait-header) + var(--arena-safe-top) + 88px) !important;
+  }
+
+  .training-player-seat[data-position="left"] {
+    left: 2px !important;
+    top: 42% !important;
+  }
+
+  .training-player-seat[data-position="right"] {
+    right: 2px !important;
+    top: 42% !important;
+  }
+
+  .training-player-seat[data-position="bottom"] {
+    bottom: 42% !important;
+    left: 38% !important;
+  }
+
+  .training-player-seat .training-card-backs {
+    display: none !important;
+  }
+
+  .training-player-avatar {
+    height: 42px !important;
+    width: 42px !important;
+    border-radius: 0.75rem !important;
+  }
+
+  .training-player-details {
+    min-width: 64px !important;
+    border-radius: 0.75rem !important;
+    padding: 0.3rem 0.45rem !important;
+  }
+
+  .training-player-details p {
+    font-size: 0.62rem !important;
+    line-height: 0.9rem !important;
+  }
+
+  .training-player-details > div {
+    margin-top: 0.1rem !important;
+    padding: 0.1rem 0.25rem !important;
+    font-size: 0.58rem !important;
+  }
+
+  .training-round-action[data-action-position="top"] {
+    top: 33% !important;
+  }
+
+  .training-round-action[data-action-position="left"] {
+    left: 18% !important;
+    top: 44% !important;
+  }
+
+  .training-round-action[data-action-position="right"] {
+    right: 18% !important;
+    top: 44% !important;
+  }
+
+  .training-round-action[data-action-position="bottom"] {
+    bottom: 45% !important;
+  }
+
+  .training-round-action [data-card-variant="played"] {
+    height: 72px !important;
+    width: 52px !important;
+  }
+
+  .training-turn-status {
+    top: 37% !important;
+  }
+
+  .training-turn-pointer {
+    height: 28px;
+    width: 38px;
+  }
+
+  .training-turn-count {
+    min-height: 34px;
+    min-width: 62px;
+    padding: 0 0.75rem;
+    font-size: 1rem;
+  }
+
+  .training-hand-dock {
+    bottom: calc(var(--arena-safe-bottom) + 76px) !important;
+    left: 0.25rem !important;
+    right: 0.25rem !important;
+    max-height: 24dvh;
+  }
+
+  .arena-hand-row {
+    min-height: auto !important;
+    padding: 0.2rem 0 0 !important;
+  }
+
+  .training-observer-tools {
+    bottom: var(--arena-safe-bottom) !important;
+    width: calc(100vw - 1rem) !important;
+    gap: 0.35rem !important;
+    border-radius: 1rem !important;
+    padding: 0.35rem !important;
+  }
+
+  .training-observer-multiplier {
+    min-width: auto !important;
+    gap: 0.35rem !important;
+    padding-right: 0.35rem !important;
+  }
+
+  .training-observer-suits {
+    min-width: 0 !important;
+    gap: 0.15rem !important;
+    padding-right: 0.35rem !important;
+    font-size: 0;
+  }
+
+  .training-observer-suits span:not(:first-child) {
+    height: 32px !important;
+    min-width: 26px !important;
+    font-size: 1rem !important;
+  }
+
+  .training-observer-tools button {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    padding: 0.5rem 0.65rem !important;
+    font-size: 0.75rem !important;
+  }
+
+  .memory-target-panel {
+    left: 0.75rem !important;
+    right: 4.25rem;
+    max-width: none !important;
+  }
+
+  .memory-target-panel-card {
+    border-radius: 1rem !important;
+    padding: 0.45rem 0.6rem !important;
+  }
+
+  .memory-target-panel-card > p {
+    font-size: 0.68rem !important;
+  }
+
+  .memory-target-panel [data-card-variant="hand"] {
+    height: 48px !important;
+    width: 34px !important;
+    border-radius: 0.45rem !important;
+  }
+
+  .memory-answer-history {
+    width: auto !important;
+  }
+
+  .memory-answer-history > div {
+    width: min(240px, calc(100vw - 1.5rem));
+    max-height: 36dvh !important;
+  }
+
+  .memory-target-overlay,
+  .memory-checkpoint-overlay {
+    padding: max(env(safe-area-inset-top), 0.75rem) 0.75rem
+      max(env(safe-area-inset-bottom), 0.75rem) !important;
+  }
+
+  .memory-target-overlay-panel {
+    min-height: min(620px, 86dvh) !important;
+    border-radius: 1.35rem !important;
+    padding: 1rem !important;
+  }
+
+  .memory-target-overlay-panel h2 {
+    font-size: 1.75rem !important;
+  }
+
+  .memory-target-cards {
+    gap: 1rem !important;
+    padding: 1rem 0 !important;
+  }
+
+  .memory-target-cards [data-card-variant="played"] {
+    height: clamp(132px, 21dvh, 176px) !important;
+    width: clamp(95px, 15dvh, 126px) !important;
+  }
+
+  .memory-checkpoint-panel {
+    max-height: calc(100dvh - 1.5rem) !important;
+    border-radius: 1.25rem !important;
+    padding: 1rem !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .training-entry,
   .camp-help-button {

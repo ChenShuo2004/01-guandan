@@ -483,7 +483,7 @@ export function GameArena({
     function syncOrientationPrompt() {
       const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
       const isPortrait = window.matchMedia("(orientation: portrait)").matches;
-      setShowPortraitPrompt(isTouchDevice && isPortrait);
+      setShowPortraitPrompt(isTouchDevice && isPortrait && !observerMode);
     }
 
     syncOrientationPrompt();
@@ -493,7 +493,7 @@ export function GameArena({
       window.removeEventListener("resize", syncOrientationPrompt);
       window.removeEventListener("orientationchange", syncOrientationPrompt);
     };
-  }, []);
+  }, [observerMode]);
 
   useEffect(() => {
     function syncArenaCardScale() {
