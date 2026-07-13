@@ -11,9 +11,8 @@ interface MemoryMethodGuideModalProps {
   onContinue: () => void;
 }
 
-export function MemoryMethodGuideModal({ reason, onContinue }: MemoryMethodGuideModalProps) {
+export function MemoryMethodGuideModal({ onContinue }: MemoryMethodGuideModalProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const isWrongStreak = reason === "wrong_streak";
   const lastIndex = memoryManual.pages.length - 1;
   const activePage = memoryManual.pages[activeIndex] ?? memoryManual.pages[0];
 
@@ -22,30 +21,47 @@ export function MemoryMethodGuideModal({ reason, onContinue }: MemoryMethodGuide
   };
 
   return (
-    <div className="fixed inset-0 z-[260] overflow-y-auto bg-[#071426]/88 px-4 py-4 text-white backdrop-blur-xl sm:px-6">
-      <section className="mx-auto grid min-h-[calc(100dvh-2rem)] w-full max-w-[480px] content-center">
-        <div className="overflow-hidden rounded-[28px] border border-white/14 bg-[#080808] p-3 shadow-[0_30px_90px_rgba(0,0,0,0.42)] sm:p-4">
-          <header className="flex items-center justify-between gap-3 px-1 pb-3">
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#ff8a18]">
-                {isWrongStreak ? "Memory recovery" : "Before training"}
-              </p>
-              <h2 className="mt-1 text-lg font-black tracking-tight text-white sm:text-xl">先看档位法手册</h2>
-            </div>
-            <span className="rounded-full border border-[#ff7900]/35 bg-[#ff7900]/12 px-3 py-1 text-xs font-black text-[#ff8a18]">
+    <div className="fixed inset-0 z-[260] overflow-y-auto bg-[#071426]/88 px-4 py-3 text-white backdrop-blur-xl sm:px-6">
+      <section className="mx-auto grid min-h-[calc(100dvh-1.5rem)] w-full max-w-[560px] content-center">
+        <div className="rounded-[30px] border border-white/14 bg-[#080808] p-3 shadow-[0_30px_90px_rgba(0,0,0,0.42)] sm:p-4">
+          <div className="relative mx-auto w-full max-w-[430px]">
+            <span className="absolute right-3 top-3 z-20 rounded-full border border-[#ff7900]/35 bg-black/45 px-3 py-1 text-xs font-black text-[#ff8a18] backdrop-blur">
               {activeIndex + 1} / {memoryManual.pages.length}
             </span>
-          </header>
 
-          <div className="relative mx-auto aspect-[9/16] w-full max-w-[360px] overflow-hidden rounded-[22px] bg-black shadow-[0_18px_46px_rgba(0,0,0,0.42)]">
-            <Image
-              alt={activePage.alt}
-              className="object-contain"
-              fill
-              priority
-              sizes="(max-width: 640px) 86vw, 360px"
-              src={activePage.src}
-            />
+            <button
+              aria-label="上一页"
+              className="absolute left-3 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/18 bg-black/28 text-white shadow-[0_12px_28px_rgba(0,0,0,0.32)] backdrop-blur transition hover:bg-black/42 disabled:cursor-not-allowed disabled:opacity-25"
+              disabled={activeIndex === 0}
+              onClick={() => goToPage(activeIndex - 1)}
+              type="button"
+            >
+              <span className="material-symbols-outlined text-[24px]">chevron_left</span>
+            </button>
+
+            <div
+              className="relative aspect-[9/16] overflow-hidden rounded-[24px] bg-black shadow-[0_18px_46px_rgba(0,0,0,0.42)]"
+              style={{ width: "min(88vw, calc((100dvh - 150px) * 9 / 16), 430px)" }}
+            >
+              <Image
+                alt={activePage.alt}
+                className="object-contain"
+                fill
+                priority
+                sizes="(max-width: 640px) 88vw, 430px"
+                src={activePage.src}
+              />
+            </div>
+
+            <button
+              aria-label="下一页"
+              className="absolute right-3 top-1/2 z-20 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border border-white/18 bg-black/28 text-white shadow-[0_12px_28px_rgba(0,0,0,0.32)] backdrop-blur transition hover:bg-black/42 disabled:cursor-not-allowed disabled:opacity-25"
+              disabled={activeIndex === lastIndex}
+              onClick={() => goToPage(activeIndex + 1)}
+              type="button"
+            >
+              <span className="material-symbols-outlined text-[24px]">chevron_right</span>
+            </button>
           </div>
 
           <div className="mt-3 flex items-center justify-center gap-1.5">
@@ -58,25 +74,6 @@ export function MemoryMethodGuideModal({ reason, onContinue }: MemoryMethodGuide
                 type="button"
               />
             ))}
-          </div>
-
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <button
-              className="min-h-11 rounded-2xl border border-white/14 bg-white/8 px-4 text-sm font-black text-white/86 transition hover:bg-white/14 disabled:cursor-not-allowed disabled:opacity-35"
-              disabled={activeIndex === 0}
-              onClick={() => goToPage(activeIndex - 1)}
-              type="button"
-            >
-              上一页
-            </button>
-            <button
-              className="min-h-11 rounded-2xl bg-[#ff7900] px-4 text-sm font-black text-black shadow-[0_14px_30px_rgba(255,121,0,0.3)] transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-35"
-              disabled={activeIndex === lastIndex}
-              onClick={() => goToPage(activeIndex + 1)}
-              type="button"
-            >
-              下一页
-            </button>
           </div>
 
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
