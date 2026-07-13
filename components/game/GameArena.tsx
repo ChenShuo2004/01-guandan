@@ -676,12 +676,10 @@ export function GameArena({
   }
 
   function togglePause() {
-    setIsPaused((paused) => {
-      const next = !paused;
-      onObserverPauseChange?.(next);
-      setTrainingCampMusicPaused(next);
-      return next;
-    });
+    const next = !isPaused;
+    setIsPaused(next);
+    onObserverPauseChange?.(next);
+    setTrainingCampMusicPaused(next);
   }
 
   const openPanel = useCallback((panel: ArenaPanel) => {

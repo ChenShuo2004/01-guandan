@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { CardRank } from "@/lib/guandan/card";
 import type { MemoryCheckpointResult, MemoryHandResult } from "@/lib/memory/ObserverMemoryTraining";
 import { getRankDisplayName } from "@/lib/memory/ObserverMemoryTraining";
@@ -48,10 +48,16 @@ export function MemoryAnswerHistoryPanel({
   currentAnswers,
   visible,
 }: MemoryAnswerHistoryPanelProps) {
-  const [expanded, setExpanded] = useState(() => {
-    if (typeof window === "undefined") return true;
-    return !window.matchMedia("(max-width: 767px)").matches;
-  });
+  const [expanded, setExpanded] = useState(true);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const syncExpandedWithViewport = () => setExpanded(!mediaQuery.matches);
+
+    syncExpandedWithViewport();
+    mediaQuery.addEventListener("change", syncExpandedWithViewport);
+    return () => mediaQuery.removeEventListener("change", syncExpandedWithViewport);
+  }, []);
 
   if (!visible) return null;
 
