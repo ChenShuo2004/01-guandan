@@ -24,9 +24,15 @@ export function MemoryMethodGuideModal({ onContinue }: MemoryMethodGuideModalPro
   };
 
   return (
-    <div className="fixed inset-0 z-[260] overflow-y-auto bg-[#071426]/24 px-3 py-2 text-white sm:px-6">
+    <div
+      className="fixed inset-0 z-[260] overflow-y-auto bg-[#071426]/24 px-3 py-2 text-white sm:px-6"
+      onClick={onContinue}
+    >
       <section className="mx-auto grid min-h-[calc(100dvh-1rem)] w-full max-w-[760px] content-center">
-        <div className="rounded-[30px] border border-white/14 bg-[#080808] p-2 shadow-[0_30px_90px_rgba(0,0,0,0.42)] sm:p-4">
+        <div
+          className="rounded-[30px] border border-white/14 bg-[#080808] p-2 shadow-[0_30px_90px_rgba(0,0,0,0.42)] sm:p-4"
+          onClick={(event) => event.stopPropagation()}
+        >
           <div className="relative mx-auto w-full max-w-[620px]">
             <span className="absolute right-3 top-3 z-20 rounded-full border border-[#ff7900]/35 bg-black/45 px-3 py-1 text-xs font-black text-[#ff8a18] backdrop-blur">
               {activeIndex + 1} / {memoryManual.pages.length}
