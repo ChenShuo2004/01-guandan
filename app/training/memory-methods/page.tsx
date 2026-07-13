@@ -1,15 +1,11 @@
-import { redirect } from "next/navigation";
+import { MemoryManualCarousel } from "@/components/memory/MemoryManualCarousel";
+import { memoryManual } from "@/content/memory-manual";
 
 export const metadata = {
-  title: "脚步定位记牌法 | 掼蛋方法学习",
-  description: "直接学习脚步定位记牌法。",
+  title: "陈硕档位法手册 | 掼蛋记牌训练",
+  description: "横向翻页学习陈硕档位法，快速理解大小王记牌方式。"
 };
 
 export default function MemoryMethodsPage({ searchParams }: { searchParams?: { returnTo?: string } }) {
-  const returnTo = searchParams?.returnTo;
-  const target = returnTo
-    ? `/training/memory-methods/foot-position?returnTo=${encodeURIComponent(returnTo)}`
-    : "/training/memory-methods/foot-position";
-
-  redirect(target);
+  return <MemoryManualCarousel manual={memoryManual} returnTo={searchParams?.returnTo ?? null} />;
 }

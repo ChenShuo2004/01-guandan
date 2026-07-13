@@ -1,19 +1,15 @@
-import { notFound } from "next/navigation";
-import { MemoryMethodDetail } from "@/components/memory/MemoryMethodDetail";
-import { getMemoryMethodBySlug, memoryMethods } from "@/content/memory-methods";
+import { redirect } from "next/navigation";
 
 export function generateStaticParams() {
-  return memoryMethods.map((method) => ({ methodId: method.slug }));
+  return [{ methodId: "foot-position" }];
 }
 
 export default function MemoryMethodDetailPage({
-  params,
   searchParams,
 }: {
   params: { methodId: string };
   searchParams?: { returnTo?: string };
 }) {
-  const method = getMemoryMethodBySlug(params.methodId);
-  if (!method) notFound();
-  return <MemoryMethodDetail method={method} returnTo={searchParams?.returnTo ?? null} />;
+  const returnTo = searchParams?.returnTo;
+  redirect(returnTo ? `/training/memory-methods?returnTo=${encodeURIComponent(returnTo)}` : "/training/memory-methods");
 }

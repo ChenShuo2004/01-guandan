@@ -19,7 +19,7 @@ const FEATURES = [
   {
     icon: "bolt",
     label: "即时记牌测试",
-    lines: ["牌局结束即测", "检验记忆成果"],
+    lines: ["牌局中即时测试", "检验记忆成果"],
     titleTone: "test" as const
   }
 ] as const;
@@ -57,8 +57,15 @@ export function MemoryLabFeatureCard({ href }: MemoryLabFeatureCardProps) {
         </ul>
 
         <Link className="memory-lab-card__cta mt-5" href={href}>
-          开始训练
-          <span aria-hidden="true">›</span>
+          开始记牌训练
+          <span aria-hidden="true">→</span>
+        </Link>
+
+        <Link
+          className="mt-3 inline-flex min-h-11 items-center justify-center rounded-full border border-white/14 bg-white/8 px-4 text-sm font-black text-white/82 transition hover:bg-white/14"
+          href="/training/memory-methods?returnTo=/practice"
+        >
+          先看档位法手册
         </Link>
       </div>
     </div>

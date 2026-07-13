@@ -1,6 +1,7 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -9,10 +10,8 @@ import { buildCounterHint, CardCounter } from "@/components/game/CardCounter";
 import { DealAnimation } from "@/components/game/DealAnimation";
 import { GameTable } from "@/components/game/GameTable";
 import { HandCards } from "@/components/game/HandCards";
-import { MethodMappingDemo, MethodPrincipleFlow, MethodScenarioDemo } from "@/components/memory/MemoryMethodVisuals";
 import { DualEntryTrainingCard } from "@/components/practice/DualEntryTrainingCard";
 import { useGameStore } from "@/store/gameStore";
-import { categoryLabels, difficultyLabels, getMemoryMethodBySlug, type MemoryMethod } from "@/content/memory-methods";
 import { getRankLabel, sortCards, type Card, type CardRank, type CardSuit } from "@/lib/guandan/card";
 import { analyzeStraightFlushSuits, type StraightFlushSuitStatus } from "@/lib/guandan/straightFlush";
 import { cn } from "@/lib/utils";
@@ -40,7 +39,6 @@ const defaultSettings: ArenaSettings = {
   aiThinkSeconds: 5
 };
 const MUSIC_SETTING_EVENT = "guandan-training-camp-music-setting";
-const defaultMemoryMethod = getMemoryMethodBySlug("foot-position");
 
 interface GameArenaProps {
   observerMode?: boolean;
@@ -957,10 +955,7 @@ export function GameArena({
             onRulesClick={() => setRulesHelpView("guandan")}
           />
         ) : rulesHelpView === "memory" ? (
-          <MemoryMethodHelpDetail
-            method={defaultMemoryMethod}
-            onBack={() => setRulesHelpView("hub")}
-          />
+          <MemoryManualHelpDetail onBack={() => setRulesHelpView("hub")} />
         ) : (
           <RulesHelpDetail onBack={() => setRulesHelpView("hub")} title="掼蛋规则">
             <div className="space-y-3">
@@ -1444,21 +1439,7 @@ function RulesHelpDetail({
   );
 }
 
-function MemoryMethodHelpDetail({
-  method,
-  onBack
-}: {
-  method?: MemoryMethod;
-  onBack: () => void;
-}) {
-  if (!method) {
-    return (
-      <RulesHelpDetail onBack={onBack} title="记牌方法论">
-        <p>脚步定位记牌法内容暂未加载。</p>
-      </RulesHelpDetail>
-    );
-  }
-
+function MemoryManualHelpDetail({ onBack }: { onBack: () => void }) {
   return (
     <div className="training-help-card p-4 pt-12 text-[#12395a] sm:p-5 sm:pt-12">
       <div className="mb-4 flex items-center gap-3 text-white">
@@ -1470,79 +1451,34 @@ function MemoryMethodHelpDetail({
           <span className="material-symbols-outlined text-[20px]">arrow_back</span>
         </button>
         <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/72">Memory method</p>
-          <h2 className="text-xl font-black text-white">{method.title}</h2>
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/72">Memory manual</p>
+          <h2 className="text-xl font-black text-white">陈硕档位法手册</h2>
         </div>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-[minmax(220px,0.82fr)_minmax(0,1.18fr)]">
-        <aside className="space-y-3">
-          <section className="overflow-hidden rounded-2xl border border-white/70 bg-white p-2 shadow-[0_12px_28px_rgba(8,35,61,0.16)]">
-            <Image
-              alt={`${method.title}图解`}
-              className="h-auto w-full rounded-xl"
-              height={1536}
-              src={method.infographic}
-              width={1024}
-            />
-          </section>
-          <section className="rounded-2xl bg-white p-4 shadow-[0_12px_28px_rgba(8,35,61,0.12)]">
-            <div className="flex flex-wrap gap-2 text-[11px] font-black">
-              <span className="rounded-full bg-[#dff1fd] px-3 py-1 text-[#176192]">方法 {method.number}</span>
-              <span className="rounded-full border border-[#bddced] px-3 py-1 text-[#4a7d99]">{categoryLabels[method.category]}</span>
-              <span className="rounded-full border border-[#bddced] px-3 py-1 text-[#4a7d99]">{difficultyLabels[method.difficulty]}</span>
-            </div>
-            <p className="mt-3 text-sm font-black leading-6 text-[#176192]">{method.summary}</p>
-            <p className="mt-2 text-xs font-bold leading-5 text-[#64849a]">{method.suitableFor.join(" · ")}</p>
-          </section>
-        </aside>
+      <section className="rounded-3xl bg-white p-5 shadow-[0_12px_28px_rgba(8,35,61,0.12)]">
+        <p className="text-xs font-black uppercase tracking-[0.2em] text-[#ff7900]">9 pages</p>
+        <h3 className="mt-2 text-2xl font-black text-[#101828]">动动脚轻松记大小王</h3>
+        <p className="mt-3 text-sm font-bold leading-6 text-[#475467]">
+          用左脚记录小王，用右脚记录大王；脚的位置表示当前已经出了几张。先把 0、1、2 档练熟，再进入自动牌局观察。
+        </p>
 
-        <div className="space-y-3">
-          <MemoryHelpPanel title="核心原理">
-            <p className="mb-3 text-sm font-bold leading-6 text-[#2b6388]">{method.slogan}</p>
-            <MethodPrincipleFlow method={method} />
-          </MemoryHelpPanel>
-
-          <MemoryHelpPanel title="记忆映射">
-            <MethodMappingDemo method={method} />
-          </MemoryHelpPanel>
-
-          <MemoryHelpPanel title="分步练习">
-            <div className="grid gap-2">
-              {method.steps.map((step, index) => (
-                <article className="rounded-xl border border-[#d6eafa] bg-[#f7fbff] p-3" key={step.id}>
-                  <div className="flex gap-3">
-                    <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#12395a] text-xs font-black text-white">
-                      0{index + 1}
-                    </span>
-                    <div>
-                      <h3 className="text-sm font-black text-[#12395a]">{step.title}</h3>
-                      <p className="mt-1 text-xs font-bold leading-5 text-[#48718b]">{step.description}</p>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
-          </MemoryHelpPanel>
-
-          <MemoryHelpPanel title="实战示例">
-            <MethodScenarioDemo method={method} />
-          </MemoryHelpPanel>
+        <div className="mt-4 grid gap-2 text-sm font-black text-[#9a4b00]">
+          <div className="rounded-2xl bg-[#fff7ed] px-4 py-3">左脚：小王</div>
+          <div className="rounded-2xl bg-[#fff7ed] px-4 py-3">右脚：大王</div>
+          <div className="rounded-2xl bg-[#fff7ed] px-4 py-3">垂放 / 前伸 / 后退：0 / 1 / 2 张</div>
         </div>
-      </div>
+
+        <Link
+          className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#ff7900] px-5 text-base font-black text-black shadow-[0_14px_30px_rgba(255,121,0,0.28)] transition hover:-translate-y-0.5"
+          href="/training/memory-methods?returnTo=/practice"
+        >
+          打开横向手册
+        </Link>
+      </section>
     </div>
   );
 }
-
-function MemoryHelpPanel({ children, title }: { children: ReactNode; title: string }) {
-  return (
-    <section className="rounded-2xl bg-white p-4 shadow-[0_12px_28px_rgba(8,35,61,0.12)]">
-      <h3 className="mb-3 text-base font-black text-[#12395a]">{title}</h3>
-      {children}
-    </section>
-  );
-}
-
 function RuleBlock({ items, title, variant = "light" }: { items: string[]; title: string; variant?: "dark" | "light" | "help-card" }) {
   if (variant === "help-card") {
     return (

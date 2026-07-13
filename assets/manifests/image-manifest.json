@@ -165,46 +165,67 @@
     "alt": "炸弹局面占位图",
     "aspectRatio": "4:5"
   },
-  "memory-method-foot-position": {
-    "id": "memory-method-foot-position",
-    "type": "png",
-    "src": "/assets/memory-methods/foot-position.png",
-    "alt": "脚步定位记牌法图解信息图",
-    "aspectRatio": "2:3"
+  "memory-manual-chenshuo-dangwei-01": {
+    "id": "memory-manual-chenshuo-dangwei-01",
+    "type": "jpg",
+    "src": "/assets/memory-manual/chenshuo-dangwei-01.jpg",
+    "alt": "陈硕档位法手册封面",
+    "aspectRatio": "9:16"
   },
-  "memory-method-mental-zones": {
-    "id": "memory-method-mental-zones",
-    "type": "png",
-    "src": "/assets/memory-methods/mental-zones.png",
-    "alt": "脑内分区记牌法图解信息图",
-    "aspectRatio": "2:3"
+  "memory-manual-chenshuo-dangwei-02": {
+    "id": "memory-manual-chenshuo-dangwei-02",
+    "type": "jpg",
+    "src": "/assets/memory-manual/chenshuo-dangwei-02.jpg",
+    "alt": "陈硕档位法灵感说明",
+    "aspectRatio": "9:16"
   },
-  "memory-method-number-sequence": {
-    "id": "memory-method-number-sequence",
-    "type": "png",
-    "src": "/assets/memory-methods/number-sequence.png",
-    "alt": "数字口令记牌法图解信息图",
-    "aspectRatio": "2:3"
+  "memory-manual-chenshuo-dangwei-03": {
+    "id": "memory-manual-chenshuo-dangwei-03",
+    "type": "jpg",
+    "src": "/assets/memory-manual/chenshuo-dangwei-03.jpg",
+    "alt": "陈硕档位法左右脚映射说明",
+    "aspectRatio": "9:16"
   },
-  "memory-method-visual-snapshot": {
-    "id": "memory-method-visual-snapshot",
-    "type": "png",
-    "src": "/assets/memory-methods/visual-snapshot.png",
-    "alt": "画面快照记牌法图解信息图",
-    "aspectRatio": "2:3"
+  "memory-manual-chenshuo-dangwei-04": {
+    "id": "memory-manual-chenshuo-dangwei-04",
+    "type": "jpg",
+    "src": "/assets/memory-manual/chenshuo-dangwei-04.jpg",
+    "alt": "左脚垂放代表小王出了 0 张",
+    "aspectRatio": "9:16"
   },
-  "memory-method-player-association": {
-    "id": "memory-method-player-association",
-    "type": "png",
-    "src": "/assets/memory-methods/player-association.png",
-    "alt": "玩家归属记牌法图解信息图",
-    "aspectRatio": "2:3"
+  "memory-manual-chenshuo-dangwei-05": {
+    "id": "memory-manual-chenshuo-dangwei-05",
+    "type": "jpg",
+    "src": "/assets/memory-manual/chenshuo-dangwei-05.jpg",
+    "alt": "左脚前伸代表小王出了 1 张",
+    "aspectRatio": "9:16"
   },
-  "memory-method-hybrid-system": {
-    "id": "memory-method-hybrid-system",
-    "type": "png",
-    "src": "/assets/memory-methods/hybrid-system.png",
-    "alt": "混合组合记牌法图解信息图",
-    "aspectRatio": "2:3"
+  "memory-manual-chenshuo-dangwei-06": {
+    "id": "memory-manual-chenshuo-dangwei-06",
+    "type": "jpg",
+    "src": "/assets/memory-manual/chenshuo-dangwei-06.jpg",
+    "alt": "左脚后伸代表小王出了 2 张",
+    "aspectRatio": "9:16"
+  },
+  "memory-manual-chenshuo-dangwei-07": {
+    "id": "memory-manual-chenshuo-dangwei-07",
+    "type": "jpg",
+    "src": "/assets/memory-manual/chenshuo-dangwei-07.jpg",
+    "alt": "右脚垂放代表大王出了 0 张",
+    "aspectRatio": "9:16"
+  },
+  "memory-manual-chenshuo-dangwei-08": {
+    "id": "memory-manual-chenshuo-dangwei-08",
+    "type": "jpg",
+    "src": "/assets/memory-manual/chenshuo-dangwei-08.jpg",
+    "alt": "右脚前伸代表大王出了 1 张",
+    "aspectRatio": "9:16"
+  },
+  "memory-manual-chenshuo-dangwei-09": {
+    "id": "memory-manual-chenshuo-dangwei-09",
+    "type": "jpg",
+    "src": "/assets/memory-manual/chenshuo-dangwei-09.jpg",
+    "alt": "右脚后退代表大王出了 2 张",
+    "aspectRatio": "9:16"
   }
 }

@@ -85,7 +85,7 @@ export function DualEntryTrainingCard({
             </span>
             <h2 className="dual-entry-card__title">掼蛋规则</h2>
             <span className="dual-entry-card__cta dual-entry-card__cta--rules">
-              开始学习
+              查看规则
               <span aria-hidden="true">→</span>
             </span>
           </PanelTrigger>
@@ -115,9 +115,9 @@ export function DualEntryTrainingCard({
             <span className="dual-entry-card__icon">
               <span className="material-symbols-outlined text-[24px]">neurology</span>
             </span>
-            <h2 className="dual-entry-card__title">记牌方法论</h2>
+            <h2 className="dual-entry-card__title">档位法手册</h2>
             <span className="dual-entry-card__cta dual-entry-card__cta--memory">
-              开始训练
+              开始学习
               <span aria-hidden="true">→</span>
             </span>
           </PanelTrigger>
