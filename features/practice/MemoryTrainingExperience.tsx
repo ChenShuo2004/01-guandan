@@ -43,7 +43,6 @@ import {
   saveTrainingState,
   updateMultiplier,
   type GuandanHandPlacement,
-  type GuandanTeam,
 } from "@/lib/memory/memoryTrainingSystem";
 
 const MEMORY_SESSION_STORAGE_KEY = "guandan-memory-training-session";
@@ -580,6 +579,7 @@ export function MemoryTrainingExperience() {
         key={arenaKey}
         observerMode
         initialLevelRank={training.levelRank}
+        observerTeamLevels={training.teamLevels}
         observerMultiplier={training.multiplier}
         observerPaused={observerPaused}
         settlementFocus={
@@ -592,13 +592,6 @@ export function MemoryTrainingExperience() {
         onObserverPauseChange={handleObserverPauseChange}
         onObserverExit={handleExit}
         onObserverOpenReport={() => setShowReport(true)}
-      />
-
-      <ContinuousMatchStatus
-        currentLevelRank={training.levelRank}
-        handNumber={training.handsCompleted + 1}
-        matchWinner={training.matchWinner}
-        teamLevels={training.teamLevels}
       />
 
       <MemoryTargetPanel
@@ -675,40 +668,6 @@ export function MemoryTrainingExperience() {
         />
       ) : null}
 
-    </div>
-  );
-}
-
-function ContinuousMatchStatus({
-  currentLevelRank,
-  handNumber,
-  matchWinner,
-  teamLevels,
-}: {
-  currentLevelRank: CardRank;
-  handNumber: number;
-  matchWinner: GuandanTeam | null;
-  teamLevels: Record<GuandanTeam, CardRank>;
-}) {
-  return (
-    <div className="pointer-events-none absolute left-1/2 top-[88px] z-[95] w-[min(92vw,520px)] -translate-x-1/2 rounded-2xl border border-white/70 bg-white/86 px-3 py-2.5 text-[#12395a] shadow-[0_14px_34px_rgba(31,112,166,0.16)] backdrop-blur-md sm:top-4 sm:px-4 sm:py-3">
-      <div className="flex items-center justify-between gap-2 sm:gap-3">
-        <div>
-          <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#0f64a0]">连续升级赛</p>
-          <p className="mt-0.5 text-xs font-black sm:text-sm">
-            第 {handNumber} 手 · 当前打 {getRankLabel(currentLevelRank)}
-          </p>
-        </div>
-        <div className="grid grid-cols-2 gap-1.5 text-center text-[11px] font-black sm:gap-2 sm:text-xs">
-          <span className="rounded-xl bg-[#e8f6ff] px-2 py-1.5 sm:px-3">我方 {getRankLabel(teamLevels.blue)}</span>
-          <span className="rounded-xl bg-[#fff2e3] px-2 py-1.5 sm:px-3">对方 {getRankLabel(teamLevels.red)}</span>
-        </div>
-      </div>
-      {matchWinner ? (
-        <p className="mt-2 rounded-xl bg-[#12395a] px-3 py-2 text-center text-xs font-black text-white">
-          {matchWinner === "blue" ? "我方" : "对方"}已打过 A，本轮结束
-        </p>
-      ) : null}
     </div>
   );
 }

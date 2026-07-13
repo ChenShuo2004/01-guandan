@@ -43,6 +43,10 @@ const MUSIC_SETTING_EVENT = "guandan-training-camp-music-setting";
 interface GameArenaProps {
   observerMode?: boolean;
   initialLevelRank?: CardRank;
+  observerTeamLevels?: {
+    blue: CardRank;
+    red: CardRank;
+  };
   observerMultiplier?: TrainingMultiplier;
   observerPaused?: boolean;
   fastForward?: boolean;
@@ -60,6 +64,7 @@ interface GameArenaProps {
 export function GameArena({
   observerMode = false,
   initialLevelRank = 15,
+  observerTeamLevels,
   observerMultiplier = 1,
   observerPaused = false,
   fastForward = false,
@@ -126,6 +131,8 @@ export function GameArena({
   } = useGameStore(observerMode, initialLevelRank);
 
   const levelRankLabel = getRankLabel(state.levelRank);
+  const allyLevelRankLabel = getRankLabel(observerTeamLevels?.blue ?? state.levelRank);
+  const opponentLevelRankLabel = getRankLabel(observerTeamLevels?.red ?? state.levelRank);
   const cardCounterHint = useMemo(
     () => buildCounterHint(state.cardRemainingCount),
     [state.cardRemainingCount]
@@ -757,18 +764,20 @@ export function GameArena({
     >
       <ArenaBackground />
       <ArenaTopBar
-          isFullscreen={isFullscreen}
-          isPaused={isPaused}
-          levelRank={levelRankLabel}
-          observerMode={observerMode}
+        allyLevelRank={allyLevelRankLabel}
+        isFullscreen={isFullscreen}
+        isPaused={isPaused}
+        levelRank={levelRankLabel}
+        observerMode={observerMode}
+        opponentLevelRank={opponentLevelRankLabel}
         onBackToLobby={goLobby}
         onOpenCoach={() => openPanel("coach")}
         onOpenRules={openRulesPanel}
         onOpenReport={onObserverOpenReport}
-          onOpenSettings={() => openPanel("settings")}
-          onToggleFullscreen={toggleFullscreen}
-          onTogglePause={togglePause}
-          phase={phase}
+        onOpenSettings={() => openPanel("settings")}
+        onToggleFullscreen={toggleFullscreen}
+        onTogglePause={togglePause}
+        phase={phase}
       />
 
       <button
@@ -1192,10 +1201,12 @@ function PortraitTrainingPrompt({ onEnter }: { onEnter: () => void }) {
 }
 
 function ArenaTopBar({
+  allyLevelRank,
   isFullscreen,
   isPaused,
   levelRank,
   observerMode,
+  opponentLevelRank,
   onBackToLobby,
   onOpenCoach,
   onOpenRules,
@@ -1205,10 +1216,12 @@ function ArenaTopBar({
   onTogglePause,
   phase
 }: {
+  allyLevelRank: string;
   isFullscreen: boolean;
   isPaused: boolean;
   levelRank: string;
   observerMode: boolean;
+  opponentLevelRank: string;
   onBackToLobby: () => void;
   onOpenCoach: () => void;
   onOpenRules: () => void;
@@ -1230,7 +1243,7 @@ function ArenaTopBar({
               AI Coach 陪你完成每一轮牌局决策。
             </p>
           </div>
-          <LevelCardBadge levelRank={levelRank} />
+          <TeamLevelBadge allyLevelRank={allyLevelRank} opponentLevelRank={opponentLevelRank} />
         </div>
 
         <div className="hidden shrink-0 items-center gap-2 rounded-full bg-white/34 px-3 py-2 text-base font-black text-[#12395a] shadow-[0_10px_24px_rgba(52,142,207,0.14)] backdrop-blur-xl md:flex max-lg:gap-1 max-lg:px-2">
@@ -1294,12 +1307,12 @@ function ArenaTopBar({
   );
 }
 
-function LevelCardBadge({ levelRank }: { levelRank: string }) {
+function TeamLevelBadge({ allyLevelRank, opponentLevelRank }: { allyLevelRank: string; opponentLevelRank: string }) {
   return (
-    <section aria-label={"\u5f53\u524d\u7ea7\u724c"} className="hidden shrink-0 overflow-hidden rounded-[6px] border border-[#254248]/70 bg-[#254248] shadow-[0_10px_22px_rgba(20,70,94,0.22)] md:flex">
+    <section aria-label="双方级牌" className="hidden shrink-0 overflow-hidden rounded-[6px] border border-[#254248]/70 bg-[#254248] shadow-[0_10px_22px_rgba(20,70,94,0.22)] md:flex">
       {[
-        ["\u6211\u65b9", levelRank, "ally"],
-        ["\u5bf9\u65b9", levelRank, "opponent"]
+        ["我方", allyLevelRank, "ally"],
+        ["对方", opponentLevelRank, "opponent"]
       ].map(([label, rank, side]) => (
         <div className="w-[45px] border-r border-[#254248]/80 last:border-r-0" key={side}>
           <div
