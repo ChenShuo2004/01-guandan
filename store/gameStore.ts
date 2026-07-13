@@ -315,7 +315,7 @@ function gameReducer(state: GameEngineState, action: GameAction): GameEngineStat
 
       // 自动训练不能因为一次非法“不出”卡死。重新按有牌权处理，至少推进一张合法单牌。
       if (!result.ok) {
-        const fallbackCards = chooseNormalMove(currentPlayer.hand, []);
+        const fallbackCards = chooseNormalMove(currentPlayer.hand, [], state.levelRank);
         result = fallbackCards.length
           ? playCards(state, currentPlayer.id, fallbackCards)
           : result;

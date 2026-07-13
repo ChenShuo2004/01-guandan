@@ -18,7 +18,7 @@ export function getAIAction(player: GuandanPlayer, state: GameEngineState, level
     };
   }
 
-  const cards = chooseNormalMove(player.hand, state.lastPlayedCards);
+  const cards = chooseNormalMove(player.hand, state.lastPlayedCards, state.levelRank);
 
   if (cards.length === 0) {
     return {

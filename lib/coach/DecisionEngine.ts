@@ -11,8 +11,8 @@ export interface DecisionInput {
 }
 
 export function recommendDecision({ playerHand, state }: DecisionInput): CoachFeedback {
-  const recommendedCards = chooseNormalMove(playerHand, state.lastPlayedCards);
-  const pattern = detectCardPattern(recommendedCards);
+  const recommendedCards = chooseNormalMove(playerHand, state.lastPlayedCards, state.levelRank);
+  const pattern = detectCardPattern(recommendedCards, state.levelRank);
 
   if (recommendedCards.length === 0 || !pattern.valid) {
     return {
@@ -25,7 +25,7 @@ export function recommendDecision({ playerHand, state }: DecisionInput): CoachFe
     };
   }
 
-  const compare = canBeatLastPlay(recommendedCards, state.lastPlayedCards);
+  const compare = canBeatLastPlay(recommendedCards, state.lastPlayedCards, state.levelRank);
   const label = recommendedCards.map(getCardLabel).join(" ");
 
   return {
@@ -42,10 +42,10 @@ export function findBetterDecision(state: GameEngineState, playedCards: Card[]) 
   const player = state.players.find((item) => item.id === "player");
   if (!player) return null;
 
-  const candidates = generateMoveCandidates([...player.hand, ...playedCards], state.lastPlayedCards)
+  const candidates = generateMoveCandidates([...player.hand, ...playedCards], state.lastPlayedCards, state.levelRank)
     .filter((candidate) => candidate.length > playedCards.length)
     .filter((candidate) => {
-      const pattern = detectCardPattern(candidate);
+      const pattern = detectCardPattern(candidate, state.levelRank);
       return pattern.valid && pattern.type !== "bomb" && pattern.type !== "fourJokers";
     });
 

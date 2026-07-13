@@ -54,7 +54,7 @@ export function playCards(state: GameEngineState, playerId: PlayerId, cards: Car
     return { state, ok: false, message: "还没轮到你" };
   }
 
-  const compare = canBeatLastPlay(cards, state.lastPlayedCards);
+  const compare = canBeatLastPlay(cards, state.lastPlayedCards, state.levelRank);
 
   if (!compare.canPlay) {
     return {
@@ -88,7 +88,7 @@ export function playCards(state: GameEngineState, playerId: PlayerId, cards: Car
       : state.finishOrder;
   const winner = finishOrder[0] ?? null;
   const gameFinished = finishOrder.length === nextPlayers.length;
-  const pattern = detectCardPattern(cards);
+  const pattern = detectCardPattern(cards, state.levelRank);
   const turnState = {
     ...state,
     players: nextPlayers,

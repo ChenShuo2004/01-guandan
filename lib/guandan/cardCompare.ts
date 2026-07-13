@@ -1,13 +1,13 @@
-import type { Card } from "@/lib/guandan/card";
-import { detectCardPattern } from "@/lib/guandan/cardRule";
+import type { Card, CardRank } from "./card.ts";
+import { detectCardPattern } from "./cardRule.ts";
 
 export interface CompareResult {
   canPlay: boolean;
   reason: string;
 }
 
-export function canBeatLastPlay(candidateCards: Card[], lastCards: Card[]): CompareResult {
-  const candidate = detectCardPattern(candidateCards);
+export function canBeatLastPlay(candidateCards: Card[], lastCards: Card[], levelRank: CardRank = 15): CompareResult {
+  const candidate = detectCardPattern(candidateCards, levelRank);
 
   if (!candidate.valid) {
     return {
@@ -23,7 +23,7 @@ export function canBeatLastPlay(candidateCards: Card[], lastCards: Card[]): Comp
     };
   }
 
-  const last = detectCardPattern(lastCards);
+  const last = detectCardPattern(lastCards, levelRank);
 
   if (!last.valid) {
     return {

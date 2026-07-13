@@ -72,7 +72,6 @@ export function playTurnAudio(entry: GameHistoryEntry, enabled: boolean): void {
   }
 
   if (entry.action === "pass") {
-    playGameAudio("play.pass", enabled, { cooldownMs: 180 });
     return;
   }
 
