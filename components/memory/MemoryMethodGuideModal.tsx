@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { memoryManual } from "@/content/memory-manual";
 import type { MemoryMethodGuideReason } from "@/lib/memory/ObserverMemoryTraining";
@@ -12,9 +13,11 @@ interface MemoryMethodGuideModalProps {
 }
 
 export function MemoryMethodGuideModal({ onContinue }: MemoryMethodGuideModalProps) {
+  const pathname = usePathname();
   const [activeIndex, setActiveIndex] = useState(0);
   const lastIndex = memoryManual.pages.length - 1;
   const activePage = memoryManual.pages[activeIndex] ?? memoryManual.pages[0];
+  const fullManualHref = `/training/memory-methods?returnTo=${encodeURIComponent(pathname)}`;
 
   const goToPage = (index: number) => {
     setActiveIndex(Math.min(Math.max(index, 0), lastIndex));
@@ -79,7 +82,7 @@ export function MemoryMethodGuideModal({ onContinue }: MemoryMethodGuideModalPro
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <Link
               className="inline-flex min-h-11 items-center justify-center rounded-2xl border border-[#ff7900]/35 bg-[#ff7900]/12 px-4 text-sm font-black text-[#ff8a18] transition hover:bg-[#ff7900]/18"
-              href="/training/memory-methods?returnTo=/practice"
+              href={fullManualHref}
             >
               打开完整手册
             </Link>

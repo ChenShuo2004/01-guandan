@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ActionToolbar } from "@/components/game/ActionToolbar";
 import { buildCounterHint, CardCounter } from "@/components/game/CardCounter";
 import { DealAnimation } from "@/components/game/DealAnimation";
@@ -71,6 +71,8 @@ export function GameArena({
   settlementFocus,
 }: GameArenaProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const memoryManualHref = `/training/memory-methods?returnTo=${encodeURIComponent(pathname)}`;
   const arenaRef = useRef<HTMLElement | null>(null);
   const [activePanel, setActivePanel] = useState<ArenaPanel | null>(null);
   const [rulesHelpView, setRulesHelpView] = useState<RulesHelpView>("hub");
@@ -955,7 +957,7 @@ export function GameArena({
             onRulesClick={() => setRulesHelpView("guandan")}
           />
         ) : rulesHelpView === "memory" ? (
-          <MemoryManualHelpDetail onBack={() => setRulesHelpView("hub")} />
+          <MemoryManualHelpDetail href={memoryManualHref} onBack={() => setRulesHelpView("hub")} />
         ) : (
           <RulesHelpDetail onBack={() => setRulesHelpView("hub")} title="掼蛋规则">
             <div className="space-y-3">
@@ -1439,7 +1441,7 @@ function RulesHelpDetail({
   );
 }
 
-function MemoryManualHelpDetail({ onBack }: { onBack: () => void }) {
+function MemoryManualHelpDetail({ href, onBack }: { href: string; onBack: () => void }) {
   return (
     <div className="training-help-card p-4 pt-12 text-[#12395a] sm:p-5 sm:pt-12">
       <div className="mb-4 flex items-center gap-3 text-white">
@@ -1471,7 +1473,7 @@ function MemoryManualHelpDetail({ onBack }: { onBack: () => void }) {
 
         <Link
           className="mt-5 inline-flex min-h-12 w-full items-center justify-center rounded-full bg-[#ff7900] px-5 text-base font-black text-black shadow-[0_14px_30px_rgba(255,121,0,0.28)] transition hover:-translate-y-0.5"
-          href="/training/memory-methods?returnTo=/practice"
+          href={href}
         >
           打开横向手册
         </Link>

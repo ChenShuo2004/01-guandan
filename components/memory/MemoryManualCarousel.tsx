@@ -2,11 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { MemoryManual } from "@/content/memory-manual";
 
 function getSafeReturnTo(returnTo?: string | null) {
-  return returnTo?.startsWith("/") ? returnTo : "/practice";
+  if (!returnTo?.startsWith("/") || returnTo.startsWith("//")) return "/practice";
+  if (returnTo.startsWith("/training/memory-methods")) return "/practice";
+  return returnTo;
 }
 
 export function MemoryManualCarousel({
@@ -16,6 +19,7 @@ export function MemoryManualCarousel({
   manual: MemoryManual;
   returnTo?: string | null;
 }) {
+  const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const scrollerRef = useRef<HTMLDivElement | null>(null);
   const safeReturnTo = getSafeReturnTo(returnTo);
@@ -40,17 +44,38 @@ export function MemoryManualCarousel({
     setActiveIndex(Math.min(Math.max(nextIndex, 0), lastIndex));
   }, [lastIndex]);
 
+  const handleReturn = useCallback(() => {
+    const currentPath = `${window.location.pathname}${window.location.search}`;
+
+    if (document.referrer) {
+      try {
+        const referrerUrl = new URL(document.referrer);
+        const referrerPath = `${referrerUrl.pathname}${referrerUrl.search}`;
+
+        if (referrerUrl.origin === window.location.origin && referrerPath !== currentPath) {
+          router.back();
+          return;
+        }
+      } catch {
+        // Fall back to the explicit return target when referrer parsing fails.
+      }
+    }
+
+    router.push(safeReturnTo);
+  }, [router, safeReturnTo]);
+
   return (
     <main className="min-h-screen bg-[#080808] px-3 py-4 text-white sm:px-6 lg:px-8">
       <div className="mx-auto flex min-h-[calc(100dvh-2rem)] w-full max-w-6xl flex-col">
         <header className="flex items-center justify-between gap-3">
-          <Link
+          <button
             className="inline-flex min-h-10 items-center gap-1 rounded-full border border-white/12 bg-white/8 px-3 text-sm font-black text-white/86 backdrop-blur transition hover:bg-white/14"
-            href={safeReturnTo}
+            onClick={handleReturn}
+            type="button"
           >
             <span className="material-symbols-outlined text-[18px]">arrow_back</span>
             返回
-          </Link>
+          </button>
           <div className="rounded-full border border-[#ff7900]/35 bg-[#ff7900]/12 px-3 py-1 text-sm font-black text-[#ff8a18]">
             {pageLabel}
           </div>
