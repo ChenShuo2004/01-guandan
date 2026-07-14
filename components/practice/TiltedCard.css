@@ -66,6 +66,26 @@
 }
 
 @media (max-width: 640px) {
+  .practice-home-card {
+    height: auto !important;
+  }
+
+  .practice-home-card .tilted-card-inner {
+    height: auto !important;
+    width: 100% !important;
+    transform-style: flat;
+  }
+
+  .practice-home-card .tilted-card-img--hidden {
+    display: none;
+  }
+
+  .practice-home-card .tilted-card-overlay {
+    position: relative;
+    inset: auto;
+    transform: none;
+  }
+
   .tilted-card-mobile-alert {
     display: block;
   }
