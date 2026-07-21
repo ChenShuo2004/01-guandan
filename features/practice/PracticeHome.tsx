@@ -24,7 +24,7 @@ export function PracticeHome() {
         >
           <TiltedCard
             className="practice-home-card"
-            containerHeight="clamp(360px, 62dvh, 460px)"
+            containerHeight="clamp(360px, 64dvh, 560px)"
             displayOverlayContent
             hideImage
             imageHeight="100%"

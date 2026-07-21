@@ -81,37 +81,57 @@ export function CardHand({
     if (variant !== "arena") return;
 
     function syncArenaMetrics() {
+      const isLandscape = window.innerWidth > window.innerHeight;
+      const isPortrait = window.matchMedia("(orientation: portrait)").matches;
       const isPhoneLandscape =
-        window.innerWidth > window.innerHeight &&
-        window.matchMedia("(orientation: landscape) and (max-height: 600px)").matches;
-      const isPhonePortrait =
-        window.innerWidth <= 767 &&
-        window.matchMedia("(orientation: portrait)").matches;
+        isLandscape && window.matchMedia("(orientation: landscape) and (max-height: 600px)").matches;
+      const isPhonePortrait = window.innerWidth <= 767 && isPortrait;
+      const isTabletPortrait = window.innerWidth > 767 && window.innerWidth <= 1024 && isPortrait;
+      const isTabletLandscape = isLandscape && window.innerWidth <= 1180 && window.innerHeight <= 900;
+      const shouldUseAdaptiveMetrics = isPhoneLandscape || isPhonePortrait || isTabletPortrait || isTabletLandscape;
 
-      if (!isPhoneLandscape && !isPhonePortrait) {
+      if (!shouldUseAdaptiveMetrics) {
         setArenaMetrics(null);
         return;
       }
 
       const horizontalPadding = isPhonePortrait
         ? Math.max(16, window.innerWidth * 0.045)
-        : Math.max(24, Math.min(72, window.innerWidth * 0.055));
+        : isTabletPortrait
+          ? Math.max(36, window.innerWidth * 0.075)
+          : Math.max(24, Math.min(92, window.innerWidth * 0.06));
       const availableWidth = window.innerWidth - horizontalPadding;
       const groupCount = Math.max(1, arenaGroups.length);
       const maxGroupSize = Math.max(1, ...arenaGroups.map((group) => group.cards.length));
-      const preferredGap = isPhonePortrait ? (cards.length <= 15 ? 2 : 1) : cards.length <= 10 ? 8 : cards.length <= 15 ? 4 : 2;
-      const heightRatio = isPhonePortrait ? (cards.length <= 10 ? 0.1 : 0.085) : cards.length <= 10 ? 0.26 : cards.length <= 15 ? 0.23 : 0.20;
-      const maxCardHeight = isPhonePortrait ? (cards.length <= 10 ? 78 : 64) : cards.length <= 10 ? 100 : 88;
-      const minCardHeight = isPhonePortrait ? 36 : 58;
+      const preferredGap = isPhonePortrait
+        ? cards.length <= 15 ? 2 : 1
+        : isTabletPortrait
+          ? cards.length <= 15 ? 5 : 3
+          : cards.length <= 10 ? 8 : cards.length <= 15 ? 4 : 2;
+      const heightRatio = isPhonePortrait
+        ? cards.length <= 10 ? 0.1 : 0.085
+        : isTabletPortrait
+          ? cards.length <= 10 ? 0.12 : 0.1
+          : cards.length <= 10 ? 0.2 : cards.length <= 15 ? 0.18 : 0.16;
+      const maxCardHeight = isPhonePortrait
+        ? cards.length <= 10 ? 78 : 64
+        : isTabletPortrait
+          ? cards.length <= 10 ? 96 : 84
+          : cards.length <= 10 ? 104 : 92;
+      const minCardHeight = isPhonePortrait ? 36 : isTabletPortrait ? 56 : 58;
       const heightLimit = Math.max(minCardHeight, Math.min(maxCardHeight, window.innerHeight * heightRatio));
       const widthFromHeight = heightLimit * (89 / 124);
       const widthFromAvailable = (availableWidth - preferredGap * (groupCount - 1)) / groupCount;
-      const minCardWidth = isPhonePortrait ? 24 : 38;
+      const minCardWidth = isPhonePortrait ? 24 : isTabletPortrait ? 36 : 38;
       const cardWidth = Math.max(minCardWidth, Math.min(widthFromHeight, widthFromAvailable));
       const cardHeight = cardWidth * (124 / 89);
       const remainingWidth = Math.max(0, availableWidth - cardWidth * groupCount);
       const groupGap = groupCount > 1 ? Math.min(preferredGap, remainingWidth / (groupCount - 1)) : 0;
-      const maxStackExtra = isPhonePortrait ? Math.max(12, Math.min(28, window.innerHeight * 0.04)) : Math.max(16, Math.min(42, window.innerHeight * 0.075));
+      const maxStackExtra = isPhonePortrait
+        ? Math.max(12, Math.min(28, window.innerHeight * 0.04))
+        : isTabletPortrait
+          ? Math.max(18, Math.min(36, window.innerHeight * 0.045))
+          : Math.max(16, Math.min(42, window.innerHeight * 0.06));
       const stackStep =
         maxGroupSize > 1
           ? Math.max(8, Math.min(18, Math.floor(maxStackExtra / (maxGroupSize - 1))))

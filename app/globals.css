@@ -1572,6 +1572,310 @@ select {
   }
 }
 
+@media (orientation: portrait) and (min-width: 768px) and (max-width: 1024px) {
+  :root {
+    --arena-tablet-header: 68px;
+    --arena-safe-top: max(env(safe-area-inset-top), 0px);
+    --arena-safe-bottom: max(env(safe-area-inset-bottom), 12px);
+  }
+
+  .training-arena {
+    min-height: 100dvh !important;
+    touch-action: manipulation;
+  }
+
+  .training-arena-topbar {
+    height: calc(var(--arena-tablet-header) + var(--arena-safe-top)) !important;
+    padding-top: var(--arena-safe-top);
+    background: rgb(7 43 68 / 88%);
+    color: white;
+  }
+
+  .training-desktop-hud,
+  .training-floating-controls,
+  .training-help-button,
+  .training-observer-back {
+    display: none !important;
+  }
+
+  .training-landscape-hud {
+    display: flex !important;
+    height: var(--arena-tablet-header);
+    padding: 0 1rem;
+  }
+
+  .training-hud-icon {
+    display: grid;
+    height: 46px;
+    width: 46px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 0.9rem;
+    background: rgb(255 255 255 / 14%);
+    color: white;
+  }
+
+  .training-hud-stat,
+  .training-hud-status {
+    display: flex;
+    min-height: 46px;
+    align-items: center;
+    gap: 0.5rem;
+    border: 1px solid rgb(255 255 255 / 14%);
+    border-radius: 0.9rem;
+    background: rgb(255 255 255 / 10%);
+    padding: 0 0.8rem;
+    font-size: 0.78rem;
+  }
+
+  .training-hud-stat strong {
+    font-size: 1rem;
+  }
+
+  .training-hud-status {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  .training-arena-stage {
+    max-width: none !important;
+    padding: calc(var(--arena-tablet-header) + var(--arena-safe-top)) 1rem
+      var(--arena-safe-bottom) !important;
+  }
+
+  .training-table-surface {
+    inset: 17% 5% 38% !important;
+  }
+
+  .training-player-seat[data-position="top"] {
+    top: calc(var(--arena-tablet-header) + var(--arena-safe-top) + 100px) !important;
+  }
+
+  .training-player-seat[data-position="left"] {
+    left: 1.5rem !important;
+    top: 43% !important;
+  }
+
+  .training-player-seat[data-position="right"] {
+    right: 1.5rem !important;
+    top: 43% !important;
+  }
+
+  .training-player-seat .training-card-backs {
+    display: none !important;
+  }
+
+  .training-player-avatar {
+    height: 52px !important;
+    width: 52px !important;
+    border-radius: 0.9rem !important;
+  }
+
+  .training-player-details {
+    min-width: 78px !important;
+    border-radius: 0.9rem !important;
+    padding: 0.4rem 0.55rem !important;
+  }
+
+  .training-player-details p {
+    font-size: 0.72rem !important;
+    line-height: 1rem !important;
+  }
+
+  .training-round-action[data-action-position="top"] {
+    top: 30% !important;
+  }
+
+  .training-round-action[data-action-position="left"] {
+    left: 18% !important;
+    top: 43% !important;
+  }
+
+  .training-round-action[data-action-position="right"] {
+    right: 18% !important;
+    top: 43% !important;
+  }
+
+  .training-round-action[data-action-position="bottom"] {
+    bottom: 42% !important;
+  }
+
+  .training-round-action [data-card-variant="played"] {
+    height: 92px !important;
+    width: 66px !important;
+  }
+
+  .training-turn-status {
+    top: 34% !important;
+  }
+
+  .training-hand-dock {
+    bottom: calc(var(--arena-safe-bottom) + 82px) !important;
+    left: 1rem !important;
+    right: 1rem !important;
+    max-height: 25dvh;
+  }
+
+  .training-observer-tools {
+    bottom: var(--arena-safe-bottom) !important;
+    width: calc(100vw - 2rem) !important;
+    gap: 0.6rem !important;
+    border-radius: 1.25rem !important;
+    padding: 0.55rem 0.65rem !important;
+  }
+
+  .training-observer-multiplier,
+  .training-observer-suits {
+    min-width: 0 !important;
+    gap: 0.45rem !important;
+    padding-right: 0.65rem !important;
+  }
+
+  .memory-target-panel {
+    left: 1rem !important;
+    right: 5rem !important;
+    top: calc(var(--arena-tablet-header) + var(--arena-safe-top) + 16px) !important;
+    max-width: none !important;
+  }
+
+  .memory-answer-history {
+    right: 1rem !important;
+    top: calc(var(--arena-tablet-header) + var(--arena-safe-top) + 16px) !important;
+    width: auto !important;
+  }
+
+  .memory-answer-history > div {
+    width: min(300px, 42vw);
+    max-height: 34dvh !important;
+  }
+
+  .memory-target-overlay,
+  .memory-checkpoint-overlay {
+    padding: calc(var(--arena-safe-top) + 1rem) 1.25rem
+      max(var(--arena-safe-bottom), 1rem) !important;
+  }
+
+  .memory-target-overlay-panel {
+    min-height: min(700px, 84dvh) !important;
+    max-width: min(860px, 94vw) !important;
+    border-radius: 1.5rem !important;
+  }
+
+  .memory-target-cards [data-card-variant="played"] {
+    height: clamp(148px, 18dvh, 210px) !important;
+    width: clamp(106px, 12.9dvh, 150px) !important;
+  }
+
+  .memory-checkpoint-panel {
+    max-height: calc(100dvh - var(--arena-safe-top) - var(--arena-safe-bottom) - 2rem) !important;
+    max-width: min(640px, 92vw) !important;
+  }
+}
+
+@media (orientation: landscape) and (min-height: 601px) and (max-width: 1180px) {
+  :root {
+    --arena-tablet-landscape-header: 72px;
+    --arena-safe-left: max(env(safe-area-inset-left), 12px);
+    --arena-safe-right: max(env(safe-area-inset-right), 12px);
+    --arena-safe-bottom: max(env(safe-area-inset-bottom), 10px);
+  }
+
+  .training-arena-topbar {
+    height: var(--arena-tablet-landscape-header) !important;
+  }
+
+  .training-desktop-hud > div:first-child {
+    height: var(--arena-tablet-landscape-header) !important;
+    width: 300px !important;
+    gap: 0.65rem !important;
+    padding-left: 1rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  .training-desktop-hud nav {
+    gap: 0.45rem !important;
+  }
+
+  .training-desktop-hud nav button {
+    height: 42px !important;
+  }
+
+  .training-arena-stage {
+    max-width: none !important;
+    padding: var(--arena-tablet-landscape-header) var(--arena-safe-right)
+      var(--arena-safe-bottom) var(--arena-safe-left) !important;
+  }
+
+  .training-table-surface {
+    inset: 15% 7% 28% !important;
+  }
+
+  .training-player-seat[data-position="top"] {
+    top: 12% !important;
+  }
+
+  .training-player-seat[data-position="left"] {
+    left: 2% !important;
+    top: 44% !important;
+  }
+
+  .training-player-seat[data-position="right"] {
+    right: 2% !important;
+    top: 44% !important;
+  }
+
+  .training-player-seat .training-card-backs {
+    display: none !important;
+  }
+
+  .training-player-avatar {
+    height: 50px !important;
+    width: 50px !important;
+  }
+
+  .training-player-details {
+    min-width: 74px !important;
+    padding: 0.35rem 0.5rem !important;
+  }
+
+  .training-round-action[data-action-position="top"] {
+    top: 27% !important;
+  }
+
+  .training-round-action[data-action-position="left"],
+  .training-round-action[data-action-position="right"] {
+    top: 43% !important;
+  }
+
+  .training-round-action [data-card-variant="played"] {
+    height: 88px !important;
+    width: 63px !important;
+  }
+
+  .training-hand-dock {
+    bottom: calc(var(--arena-safe-bottom) + 74px) !important;
+    left: var(--arena-safe-left) !important;
+    right: var(--arena-safe-right) !important;
+    max-height: 26dvh;
+  }
+
+  .training-observer-tools {
+    bottom: var(--arena-safe-bottom) !important;
+    width: min(920px, calc(100vw - 2rem)) !important;
+    padding: 0.55rem 0.75rem !important;
+  }
+
+  .memory-target-panel {
+    left: calc(var(--arena-safe-left) + 0.5rem) !important;
+    top: calc(var(--arena-tablet-landscape-header) + 0.75rem) !important;
+  }
+
+  .memory-answer-history {
+    right: calc(var(--arena-safe-right) + 0.5rem) !important;
+    top: calc(var(--arena-tablet-landscape-header) + 0.75rem) !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .training-entry,
   .camp-help-button {
