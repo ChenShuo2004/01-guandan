@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "framer-motion";
+import { BackButton } from "@/components/layout/BackButton";
 import { MemoryLabFeatureCard } from "@/components/practice/MemoryLabFeatureCard";
 import { TiltedCard } from "@/components/practice/TiltedCard";
 import { SceneBackground } from "@/components/scene/SceneBackground";
@@ -11,6 +12,7 @@ export function PracticeHome() {
   return (
     <main className="relative min-h-[100dvh] overflow-x-hidden bg-[#020a18] px-5 py-6 text-white sm:px-8 sm:py-12 lg:px-12 lg:py-16">
       <SceneBackground variant="entry" />
+      <BackButton fallbackHref="/" />
       <section className="relative z-10 mx-auto flex min-h-[calc(100dvh-3rem)] w-full max-w-[760px] flex-col justify-center">
         <motion.div animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }} initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }} transition={{ duration: 0.7, ease: "easeOut" }}>
           <p className="mb-3 text-[10px] font-black uppercase tracking-[0.34em] text-[#7edfff]/75">Memory training</p>

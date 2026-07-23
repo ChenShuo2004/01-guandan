@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
+import { BackButton } from "@/components/layout/BackButton";
 import { OpeningHeroTagline } from "./OpeningHeroTagline";
 import "./OpeningHeroTagline.css";
 import { SceneBackground } from "./SceneBackground";
@@ -12,6 +13,7 @@ export function OpeningScene() {
   return (
     <main className="relative min-h-[100dvh] overflow-hidden bg-[#020a18] text-white">
       <SceneBackground variant="opening" />
+      <BackButton />
       <section className="relative z-20 mx-auto flex min-h-[100dvh] w-full max-w-[min(100%,1200px)] flex-col items-center justify-center px-4 py-10 text-center sm:px-8">
         <div className="w-full max-w-3xl">
           <motion.p
