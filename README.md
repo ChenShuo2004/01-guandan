@@ -8,6 +8,10 @@
   <a href="https://x.com/ChenshuoAI">关注作者</a>
 </p>
 
+<p align="center">
+  <img src="./assets/product-preview.png" alt="掼蛋记牌训练产品预览" width="100%" />
+</p>
+
 > 当前版本是记牌训练原型，不是完整课程平台、在线棋牌游戏大厅或用户成长系统。
 
 ## 产品定位
