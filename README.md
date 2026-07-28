@@ -1,108 +1,99 @@
 # 掼蛋记牌训练
 
-移动端优先的掼蛋记牌能力训练工具。通过自动牌局和即时记忆测试，帮助玩家训练对关键牌的观察和记忆能力。
+一个移动端优先的掼蛋记牌能力训练工具。产品通过自动运行的 AI 牌局、关键牌观察和即时记忆测试，帮助玩家把“会打牌”进一步拆解为可训练、可反馈的观察与记忆能力。
+
+<p align="center">
+  <a href="https://guandan-beta.vercel.app">在线体验</a> ·
+  <a href="https://github.com/ChenShuo2004/01-guandan">GitHub</a> ·
+  <a href="https://x.com/ChenshuoAI">关注作者</a>
+</p>
+
+> 当前版本是记牌训练原型，不是完整课程平台、在线棋牌游戏大厅或用户成长系统。
 
 ## 产品定位
 
-当前产品是一个**记牌训练原型**，聚焦于：
-
-- 训练玩家观察牌局中的关键牌
-- 通过即时测试验证记忆准确率
-- 自适应难度：根据表现自动调整目标牌数量
-
-当前**不是**完整课程平台、每日训练 App、在线棋牌游戏大厅或用户成长系统。
+掼蛋牌局的信息量很大，玩家需要在有限时间内观察关键牌、记住已出现的数量，并根据反馈不断调整注意力。本项目将这一过程拆成“目标牌 → AI 牌局 → 记忆检查 → 即时反馈 → 难度调整”的训练闭环。
 
 ## 核心功能
 
-| 路由 | 功能 |
-|------|------|
-| `/` | 开场页，主按钮进入记牌训练 |
-| `/practice` | 记牌训练入口 |
-| `/practice/[practiceId]` | 记牌训练实例（自动牌局 + 记忆测试） |
+| 功能 | 说明 |
+| --- | --- |
+| 目标牌训练 | 开始牌局前明确需要观察和记忆的点数 |
+| AI 牌局 | 自动运行牌局，模拟真实观察场景 |
+| 记忆检查点 | 回答目标牌已经出现的数量 |
+| 即时反馈 | 展示结果、错误回放和下一轮建议 |
+| 自适应难度 | 根据表现动态调整目标牌数量与训练压力 |
+| 移动端体验 | 适配手机屏幕和触控操作 |
 
-训练实例内部流程：
-1. 展示本局目标牌（K、Q 等指定点数）
-2. 自动运行 AI 牌局（观察者模式）
-3. 记忆检查点：答出已出现的目标牌数量
-4. 即时反馈 + 错误回放
-5. 多局累计，难度自适应升降
+## 训练流程
+
+```text
+选择训练 → 观察目标牌 → AI 牌局运行 → 记忆检查 → 查看反馈 → 进入下一局
+```
 
 ## 技术栈
 
-- **框架**：Next.js 14 (App Router)
-- **语言**：TypeScript 5
-- **样式**：Tailwind CSS 3
-- **动画**：Framer Motion 11、GSAP 3
-- **3D 效果**：OGL
-- **状态**：Zustand（游戏引擎）+ localStorage（进度）
-- **运行时**：Node.js 22
+- Next.js 14 · React 18 · TypeScript
+- Tailwind CSS
+- Framer Motion · GSAP · OGL
+- 自研掼蛋规则与牌局引擎
+- Zustand / localStorage 状态管理
+- Vercel 部署
+
+## 本地运行
+
+```bash
+git clone https://github.com/ChenShuo2004/01-guandan.git
+cd 01-guandan
+npm install
+npm run dev
+```
+
+访问终端提示的本地地址，默认通常为 `http://localhost:3000`。
+
+常用命令：
+
+```bash
+npm run typecheck
+npm run lint
+npm run test
+npm run build
+```
+
+## 路由
+
+| 路由 | 作用 |
+| --- | --- |
+| `/` | 开场页与训练入口 |
+| `/practice` | 选择或开始记牌训练 |
+| `/practice/[practiceId]` | 具体训练实例与记忆检查 |
 
 ## 项目结构
 
-```
-app/                    # 页面路由（App Router）
-  layout.tsx            # 根布局
-  page.tsx              # 开场页 (/)
-  practice/
-    page.tsx            # 训练入口 (/practice)
-    [practiceId]/
-      page.tsx          # 训练实例 (/practice/[id])
-
-components/             # UI 组件
-  cards/                # 扑克牌组件（PokerCard、PokerHand）
-  game/                 # 牌局界面（GameArena、GameTable 等）
-  memory/               # 记牌训练面板
-  scene/                # 场景背景、开场组件
-  effects/              # UI 特效（SplitText、SideRays 等）
-  audio/                # 背景音乐
-
-features/               # 功能模块
-  practice/             # 记牌训练逻辑（PracticeHome、MemoryTrainingExperience）
-
-lib/                    # 服务与工具
-  guandan/              # 掼蛋规则引擎（card、deck、gameEngine 等）
-  memory/               # 记牌训练状态机（ObserverMemoryTraining）
-  ai/                   # AI 出牌策略
-  coach/                # 教练提示（规则驱动）
-  cards/                # 手牌排序工具
-
-store/                  # 全局状态
-  gameStore.ts          # 游戏引擎状态（Zustand）
-
-content/                # 训练内容数据
-data/                   # 静态数据
-
-middleware.ts           # 路由守卫（未开放路由重定向到 /practice）
+```text
+app/          # 页面路由与布局
+components/   # 扑克牌、牌局、训练和视觉效果组件
+features/     # 训练流程与领域功能模块
+lib/guandan/  # 牌、牌堆和游戏引擎
+lib/memory/   # 记牌训练状态机
+ai/           # AI 出牌策略与教练提示
+store/        # 全局游戏状态
+content/      # 训练内容
 ```
 
-## 本地启动
+## 当前边界
 
-```bash
-# 安装依赖
-npm install
-# 或
-pnpm install
+- 聚焦记牌训练，不提供完整在线对战
+- 不包含用户账号、会员、支付和成长体系
+- AI 牌局用于训练场景，不等同于真实玩家策略
 
-# 开发模式（前端）
-npm run dev
+## 作者
 
-# 类型检查
-npm run typecheck
+由 [陈硕（KAI）](https://github.com/ChenShuo2004) 构建。
 
-# Lint
-npm run lint
-```
+- X / Twitter：[@ChenshuoAI](https://x.com/ChenshuoAI)
+- 在线产品：[guandan-beta.vercel.app](https://guandan-beta.vercel.app)
 
-访问 http://localhost:3000
+## 免责声明
 
-## 部署
-
-本项目使用 Vercel 部署，详见 [DEPLOYMENT.md](./DEPLOYMENT.md)。
-
-## 环境变量
-
-| 变量 | 说明 | 默认值 |
-|------|------|--------|
-| `NEXT_PUBLIC_API_BASE_URL` | 后端 API 地址（V1 未使用） | `http://localhost:8000` |
-
-完整说明见 `.env.example`。
+本项目是牌类学习和记忆训练工具，不保证训练结果，也不构成任何竞技、博彩或财务建议。请遵守所在地区的法律法规，理性参与牌类活动。
