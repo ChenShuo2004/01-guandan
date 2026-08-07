@@ -5,6 +5,7 @@ import { BackButton } from "@/components/layout/BackButton";
 import { MemoryLabFeatureCard } from "@/components/practice/MemoryLabFeatureCard";
 import { TiltedCard } from "@/components/practice/TiltedCard";
 import { SceneBackground } from "@/components/scene/SceneBackground";
+import { practiceOnboarding } from "@/content/practice-onboarding";
 
 export function PracticeHome() {
   const shouldReduceMotion = useReducedMotion();
@@ -17,6 +18,7 @@ export function PracticeHome() {
         <motion.div animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }} initial={shouldReduceMotion ? false : { opacity: 0, y: 18 }} transition={{ duration: 0.7, ease: "easeOut" }}>
           <p className="mb-3 text-[10px] font-black uppercase tracking-[0.34em] text-[#7edfff]/75">Memory training</p>
           <h1 className="text-[clamp(2.4rem,8vw,3.75rem)] font-black leading-tight text-white">记牌训练场</h1>
+          <p className="mt-3 max-w-xl text-sm font-medium leading-6 text-white/72 sm:text-base">{practiceOnboarding.entryDescription}</p>
         </motion.div>
         <motion.div
           animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
@@ -26,7 +28,7 @@ export function PracticeHome() {
         >
           <TiltedCard
             className="practice-home-card"
-            containerHeight="clamp(360px, 64dvh, 560px)"
+            containerHeight="clamp(390px, 58dvh, 500px)"
             displayOverlayContent
             hideImage
             imageHeight="100%"

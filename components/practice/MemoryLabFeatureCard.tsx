@@ -1,28 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { practiceOnboarding } from "@/content/practice-onboarding";
 import "./MemoryLabFeatureCard.css";
-
-const FEATURES = [
-  {
-    icon: "play_arrow",
-    label: "自动推进牌局",
-    lines: ["AI 自动出完整局", "专注观察记牌"],
-    titleTone: "play" as const
-  },
-  {
-    icon: "my_location",
-    label: "追踪关键牌",
-    lines: ["关键牌实时标记", "随时查看剩余"],
-    titleTone: "track" as const
-  },
-  {
-    icon: "bolt",
-    label: "即时记牌测试",
-    lines: ["牌局中即时测试", "检验记忆成果"],
-    titleTone: "test" as const
-  }
-] as const;
 
 interface MemoryLabFeatureCardProps {
   href: string;
@@ -32,40 +12,40 @@ export function MemoryLabFeatureCard({ href }: MemoryLabFeatureCardProps) {
   return (
     <div className="memory-lab-card flex h-full flex-col p-5 sm:p-7">
       <div className="memory-lab-card__content flex h-full flex-col">
-        <div className="flex items-start justify-end">
-          <div aria-hidden="true" className="memory-lab-card__spade">
-            ♠
+        <div className="memory-lab-card__intro">
+          <div>
+            <p className="memory-lab-card__eyebrow">{practiceOnboarding.eyebrow}</p>
+            <h2>{practiceOnboarding.title}</h2>
+            <p>{practiceOnboarding.description}</p>
           </div>
+          <span aria-hidden="true" className="memory-lab-card__intro-icon material-symbols-outlined">
+            playing_cards
+          </span>
         </div>
 
-        <ul className="memory-lab-card__features mt-2 grid flex-1 gap-3 sm:grid-cols-3 sm:gap-4">
-          {FEATURES.map((feature) => (
-            <li key={feature.label} className="memory-lab-card__feature">
+        <ol className="memory-lab-card__features mt-4 grid flex-1 grid-cols-3 gap-2.5 sm:gap-3">
+          {practiceOnboarding.steps.map((step) => (
+            <li key={step.label} className="memory-lab-card__feature">
               <span aria-hidden="true" className="memory-lab-card__feature-icon">
-                <span className="material-symbols-outlined">{feature.icon}</span>
+                <span className="material-symbols-outlined">{step.icon}</span>
               </span>
-              <h3 className={`memory-lab-card__feature-title memory-lab-card__feature-title--${feature.titleTone}`}>
-                {feature.label}
-              </h3>
-              <div className="memory-lab-card__feature-copy">
-                {feature.lines.map((line) => (
-                  <p key={line}>{line}</p>
-                ))}
+              <div>
+                <p className="memory-lab-card__feature-label">{step.label}</p>
+                <h3 className="memory-lab-card__feature-title">{step.title}</h3>
+                <p className="memory-lab-card__feature-copy">{step.description}</p>
               </div>
             </li>
           ))}
-        </ul>
-
-        <Link
-          className="memory-lab-card__manual-cta mt-5"
-          href="/training/memory-methods?returnTo=/practice"
-        >
-          先看档位法手册
-        </Link>
+        </ol>
 
         <Link className="memory-lab-card__cta mt-3" href={href}>
-          开始记牌训练
-          <span aria-hidden="true">→</span>
+          <span>{practiceOnboarding.startLabel}</span>
+          <span className="memory-lab-card__cta-hint">{practiceOnboarding.startHint}</span>
+        </Link>
+
+        <Link className="memory-lab-card__manual-cta mt-2" href={practiceOnboarding.manualHref}>
+          {practiceOnboarding.manualLabel}
+          <span aria-hidden="true" className="material-symbols-outlined">arrow_forward</span>
         </Link>
       </div>
     </div>
