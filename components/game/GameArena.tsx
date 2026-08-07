@@ -55,6 +55,7 @@ interface GameArenaProps {
   onObserverPauseChange?: (paused: boolean) => void;
   onObserverExit?: () => void;
   onObserverOpenReport?: () => void;
+  observerMemoryHud?: ReactNode;
   settlementFocus?: {
     donorId: string;
     receiverId: string;
@@ -73,6 +74,7 @@ export function GameArena({
   onObserverPauseChange,
   onObserverExit,
   onObserverOpenReport,
+  observerMemoryHud,
   settlementFocus,
 }: GameArenaProps) {
   const router = useRouter();
@@ -822,6 +824,8 @@ export function GameArena({
           showTurnStatus={!isDealLocked && (!observerMode || !observerPaused)}
           turnAction={displayTurnAction}
         />
+
+        {observerMemoryHud}
 
         <CardCounter
           counts={state.cardRemainingCount}

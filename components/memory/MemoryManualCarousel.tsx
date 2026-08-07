@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useMemo, useRef, useState } from "react";
+import { JokerFootMappingSlide } from "@/components/memory/JokerFootMappingSlide";
 import type { MemoryManual } from "@/content/memory-manual";
 
 function getSafeReturnTo(returnTo?: string | null) {
@@ -110,14 +111,18 @@ export function MemoryManualCarousel({
                     className="relative aspect-[9/16] overflow-hidden rounded-[22px] bg-black shadow-[0_18px_46px_rgba(0,0,0,0.42)]"
                     style={{ width: "min(82vw, calc((100dvh - 190px) * 9 / 16), 560px)" }}
                   >
-                    <Image
-                      alt={page.alt}
-                      className="object-contain"
-                      fill
-                      priority={index === 0}
-                      sizes="(max-width: 640px) 82vw, 560px"
-                      src={page.src}
-                    />
+                    {page.type === "mapping" ? (
+                      <JokerFootMappingSlide />
+                    ) : (
+                      <Image
+                        alt={page.alt}
+                        className="object-contain"
+                        fill
+                        priority={index === 0}
+                        sizes="(max-width: 640px) 82vw, 560px"
+                        src={page.src}
+                      />
+                    )}
                   </div>
                 </article>
               ))}

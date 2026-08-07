@@ -39,16 +39,23 @@ export function MemoryTargetPanel({
   if (!visible || targetRanks.length === 0) return null;
 
   return (
-    <div className="memory-target-panel pointer-events-none fixed left-3 top-[152px] z-[100] max-w-[calc(100vw-2rem)] sm:left-4 sm:top-[104px]">
+    <div className="memory-target-panel pointer-events-none fixed left-3 top-[152px] z-[30] max-w-[calc(100vw-2rem)] sm:left-4 sm:top-[104px]">
       <div className="memory-target-panel-card rounded-2xl border border-[#74dfff]/40 bg-[#0e2944]/95 px-3 py-2.5 text-white shadow-2xl backdrop-blur-xl">
         <p className="text-sm font-black text-[#74dfff] max-lg:text-xs">当前需要记牌 · {currentTargetCount} 类</p>
-        <div className="mt-2 flex max-w-[calc(100vw-3.5rem)] gap-2 overflow-x-auto pb-0.5">
+        <div className="memory-target-panel__cards mt-2 flex max-w-[calc(100vw-3.5rem)] gap-2 overflow-x-auto pb-0.5">
           {targetRanks.map((rank) => (
             <PokerCard
               card={cardRankToPokerCard(rank)}
               key={rank}
               size={currentTargetCount >= 5 ? "sm" : "md"}
             />
+          ))}
+        </div>
+        <div aria-label="当前需要记忆的牌" className="memory-target-panel__rank-list hidden">
+          {targetRanks.map((rank) => (
+            <span className="memory-target-panel__rank-chip" key={rank}>
+              {rank >= 16 ? "大小王" : getRankDisplayName(rank)}
+            </span>
           ))}
         </div>
       </div>

@@ -1043,8 +1043,12 @@ select {
   }
 
   .memory-target-panel {
-    left: calc(var(--arena-safe-left) + 14vw) !important;
+    left: calc(var(--arena-safe-left) + 0.65rem) !important;
+    right: auto !important;
     top: calc(var(--arena-landscape-header) + 4px) !important;
+    width: max-content;
+    max-width: calc(100vw - var(--arena-safe-left) - var(--arena-safe-right) - 1rem) !important;
+    transform: none;
   }
 
   .memory-target-panel-card {
@@ -1052,11 +1056,40 @@ select {
     align-items: center;
     gap: 0.55rem;
     border-radius: 0.8rem !important;
-    padding: 0.3rem 0.55rem !important;
+    padding: 0.28rem 0.5rem !important;
   }
 
   .memory-target-panel-card > p {
     font-size: clamp(0.62rem, 2.6dvh, 0.76rem) !important;
+    white-space: nowrap;
+  }
+
+  .memory-target-panel__cards {
+    display: none !important;
+  }
+
+  .memory-target-panel__rank-list {
+    display: flex !important;
+    min-width: 0;
+    align-items: center;
+    gap: 0.25rem;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .memory-target-panel__rank-chip {
+    display: inline-flex;
+    min-height: 1.55rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgb(116 223 255 / 38%);
+    border-radius: 0.42rem;
+    background: rgb(255 255 255 / 10%);
+    padding: 0 0.34rem;
+    color: #fff;
+    font-size: clamp(0.58rem, 2.4dvh, 0.72rem);
+    font-weight: 900;
+    line-height: 1;
   }
 
   .memory-target-panel-card > div {

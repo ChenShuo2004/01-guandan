@@ -592,12 +592,13 @@ export function MemoryTrainingExperience() {
         onObserverPauseChange={handleObserverPauseChange}
         onObserverExit={handleExit}
         onObserverOpenReport={() => setShowReport(true)}
-      />
-
-      <MemoryTargetPanel
-        targetRanks={training.targetRanks}
-        currentTargetCount={training.currentTargetCount}
-        visible={methodGuideReason === null && (training.phase === "AI_PLAYING" || training.phase === "OBSERVING_INITIAL_HAND")}
+        observerMemoryHud={
+          <MemoryTargetPanel
+            targetRanks={training.targetRanks}
+            currentTargetCount={training.currentTargetCount}
+            visible={methodGuideReason === null && (training.phase === "AI_PLAYING" || training.phase === "OBSERVING_INITIAL_HAND")}
+          />
+        }
       />
 
       {tributeNotice ? (

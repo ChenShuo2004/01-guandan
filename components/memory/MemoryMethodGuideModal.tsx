@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { JokerFootMappingSlide } from "@/components/memory/JokerFootMappingSlide";
 import { memoryManual } from "@/content/memory-manual";
 import type { MemoryMethodGuideReason } from "@/lib/memory/ObserverMemoryTraining";
 
@@ -52,14 +53,18 @@ export function MemoryMethodGuideModal({ onContinue }: MemoryMethodGuideModalPro
               className="relative aspect-[9/16] overflow-hidden rounded-[24px] bg-black shadow-[0_18px_46px_rgba(0,0,0,0.42)]"
               style={{ width: "min(94vw, calc((100dvh - 122px) * 9 / 16), 620px)" }}
             >
-              <Image
-                alt={activePage.alt}
-                className="object-contain"
-                fill
-                priority
-                sizes="(max-width: 640px) 94vw, 620px"
-                src={activePage.src}
-              />
+              {activePage.type === "mapping" ? (
+                <JokerFootMappingSlide />
+              ) : (
+                <Image
+                  alt={activePage.alt}
+                  className="object-contain"
+                  fill
+                  priority
+                  sizes="(max-width: 640px) 94vw, 620px"
+                  src={activePage.src}
+                />
+              )}
             </div>
 
             <button
