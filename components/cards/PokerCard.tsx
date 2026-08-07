@@ -33,6 +33,38 @@ const playedSizeClasses: Record<CardSize, string> = {
   hero: "h-[clamp(148px,30vh,252px)] w-[clamp(106px,21.4vh,180px)]"
 };
 
+const suitSymbols = {
+  spade: "♠",
+  heart: "♥",
+  club: "♣",
+  diamond: "♦"
+} as const;
+
+function PokerCardFallback({ card }: { card: PokerCardData }) {
+  const isJoker = card.rank === "SJ" || card.rank === "BJ";
+
+  if (isJoker) {
+    return (
+      <div aria-hidden className="pointer-events-none absolute inset-0 z-0 grid place-items-center bg-white px-1 text-center">
+        <span className={`text-[10px] font-black leading-tight ${card.rank === "SJ" ? "text-[#42627b]" : "text-[#c8282c]"}`}>
+          {card.rank === "SJ" ? "小王" : "大王"}
+        </span>
+      </div>
+    );
+  }
+
+  const suit = card.suit ?? "spade";
+  const color = suit === "heart" || suit === "diamond" ? "text-[#c8282c]" : "text-[#18222d]";
+
+  return (
+    <div aria-hidden className={`pointer-events-none absolute inset-0 z-0 bg-white ${color}`}>
+      <span className="absolute left-1 top-0.5 text-[10px] font-black leading-none">{card.rank}</span>
+      <span className="absolute left-1 top-3 text-[9px] font-black leading-none">{suitSymbols[suit]}</span>
+      <span className="absolute inset-0 grid place-items-center pt-1 text-xl font-black sm:text-4xl">{suitSymbols[suit]}</span>
+    </div>
+  );
+}
+
 export function PokerCard({
   card,
   compact = false,
@@ -63,10 +95,11 @@ export function PokerCard({
       data-card-variant={variant}
       style={dimensions ? ({ height: dimensions.height, width: dimensions.width } satisfies CSSProperties) : undefined}
     >
+      <PokerCardFallback card={card} />
       <Image
         alt={`${card.rank}${card.suit ?? ""}`}
         className={cn(
-          "h-full w-full object-contain",
+          "z-10 h-full w-full object-contain",
           variant === "played" && "brightness-[1.03] contrast-[1.08] saturate-[1.06]"
         )}
         draggable={false}
