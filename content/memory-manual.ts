@@ -1,8 +1,30 @@
-export interface MemoryManualPage {
+export interface MemoryManualImagePage {
   id: string;
   title: string;
   src: string;
   alt: string;
+  type?: "image";
+}
+
+export interface MemoryManualMappingPage {
+  id: string;
+  title: string;
+  type: "mapping";
+}
+
+export type MemoryManualPage = MemoryManualImagePage | MemoryManualMappingPage;
+
+export interface JokerFootPosition {
+  label: "垂放" | "前伸" | "后撤";
+  gear: "空档" | "1 档" | "2 档" | "3 档" | "4 档";
+  appearedCount: 0 | 1 | 2;
+}
+
+export interface JokerFootMapping {
+  foot: "左脚" | "右脚";
+  joker: "小王" | "大王";
+  pokerRank: "SJ" | "BJ";
+  positions: readonly JokerFootPosition[];
 }
 
 export interface MemoryManual {
@@ -11,6 +33,30 @@ export interface MemoryManual {
   trainingHref: string;
   pages: MemoryManualPage[];
 }
+
+// 档位法的唯一规则来源：左脚只记录小王，右脚只记录大王。
+export const jokerFootMappings = [
+  {
+    foot: "左脚",
+    joker: "小王",
+    pokerRank: "SJ",
+    positions: [
+      { label: "垂放", gear: "空档", appearedCount: 0 },
+      { label: "前伸", gear: "1 档", appearedCount: 1 },
+      { label: "后撤", gear: "2 档", appearedCount: 2 }
+    ]
+  },
+  {
+    foot: "右脚",
+    joker: "大王",
+    pokerRank: "BJ",
+    positions: [
+      { label: "垂放", gear: "空档", appearedCount: 0 },
+      { label: "前伸", gear: "3 档", appearedCount: 1 },
+      { label: "后撤", gear: "4 档", appearedCount: 2 }
+    ]
+  }
+] as const satisfies readonly JokerFootMapping[];
 
 export const memoryManual: MemoryManual = {
   title: "陈硕档位法手册",
@@ -32,8 +78,7 @@ export const memoryManual: MemoryManual = {
     {
       id: "dangwei-map",
       title: "左右脚映射",
-      src: "/assets/memory-manual/chenshuo-dangwei-03.jpg",
-      alt: "陈硕档位法左右脚映射说明"
+      type: "mapping"
     },
     {
       id: "small-joker-zero",
